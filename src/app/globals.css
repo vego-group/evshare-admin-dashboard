@@ -9,9 +9,11 @@
   --color-secondary: #1a1a1a;
   --color-red: #c53637;
   --color-green: #25935f;
+  --color-blue: #155dfc;
   --color-gray: #6c737f;
   --color-dark-gray: #384250;
   --color-background: #fcfcfd;
+  --color-bg-warm-ivory: #fffdf0;
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);

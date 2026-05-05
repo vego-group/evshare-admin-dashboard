@@ -191,7 +191,7 @@ function FilterSelect<T extends string>({
       </button>
 
       {isOpen ? (
-        <div className="absolute right-0 top-[calc(100%+2px)] z-30 w-full overflow-hidden rounded-[14px] border border-primary bg-[#fffdf0] shadow-[0_10px_24px_rgba(16,24,40,0.12)]">
+        <div className="absolute right-0 top-[calc(100%+2px)] z-30 w-full overflow-hidden rounded-[14px] border border-primary bg-bg-warm-ivory shadow-[0_10px_24px_rgba(16,24,40,0.12)]">
           {options.map((option) => (
             <button
               key={option}

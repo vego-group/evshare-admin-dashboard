@@ -4,24 +4,23 @@ import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
-
 import {
-  consultationRequestStatuses,
-  type ConsultationRequestStatus,
-} from "../consultation-requests-data";
+  registrationRequestStatuses,
+  type RegistrationRequestStatus,
+} from "./registration-requests-data";
 
-const REQUEST_STATUS_STYLES: Record<ConsultationRequestStatus, string> = {
-  جديد: "bg-green-50 text-[#00a63e]",
-  مغلق: "bg-gray-100 text-dark-gray",
-  "تم التواصل": "bg-amber-50 text-amber-600",
+const STATUS_STYLES: Record<RegistrationRequestStatus, string> = {
+  "موافق عليها": "bg-green-50 text-green",
+  مرفوضة: "bg-red-50 text-red",
+  "قيد المراجعة": "bg-amber-50 text-orange-500",
 };
 
-function RequestStatusBadge({
+function RegistrationRequestStatusSelect({
   status,
   onChange,
 }: {
-  status: ConsultationRequestStatus;
-  onChange?: (status: ConsultationRequestStatus) => void;
+  status: RegistrationRequestStatus;
+  onChange?: (status: RegistrationRequestStatus) => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -48,28 +47,32 @@ function RequestStatusBadge({
     <div ref={containerRef} className="relative inline-flex">
       <button
         type="button"
-        aria-label="تحديث حالة طلب الاستشارة"
+        aria-label="تحديث حالة طلب التسجيل"
         aria-expanded={isOpen}
-        onClick={() => setIsOpen((current) => !current)}
+        onClick={(event) => {
+          event.stopPropagation();
+          setIsOpen((current) => !current);
+        }}
         className={cn(
-          "inline-flex h-[38px] items-center justify-center gap-2 rounded-full px-3 text-base font-medium leading-6 transition hover:brightness-95",
-          REQUEST_STATUS_STYLES[status],
+          "inline-flex h-[38px] items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 text-sm font-medium transition hover:brightness-95",
+          STATUS_STYLES[status],
           isOpen && "brightness-95",
         )}
       >
         <ChevronDown
-          className={cn("size-3.5 transition", isOpen && "rotate-180")}
+          className={cn("size-4 transition", isOpen && "rotate-180")}
         />
         {status}
       </button>
 
       {isOpen ? (
-        <div className="absolute right-0 top-[calc(100%+8px)] z-40 w-max min-w-full overflow-hidden rounded-b-[14px] border border-primary bg-bg-warm-ivory text-right shadow-[0_10px_24px_rgba(16,24,40,0.12)]">
-          {consultationRequestStatuses.map((option) => (
+        <div className="absolute right-0 top-[calc(100%+8px)] z-30 w-max min-w-full overflow-hidden rounded-b-[14px] border border-primary bg-bg-warm-ivory text-right shadow-[0_10px_24px_rgba(16,24,40,0.12)]">
+          {registrationRequestStatuses.map((option) => (
             <button
               key={option}
               type="button"
-              onClick={() => {
+              onClick={(event) => {
+                event.stopPropagation();
                 onChange?.(option);
                 setIsOpen(false);
               }}
@@ -87,4 +90,4 @@ function RequestStatusBadge({
   );
 }
 
-export default RequestStatusBadge;
+export default RegistrationRequestStatusSelect;

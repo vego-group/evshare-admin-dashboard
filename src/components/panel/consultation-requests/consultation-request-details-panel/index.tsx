@@ -34,7 +34,6 @@ function ConsultationRequestDetailsPanel({
       open={open}
       onClose={onClose}
       contentClassName="w-full gap-0 overflow-hidden sm:rounded-l-3xl sm:border-l-0 bg-white p-0 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)]"
-      hideDefaultCloseButton
     >
       <div className="flex h-full min-h-0 flex-col text-right">
         <RequestDetailsHeader requestId={request.id} />

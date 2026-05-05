@@ -280,7 +280,7 @@ function StatusSelect({
       </button>
 
       {isOpen ? (
-        <div className="absolute right-0 top-[calc(100%+8px)] z-40 w-max min-w-full overflow-hidden rounded-b-[14px] border border-primary bg-[#fffdf0] text-right shadow-[0_10px_24px_rgba(16,24,40,0.12)]">
+        <div className="absolute right-0 top-[calc(100%+8px)] z-40 w-max min-w-full overflow-hidden rounded-b-[14px] border border-primary bg-bg-warm-ivory text-right shadow-[0_10px_24px_rgba(16,24,40,0.12)]">
           {consultationRequestStatuses.map((option) => (
             <button
               key={option}

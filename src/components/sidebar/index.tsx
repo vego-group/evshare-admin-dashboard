@@ -10,6 +10,7 @@ import {
   LogOut,
   Menu,
   Package,
+  ScrollText,
   User,
   X,
 } from "lucide-react";
@@ -48,6 +49,7 @@ function Sidebar() {
   const isDashboardActive = pathname === "/";
   const isAssetsCatalogActive = pathname === "/assets-catalog";
   const isConsultationRequestsActive = pathname === "/consultation-requests";
+  const isRegistrationRequestsActive = pathname === "/registration-requests";
 
   return (
     <>
@@ -131,6 +133,18 @@ function Sidebar() {
           >
             <ClipboardList size={18} />
             <span>طلبات الاستشارة</span>
+          </Link>
+
+          <Link
+            href="/registration-requests"
+            className={`${sidebarLinkClass} mt-2 ${
+              isRegistrationRequestsActive
+                ? sidebarActiveLinkClass
+                : sidebarInactiveLinkClass
+            }`}
+          >
+            <ScrollText size={18} />
+            <span>طلبات التسجيل</span>
           </Link>
 
           <button
@@ -260,6 +274,27 @@ function Sidebar() {
             ) : null}
           </Link>
 
+          <Link
+            href="/registration-requests"
+            className={`transition-colors ${
+              isMdSidebarExpanded
+                ? "relative flex h-10 w-full items-center gap-2 overflow-hidden rounded-[14px] px-3 text-sm font-medium"
+                : "flex h-10 w-10 items-center justify-center rounded-md"
+            } ${
+              isRegistrationRequestsActive
+                ? isMdSidebarExpanded
+                  ? sidebarActiveLinkClass
+                  : "bg-[#fff6c8] text-dark-gray"
+                : sidebarInactiveLinkClass
+            }`}
+            aria-label="Registration requests"
+          >
+            <ScrollText size={18} className="shrink-0" />
+            {isMdSidebarExpanded ? (
+              <span className="ms-2 text-sm font-semibold">طلبات التسجيل</span>
+            ) : null}
+          </Link>
+
           <button
             type="button"
             onClick={handleLogout}
@@ -363,6 +398,19 @@ function Sidebar() {
           >
             <ClipboardList size={18} />
             <span>طلبات الاستشارة</span>
+          </Link>
+
+          <Link
+            href="/registration-requests"
+            onClick={closeSidebar}
+            className={`${sidebarLinkClass} mt-2 ${
+              isRegistrationRequestsActive
+                ? sidebarActiveLinkClass
+                : sidebarInactiveLinkClass
+            }`}
+          >
+            <ScrollText size={18} />
+            <span>طلبات التسجيل</span>
           </Link>
 
           <button
