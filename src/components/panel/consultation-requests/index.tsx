@@ -17,6 +17,7 @@ type ConsultationFilterValue<T extends string> = T | "الكل";
 type ConsultationSortValue = "الاحدث" | "الاقدم";
 
 function ConsultationRequests() {
+  const [requests, setRequests] = useState(consultationRequests);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRequest, setSelectedRequest] =
     useState<(typeof consultationRequests)[number] | null>(null);
@@ -30,7 +31,7 @@ function ConsultationRequests() {
   const filteredRequests = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
 
-    const results = consultationRequests.filter((request) => {
+    const results = requests.filter((request) => {
       const matchesSearch =
         !normalizedQuery ||
         [request.name, request.phone, request.email, request.type, request.status]
@@ -45,12 +46,28 @@ function ConsultationRequests() {
     });
 
     return selectedSort === "الاحدث" ? results : [...results].reverse();
-  }, [searchQuery, selectedSort, selectedStatus, selectedType]);
+  }, [requests, searchQuery, selectedSort, selectedStatus, selectedType]);
+
+  const handleStatusChange = (
+    requestId: string,
+    status: ConsultationRequestStatus,
+  ) => {
+    setRequests((currentRequests) =>
+      currentRequests.map((request) =>
+        request.id === requestId ? { ...request, status } : request,
+      ),
+    );
+    setSelectedRequest((currentRequest) =>
+      currentRequest?.id === requestId
+        ? { ...currentRequest, status }
+        : currentRequest,
+    );
+  };
 
   return (
     <div className="flex w-full flex-col gap-6">
       <ConsultationRequestsHeading />
-      <ConsultationRequestsStats />
+      <ConsultationRequestsStats requests={requests} />
       <ConsultationRequestsToolbar
         searchQuery={searchQuery}
         selectedSort={selectedSort}
@@ -64,11 +81,13 @@ function ConsultationRequests() {
       <ConsultationRequestsTable
         requests={filteredRequests}
         onViewRequest={setSelectedRequest}
+        onStatusChange={handleStatusChange}
       />
       <ConsultationRequestDetailsPanel
         request={selectedRequest}
         open={Boolean(selectedRequest)}
         onClose={() => setSelectedRequest(null)}
+        onStatusChange={handleStatusChange}
       />
     </div>
   );

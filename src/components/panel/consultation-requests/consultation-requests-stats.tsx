@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { TrendingDown, TrendingUp } from "lucide-react";
 
+import type { ConsultationRequest } from "./consultation-requests-data";
+
 type ConsultationStat = {
   label: string;
   value: string;
@@ -10,46 +12,52 @@ type ConsultationStat = {
   iconClassName: string;
 };
 
-const consultationStats: ConsultationStat[] = [
-  {
-    label: "إجمالي الطلبات",
-    value: "8",
-    change: "12%",
-    trend: "up",
-    iconSrc:
-      "https://www.figma.com/api/mcp/asset/47baff9a-a60f-45df-8dca-92e08966934e",
-    iconClassName: "bg-[#eff6ff]",
-  },
-  {
-    label: "الطلبات الجديدة",
-    value: "15",
-    change: "2%",
-    trend: "down",
-    iconSrc:
-      "https://www.figma.com/api/mcp/asset/3614f2f0-0622-461b-bfdb-e661986e37bc",
-    iconClassName: "bg-primary/10",
-  },
-  {
-    label: "الطلبات المغلقة",
-    value: "5",
-    change: "8%",
-    trend: "up",
-    iconSrc:
-      "https://www.figma.com/api/mcp/asset/29fde70f-7617-484f-a920-0e52ae2a6a60",
-    iconClassName: "bg-[#f9f5fa]",
-  },
-  {
-    label: "تم التواصل",
-    value: "2",
-    change: "3%",
-    trend: "down",
-    iconSrc:
-      "https://www.figma.com/api/mcp/asset/47b25c05-3006-4b3b-a578-ad25de906c8b",
-    iconClassName: "bg-green/10",
-  },
-];
+function ConsultationRequestsStats({
+  requests,
+}: {
+  requests: ConsultationRequest[];
+}) {
+  const consultationStats: ConsultationStat[] = [
+    {
+      label: "إجمالي الطلبات",
+      value: String(requests.length),
+      change: "12%",
+      trend: "up",
+      iconSrc: "/images/total-consultation-requests.svg",
+      iconClassName: "bg-[#eff6ff]",
+    },
+    {
+      label: "الطلبات الجديدة",
+      value: String(
+        requests.filter((request) => request.status === "جديد").length,
+      ),
+      change: "2%",
+      trend: "down",
+      iconSrc: "/images/new-consultation-requests.svg",
+      iconClassName: "bg-primary/10",
+    },
+    {
+      label: "الطلبات المغلقة",
+      value: String(
+        requests.filter((request) => request.status === "مغلق").length,
+      ),
+      change: "8%",
+      trend: "up",
+      iconSrc: "/images/closed-consultation-requests.svg",
+      iconClassName: "bg-[#f9f5fa]",
+    },
+    {
+      label: "تم التواصل",
+      value: String(
+        requests.filter((request) => request.status === "تم التواصل").length,
+      ),
+      change: "3%",
+      trend: "down",
+      iconSrc: "/images/completed-consultation-requests.svg",
+      iconClassName: "bg-green/10",
+    },
+  ];
 
-function ConsultationRequestsStats() {
   return (
     <section className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
       {consultationStats.map((stat) => (

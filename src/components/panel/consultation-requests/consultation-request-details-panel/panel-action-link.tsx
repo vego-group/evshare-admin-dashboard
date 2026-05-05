@@ -24,8 +24,8 @@ function PanelActionLink({
         className,
       )}
     >
-      {children}
       <Icon className="size-5" />
+      {children}
     </a>
   );
 }

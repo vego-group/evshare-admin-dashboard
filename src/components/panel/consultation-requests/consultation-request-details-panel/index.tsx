@@ -2,7 +2,10 @@
 
 import Panel from "@/components/ui/panel";
 
-import type { ConsultationRequest } from "../consultation-requests-data";
+import type {
+  ConsultationRequest,
+  ConsultationRequestStatus,
+} from "../consultation-requests-data";
 import ContactInfoSection from "./contact-info-section";
 import RequestDetailsFooter from "./request-details-footer";
 import RequestDetailsHeader from "./request-details-header";
@@ -12,12 +15,17 @@ interface ConsultationRequestDetailsPanelProps {
   request: ConsultationRequest | null;
   open: boolean;
   onClose: () => void;
+  onStatusChange?: (
+    requestId: string,
+    status: ConsultationRequestStatus,
+  ) => void;
 }
 
 function ConsultationRequestDetailsPanel({
   request,
   open,
   onClose,
+  onStatusChange,
 }: ConsultationRequestDetailsPanelProps) {
   if (!request) return null;
 
@@ -33,7 +41,10 @@ function ConsultationRequestDetailsPanel({
 
         <div className="min-h-0 flex-1 overflow-y-auto px-6 py-6">
           <ContactInfoSection request={request} />
-          <RequestDetailsSection request={request} />
+          <RequestDetailsSection
+            request={request}
+            onStatusChange={onStatusChange}
+          />
         </div>
 
         <RequestDetailsFooter request={request} />

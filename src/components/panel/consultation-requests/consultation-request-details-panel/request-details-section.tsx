@@ -1,10 +1,22 @@
-import type { ConsultationRequest } from "../consultation-requests-data";
+import type {
+  ConsultationRequest,
+  ConsultationRequestStatus,
+} from "../consultation-requests-data";
 import DetailRow from "./detail-row";
 import PanelSectionTitle from "./panel-section-title";
 import RequestStatusBadge from "./request-status-badge";
 import RequestTypeBadge from "./request-type-badge";
 
-function RequestDetailsSection({ request }: { request: ConsultationRequest }) {
+function RequestDetailsSection({
+  request,
+  onStatusChange,
+}: {
+  request: ConsultationRequest;
+  onStatusChange?: (
+    requestId: string,
+    status: ConsultationRequestStatus,
+  ) => void;
+}) {
   return (
     <section className="mt-6 space-y-4">
       <PanelSectionTitle>تفاصيل الطلب</PanelSectionTitle>
@@ -13,7 +25,10 @@ function RequestDetailsSection({ request }: { request: ConsultationRequest }) {
           <RequestTypeBadge type={request.type} />
         </DetailRow>
         <DetailRow label="الحالة">
-          <RequestStatusBadge status={request.status} />
+          <RequestStatusBadge
+            status={request.status}
+            onChange={(status) => onStatusChange?.(request.id, status)}
+          />
         </DetailRow>
         <DetailRow label="التاريخ">
           <span className="text-base font-medium leading-6 text-dark-gray">
