@@ -147,7 +147,7 @@ function MobileRequestCard({
         </div>
       </div>
 
-      <div className="mt-2 flex items-center justify-end gap-2 px-1">
+      <div className="mt-2 flex items-center gap-2 px-1">
         <ActionButton
           icon={Eye}
           label="عرض طلب الاستشارة"

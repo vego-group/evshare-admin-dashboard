@@ -11,6 +11,7 @@ import {
   Menu,
   Package,
   ScrollText,
+  ShoppingCart,
   User,
   X,
 } from "lucide-react";
@@ -50,6 +51,7 @@ function Sidebar() {
   const isAssetsCatalogActive = pathname === "/assets-catalog";
   const isConsultationRequestsActive = pathname === "/consultation-requests";
   const isRegistrationRequestsActive = pathname === "/registration-requests";
+  const isProductOrdersActive = pathname === "/product-orders";
 
   return (
     <>
@@ -145,6 +147,18 @@ function Sidebar() {
           >
             <ScrollText size={18} />
             <span>طلبات التسجيل</span>
+          </Link>
+
+          <Link
+            href="/product-orders"
+            className={`${sidebarLinkClass} mt-2 ${
+              isProductOrdersActive
+                ? sidebarActiveLinkClass
+                : sidebarInactiveLinkClass
+            }`}
+          >
+            <ShoppingCart size={18} />
+            <span>طلبات المنتجات</span>
           </Link>
 
           <button
@@ -295,6 +309,27 @@ function Sidebar() {
             ) : null}
           </Link>
 
+          <Link
+            href="/product-orders"
+            className={`transition-colors ${
+              isMdSidebarExpanded
+                ? "relative flex h-10 w-full items-center gap-2 overflow-hidden rounded-[14px] px-3 text-sm font-medium"
+                : "flex h-10 w-10 items-center justify-center rounded-md"
+            } ${
+              isProductOrdersActive
+                ? isMdSidebarExpanded
+                  ? sidebarActiveLinkClass
+                  : "bg-[#fff6c8] text-dark-gray"
+                : sidebarInactiveLinkClass
+            }`}
+            aria-label="Product orders"
+          >
+            <ShoppingCart size={18} className="shrink-0" />
+            {isMdSidebarExpanded ? (
+              <span className="ms-2 text-sm font-semibold">طلبات المنتجات</span>
+            ) : null}
+          </Link>
+
           <button
             type="button"
             onClick={handleLogout}
@@ -411,6 +446,19 @@ function Sidebar() {
           >
             <ScrollText size={18} />
             <span>طلبات التسجيل</span>
+          </Link>
+
+          <Link
+            href="/product-orders"
+            onClick={closeSidebar}
+            className={`${sidebarLinkClass} mt-2 ${
+              isProductOrdersActive
+                ? sidebarActiveLinkClass
+                : sidebarInactiveLinkClass
+            }`}
+          >
+            <ShoppingCart size={18} />
+            <span>طلبات المنتجات</span>
           </Link>
 
           <button

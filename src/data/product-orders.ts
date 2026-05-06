@@ -1,0 +1,167 @@
+import { CheckCircle2, ClipboardList, Clock3, XCircle } from "lucide-react";
+
+import type { ProductOrder, ProductOrderStat } from "@/types";
+
+export const productOrderStats: ProductOrderStat[] = [
+  {
+    label: "إجمالي الطلبات",
+    value: 7,
+    icon: ClipboardList,
+    iconClassName: "bg-blue/10 text-blue",
+  },
+  {
+    label: "قيد الانتظار",
+    value: 2,
+    icon: Clock3,
+    iconClassName: "bg-primary/10 text-[#d08700]",
+  },
+  {
+    label: "تم القبول",
+    value: 3,
+    icon: CheckCircle2,
+    iconClassName: "bg-green/10 text-green",
+  },
+  {
+    label: "مرفوضة",
+    value: 1,
+    icon: XCircle,
+    iconClassName: "bg-danger/10 text-danger",
+  },
+];
+
+export const productOrderStatuses: ProductOrder["status"][] = [
+  "موافق عليه",
+  "مرفوض",
+  "قيد المراجعة",
+];
+
+export const productOrders: ProductOrder[] = [
+  {
+    id: "PRD-009",
+    merchantName: "متجر التنقل السريع",
+    merchantEmail: "city@quickmove.sa",
+    merchantPhone: "+966 50 999 8888",
+    productName: "دراجة كهربائية للمدينة City-Rider",
+    productDescription:
+      "دراجة كهربائية مدنية عملية، محرك 350 واط، مدى 60 كم، تصميم عصري وأنيق، سلة أمامية",
+    productImageSrc: "/images/scooter.jpg",
+    price: "2899",
+    type: "دراجة كهربائية",
+    status: "قيد المراجعة",
+    date: "منذ 5 دقائق",
+    createdAt: "2026-04-25T17:29:07+03:00",
+    createdTime: "٥:٢٩:٠٧ م",
+  },
+  {
+    id: "PRD-001",
+    merchantName: "متجر الحركة الذكية",
+    merchantEmail: "smart@move.sa",
+    merchantPhone: "+966 50 111 2222",
+    productName: "قطعتين",
+    productDescription:
+      "طلب منتجات تنقل كهربائية بحالة جيدة ومواصفات مناسبة للاستخدام اليومي.",
+    productImageSrc: "/images/scooter.jpg",
+    price: "4687",
+    type: "دراجة كهربائية",
+    status: "مرفوض",
+    date: "منذ 5 دقائق",
+    createdAt: "2026-04-25T17:29:07+03:00",
+    createdTime: "٥:٢٩:٠٧ م",
+  },
+  {
+    id: "PRD-002",
+    merchantName: "دراجات المستقبل",
+    merchantEmail: "future@bikes.sa",
+    merchantPhone: "+966 50 333 4444",
+    productName: "دراجة كهربائية رود بايك SpeedX",
+    productDescription:
+      "دراجة كهربائية رود بايك SpeedX مناسبة للطرق السريعة والتنقلات الطويلة.",
+    productImageSrc: "/images/scooter.jpg",
+    price: "1687",
+    type: "سكوتر كهربائي",
+    status: "قيد المراجعة",
+    date: "منذ 5 دقائق",
+    createdAt: "2026-04-25T17:29:07+03:00",
+    createdTime: "٥:٢٩:٠٧ م",
+  },
+  {
+    id: "PRD-003",
+    merchantName: "عالم السكوتر",
+    merchantEmail: "hello@scooterworld.sa",
+    merchantPhone: "+966 50 555 6666",
+    productName: "دراجة كهربائية رود بايك SpeedX",
+    productDescription:
+      "طلب سكوتر كهربائي بتجهيزات أساسية ومناسب للاستخدام داخل المدينة.",
+    productImageSrc: "/images/scooter.jpg",
+    price: "1687",
+    type: "سكوتر كهربائي",
+    status: "مرفوض",
+    date: "منذ 5 دقائق",
+    createdAt: "2026-04-25T17:29:07+03:00",
+    createdTime: "٥:٢٩:٠٧ م",
+  },
+  {
+    id: "PRD-002",
+    merchantName: "دراجات السرعة",
+    merchantEmail: "speed@bikes.sa",
+    merchantPhone: "+966 50 777 8888",
+    productName: "3 قطع",
+    productDescription:
+      "مجموعة منتجات كهربائية للعرض والبيع ضمن كتالوج منتجات التاجر.",
+    productImageSrc: "/images/scooter.jpg",
+    price: "14687",
+    type: "سكوتر كهربائي",
+    status: "موافق عليه",
+    date: "منذ 5 دقائق",
+    createdAt: "2026-04-25T17:29:07+03:00",
+    createdTime: "٥:٢٩:٠٧ م",
+  },
+  {
+    id: "PRD-002",
+    merchantName: "متجر النقل الكهربائي",
+    merchantEmail: "electric@transport.sa",
+    merchantPhone: "+966 50 222 3333",
+    productName: "سكوتر كهربائي X-Pro 500 واط",
+    productDescription:
+      "سكوتر كهربائي X-Pro بقدرة 500 واط مناسب للتنقل داخل المدن.",
+    productImageSrc: "/images/scooter.jpg",
+    price: "1687",
+    type: "دراجة كهربائية",
+    status: "موافق عليه",
+    date: "منذ 5 دقائق",
+    createdAt: "2026-04-25T17:29:07+03:00",
+    createdTime: "٥:٢٩:٠٧ م",
+  },
+  {
+    id: "PRD-002",
+    merchantName: "دراجات السرعة",
+    merchantEmail: "speed@bikes.sa",
+    merchantPhone: "+966 50 777 8888",
+    productName: "دراجة كهربائية رود بايك SpeedX",
+    productDescription:
+      "دراجة كهربائية بتصميم رياضي ومدى مناسب للرحلات المتوسطة.",
+    productImageSrc: "/images/scooter.jpg",
+    price: "1687",
+    type: "دراجة كهربائية",
+    status: "قيد المراجعة",
+    date: "منذ 5 دقائق",
+    createdAt: "2026-04-25T17:29:07+03:00",
+    createdTime: "٥:٢٩:٠٧ م",
+  },
+  {
+    id: "PRD-002",
+    merchantName: "دراجات المستقبل",
+    merchantEmail: "future@bikes.sa",
+    merchantPhone: "+966 50 333 4444",
+    productName: "دراجة كهربائية رود بايك SpeedX",
+    productDescription:
+      "طلب دراجة كهربائية مخصصة للتنقل اليومي وبمواصفات عملية.",
+    productImageSrc: "/images/scooter.jpg",
+    price: "1687",
+    type: "دراجة كهربائية",
+    status: "قيد المراجعة",
+    date: "منذ 5 دقائق",
+    createdAt: "2026-04-25T17:29:07+03:00",
+    createdTime: "٥:٢٩:٠٧ م",
+  },
+];

@@ -23,7 +23,7 @@ function StatCardsSection() {
                 {stat.title}
               </p>
 
-              <div className="flex items-end justify-between gap-3">
+              <div className="flex justify-between gap-3">
                 <p className="text-[30px] leading-[38px] font-semibold tracking-[-0.03em] text-dark-gray">
                   {stat.value}
                 </p>

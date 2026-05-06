@@ -1,19 +1,27 @@
 import { CheckCircle, Clock3, XCircle } from "lucide-react";
 
-import type { RegistrationRequestStatus } from "../components/registration-requests-data";
+import {
+  registrationRequestStatuses,
+  type RegistrationRequestStatus,
+} from "../components/registration-requests-data";
 import PanelActionButton from "./panel-action-button";
+
+const APPROVED_STATUS = registrationRequestStatuses[0];
+const REVIEW_STATUS = registrationRequestStatuses[2];
 
 function RequestDetailsFooter({
   onStatusChange,
+  onRejectClick,
 }: {
   onStatusChange?: (status: RegistrationRequestStatus) => void;
+  onRejectClick?: () => void;
 }) {
   return (
     <footer className="shrink-0 space-y-3 border-t border-gray/20 px-6 pb-5 pt-6">
       <PanelActionButton
         icon={Clock3}
         className="bg-[#d08700]"
-        onClick={() => onStatusChange?.("قيد المراجعة")}
+        onClick={() => onStatusChange?.(REVIEW_STATUS)}
       >
         نقل إلى قيد المراجعة
       </PanelActionButton>
@@ -22,14 +30,14 @@ function RequestDetailsFooter({
         <PanelActionButton
           icon={CheckCircle}
           className="bg-[#00a63e]"
-          onClick={() => onStatusChange?.("موافق عليها")}
+          onClick={() => onStatusChange?.(APPROVED_STATUS)}
         >
           موافقة
         </PanelActionButton>
         <PanelActionButton
           icon={XCircle}
-          className="bg-[#e7000b]"
-          onClick={() => onStatusChange?.("مرفوضة")}
+          className="bg-danger"
+          onClick={onRejectClick}
         >
           رفض
         </PanelActionButton>
