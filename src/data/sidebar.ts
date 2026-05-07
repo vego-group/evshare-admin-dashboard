@@ -1,0 +1,50 @@
+import {
+  ClipboardList,
+  LayoutDashboard,
+  Package,
+  ScrollText,
+  ShoppingCart,
+  type LucideIcon,
+} from "lucide-react";
+
+export type SidebarNavItem = {
+  href: string;
+  label: string;
+  ariaLabel: string;
+  icon: LucideIcon;
+  isDashboard?: boolean;
+};
+
+export const sidebarNavItems: SidebarNavItem[] = [
+  {
+    href: "/",
+    label: "لوحة التحكم",
+    ariaLabel: "لوحة التحكم",
+    icon: LayoutDashboard,
+    isDashboard: true,
+  },
+  {
+    href: "/assets-catalog",
+    label: "كتالوج الأصول",
+    ariaLabel: "كتالوج الأصول",
+    icon: Package,
+  },
+  {
+    href: "/consultation-requests",
+    label: "طلبات الاستشارة",
+    ariaLabel: "طلبات الاستشارة",
+    icon: ClipboardList,
+  },
+  {
+    href: "/registration-requests",
+    label: "طلبات التسجيل",
+    ariaLabel: "طلبات التسجيل",
+    icon: ScrollText,
+  },
+  {
+    href: "/product-orders",
+    label: "طلبات المنتجات",
+    ariaLabel: "طلبات المنتجات",
+    icon: ShoppingCart,
+  },
+];
