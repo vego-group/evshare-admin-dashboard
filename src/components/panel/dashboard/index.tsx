@@ -1,10 +1,10 @@
-import FleetMapSection from "./fleet-map-section";
-import OrderDistributionSection from "./order-distribution-section";
-import QuickStatsSection from "./quick-stats-section";
-import RevenueOverviewSection from "./revenue-overview-section";
-import StatCardsSection from "./stat-cards-section";
-import TopModelsSection from "./top-models-section";
-import WeeklyRevenueSection from "./weekly-revenue-section";
+import FleetMapSection from "./fleet-map";
+import OrderDistributionSection from "./order-distribution";
+import QuickStatsSection from "./quick-stats";
+import RevenueOverviewSection from "./revenue-overview";
+import StatCardsSection from "./stat-cards";
+import TopModelsSection from "./top-models";
+import WeeklyRevenueSection from "./weekly-revenue";
 
 function Dashboard() {
   return (

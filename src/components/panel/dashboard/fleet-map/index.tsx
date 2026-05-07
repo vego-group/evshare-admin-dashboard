@@ -1,7 +1,7 @@
 import { BatteryCharging, MapPinned } from "lucide-react";
 
 import { fleetMarkers } from "@/data/dashboard";
-import { DashboardSectionCard } from "./dashboard-shared";
+import { DashboardSectionCard } from "../shared";
 import { cn } from "@/lib/utils";
 
 // بيحمي الـ markers من الـ edges — min 8% من اليسار، max 88% عشان الـ marker متطلعش برا

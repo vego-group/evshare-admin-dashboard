@@ -1,6 +1,6 @@
 import { Bolt } from "lucide-react";
 
-import { TrendBadge } from "./dashboard-shared";
+import { TrendBadge } from "../shared";
 
 function RevenueOverviewInfoPanel() {
   return (

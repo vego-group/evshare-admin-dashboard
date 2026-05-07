@@ -18,7 +18,7 @@ import type {
   QuickStat,
   RevenuePoint,
   TopModel,
-} from "@/components/panel/dashboard/interface";
+} from "@/types";
 
 export const weekDays = [
   "السبت",

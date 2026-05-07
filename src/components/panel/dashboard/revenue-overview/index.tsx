@@ -1,7 +1,7 @@
 "use client";
 
 import { revenueChart, weekDays } from "@/data/dashboard";
-import { DashboardSectionCard } from "./dashboard-shared";
+import { DashboardSectionCard } from "../shared";
 import RevenueOverviewChart from "./revenue-overview-chart";
 import {
   revenueChartMargins,

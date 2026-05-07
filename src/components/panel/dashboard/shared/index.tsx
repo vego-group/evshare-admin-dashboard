@@ -3,7 +3,7 @@ import { ArrowUpRight, ArrowDownRight, EllipsisVertical } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import type { TrendDirection } from "./interface";
+import type { TrendDirection } from "@/types";
 
 type DashboardSectionCardProps = {
   children: ReactNode;

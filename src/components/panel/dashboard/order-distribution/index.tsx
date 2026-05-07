@@ -12,7 +12,7 @@ import {
 } from "recharts";
 
 import { orderDistribution, weekDays } from "@/data/dashboard";
-import { DashboardSectionCard } from "./dashboard-shared";
+import { DashboardSectionCard } from "../shared";
 
 // ─── Hook ────────────────────────────────────────────────────────────────────
 

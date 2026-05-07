@@ -1,5 +1,5 @@
 import { topModels } from "@/data/dashboard";
-import { DashboardSectionCard, TrendBadge } from "./dashboard-shared";
+import { DashboardSectionCard, TrendBadge } from "../shared";
 
 function TopModelsSection() {
   return (

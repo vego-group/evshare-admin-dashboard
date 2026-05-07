@@ -10,7 +10,7 @@ import {
   YAxis,
 } from "recharts";
 
-import type { ChartPoint } from "./interface";
+import type { ChartPoint } from "@/types";
 
 type RevenueTooltipProps = {
   active?: boolean;

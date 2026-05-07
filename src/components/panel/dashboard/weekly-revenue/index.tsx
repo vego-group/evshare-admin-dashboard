@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { weekDays, weeklyRevenue } from "@/data/dashboard";
-import { DashboardSectionCard } from "./dashboard-shared";
+import { DashboardSectionCard } from "../shared";
 import {
   AreaChart,
   Area,

@@ -3,14 +3,12 @@ import {
   DashboardSectionCard,
   Sparkline,
   TrendBadge,
-} from "./dashboard-shared";
+} from "../shared";
 
 function QuickStatsSection() {
   return (
     <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
       {quickStats.map((item) => {
-        const Icon = item.icon;
-
         return (
           <DashboardSectionCard key={item.title} className="p-6">
             <div className="flex flex-row-reverse items-start justify-between gap-2">
