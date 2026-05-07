@@ -1,10 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { LayoutGrid, List, Plus } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { assetsCatalogItems } from "@/data";
 import type {
   AssetItem,
@@ -12,9 +9,8 @@ import type {
   AssetType,
   AssetsCatalogViewMode,
 } from "@/types";
-import AssetsCatalogToolbar, {
-  type AssetFilterValue,
-} from "./toolbar";
+
+import AssetsCatalogHeader from "./header";
 import {
   AssetsCatalogAddModal,
   AssetsCatalogAddSuccessModal,
@@ -25,6 +21,7 @@ import {
 } from "./modals";
 import AssetsCatalogResults from "./results";
 import AssetsCatalogStats from "./stats";
+import AssetsCatalogToolbar, { type AssetFilterValue } from "./toolbar";
 
 function AssetsCatalog() {
   const [viewMode, setViewMode] = useState<AssetsCatalogViewMode>("table");
@@ -75,59 +72,11 @@ function AssetsCatalog() {
 
   return (
     <div className="flex w-full flex-col gap-6">
-      <section className="flex w-full flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-        <div className="space-y-2 text-right">
-          <h1 className="text-[30px] font-medium leading-[38px] text-secondary">
-            كتالوج الأصول
-          </h1>
-          <p className="text-base font-medium leading-6 text-gray">
-            إدارة ومتابعة جميع الأصول الكهربائية
-          </p>
-        </div>
-        <div className="flex items-center gap-3 self-start sm:self-auto">
-          <div className="flex h-[53px] items-center gap-1 rounded-2xl border border-neutral-100/80 bg-white p-1.5">
-            <Button
-              type="button"
-              size="icon"
-              variant="ghost"
-              aria-label="عرض كروت"
-              aria-pressed={viewMode === "card"}
-              onClick={() => setViewMode("card")}
-              className={cn(
-                "size-10 rounded-[14px] text-gray hover:bg-neutral-50 hover:text-secondary",
-                viewMode === "card" &&
-                  "bg-primary text-secondary shadow-sm hover:bg-primary/90",
-              )}
-            >
-              <LayoutGrid className="size-5" />
-            </Button>
-
-            <Button
-              type="button"
-              size="icon"
-              variant="ghost"
-              aria-label="عرض الجدول"
-              aria-pressed={viewMode === "table"}
-              onClick={() => setViewMode("table")}
-              className={cn(
-                "size-10 rounded-[14px] text-gray hover:bg-neutral-50 hover:text-secondary",
-                viewMode === "table" &&
-                  "bg-primary text-secondary shadow-sm hover:bg-primary/90",
-              )}
-            >
-              <List className="size-5" />
-            </Button>
-          </div>
-          <Button
-            type="button"
-            onClick={() => setIsAddModalOpen(true)}
-            className="h-12 rounded-2xl bg-primary px-6 text-base font-medium text-secondary shadow-[0_4px_12px_rgba(255,213,79,0.25)] hover:bg-primary/90"
-          >
-            <Plus className="size-5" />
-            إضافة أصل
-          </Button>
-        </div>
-      </section>
+      <AssetsCatalogHeader
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
+        onAddAsset={() => setIsAddModalOpen(true)}
+      />
 
       <AssetsCatalogStats />
       <AssetsCatalogToolbar

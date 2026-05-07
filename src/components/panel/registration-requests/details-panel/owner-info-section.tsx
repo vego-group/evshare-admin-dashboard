@@ -1,6 +1,6 @@
 import { Mail, Phone, User } from "lucide-react";
 
-import type { RegistrationRequest } from "../components/registration-requests-data";
+import type { RegistrationRequest } from "@/types";
 import OwnerInfoRow from "./owner-info-row";
 import PanelSectionTitle from "./panel-section-title";
 

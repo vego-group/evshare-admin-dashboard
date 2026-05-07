@@ -6,7 +6,7 @@ import RegistrationRequestStatusSelect from "./registration-request-status-selec
 import type {
   RegistrationRequest,
   RegistrationRequestStatus,
-} from "./registration-requests-data";
+} from "@/types";
 
 function RegistrationRequestsTableRow({
   request,

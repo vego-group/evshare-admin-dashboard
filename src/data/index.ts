@@ -3,3 +3,4 @@ export * from "./dashboard";
 export * from "./product-orders";
 export * from "./assets-catalog";
 export * from "./consultation-requests";
+export * from "./registration-requests";

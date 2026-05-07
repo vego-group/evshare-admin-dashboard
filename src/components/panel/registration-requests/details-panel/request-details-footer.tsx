@@ -2,8 +2,8 @@ import { CheckCircle, Clock3, XCircle } from "lucide-react";
 
 import {
   registrationRequestStatuses,
-  type RegistrationRequestStatus,
-} from "../components/registration-requests-data";
+} from "@/data";
+import type { RegistrationRequestStatus } from "@/types";
 import PanelActionButton from "./panel-action-button";
 
 const APPROVED_STATUS = registrationRequestStatuses[0];

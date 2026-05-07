@@ -3,12 +3,8 @@
 import { useState } from "react";
 
 import Panel from "@/components/ui/panel";
-
-import {
-  registrationRequestStatuses,
-  type RegistrationRequest,
-  type RegistrationRequestStatus,
-} from "../components/registration-requests-data";
+import { registrationRequestStatuses } from "@/data";
+import type { RegistrationRequest, RegistrationRequestStatus } from "@/types";
 import DocumentsSection from "./documents-section";
 import OwnerInfoSection from "./owner-info-section";
 import RejectRequestModal from "./reject-request";

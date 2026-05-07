@@ -9,10 +9,10 @@ import type {
   ConsultationRequestType,
 } from "@/types";
 import ConsultationRequestDetailsPanel from "./details-panel";
-import ConsultationRequestsHeading from "./heading";
 import ConsultationRequestsStats from "./stats";
 import ConsultationRequestsTable from "./table";
 import ConsultationRequestsToolbar from "./toolbar";
+import Header from "@/components/ui/header";
 
 type ConsultationFilterValue<T extends string> = T | "الكل";
 type ConsultationSortValue = "الاحدث" | "الاقدم";
@@ -35,13 +35,20 @@ function ConsultationRequests() {
     const results = requests.filter((request) => {
       const matchesSearch =
         !normalizedQuery ||
-        [request.name, request.phone, request.email, request.type, request.status]
+        [
+          request.name,
+          request.phone,
+          request.email,
+          request.type,
+          request.status,
+        ]
           .join(" ")
           .toLowerCase()
           .includes(normalizedQuery);
       const matchesStatus =
         selectedStatus === "الكل" || request.status === selectedStatus;
-      const matchesType = selectedType === "الكل" || request.type === selectedType;
+      const matchesType =
+        selectedType === "الكل" || request.type === selectedType;
 
       return matchesSearch && matchesStatus && matchesType;
     });
@@ -67,7 +74,10 @@ function ConsultationRequests() {
 
   return (
     <div className="flex w-full flex-col gap-6">
-      <ConsultationRequestsHeading />
+      <Header
+        title="طلبات الاستشارة"
+        subtitle="إدارة ومتابعة طلبات الاستشارة"
+      />
       <ConsultationRequestsStats requests={requests} />
       <ConsultationRequestsToolbar
         searchQuery={searchQuery}

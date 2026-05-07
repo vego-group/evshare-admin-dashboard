@@ -4,10 +4,8 @@ import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
-import {
-  registrationRequestStatuses,
-  type RegistrationRequestStatus,
-} from "./registration-requests-data";
+import { registrationRequestStatuses } from "@/data";
+import type { RegistrationRequestStatus } from "@/types";
 
 const STATUS_STYLES: Record<RegistrationRequestStatus, string> = {
   "موافق عليها": "bg-green-50 text-green",

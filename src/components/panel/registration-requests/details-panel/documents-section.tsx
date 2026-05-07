@@ -1,4 +1,4 @@
-import type { RegistrationRequest } from "../components/registration-requests-data";
+import type { RegistrationRequest } from "@/types";
 import DocumentRow from "./document-row";
 import PanelSectionTitle from "./panel-section-title";
 
