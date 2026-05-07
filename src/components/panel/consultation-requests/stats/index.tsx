@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { TrendingDown, TrendingUp } from "lucide-react";
 
-import type { ConsultationRequest } from "./consultation-requests-data";
+import type { ConsultationRequest } from "@/types";
 
 type ConsultationStat = {
   label: string;

@@ -14,10 +14,12 @@ import { cn } from "@/lib/utils";
 import {
   consultationRequests,
   consultationRequestStatuses,
-  type ConsultationRequest,
-  type ConsultationRequestStatus,
-  type ConsultationRequestType,
-} from "./consultation-requests-data";
+} from "@/data";
+import type {
+  ConsultationRequest,
+  ConsultationRequestStatus,
+  ConsultationRequestType,
+} from "@/types";
 
 function ConsultationRequestsTable({
   requests = consultationRequests,

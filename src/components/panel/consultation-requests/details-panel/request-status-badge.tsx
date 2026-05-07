@@ -5,10 +5,8 @@ import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
 
-import {
-  consultationRequestStatuses,
-  type ConsultationRequestStatus,
-} from "../consultation-requests-data";
+import { consultationRequestStatuses } from "@/data";
+import type { ConsultationRequestStatus } from "@/types";
 
 const REQUEST_STATUS_STYLES: Record<ConsultationRequestStatus, string> = {
   جديد: "bg-green-50 text-[#00a63e]",

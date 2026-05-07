@@ -2,7 +2,7 @@ import { Mail, Phone } from "lucide-react";
 
 import { normalizePhoneForLink } from "@/lib/utils/format-phone";
 
-import type { ConsultationRequest } from "../consultation-requests-data";
+import type { ConsultationRequest } from "@/types";
 import PanelActionLink from "./panel-action-link";
 
 function RequestDetailsFooter({ request }: { request: ConsultationRequest }) {

@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-import type { ConsultationRequestType } from "../consultation-requests-data";
+import type { ConsultationRequestType } from "@/types";
 
 const REQUEST_TYPE_STYLES: Record<ConsultationRequestType, string> = {
   مبيعات: "bg-blue-50 text-[#1447e6]",

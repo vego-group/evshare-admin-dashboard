@@ -2,7 +2,7 @@ import { Mail, Phone, User } from "lucide-react";
 
 import { formatSaudiPhoneNumber } from "@/lib/utils/format-phone";
 
-import type { ConsultationRequest } from "../consultation-requests-data";
+import type { ConsultationRequest } from "@/types";
 import ContactInfoRow from "./contact-info-row";
 import PanelSectionTitle from "./panel-section-title";
 

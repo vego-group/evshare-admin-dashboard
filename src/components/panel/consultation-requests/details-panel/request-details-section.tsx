@@ -1,7 +1,4 @@
-import type {
-  ConsultationRequest,
-  ConsultationRequestStatus,
-} from "../consultation-requests-data";
+import type { ConsultationRequest, ConsultationRequestStatus } from "@/types";
 import DetailRow from "./detail-row";
 import PanelSectionTitle from "./panel-section-title";
 import RequestStatusBadge from "./request-status-badge";

@@ -2,10 +2,7 @@
 
 import Panel from "@/components/ui/panel";
 
-import type {
-  ConsultationRequest,
-  ConsultationRequestStatus,
-} from "../consultation-requests-data";
+import type { ConsultationRequest, ConsultationRequestStatus } from "@/types";
 import ContactInfoSection from "./contact-info-section";
 import RequestDetailsFooter from "./request-details-footer";
 import RequestDetailsHeader from "./request-details-header";

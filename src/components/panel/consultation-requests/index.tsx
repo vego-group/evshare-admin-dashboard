@@ -2,16 +2,17 @@
 
 import { useMemo, useState } from "react";
 
-import {
-  consultationRequests,
-  type ConsultationRequestStatus,
-  type ConsultationRequestType,
-} from "./consultation-requests-data";
-import ConsultationRequestsHeading from "./consultation-requests-heading";
-import ConsultationRequestsStats from "./consultation-requests-stats";
-import ConsultationRequestsTable from "./consultation-requests-table";
-import ConsultationRequestsToolbar from "./consultation-requests-toolbar";
-import ConsultationRequestDetailsPanel from "./consultation-request-details-panel";
+import { consultationRequests } from "@/data";
+import type {
+  ConsultationRequest,
+  ConsultationRequestStatus,
+  ConsultationRequestType,
+} from "@/types";
+import ConsultationRequestDetailsPanel from "./details-panel";
+import ConsultationRequestsHeading from "./heading";
+import ConsultationRequestsStats from "./stats";
+import ConsultationRequestsTable from "./table";
+import ConsultationRequestsToolbar from "./toolbar";
 
 type ConsultationFilterValue<T extends string> = T | "الكل";
 type ConsultationSortValue = "الاحدث" | "الاقدم";
@@ -20,7 +21,7 @@ function ConsultationRequests() {
   const [requests, setRequests] = useState(consultationRequests);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRequest, setSelectedRequest] =
-    useState<(typeof consultationRequests)[number] | null>(null);
+    useState<ConsultationRequest | null>(null);
   const [selectedSort, setSelectedSort] =
     useState<ConsultationSortValue>("الاحدث");
   const [selectedStatus, setSelectedStatus] =

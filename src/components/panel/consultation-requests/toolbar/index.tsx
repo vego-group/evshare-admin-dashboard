@@ -7,9 +7,11 @@ import { cn } from "@/lib/utils";
 import {
   consultationRequestStatuses,
   consultationRequestTypes,
-  type ConsultationRequestStatus,
-  type ConsultationRequestType,
-} from "./consultation-requests-data";
+} from "@/data";
+import type {
+  ConsultationRequestStatus,
+  ConsultationRequestType,
+} from "@/types";
 
 type ConsultationFilterValue<T extends string> = T | "الكل";
 type ConsultationSortValue = "الاحدث" | "الاقدم";
