@@ -2,7 +2,7 @@ import { ChevronDown, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import Modal from "@/components/ui/modal";
-import type { AssetItem } from "./assets-catalog-results";
+import type { AssetItem } from "@/types";
 
 type AssetsCatalogDetailsModalProps = {
   asset: AssetItem | null;

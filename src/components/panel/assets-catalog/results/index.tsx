@@ -1,106 +1,8 @@
-import { Eye, MapPin, Pencil, Trash2, type LucideIcon } from "lucide-react";
+﻿import { Eye, MapPin, Pencil, Trash2, type LucideIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import type { AssetItem, AssetStatus, AssetType, AssetsCatalogViewMode } from "@/types";
 import AssetsCatalogEmptyState from "./assets-catalog-empty-state";
-
-export type AssetType = "سكوتر" | "دراجة" | "شاحن";
-export type AssetStatus = "نشط" | "غير نشط" | "متعطل";
-export type AssetsCatalogViewMode = "table" | "card";
-
-export type AssetItem = {
-  id: string;
-  name: string;
-  type: AssetType;
-  status: AssetStatus;
-  city: string;
-  location: string;
-  price: string;
-  updatedAt: string;
-};
-
-export const assetsCatalogItems: AssetItem[] = [
-  {
-    id: "EV-2401",
-    name: "سكوتر كهربائي S1",
-    type: "سكوتر",
-    status: "نشط",
-    city: "الرياض",
-    location: "الرياض - حي السليمانية",
-    price: "2768 ر.س",
-    updatedAt: "منذ 5 دقائق",
-  },
-  {
-    id: "EV-2402",
-    name: "دراجة كهربائية B3",
-    type: "دراجة",
-    status: "نشط",
-    city: "جدة",
-    location: "جدة - حي الروضة",
-    price: "2768 ر.س",
-    updatedAt: "منذ 12 دقيقة",
-  },
-  {
-    id: "EV-2403",
-    name: "شاحن سريع C12",
-    type: "شاحن",
-    status: "غير نشط",
-    city: "الدمام",
-    location: "الدمام - الكورنيش",
-    price: "2768 ر.س",
-    updatedAt: "منذ ساعة",
-  },
-  {
-    id: "EV-2404",
-    name: "سكوتر كهربائي S2",
-    type: "سكوتر",
-    status: "متعطل",
-    city: "الرياض",
-    location: "الرياض - حي العليا",
-    price: "2768 ر.س",
-    updatedAt: "منذ 3 ساعات",
-  },
-  {
-    id: "EV-2405",
-    name: "دراجة كهربائية B7",
-    type: "دراجة",
-    status: "نشط",
-    city: "مكة",
-    location: "مكة - العزيزية",
-    price: "2768 ر.س",
-    updatedAt: "منذ دقيقة",
-  },
-  {
-    id: "EV-2406",
-    name: "شاحن سريع C15",
-    type: "شاحن",
-    status: "نشط",
-    city: "الرياض",
-    location: "الرياض - حي النخيل",
-    price: "2768 ر.س",
-    updatedAt: "منذ 20 دقيقة",
-  },
-  {
-    id: "EV-2407",
-    name: "سكوتر كهربائي S5",
-    type: "سكوتر",
-    status: "نشط",
-    city: "جدة",
-    location: "جدة - حي الحمراء",
-    price: "2768 ر.س",
-    updatedAt: "منذ 8 دقائق",
-  },
-  {
-    id: "EV-2408",
-    name: "دراجة كهربائية B12",
-    type: "دراجة",
-    status: "غير نشط",
-    city: "الخبر",
-    location: "الخبر - الكورنيش الشرقي",
-    price: "2768 ر.س",
-    updatedAt: "منذ يومين",
-  },
-];
-
 function TypeBadge({ type }: { type: AssetType }) {
   const className = {
     سكوتر: "bg-blue-50 text-blue-700",
@@ -378,3 +280,4 @@ function AssetsCatalogResults({
 }
 
 export default AssetsCatalogResults;
+

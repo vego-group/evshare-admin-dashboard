@@ -3,7 +3,7 @@ import { ChevronDown, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import Modal from "@/components/ui/modal";
-import { assetsCatalogItems } from "./assets-catalog-results";
+import { assetsCatalogItems } from "@/data";
 
 type AssetsCatalogAddModalProps = {
   open: boolean;

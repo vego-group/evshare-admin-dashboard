@@ -3,3 +3,4 @@ export * from "./axios";
 export * from "./partners";
 export * from "./product-orders";
 export * from "./dashboard";
+export * from "./assets-catalog";

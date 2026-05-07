@@ -5,24 +5,26 @@ import { LayoutGrid, List, Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import AssetsCatalogFilters, {
+import { assetsCatalogItems } from "@/data";
+import type {
+  AssetItem,
+  AssetStatus,
+  AssetType,
+  AssetsCatalogViewMode,
+} from "@/types";
+import AssetsCatalogToolbar, {
   type AssetFilterValue,
-} from "./assets-catalog-filters";
-import AssetsCatalogAddSuccessModal from "./assets-catalog-add-success-modal";
-import AssetsCatalogDetailsModal from "./assets-catalog-details-modal";
-import AssetsCatalogResults, {
-  type AssetItem,
-  assetsCatalogItems,
-  type AssetStatus,
-  type AssetType,
-  type AssetsCatalogViewMode,
-} from "./assets-catalog-results";
-import AssetsCatalogDeleteConfirmModal from "./assets-catalog-delete-confirm-modal";
-import AssetsCatalogEditModal from "./assets-catalog-edit-modal";
-import AssetsCatalogEditSuccessModal from "./assets-catalog-edit-success-modal";
-import AssetsCatalogSearch from "./assets-catalog-search";
-import AssetsCatalogStats from "./assets-catalog-stats";
-import AssetsCatalogAddModal from "./assets-catalog-add-modal";
+} from "./toolbar";
+import {
+  AssetsCatalogAddModal,
+  AssetsCatalogAddSuccessModal,
+  AssetsCatalogDeleteConfirmModal,
+  AssetsCatalogDetailsModal,
+  AssetsCatalogEditModal,
+  AssetsCatalogEditSuccessModal,
+} from "./modals";
+import AssetsCatalogResults from "./results";
+import AssetsCatalogStats from "./stats";
 
 function AssetsCatalog() {
   const [viewMode, setViewMode] = useState<AssetsCatalogViewMode>("table");
@@ -128,12 +130,13 @@ function AssetsCatalog() {
       </section>
 
       <AssetsCatalogStats />
-      <AssetsCatalogSearch value={searchQuery} onChange={setSearchQuery} />
-      <AssetsCatalogFilters
+      <AssetsCatalogToolbar
+        searchQuery={searchQuery}
         cities={cities}
         selectedCity={selectedCity}
         selectedStatus={selectedStatus}
         selectedType={selectedType}
+        onSearchChange={setSearchQuery}
         onCityChange={setSelectedCity}
         onStatusChange={setSelectedStatus}
         onTypeChange={setSelectedType}

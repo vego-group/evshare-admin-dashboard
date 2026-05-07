@@ -1,7 +1,7 @@
 import { ChevronDown, MapPin } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import type { AssetStatus, AssetType } from "./assets-catalog-results";
+import type { AssetStatus, AssetType } from "@/types";
 
 export type AssetFilterValue<T extends string> = T | "الكل";
 
@@ -11,6 +11,7 @@ const typeFilters: AssetFilterValue<AssetType>[] = [
   "دراجة",
   "شاحن",
 ];
+
 const statusFilters: AssetFilterValue<AssetStatus>[] = [
   "الكل",
   "نشط",
