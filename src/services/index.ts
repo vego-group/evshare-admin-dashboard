@@ -1,19 +1,26 @@
-import axios, { AxiosError, Method } from "axios";
+import axios, { AxiosError, AxiosInstance, Method } from "axios";
 import { getToken } from "@/lib";
 import { ApiResult, ErrorBody, ExtraConfig } from "@/types";
 import { getPayloadMessage, getValidationErrors } from "@/lib/utils/helper";
 
-export const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-export const api = axios.create({
-  baseURL: BASE_URL,
+export const adminApi = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_ADMIN_BASE_URL,
+});
+
+export const authApi = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_AUTH_BASE_URL,
 });
 
 export const initApi = async () => {
   const token = await getToken();
-  if (token) api.defaults.headers.common.Authorization = `Bearer ${token}`;
+  if (token) {
+    adminApi.defaults.headers.common.Authorization = `Bearer ${token}`;
+    authApi.defaults.headers.common.Authorization = `Bearer ${token}`;
+  }
 };
 
 const safe = async <T = unknown, E extends { message: string } = ErrorBody>(
+  instance: AxiosInstance,
   method: Method,
   url: string,
   data?: unknown,
@@ -22,7 +29,7 @@ const safe = async <T = unknown, E extends { message: string } = ErrorBody>(
   await initApi();
   const { isForm, headers, ...rest } = config;
   try {
-    const res = await api.request<T>({
+    const res = await instance.request<T>({
       method,
       url,
       data,
@@ -52,7 +59,6 @@ const safe = async <T = unknown, E extends { message: string } = ErrorBody>(
   }
 };
 
-// single entry point for all methods
 export const safeApi = async <
   T = unknown,
   E extends { message: string } = ErrorBody,
@@ -61,18 +67,24 @@ export const safeApi = async <
   url: string,
   data?: unknown,
   config?: ExtraConfig,
-) => await safe<T, E>(method, url, data, config);
+) => await safe<T, E>(adminApi, method, url, data, config);
+
+export const safeAuthApi = async <
+  T = unknown,
+  E extends { message: string } = ErrorBody,
+>(
+  method: Method,
+  url: string,
+  data?: unknown,
+  config?: ExtraConfig,
+) => await safe<T, E>(authApi, method, url, data, config);
 
 export const baseAPI = async (method: Method, url: string) => {
   await initApi();
-
-  const response = await api.request({
+  const response = await adminApi.request({
     method,
     url,
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
   });
-
   return response.data;
 };

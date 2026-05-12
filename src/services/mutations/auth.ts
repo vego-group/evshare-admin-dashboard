@@ -1,10 +1,13 @@
 "use server";
 
-import { LoginFormValues } from "@/schemas";
-import { safeApi } from "..";
+import { LoginFormValues, VerifyOtpFormValues } from "@/schemas";
+import { safeAuthApi } from "..";
 import { AuthResponse } from "@/types";
 
 export const loginAPI = async (payload: LoginFormValues) =>
-  await safeApi<AuthResponse>("POST", "/admin/login", payload);
+  await safeAuthApi("POST", "/login/send", payload);
 
-export const logoutAPI = async () => await safeApi("POST", "/admin/logout");
+export const verifyLoginAPI = async (payload: VerifyOtpFormValues) =>
+  await safeAuthApi<AuthResponse>("POST", "/login/verify", payload);
+
+export const logoutAPI = async () => await safeAuthApi("POST", "/logout");

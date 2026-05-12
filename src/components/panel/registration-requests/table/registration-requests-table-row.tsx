@@ -3,10 +3,7 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import RegistrationRequestDocuments from "./registration-request-documents";
 import RegistrationRequestStatusSelect from "./registration-request-status-select";
-import type {
-  RegistrationRequest,
-  RegistrationRequestStatus,
-} from "@/types";
+import type { RegistrationRequest, RegistrationRequestStatus } from "@/types";
 
 function RegistrationRequestsTableRow({
   request,
@@ -28,9 +25,7 @@ function RegistrationRequestsTableRow({
       <TableCell>{request.name}</TableCell>
       <TableCell dir="ltr">{request.phone}</TableCell>
       <TableCell>
-        <span className="block truncate text-left" dir="ltr">
-          {request.email}
-        </span>
+        <span className="block truncate">{request.email}</span>
       </TableCell>
       <TableCell>
         <RegistrationRequestDocuments

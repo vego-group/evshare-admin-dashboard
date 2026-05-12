@@ -1,59 +1,26 @@
 "use client";
 
-import {
-  useForm,
-  type FieldErrors,
-  type Resolver,
-  type ResolverError,
-  type ResolverSuccess,
-} from "react-hook-form";
+import { useForm, type Resolver, type FieldErrors } from "react-hook-form";
 import { LogIn } from "lucide-react";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import { loginSchema, type LoginFormValues } from "@/schemas";
 import { Button } from "@/components/ui/button";
-import LoginField from "./login-field";
+import PhoneField from "./phone-field";
 import { loginAPI } from "@/services/mutations";
-import { setToken } from "@/lib";
+import { normalizeSaudiPhone } from "@/lib";
 import Loader from "../ui/loader";
-import InputErrorMessage from "../ui/input-error-message";
 import { useRouter } from "next/navigation";
 
 const loginFormResolver: Resolver<LoginFormValues> = async (values) => {
   const result = loginSchema.safeParse(values);
+  if (result.success) return { values: result.data, errors: {} };
 
-  if (result.success) {
-    const successResult: ResolverSuccess<LoginFormValues> = {
-      values: result.data,
-      errors: {},
-    };
-
-    return successResult;
-  }
-
-  const fieldErrors = result.error.flatten().fieldErrors;
   const errors: FieldErrors<LoginFormValues> = {};
+  const issue = result.error.issues.find((i) => i.path[0] === "mobile");
+  if (issue) errors.mobile = { type: issue.code, message: issue.message };
 
-  if (fieldErrors.email?.[0]) {
-    errors.email = {
-      type: "manual",
-      message: fieldErrors.email[0],
-    };
-  }
-
-  if (fieldErrors.password?.[0]) {
-    errors.password = {
-      type: "manual",
-      message: fieldErrors.password[0],
-    };
-  }
-
-  const errorResult: ResolverError<LoginFormValues> = {
-    values: {},
-    errors,
-  };
-
-  return errorResult;
+  return { values: {}, errors };
 };
 
 function LoginForm() {
@@ -61,48 +28,24 @@ function LoginForm() {
   const {
     handleSubmit,
     register,
-    setError,
-    clearErrors,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormValues>({
-    defaultValues: {
-      email: "",
-      password: "",
-    },
+    defaultValues: { mobile: "" },
     resolver: loginFormResolver,
     mode: "onChange",
   });
 
   const onSubmit = async (data: LoginFormValues) => {
-    clearErrors("root");
+    const normalized = normalizeSaudiPhone(data.mobile);
+    const result = await loginAPI({ mobile: normalized });
 
-    try {
-      const result = await loginAPI(data);
-
-      if (result?.ok) {
-        toast.success(result?.message || "Login successful");
-
-        const token = result?.data?.data?.token;
-        if (token) await setToken(token);
-        router.refresh(); // اجبري Nextjs يحس بالـ Cookie الجديدة
-        router.replace("/"); // وبعدين وديه للهوم
-        return;
-      }
-
-      const errorMessage = result?.message || "Failed to login";
-      setError("root", {
-        type: "server",
-        message: errorMessage,
-      });
-      toast.error(errorMessage);
-    } catch {
-      const errorMessage = "Something went wrong. Please try again.";
-      setError("root", {
-        type: "server",
-        message: errorMessage,
-      });
-      toast.error(errorMessage);
+    if (result?.ok) {
+      toast.success(result.message || "تم إرسال رمز التحقق");
+      router.push(`/login/verify-otp?mobile=${encodeURIComponent(normalized)}`);
+      return;
     }
+
+    toast.error(result?.message || "حدث خطأ، حاول مرة أخرى");
   };
 
   return (
@@ -110,38 +53,13 @@ function LoginForm() {
       className="space-y-3 px-3 py-5 md:px-4 md:py-6"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <LoginField
-        id="email"
-        label="البريد الإلكتروني"
-        placeholder="admin@evshare.app"
-        type="email"
-        error={errors.email?.message}
-        {...register("email")}
+      <PhoneField
+        id="mobile"
+        label="رقم الجوال"
+        placeholder="5XXXXXXXX"
+        error={errors.mobile?.message}
+        {...register("mobile")}
       />
-
-      <div className="space-y-1.5">
-        <div className="text-xs text-gray-500">
-          <label htmlFor="password" className="font-medium text-secondary">
-            كلمة المرور
-          </label>
-        </div>
-
-        <LoginField
-          id="password"
-          placeholder="****************"
-          type="password"
-          error={errors.password?.message}
-          {...register("password")}
-        />
-      </div>
-
-      <InputErrorMessage msg={errors.root?.message} />
-
-      {/* <div className="text-xs">
-        <Link href="#" className="text-secondary transition hover:text-primary">
-          نسيت كلمة المرور؟
-        </Link>
-      </div> */}
 
       <motion.div whileTap={{ scale: 0.99 }} className="pt-1">
         <Button
@@ -153,9 +71,8 @@ function LoginForm() {
             <Loader />
           ) : (
             <>
-              {" "}
               <LogIn className="size-4" />
-              تسجيل الدخول
+              إرسال رمز التحقق
             </>
           )}
         </Button>

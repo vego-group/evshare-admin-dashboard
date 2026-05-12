@@ -35,7 +35,7 @@ function RegistrationRequestsTable({
       </div>
 
       {!requests.length ? (
-        <EmptyState description="Ù„Ù… Ù†ØªÙ…ÙƒÙ† Ù…Ù† Ø§Ù„Ø¹Ø«ÙˆØ± Ø¹Ù„Ù‰ Ø·Ù„Ø¨Ø§Øª ØªØ³Ø¬ÙŠÙ„ Ø¬Ø±Ø¨ ØªØ¹Ø¯ÙŠÙ„ Ù…Ø¹Ø§ÙŠÙŠØ± Ø§Ù„Ø¨Ø­Ø«" />
+        <EmptyState description="No registration requests found." />
       ) : null}
     </section>
   );

@@ -32,30 +32,24 @@ const statusOptions: RegistrationFilterValue[] = [
   "قيد المراجعة",
   "مرفوضة",
 ];
-const typeOptions: RegistrationFilterValue[] = ["الكل"];
 
 function RegistrationRequestsToolbar({
   searchQuery,
   selectedSort,
   selectedStatus,
-  selectedType,
   onSearchChange,
   onSortChange,
   onStatusChange,
-  onTypeChange,
 }: RegistrationRequestsToolbarProps) {
   const [internalSearchQuery, setInternalSearchQuery] = useState("");
   const [internalSort, setInternalSort] =
     useState<RegistrationSortValue>("الاحدث");
   const [internalStatus, setInternalStatus] =
     useState<RegistrationFilterValue>("الحاله");
-  const [internalType, setInternalType] =
-    useState<RegistrationFilterValue>("الكل");
 
   const searchValue = searchQuery ?? internalSearchQuery;
   const sortValue = selectedSort ?? internalSort;
   const statusValue = selectedStatus ?? internalStatus;
-  const typeValue = selectedType ?? internalType;
 
   const handleSearchChange = (value: string) => {
     setInternalSearchQuery(value);
@@ -72,24 +66,13 @@ function RegistrationRequestsToolbar({
     onStatusChange?.(value);
   };
 
-  const handleTypeChange = (value: RegistrationFilterValue) => {
-    setInternalType(value);
-    onTypeChange?.(value);
-  };
-
   return (
     <section className="space-y-3 lg:flex lg:items-center lg:justify-between lg:gap-3 lg:space-y-0 lg:rounded-2xl lg:border lg:border-neutral-100/60 lg:bg-white lg:p-1.5 lg:shadow-[0_2px_6px_rgba(0,0,0,0.04)]">
       <div className="rounded-2xl border border-neutral-100/60 bg-white p-1.5 shadow-[0_2px_6px_rgba(0,0,0,0.04)] lg:flex-1 lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none">
         <SearchInput value={searchValue} onChange={handleSearchChange} />
       </div>
 
-      <div className="flex flex-col gap-[13px] sm:flex-row sm:flex-wrap lg:shrink-0">
-        <FilterSelect
-          label="النوع"
-          options={typeOptions}
-          value={typeValue}
-          onChange={handleTypeChange}
-        />
+      <div className="flex flex-col gap-3.25 sm:flex-row sm:flex-wrap lg:shrink-0">
         <FilterSelect
           label="الحالة"
           options={statusOptions}
@@ -164,7 +147,7 @@ function FilterSelect<T extends string>({
   return (
     <div
       ref={containerRef}
-      className="relative h-[38px] w-full text-sm font-medium leading-5 text-dark-gray sm:w-[196px]"
+      className="relative h-9.5 w-full text-sm font-medium leading-5 text-dark-gray sm:w-[196px]"
     >
       <button
         type="button"
