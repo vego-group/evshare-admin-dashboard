@@ -32,10 +32,6 @@ function StatusBadge({ status }: { status: AssetStatus }) {
       className: "bg-gray-100 text-dark-gray",
       dotClassName: "bg-gray-400",
     },
-    متعطل: {
-      className: "bg-red-50 text-red-600",
-      dotClassName: "bg-red-500",
-    },
   }[status];
 
   return (

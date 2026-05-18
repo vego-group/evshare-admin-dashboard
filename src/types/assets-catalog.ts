@@ -1,6 +1,6 @@
 export type AssetType = "سكوتر" | "دراجة" | "شاحن";
 
-export type AssetStatus = "نشط" | "غير نشط" | "متعطل";
+export type AssetStatus = "نشط" | "غير نشط";
 
 export type AssetsCatalogViewMode = "table" | "card";
 

@@ -34,11 +34,8 @@ function AssetsCatalogToolbar({
         onChange={onSearchChange}
       />
       <AssetsCatalogToolbarFilters
-        cities={cities}
-        selectedCity={selectedCity}
         selectedStatus={selectedStatus}
         selectedType={selectedType}
-        onCityChange={onCityChange}
         onStatusChange={onStatusChange}
         onTypeChange={onTypeChange}
       />

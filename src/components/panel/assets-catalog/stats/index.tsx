@@ -1,6 +1,5 @@
 import {
   Activity,
-  CircleX,
   Layers,
   Package,
   TrendingDown,
@@ -12,7 +11,7 @@ import { cn } from "@/lib/utils";
 const catalogStats = [
   {
     label: "إجمالي الأصول",
-    value: "8",
+    value: "7",
     delta: "12%",
     direction: "up",
     icon: Layers,
@@ -34,19 +33,11 @@ const catalogStats = [
     icon: Package,
     iconClassName: "bg-gray-100 text-dark-gray",
   },
-  {
-    label: "الأصول المتعطلة",
-    value: "1",
-    delta: "2%",
-    direction: "up",
-    icon: CircleX,
-    iconClassName: "bg-red-50 text-red-500",
-  },
 ] as const;
 
 function AssetsCatalogStats() {
   return (
-    <section className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+    <section className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
       {catalogStats.map((stat) => {
         const Icon = stat.icon;
         const TrendIcon = stat.direction === "up" ? TrendingUp : TrendingDown;

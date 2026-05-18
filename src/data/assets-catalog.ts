@@ -32,16 +32,6 @@ export const assetsCatalogItems: AssetItem[] = [
     updatedAt: "منذ ساعة",
   },
   {
-    id: "EV-2404",
-    name: "سكوتر كهربائي S2",
-    type: "سكوتر",
-    status: "متعطل",
-    city: "الرياض",
-    location: "الرياض - حي العليا",
-    price: "2768 ر.س",
-    updatedAt: "منذ 3 ساعات",
-  },
-  {
     id: "EV-2405",
     name: "دراجة كهربائية B7",
     type: "دراجة",
