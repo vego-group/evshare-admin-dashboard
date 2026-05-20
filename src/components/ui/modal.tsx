@@ -42,21 +42,26 @@ function Modal({
       <DialogContent
         className={cn("bg-background", contentClassName)}
         showCloseButton={false}
+        dir="rtl"
       >
         {/* <ScrollArea className="min-h-full overflow-y-auto"> */}
         {title && (
           <DialogHeader>
             <CloseButtonModal closeButtonClassname={closeButtonClassname} />
-            <DialogTitle className={titleClassName}>{title}</DialogTitle>
+            <DialogTitle className={cn("text-right", titleClassName)}>
+              {title}
+            </DialogTitle>
             {description && (
-              <DialogDescription className={descriptionClassName}>
+              <DialogDescription
+                className={cn("text-right", descriptionClassName)}
+              >
                 {description}
               </DialogDescription>
             )}
           </DialogHeader>
         )}
         <ScrollArea className="max-h-[85svh] overflow-y-auto **:data-[slot=scroll-area-scrollbar]:left-0 **:data-[slot=scroll-area-scrollbar]:right-auto">
-          {children}
+          <div dir="rtl">{children}</div>
         </ScrollArea>
         {footer && <DialogFooter>{footer}</DialogFooter>}
         {/* </ScrollArea> */}

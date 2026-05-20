@@ -1,11 +1,11 @@
+import { OrderBy } from ".";
+
 export type {
   RegistrationRequest,
   RegistrationRequestStatus,
 } from "@/data/registration-requests";
 
 export type KycStatus = "pending" | "rejected" | "approved";
-export type OrderBy = "asc" | "desc";
-export type KycOrderBy = OrderBy;
 
 export type KycsQueryParams = {
   page: number;

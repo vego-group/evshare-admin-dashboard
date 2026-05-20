@@ -4,6 +4,7 @@ import {
   Package,
   ScrollText,
   ShoppingCart,
+  Tags,
   type LucideIcon,
 } from "lucide-react";
 
@@ -22,6 +23,12 @@ export const sidebarNavItems: SidebarNavItem[] = [
     ariaLabel: "لوحة التحكم",
     icon: LayoutDashboard,
     isDashboard: true,
+  },
+  {
+    href: "/categories",
+    label: "التصنيفات",
+    ariaLabel: "التصنيفات",
+    icon: Tags,
   },
   {
     href: "/assets-catalog",

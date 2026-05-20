@@ -8,7 +8,7 @@ function RejectOrderReasonField({
   onChange,
 }: RejectOrderReasonFieldProps) {
   return (
-    <div dir="rtl" className="space-y-2 text-right">
+    <div className="space-y-2 text-right">
       <label
         htmlFor="reject-order-reason"
         className="block text-sm font-medium leading-5 text-dark-gray"

@@ -31,11 +31,14 @@ function RegistrationRequests() {
   };
   return (
     <div className="flex w-full flex-col gap-6">
-      <Header title="طلبات التسجيل" subtitle="إدارة ومتابعة طلبات التسجيل" />
       {isLoading ? (
         <RegistrationRequestsContentShimmer />
       ) : (
         <>
+          <Header
+            title="طلبات التسجيل"
+            subtitle="إدارة ومتابعة طلبات التسجيل"
+          />
           <StatsCards data={data?.analytics} />
           <RegistrationRequestsToolbar
             searchQuery={params.search ?? ""}

@@ -2,7 +2,7 @@ import { X } from "lucide-react";
 
 function RejectOrderModalHeader({ productName }: { productName: string }) {
   return (
-    <div dir="rtl" className="flex items-center gap-3">
+    <div className="flex items-center gap-3">
       <span className="grid size-12 shrink-0 place-items-center rounded-full bg-danger/15 text-danger">
         <X className="size-6" strokeWidth={2.5} />
       </span>
