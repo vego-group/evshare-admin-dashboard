@@ -12,7 +12,7 @@ export const kycsAPI = async (
 ): Promise<KycsListResponse> => {
   const query = buildQuery({
     page: params.page.toString(),
-    limit: (params.limit ?? PAGE_SIZE).toString(),
+    limit: PAGE_SIZE.toString(),
     status: params.status,
     order_by: params.order_by,
     search: params.search,

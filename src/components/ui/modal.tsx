@@ -60,7 +60,7 @@ function Modal({
             )}
           </DialogHeader>
         )}
-        <ScrollArea className="max-h-[85svh] overflow-y-auto **:data-[slot=scroll-area-scrollbar]:left-0 **:data-[slot=scroll-area-scrollbar]:right-auto">
+        <ScrollArea className="**:data-[slot=scroll-area-viewport]:max-h-[85svh] **:data-[slot=scroll-area-viewport]:overflow-y-auto **:data-[slot=scroll-area-scrollbar]:left-0 **:data-[slot=scroll-area-scrollbar]:right-auto">
           <div dir="rtl">{children}</div>
         </ScrollArea>
         {footer && <DialogFooter>{footer}</DialogFooter>}
