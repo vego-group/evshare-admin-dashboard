@@ -4,33 +4,32 @@ import { ChevronDown, ListFilter, Search } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
-
-type RegistrationFilterValue =
-  | "الكل"
-  | "الحاله"
-  | "موافق عليها"
-  | "قيد المراجعة"
-  | "مرفوضة";
-type RegistrationSortValue = "الاحدث" | "الاقدم";
+import type { KycStatus, OrderBy } from "@/types";
 
 type RegistrationRequestsToolbarProps = {
   searchQuery?: string;
-  selectedSort?: RegistrationSortValue;
-  selectedStatus?: RegistrationFilterValue;
-  selectedType?: RegistrationFilterValue;
+  selectedSort?: OrderBy;
+  selectedStatus?: KycStatus;
   onSearchChange?: (value: string) => void;
-  onSortChange?: (value: RegistrationSortValue) => void;
-  onStatusChange?: (value: RegistrationFilterValue) => void;
-  onTypeChange?: (value: RegistrationFilterValue) => void;
+  onSortChange?: (value: OrderBy) => void;
+  onStatusChange?: (value?: KycStatus) => void;
 };
 
-const sortOptions: RegistrationSortValue[] = ["الاحدث", "الاقدم"];
-const statusOptions: RegistrationFilterValue[] = [
-  "الحاله",
-  "الكل",
-  "موافق عليها",
-  "قيد المراجعة",
-  "مرفوضة",
+type FilterOption<T extends string> = {
+  label: string;
+  value: T;
+};
+
+const sortOptions: FilterOption<OrderBy>[] = [
+  { label: "الأحدث", value: "desc" },
+  { label: "الأقدم", value: "asc" },
+];
+
+const statusOptions: FilterOption<KycStatus | "all">[] = [
+  { label: "الكل", value: "all" },
+  { label: "موافق عليها", value: "approved" },
+  { label: "قيد المراجعة", value: "pending" },
+  { label: "مرفوضة", value: "rejected" },
 ];
 
 function RegistrationRequestsToolbar({
@@ -42,10 +41,10 @@ function RegistrationRequestsToolbar({
   onStatusChange,
 }: RegistrationRequestsToolbarProps) {
   const [internalSearchQuery, setInternalSearchQuery] = useState("");
-  const [internalSort, setInternalSort] =
-    useState<RegistrationSortValue>("الاحدث");
-  const [internalStatus, setInternalStatus] =
-    useState<RegistrationFilterValue>("الحاله");
+  const [internalSort, setInternalSort] = useState<OrderBy>("desc");
+  const [internalStatus, setInternalStatus] = useState<KycStatus | "all">(
+    "all",
+  );
 
   const searchValue = searchQuery ?? internalSearchQuery;
   const sortValue = selectedSort ?? internalSort;
@@ -56,14 +55,14 @@ function RegistrationRequestsToolbar({
     onSearchChange?.(value);
   };
 
-  const handleSortChange = (value: RegistrationSortValue) => {
+  const handleSortChange = (value: OrderBy) => {
     setInternalSort(value);
     onSortChange?.(value);
   };
 
-  const handleStatusChange = (value: RegistrationFilterValue) => {
+  const handleStatusChange = (value: KycStatus | "all") => {
     setInternalStatus(value);
-    onStatusChange?.(value);
+    onStatusChange?.(value === "all" ? undefined : value);
   };
 
   return (
@@ -103,7 +102,7 @@ function SearchInput({
       <input
         type="search"
         aria-label="بحث في طلبات التسجيل"
-        placeholder="ابحث عن أصل بالاسم أو المعرف..."
+        placeholder="ابحث بالاسم..."
         value={value}
         onChange={(event) => onChange(event.target.value)}
         className="h-full w-full bg-transparent text-right text-sm font-normal text-secondary placeholder:text-[#99a1af] sm:text-base"
@@ -119,12 +118,13 @@ function FilterSelect<T extends string>({
   onChange,
 }: {
   label: string;
-  options: T[];
+  options: FilterOption<T>[];
   value: T;
   onChange: (value: T) => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const selectedLabel = options.find((option) => option.value === value)?.label;
 
   useEffect(() => {
     if (!isOpen) return;
@@ -161,7 +161,7 @@ function FilterSelect<T extends string>({
         )}
       >
         <span className="flex items-center gap-1">
-          <span>{value}</span>
+          <span>{selectedLabel}</span>
           <ListFilter className="size-3.5 text-primary" />
         </span>
 
@@ -177,18 +177,18 @@ function FilterSelect<T extends string>({
         <div className="absolute right-0 top-[calc(100%+2px)] z-30 w-full overflow-hidden rounded-[14px] border border-primary bg-bg-warm-ivory shadow-[0_10px_24px_rgba(16,24,40,0.12)]">
           {options.map((option) => (
             <button
-              key={option}
+              key={option.value}
               type="button"
               onClick={() => {
-                onChange(option);
+                onChange(option.value);
                 setIsOpen(false);
               }}
               className={cn(
                 "flex h-10 w-full items-center justify-start px-3 text-right text-sm font-medium text-dark-gray transition hover:bg-primary/10",
-                value === option && "bg-primary/15 text-secondary",
+                value === option.value && "bg-primary/15 text-secondary",
               )}
             >
-              {option}
+              {option.label}
             </button>
           ))}
         </div>

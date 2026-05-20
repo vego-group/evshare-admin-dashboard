@@ -7,11 +7,10 @@ function RegistrationRequestsTableHeader() {
     <thead>
       <tr className="bg-primary/8 text-base font-semibold leading-6 text-dark-gray">
         <TableHead className="w-[211px]">الاسم</TableHead>
-        <TableHead className="w-[156px]">الهاتف</TableHead>
-        <TableHead className="w-[250px]">البريد الإلكتروني</TableHead>
-        <TableHead className="w-[116px]">الوثائق</TableHead>
+        <TableHead className="w-[180px]">المدينة</TableHead>
         <TableHead className="w-[156px]">الحالة</TableHead>
-        <TableHead className="w-[156px]">التاريخ</TableHead>
+        <TableHead className="w-[180px]">تاريخ الإنشاء</TableHead>
+        <TableHead className="w-[180px]">تاريخ التحديث</TableHead>
       </tr>
     </thead>
   );

@@ -1,8 +1,5 @@
 import { cn } from "@/lib/utils";
 
-const defaultEmptyStateImage =
-  "https://www.figma.com/api/mcp/asset/363209d6-647e-4bba-923e-f209f419fd9a";
-
 type EmptyStateProps = {
   title?: string;
   description?: string;
@@ -13,7 +10,7 @@ type EmptyStateProps = {
 function EmptyState({
   title = "لا توجد نتائج مطابقة",
   description = "لم نتمكن من العثور على نتائج، جرب تعديل معايير البحث",
-  imageUrl = defaultEmptyStateImage,
+  imageUrl = "/images/empty-state.gif",
   className,
 }: EmptyStateProps) {
   return (

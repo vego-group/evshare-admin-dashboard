@@ -1,20 +1,15 @@
 import EmptyState from "@/components/ui/empty-state";
-import type { RegistrationRequest, RegistrationRequestStatus } from "@/types";
+import type { KycListItem } from "@/types";
 
 import RegistrationRequestsTableHeader from "./registration-requests-table-header";
 import RegistrationRequestsTableRow from "./registration-requests-table-row";
 
 function RegistrationRequestsTable({
   requests,
-  onStatusChange,
-  onViewRequest,
+  onRequestSelect,
 }: {
-  requests: RegistrationRequest[];
-  onStatusChange?: (
-    requestId: string,
-    status: RegistrationRequestStatus,
-  ) => void;
-  onViewRequest?: (request: RegistrationRequest) => void;
+  requests: KycListItem[];
+  onRequestSelect?: (kycId: string) => void;
 }) {
   return (
     <section className="overflow-hidden rounded-lg bg-white">
@@ -26,8 +21,7 @@ function RegistrationRequestsTable({
               <RegistrationRequestsTableRow
                 key={request.id}
                 request={request}
-                onStatusChange={onStatusChange}
-                onViewRequest={onViewRequest}
+                onSelect={onRequestSelect}
               />
             ))}
           </tbody>
@@ -35,7 +29,7 @@ function RegistrationRequestsTable({
       </div>
 
       {!requests.length ? (
-        <EmptyState description="No registration requests found." />
+        <EmptyState description="لا توجد طلبات تسجيل." />
       ) : null}
     </section>
   );

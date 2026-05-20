@@ -1,46 +1,49 @@
-import { CheckCircle, Clock3, XCircle } from "lucide-react";
+import { CheckCircle, XCircle } from "lucide-react";
 
-import {
-  registrationRequestStatuses,
-} from "@/data";
-import type { RegistrationRequestStatus } from "@/types";
-import PanelActionButton from "./panel-action-button";
-
-const APPROVED_STATUS = registrationRequestStatuses[0];
-const REVIEW_STATUS = registrationRequestStatuses[2];
+import Loader from "@/components/ui/loader";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 function RequestDetailsFooter({
-  onStatusChange,
-  onRejectClick,
+  onApprove,
+  onReject,
+  approveLoading,
+  rejectLoading,
 }: {
-  onStatusChange?: (status: RegistrationRequestStatus) => void;
-  onRejectClick?: () => void;
+  onApprove?: () => void;
+  onReject?: () => void;
+  approveLoading?: boolean;
+  rejectLoading?: boolean;
 }) {
-  return (
-    <footer className="shrink-0 space-y-3 border-t border-gray/20 px-6 pb-5 pt-6">
-      <PanelActionButton
-        icon={Clock3}
-        className="bg-[#d08700]"
-        onClick={() => onStatusChange?.(REVIEW_STATUS)}
-      >
-        نقل إلى قيد المراجعة
-      </PanelActionButton>
+  const actionPending = approveLoading || rejectLoading;
 
+  return (
+    <footer className="shrink-0 border-t border-gray/20 px-6 pb-5 pt-6">
       <div className="grid grid-cols-2 gap-3">
-        <PanelActionButton
-          icon={CheckCircle}
-          className="bg-[#00a63e]"
-          onClick={() => onStatusChange?.(APPROVED_STATUS)}
+        <Button
+          type="button"
+          onClick={onApprove}
+          disabled={actionPending}
+          className={cn(
+            "h-12 rounded-[14px] bg-[#00a63e] text-base font-medium leading-6 text-white hover:bg-[#00a63e]/90",
+            approveLoading && "gap-2",
+          )}
         >
+          {approveLoading ? <Loader /> : <CheckCircle className="size-5" />}
           موافقة
-        </PanelActionButton>
-        <PanelActionButton
-          icon={XCircle}
-          className="bg-danger"
-          onClick={onRejectClick}
+        </Button>
+        <Button
+          type="button"
+          onClick={onReject}
+          disabled={actionPending}
+          className={cn(
+            "h-12 rounded-[14px] bg-danger text-base font-medium leading-6 text-white hover:bg-danger/90",
+            rejectLoading && "gap-2",
+          )}
         >
+          {rejectLoading ? <Loader /> : <XCircle className="size-5" />}
           رفض
-        </PanelActionButton>
+        </Button>
       </div>
     </footer>
   );

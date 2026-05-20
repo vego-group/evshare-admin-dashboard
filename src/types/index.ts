@@ -6,3 +6,4 @@ export * from "./dashboard";
 export * from "./assets-catalog";
 export * from "./consultation-requests";
 export * from "./registration-requests";
+export * from "./build-query";
