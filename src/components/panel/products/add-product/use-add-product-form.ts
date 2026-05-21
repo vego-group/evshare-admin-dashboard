@@ -1,28 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
-import Modal from "@/components/ui/modal";
 import type { ProductFormValues } from "@/schemas/products";
 import { addProductAPI } from "@/services/mutations";
 
-import ProductFormFields from "./product-form-fields";
-import { ProductFormActions } from "./product-form-modal-parts";
 import {
   buildProductPayload,
   productAddFormResolver,
   productDefaultValues,
-} from "./product-form-utils";
+} from "../modals/product-form-utils";
 
-type ProductAddModalProps = {
-  open: boolean;
-  onClose: () => void;
-  onSaved: () => Promise<void> | void;
-};
+export function useAddProductForm() {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const imageFilesRef = useRef<File[]>([]);
 
-function ProductAddModal({ open, onClose, onSaved }: ProductAddModalProps) {
   const {
     register,
     control,
@@ -56,69 +53,58 @@ function ProductAddModal({ open, onClose, onSaved }: ProductAddModalProps) {
   };
 
   const handleImagesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    imagesPreviewUrls.forEach((url) => URL.revokeObjectURL(url));
-    const files = event.target.files;
-    if (!files?.length) {
-      setImagesPreviewUrls([]);
-      return;
-    }
-    setImagesPreviewUrls(Array.from(files).map((f) => URL.createObjectURL(f)));
+    const newFiles = Array.from(event.target.files ?? []);
+    if (!newFiles.length) return;
+    const newUrls = newFiles.map((f) => URL.createObjectURL(f));
+    imageFilesRef.current = [...imageFilesRef.current, ...newFiles];
+    setValue("images", imageFilesRef.current, { shouldDirty: true });
+    setImagesPreviewUrls((prev) => [...prev, ...newUrls]);
+    event.target.value = "";
   };
 
-  const handleClose = () => {
+  const handleRemoveImage = (index: number) => {
+    URL.revokeObjectURL(imagesPreviewUrls[index]);
+    imageFilesRef.current = imageFilesRef.current.filter((_, i) => i !== index);
+    setValue("images", imageFilesRef.current.length ? imageFilesRef.current : undefined);
+    setImagesPreviewUrls((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleCancel = () => {
     reset(productDefaultValues);
     if (imagePreviewUrl?.startsWith("blob:")) URL.revokeObjectURL(imagePreviewUrl);
     setImagePreviewUrl(null);
     imagesPreviewUrls.forEach((url) => URL.revokeObjectURL(url));
     setImagesPreviewUrls([]);
-    onClose();
+    imageFilesRef.current = [];
+    router.back();
   };
 
   const onSubmit = async (values: ProductFormValues) => {
     const result = await addProductAPI(buildProductPayload(values));
-
     if (result?.ok) {
       toast.success(result.message || "تم إضافة المنتج بنجاح");
-      await onSaved();
-      handleClose();
+      await queryClient.invalidateQueries({ queryKey: ["products"] });
+      router.push("/products");
       return;
     }
-
     toast.error(result?.message || "فشل إضافة المنتج");
   };
 
-  return (
-    <Modal
-      open={open}
-      onClose={handleClose}
-      contentClassName="md:max-w-[700px] rounded-2xl border-0 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] overflow-hidden"
-      title="إضافة منتج"
-      description="إضافة منتج جديد للقائمة"
-    >
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-7 p-1 text-right md:p-4"
-      >
-        <ProductFormFields
-          active={active}
-          categoryId={categoryId}
-          errors={errors}
-          imagePreviewUrl={imagePreviewUrl}
-          imagesPreviewUrls={imagesPreviewUrls}
-          onImageChange={handleImageChange}
-          onImagesChange={handleImagesChange}
-          register={register}
-          setValue={setValue}
-          control={control}
-        />
-        <ProductFormActions
-          submitLabel="إضافة المنتج"
-          isSubmitting={isSubmitting}
-          onClose={handleClose}
-        />
-      </form>
-    </Modal>
-  );
+  return {
+    register,
+    control,
+    handleSubmit,
+    setValue,
+    errors,
+    isSubmitting,
+    active,
+    categoryId,
+    imagePreviewUrl,
+    imagesPreviewUrls,
+    handleImageChange,
+    handleImagesChange,
+    handleRemoveImage,
+    handleCancel,
+    onSubmit,
+  };
 }
-
-export default ProductAddModal;

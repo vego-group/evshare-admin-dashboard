@@ -38,6 +38,7 @@ function ProductsMainContent({
         searchQuery={params.search ?? ""}
         selectedSort={params.order_by ?? "desc"}
         selectedStatus={params.status}
+        selectedCategory={params.category_id}
         onSearchChange={(search) =>
           onParamsChange({ search: search || undefined, page: 1 })
         }
@@ -45,6 +46,9 @@ function ProductsMainContent({
           onParamsChange({ order_by, page: 1 })
         }
         onStatusChange={(status?: Status) => onParamsChange({ status, page: 1 })}
+        onCategoryChange={(categoryId) =>
+          onParamsChange({ category_id: categoryId, page: 1 })
+        }
       />
       <ProductsResults
         products={data?.data ?? []}

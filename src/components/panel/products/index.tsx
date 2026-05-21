@@ -2,64 +2,46 @@
 
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 import { PAGE_SIZE } from "@/constants";
-import { useProducts, useProduct } from "@/hooks/api";
+import { useProducts } from "@/hooks/api";
 import { deleteProduct } from "@/services/mutations";
 import type { ProductListItem, ProductsQueryParams } from "@/types";
 
 import ProductsMainContent from "./products-main-content";
 import ProductsContentShimmer from "./content-shimmer";
 import ProductsHeader, { type ProductsViewMode } from "./header";
-import {
-  ProductAddModal,
-  ProductDeleteConfirmModal,
-  ProductDetailsModal,
-  ProductEditModal,
-} from "./modals";
+import { ProductDeleteConfirmModal } from "./modals";
 
 function Products() {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const [viewMode, setViewMode] = useState<ProductsViewMode>("table");
   const [params, setParams] = useState<ProductsQueryParams>({
     page: 1,
     limit: PAGE_SIZE,
   });
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [productPendingView, setProductPendingView] =
-    useState<ProductListItem | null>(null);
-  const [productPendingEdit, setProductPendingEdit] =
-    useState<ProductListItem | null>(null);
   const [productPendingDelete, setProductPendingDelete] =
     useState<ProductListItem | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const { data, isLoading } = useProducts(params);
-  const { data: editProductData, isLoading: isEditProductLoading } =
-    useProduct(productPendingEdit?.id ?? null);
 
   const updateParams = (nextParams: Partial<ProductsQueryParams>) => {
-    setParams((currentParams) => ({
-      ...currentParams,
-      ...nextParams,
-    }));
+    setParams((currentParams) => ({ ...currentParams, ...nextParams }));
   };
 
   async function refreshProductQueries(productId?: string) {
     await queryClient.invalidateQueries({ queryKey: ["products"] });
-
     if (productId) {
-      await queryClient.invalidateQueries({
-        queryKey: ["product", productId],
-      });
+      await queryClient.invalidateQueries({ queryKey: ["product", productId] });
     }
   }
 
   async function handleDeleteProduct() {
-    if (!productPendingDelete || isDeleting) {
-      return;
-    }
+    if (!productPendingDelete || isDeleting) return;
 
     const currentProduct = productPendingDelete;
     setIsDeleting(true);
@@ -85,49 +67,26 @@ function Products() {
           <ProductsHeader
             viewMode={viewMode}
             onViewModeChange={setViewMode}
-            onAddProduct={() => setIsAddModalOpen(true)}
+            onAddProduct={() => router.push("/products/add")}
           />
           <ProductsMainContent
             data={data}
             params={params}
             viewMode={viewMode}
             onParamsChange={updateParams}
-            onViewProduct={setProductPendingView}
-            onEditProduct={setProductPendingEdit}
+            onViewProduct={(product) => router.push(`/products/${product.id}`)}
+            onEditProduct={(product) => router.push(`/products/${product.id}/edit`)}
             onDeleteProduct={setProductPendingDelete}
           />
         </>
       )}
-
-      <ProductDetailsModal
-        productId={productPendingView?.id ?? null}
-        open={Boolean(productPendingView)}
-        onClose={() => setProductPendingView(null)}
-      />
-
-      <ProductAddModal
-        open={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-        onSaved={() => refreshProductQueries()}
-      />
-
-      <ProductEditModal
-        key={productPendingEdit?.id ?? "edit-product"}
-        open={Boolean(productPendingEdit)}
-        product={editProductData?.data}
-        isLoading={isEditProductLoading}
-        onClose={() => setProductPendingEdit(null)}
-        onSaved={() => refreshProductQueries(productPendingEdit?.id)}
-      />
 
       <ProductDeleteConfirmModal
         open={Boolean(productPendingDelete)}
         productName={productPendingDelete?.title}
         isDeleting={isDeleting}
         onClose={() => {
-          if (!isDeleting) {
-            setProductPendingDelete(null);
-          }
+          if (!isDeleting) setProductPendingDelete(null);
         }}
         onConfirm={handleDeleteProduct}
       />

@@ -15,6 +15,7 @@ type FilterSelectProps<T extends string> = {
   options: FilterOption<T>[];
   value: T;
   onChange: (value: T) => void;
+  listClassName?: string;
 };
 
 function FilterSelect<T extends string>({
@@ -22,6 +23,7 @@ function FilterSelect<T extends string>({
   options,
   value,
   onChange,
+  listClassName,
 }: FilterSelectProps<T>) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -66,23 +68,25 @@ function FilterSelect<T extends string>({
       </button>
 
       {isOpen ? (
-        <div className="absolute right-0 top-[calc(100%+2px)] z-30 w-full overflow-hidden rounded-[14px] border border-primary bg-bg-warm-ivory shadow-[0_10px_24px_rgba(16,24,40,0.12)]">
-          {options.map((option) => (
-            <button
-              key={option.value}
-              type="button"
-              onClick={() => {
-                onChange(option.value);
-                setIsOpen(false);
-              }}
-              className={cn(
-                "flex h-10 w-full items-center justify-start px-3 text-right text-sm font-medium text-dark-gray transition hover:bg-primary/10",
-                value === option.value && "bg-primary/15 text-secondary",
-              )}
-            >
-              {option.label}
-            </button>
-          ))}
+        <div className={cn("absolute right-0 top-[calc(100%+2px)] z-30 w-full rounded-[14px] border border-primary bg-bg-warm-ivory shadow-[0_10px_24px_rgba(16,24,40,0.12)]", listClassName)}>
+          <div className="overflow-y-auto">
+            {options.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => {
+                  onChange(option.value);
+                  setIsOpen(false);
+                }}
+                className={cn(
+                  "flex min-h-10 w-full items-center justify-start px-3 py-2 text-right text-sm font-medium text-dark-gray transition hover:bg-primary/10 break-all",
+                  value === option.value && "bg-primary/15 text-secondary",
+                )}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
         </div>
       ) : null}
     </div>

@@ -1,7 +1,7 @@
 import { QueryParams } from ".";
 
 export type ProductsQueryParams = QueryParams & {
-  category_id?: number;
+  category_id?: string;
 };
 
 export type ProductImage = {

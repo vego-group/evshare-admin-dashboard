@@ -26,17 +26,19 @@ function ProductsCards({
       {products.map((product) => (
         <article
           key={product.id}
-          className="rounded-2xl border border-neutral-100 bg-white p-4"
+          className="overflow-hidden rounded-2xl border border-neutral-100 bg-white p-4"
         >
           <div className="flex items-start gap-3">
-            <ProductImage product={product} className="size-16" />
+            <ProductImage product={product} className="size-16 shrink-0" />
             <div className="min-w-0 flex-1 text-right">
               <h3 className="truncate text-lg font-semibold text-secondary">
                 {product.title}
               </h3>
               <p className="truncate text-sm text-gray">{product.category?.name ?? "-"}</p>
             </div>
-            <StatusBadge active={product.active} />
+            <div className="shrink-0">
+              <StatusBadge active={product.active} />
+            </div>
           </div>
 
           <div className="mt-5 space-y-3 rounded-[14px] bg-background p-4 text-right">

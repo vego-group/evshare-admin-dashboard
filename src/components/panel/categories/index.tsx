@@ -47,13 +47,12 @@ function Categories() {
   };
 
   async function refreshCategoryQueries(categoryId?: string) {
-    await queryClient.invalidateQueries({ queryKey: ["categories"] });
-
-    if (categoryId) {
-      await queryClient.invalidateQueries({
-        queryKey: ["category", categoryId],
-      });
-    }
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["categories"] }),
+      ...(categoryId
+        ? [queryClient.invalidateQueries({ queryKey: ["category", categoryId] })]
+        : []),
+    ]);
   }
 
   async function handleDeleteCategory() {

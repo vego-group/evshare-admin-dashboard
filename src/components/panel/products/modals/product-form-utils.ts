@@ -71,7 +71,7 @@ export function buildProductPayload(values: ProductFormValues) {
     });
   }
 
-  values.key_features?.forEach((feature, index) => {
+  values.key_features.forEach((feature, index) => {
     formData.append(`key_features[${index}][title_ar]`, feature.title_ar);
     formData.append(`key_features[${index}][title_en]`, feature.title_en);
   });
@@ -109,7 +109,7 @@ export function buildChangedProductPayload(
   }
 
   if (dirtyFields.key_features) {
-    values.key_features?.forEach((feature, index) => {
+    values.key_features.forEach((feature, index) => {
       formData.append(`key_features[${index}][title_ar]`, feature.title_ar);
       formData.append(`key_features[${index}][title_en]`, feature.title_en);
     });

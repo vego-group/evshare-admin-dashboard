@@ -16,7 +16,7 @@ export const productsAPI = async (
     status: params.status,
     order_by: params.order_by,
     search: params.search,
-    category_id: params.category_id?.toString(),
+    category_id: params.category_id,
   });
 
   return await baseAPI("GET", `/products?${query}`);

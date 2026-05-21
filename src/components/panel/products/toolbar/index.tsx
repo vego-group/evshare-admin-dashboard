@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import type { OrderBy, Status } from "@/types";
 
+import CategoryFilterSelect from "./category-filter-select";
 import FilterSelect, { type FilterOption } from "./filter-select";
 import SearchInput from "./search-input";
 
@@ -11,9 +12,11 @@ type ProductsToolbarProps = {
   searchQuery?: string;
   selectedSort?: OrderBy;
   selectedStatus?: Status;
+  selectedCategory?: string;
   onSearchChange?: (value: string) => void;
   onSortChange?: (value: OrderBy) => void;
   onStatusChange?: (value?: Status) => void;
+  onCategoryChange?: (categoryId?: string) => void;
 };
 
 const sortOptions: FilterOption<OrderBy>[] = [
@@ -31,9 +34,11 @@ function ProductsToolbar({
   searchQuery,
   selectedSort,
   selectedStatus,
+  selectedCategory,
   onSearchChange,
   onSortChange,
   onStatusChange,
+  onCategoryChange,
 }: ProductsToolbarProps) {
   const [internalSearchQuery, setInternalSearchQuery] = useState("");
   const [internalSort, setInternalSort] = useState<OrderBy>("desc");
@@ -52,6 +57,10 @@ function ProductsToolbar({
       </div>
 
       <div className="flex flex-col gap-3.25 sm:flex-row sm:flex-wrap lg:shrink-0">
+        <CategoryFilterSelect
+          value={selectedCategory}
+          onChange={(categoryId) => onCategoryChange?.(categoryId)}
+        />
         <FilterSelect
           label="الحالة"
           options={statusOptions}

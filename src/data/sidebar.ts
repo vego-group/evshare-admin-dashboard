@@ -31,9 +31,9 @@ export const sidebarNavItems: SidebarNavItem[] = [
     icon: Tags,
   },
   {
-    href: "/assets-catalog",
-    label: "كتالوج الأصول",
-    ariaLabel: "كتالوج الأصول",
+    href: "/products",
+    label: "المنتجات",
+    ariaLabel: "المنتجات",
     icon: Package,
   },
   {

@@ -48,12 +48,10 @@ function RegistrationRequestsDetailsPanel({
   if (!kycId) return null;
 
   async function refreshKycQueries(currentKycId: string) {
-    await queryClient.invalidateQueries({
-      queryKey: ["registration-requests"],
-    });
-    await queryClient.invalidateQueries({
-      queryKey: ["registration-request", currentKycId],
-    });
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["registration-requests"] }),
+      queryClient.invalidateQueries({ queryKey: ["registration-request", currentKycId] }),
+    ]);
   }
 
   async function handleApproveKyc() {

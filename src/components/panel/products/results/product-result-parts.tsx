@@ -112,7 +112,7 @@ function ActionButton({
 export function DetailLine({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between gap-4">
-      <span className="text-sm text-gray">{label}</span>
+      <span className="shrink-0 text-sm text-gray">{label}</span>
       <span className="min-w-0 truncate text-sm font-medium text-secondary">
         {value}
       </span>
