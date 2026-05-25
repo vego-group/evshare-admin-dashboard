@@ -34,7 +34,7 @@ function SlidersToolbar({
   const [internalStatus, setInternalStatus] = useState<Status | "all">("all");
 
   return (
-    <section className="flex flex-col gap-3.25 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end rounded-2xl border border-neutral-100/60 bg-white p-3 shadow-[0_2px_6px_rgba(0,0,0,0.04)]">
+    <section className="flex flex-col gap-3.25 sm:flex-row sm:flex-wrap rounded-2xl border border-neutral-100/60 bg-white p-1.5 shadow-[0_2px_6px_rgba(0,0,0,0.04)]">
       <FilterSelect
         label="الحالة"
         options={statusOptions}
@@ -48,7 +48,10 @@ function SlidersToolbar({
         label="الترتيب"
         options={sortOptions}
         value={selectedSort ?? internalSort}
-        onChange={(value) => { setInternalSort(value); onSortChange?.(value); }}
+        onChange={(value) => {
+          setInternalSort(value);
+          onSortChange?.(value);
+        }}
       />
     </section>
   );

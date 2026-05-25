@@ -4,6 +4,7 @@ import { ChevronDown, ListFilter, Search } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
+import useDebounce from "@/hooks/use-debounce";
 import type { OrderBy, OrderNewStatus, OrderStatusCategory } from "@/types";
 
 type OrdersToolbarProps = {
@@ -49,17 +50,24 @@ function OrdersToolbar({
   onStatusCategoryChange,
   onStatusChange,
 }: OrdersToolbarProps) {
-  const [internalSearch, setInternalSearch] = useState("");
+  const [internalSearch, setInternalSearch] = useState(searchQuery ?? "");
   const [internalSort, setInternalSort] = useState<OrderBy>("desc");
   const [internalCategory, setInternalCategory] = useState<OrderStatusCategory | "all">("all");
   const [internalStatus, setInternalStatus] = useState<OrderNewStatus | "all">("all");
 
-  const searchValue = searchQuery ?? internalSearch;
+  const debouncedSearch = useDebounce(internalSearch, 500);
+  const mounted = useRef(false);
+  useEffect(() => {
+    if (!mounted.current) { mounted.current = true; return; }
+    onSearchChange?.(debouncedSearch);
+  }, [debouncedSearch]);
+
+  const searchValue = internalSearch;
   const sortValue = selectedSort ?? internalSort;
   const categoryValue: OrderStatusCategory | "all" = selectedStatusCategory ?? internalCategory;
   const statusValue: OrderNewStatus | "all" = selectedStatus ?? internalStatus;
 
-  const handleSearchChange = (value: string) => { setInternalSearch(value); onSearchChange?.(value); };
+  const handleSearchChange = setInternalSearch;
   const handleSortChange = (value: OrderBy) => { setInternalSort(value); onSortChange?.(value); };
   const handleCategoryChange = (value: OrderStatusCategory | "all") => {
     setInternalCategory(value);
@@ -113,20 +121,10 @@ function FilterSelect<T extends string>({
   onChange: (value: T) => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
   const selectedLabel = options.find((o) => o.value === value)?.label;
 
-  useEffect(() => {
-    if (!isOpen) return;
-    const handler = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) setIsOpen(false);
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [isOpen]);
-
   return (
-    <div ref={containerRef} className="relative h-9.5 w-full text-sm font-medium leading-5 text-dark-gray sm:w-49">
+    <div className="relative h-9.5 w-full text-sm font-medium leading-5 text-dark-gray sm:w-49">
       <button
         type="button"
         aria-label={label}
@@ -144,6 +142,7 @@ function FilterSelect<T extends string>({
         </span>
         <ChevronDown className={cn("size-5 text-primary transition", isOpen && "rotate-180")} />
       </button>
+      {isOpen && <div className="fixed inset-0 z-20" onClick={() => setIsOpen(false)} />}
       {isOpen ? (
         <div className="absolute right-0 top-[calc(100%+2px)] z-30 w-full overflow-hidden rounded-[14px] border border-primary bg-bg-warm-ivory shadow-[0_10px_24px_rgba(16,24,40,0.12)]">
           {options.map((option) => (

@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronDown, ListFilter } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -26,26 +26,10 @@ function FilterSelect<T extends string>({
   listClassName,
 }: FilterSelectProps<T>) {
   const [isOpen, setIsOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
   const selectedLabel = options.find((option) => option.value === value)?.label;
 
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleClickOutside = (event: MouseEvent) => {
-      if (!containerRef.current?.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isOpen]);
-
   return (
-    <div
-      ref={containerRef}
-      className="relative h-9.5 w-full text-sm font-medium leading-5 text-dark-gray sm:w-[196px]"
+    <div className="relative h-9.5 w-full text-sm font-medium leading-5 text-dark-gray sm:w-49"
     >
       <button
         type="button"
@@ -67,6 +51,7 @@ function FilterSelect<T extends string>({
         />
       </button>
 
+      {isOpen && <div className="fixed inset-0 z-20" onClick={() => setIsOpen(false)} />}
       {isOpen ? (
         <div className={cn("absolute right-0 top-[calc(100%+2px)] z-30 w-full rounded-[14px] border border-primary bg-bg-warm-ivory shadow-[0_10px_24px_rgba(16,24,40,0.12)]", listClassName)}>
           <div className="overflow-y-auto">

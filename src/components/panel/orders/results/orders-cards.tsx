@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
+import { SaudiRiyal } from "lucide-react";
+import type { ReactNode } from "react";
+
 import { updateOrderStatusAPI } from "@/services/mutations";
 import type { OrderListItem, OrderNewStatus } from "@/types";
 
@@ -81,7 +84,7 @@ function OrderCard({ order }: { order: OrderListItem }) {
           <DetailLine label="العنوان" value={order.address?.address ?? "-"} />
           <DetailLine
             label="المبلغ الإجمالي"
-            value={`${order.total.toLocaleString("ar-EG")} ر.س`}
+            value={<span className="inline-flex items-center gap-1"><SaudiRiyal className="size-4" /> {order.total}</span>}
           />
           <DetailLine
             label="التاريخ"
@@ -121,7 +124,7 @@ function DetailLine({
   dir,
 }: {
   label: string;
-  value: string;
+  value: ReactNode;
   dir?: "ltr" | "rtl";
 }) {
   return (

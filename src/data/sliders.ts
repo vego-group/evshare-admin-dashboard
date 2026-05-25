@@ -1,4 +1,4 @@
-import { Images, CheckCircle2, PauseCircle } from "lucide-react";
+import { Images, CheckCircle2, PauseCircle, Eye } from "lucide-react";
 
 export const slidersStatConfig = [
   {
@@ -18,5 +18,11 @@ export const slidersStatConfig = [
     key: "inactive_slides",
     icon: PauseCircle,
     iconClassName: "bg-red-50 text-red-500",
+  },
+  {
+    label: "إجمالي المشاهدات",
+    key: "total_views",
+    icon: Eye,
+    iconClassName: "bg-purple-50 text-purple-600",
   },
 ] as const;

@@ -4,6 +4,7 @@ import { ChevronDown, ListFilter, Search } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
+import useDebounce from "@/hooks/use-debounce";
 import {
   consultationRequestStatuses,
   consultationRequestTypes,
@@ -43,10 +44,19 @@ function ConsultationRequestsToolbar({
   onStatusChange,
   onTypeChange,
 }: ConsultationRequestsToolbarProps) {
+  const [internalSearchQuery, setInternalSearchQuery] = useState(searchQuery);
+
+  const debouncedSearch = useDebounce(internalSearchQuery, 500);
+  const mounted = useRef(false);
+  useEffect(() => {
+    if (!mounted.current) { mounted.current = true; return; }
+    onSearchChange(debouncedSearch);
+  }, [debouncedSearch]);
+
   return (
     <section className="space-y-3 lg:flex lg:items-center lg:justify-between lg:gap-3 lg:space-y-0 lg:rounded-2xl lg:border lg:border-neutral-100/60 lg:bg-white lg:p-1.5 lg:shadow-[0_2px_6px_rgba(0,0,0,0.04)]">
       <div className="rounded-2xl border border-neutral-100/60 bg-white p-1.5 shadow-[0_2px_6px_rgba(0,0,0,0.04)] lg:flex-1 lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none">
-        <SearchInput value={searchQuery} onChange={onSearchChange} />
+        <SearchInput value={internalSearchQuery} onChange={setInternalSearchQuery} />
       </div>
 
       <div className="flex flex-col gap-[13px] sm:flex-row sm:flex-wrap lg:shrink-0">
@@ -107,32 +117,9 @@ function FilterSelect<T extends string>({
   onChange: (value: T) => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen]);
 
   return (
-    <div
-      ref={containerRef}
-      className={cn(
-        "relative h-[38px] w-full text-sm font-medium leading-5 text-dark-gray sm:w-[196px]",
-      )}
+    <div className="relative h-9.5 w-full text-sm font-medium leading-5 text-dark-gray sm:w-49"
     >
       <button
         type="button"
@@ -158,6 +145,7 @@ function FilterSelect<T extends string>({
         />
       </button>
 
+      {isOpen && <div className="fixed inset-0 z-20" onClick={() => setIsOpen(false)} />}
       {isOpen ? (
         <div className="absolute right-0 top-[calc(100%+2px)] z-30 w-full overflow-hidden rounded-[14px] border border-primary bg-bg-warm-ivory shadow-[0_10px_24px_rgba(16,24,40,0.12)]">
           {options.map((option) => (

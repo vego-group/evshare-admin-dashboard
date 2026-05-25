@@ -1,7 +1,8 @@
 "use client";
 
-import { ImageIcon } from "lucide-react";
+import { ImageIcon, SaudiRiyal } from "lucide-react";
 import Image from "next/image";
+import type { ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 import type { ProductDetail } from "@/types";
@@ -82,13 +83,32 @@ export function ProductDetailsContent({ product, isLoading }: Props) {
         <DetailRow label="العنوان العربي" value={product.title_ar} />
         <DetailRow label="العنوان الإنجليزي" value={product.title_en} />
         <DetailRow label="التصنيف" value={product.category?.name ?? "-"} />
-        <DetailRow label="السعر" value={`${product.price} SAR`} />
+        <DetailRow
+          label="السعر"
+          value={
+            <span className="inline-flex items-center gap-1" dir="ltr">
+              <SaudiRiyal className="size-4" /> {product.price}
+            </span>
+          }
+        />
         <DetailRow label="الكمية" value={String(product.quantity)} />
         <DetailRow
           label="سعر الاشتراك الشهري"
-          value={`${product.monthly_subscription_price} SAR`}
+          value={
+            <span className="inline-flex items-center gap-1" dir="ltr">
+              <SaudiRiyal className="size-4" />{" "}
+              {product.monthly_subscription_price}
+            </span>
+          }
         />
-        <DetailRow label="السعر المفتوح" value={`${product.open_price} SAR`} />
+        <DetailRow
+          label="السعر المفتوح"
+          value={
+            <span className="inline-flex items-center gap-1" dir="ltr">
+              <SaudiRiyal className="size-4" /> {product.open_price}
+            </span>
+          }
+        />
         <DetailRow
           label="تاريخ الإنشاء"
           value={formatDate(product.created_at)}
@@ -163,7 +183,7 @@ function StatusBadge({ active }: { active: boolean }) {
   );
 }
 
-function DetailRow({ label, value }: { label: string; value: string }) {
+function DetailRow({ label, value }: { label: string; value: ReactNode }) {
   return (
     <div className="flex flex-col gap-1 rounded-[10px] bg-white px-4 py-3 text-right">
       <span className="text-sm text-gray">{label}</span>

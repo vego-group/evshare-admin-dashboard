@@ -1,3 +1,4 @@
+import { SaudiRiyal } from "lucide-react";
 import type { ReactNode } from "react";
 
 import type { ProductListItem } from "@/types";
@@ -52,12 +53,18 @@ function ProductsTable({
                   </div>
                 </TableCell>
                 <TableCell>{product.category?.name ?? "-"}</TableCell>
-                <TableCell>{product.price} SAR</TableCell>
+                <TableCell>
+                  <span className="inline-flex items-center gap-1" dir="ltr">
+                    <SaudiRiyal className="size-4" /> {product.price}
+                  </span>
+                </TableCell>
                 <TableCell>{product.quantity}</TableCell>
                 <TableCell>
                   <StatusBadge active={product.active} />
                 </TableCell>
-                <TableCell dir="ltr">{formatDate(product.created_at)}</TableCell>
+                <TableCell dir="ltr">
+                  {formatDate(product.created_at)}
+                </TableCell>
                 <TableCell>
                   <ProductActions
                     onView={() => onViewProduct(product)}

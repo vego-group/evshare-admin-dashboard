@@ -1,3 +1,4 @@
+import { SaudiRiyal } from "lucide-react";
 import Image from "next/image";
 import type { ReactNode } from "react";
 
@@ -61,9 +62,11 @@ function OrderItemRow({ item }: { item: OrderItem }) {
         </div>
       </TableCell>
       <TableCell>{item.quantity}</TableCell>
-      <TableCell dir="ltr" className="text-right">{item.unit_price.toLocaleString("ar-EG")} ر.س</TableCell>
+      <TableCell dir="ltr" className="text-right">
+        <span className="inline-flex items-center gap-1"><SaudiRiyal className="size-4" /> {item.unit_price}</span>
+      </TableCell>
       <TableCell dir="ltr" className="text-right font-semibold text-secondary">
-        {item.total_price.toLocaleString("ar-EG")} ر.س
+        <span className="inline-flex items-center gap-1"><SaudiRiyal className="size-4" /> {item.total_price}</span>
       </TableCell>
     </tr>
   );

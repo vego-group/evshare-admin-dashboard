@@ -1,5 +1,6 @@
 "use client";
 
+import { SaudiRiyal } from "lucide-react";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -71,7 +72,7 @@ function OrdersTableRow({ order }: { order: OrderListItem }) {
           </span>
         </TableCell>
         <TableCell dir="ltr" className="text-right">
-          {order.total.toLocaleString("ar-EG")} ر.س
+          <span className="inline-flex items-center gap-1"><SaudiRiyal className="size-4" /> {order.total}</span>
         </TableCell>
         <TableCell>
           <OrderStatusDropdown

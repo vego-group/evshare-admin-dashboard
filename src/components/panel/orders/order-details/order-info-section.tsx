@@ -1,8 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import type { ReactNode } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+
+import { SaudiRiyal } from "lucide-react";
 
 import { updateOrderStatusAPI } from "@/services/mutations";
 import type { OrderDetail, OrderNewStatus } from "@/types";
@@ -102,20 +105,20 @@ function OrderInfoSection({ order }: { order: OrderDetail }) {
           </p>
           <FinancialRow
             label="المجموع الفرعي"
-            value={`${order.subtotal.toLocaleString("ar-EG")} ر.س`}
+            value={<span className="inline-flex items-center gap-1"><SaudiRiyal className="size-4" /> {order.subtotal}</span>}
           />
           <FinancialRow
             label={`ضريبة القيمة المضافة (${order.vat_percentage}%)`}
-            value={`${order.vat_amount.toLocaleString("ar-EG")} ر.س`}
+            value={<span className="inline-flex items-center gap-1"><SaudiRiyal className="size-4" /> {order.vat_amount}</span>}
           />
           <FinancialRow
             label="رسوم التوصيل"
-            value={`${order.delivery_fee.toLocaleString("ar-EG")} ر.س`}
+            value={<span className="inline-flex items-center gap-1"><SaudiRiyal className="size-4" /> {order.delivery_fee}</span>}
           />
           <div className="mt-2 border-t border-neutral-100 pt-2">
             <FinancialRow
               label="الإجمالي"
-              value={`${order.total.toLocaleString("ar-EG")} ر.س`}
+              value={<span className="inline-flex items-center gap-1"><SaudiRiyal className="size-4" /> {order.total}</span>}
               bold
             />
           </div>
@@ -166,7 +169,7 @@ function FinancialRow({
   bold,
 }: {
   label: string;
-  value: string;
+  value: ReactNode;
   bold?: boolean;
 }) {
   return (

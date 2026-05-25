@@ -25,6 +25,7 @@ export type SlidersAnalytics = {
   total_slides: number;
   active_slides: number;
   inactive_slides: number;
+  total_views: number;
 };
 
 export type SlidersListResponse = {

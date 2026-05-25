@@ -1,5 +1,6 @@
 import { Eye, ImageIcon, Pencil, Trash2, type LucideIcon } from "lucide-react";
 import Image from "next/image";
+import type { ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 import type { ProductListItem } from "@/types";
@@ -113,7 +114,7 @@ function ActionButton({
   );
 }
 
-export function DetailLine({ label, value }: { label: string; value: string }) {
+export function DetailLine({ label, value }: { label: string; value: ReactNode }) {
   return (
     <div className="flex items-center justify-between gap-4">
       <span className="shrink-0 text-sm text-gray">{label}</span>

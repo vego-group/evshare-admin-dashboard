@@ -1,8 +1,10 @@
 import {
   ClipboardList,
+  CreditCard,
   Images,
   LayoutDashboard,
   MapPin,
+  MessageSquareWarning,
   Package,
   ScrollText,
   ShoppingCart,
@@ -67,5 +69,17 @@ export const sidebarNavItems: SidebarNavItem[] = [
     label: "طلبات المنتجات",
     ariaLabel: "طلبات المنتجات",
     icon: ShoppingCart,
+  },
+  {
+    href: "/payment-requests",
+    label: "طلبات الدفع",
+    ariaLabel: "طلبات الدفع",
+    icon: CreditCard,
+  },
+  {
+    href: "/complaints",
+    label: "الشكاوى",
+    ariaLabel: "الشكاوى",
+    icon: MessageSquareWarning,
   },
 ];

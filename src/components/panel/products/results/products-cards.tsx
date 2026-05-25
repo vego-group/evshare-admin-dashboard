@@ -1,3 +1,5 @@
+import { SaudiRiyal } from "lucide-react";
+
 import type { ProductListItem } from "@/types";
 
 import {
@@ -34,7 +36,9 @@ function ProductsCards({
               <h3 className="truncate text-lg font-semibold text-secondary">
                 {product.title}
               </h3>
-              <p className="truncate text-sm text-gray">{product.category?.name ?? "-"}</p>
+              <p className="truncate text-sm text-gray">
+                {product.category?.name ?? "-"}
+              </p>
             </div>
             <div className="shrink-0">
               <StatusBadge active={product.active} />
@@ -42,9 +46,19 @@ function ProductsCards({
           </div>
 
           <div className="mt-5 space-y-3 rounded-[14px] bg-background p-4 text-right">
-            <DetailLine label="السعر" value={`${product.price} SAR`} />
+            <DetailLine
+              label="السعر"
+              value={
+                <span className="inline-flex items-center gap-1" dir="ltr">
+                  <SaudiRiyal className="size-4" /> {product.price}
+                </span>
+              }
+            />
             <DetailLine label="الكمية" value={String(product.quantity)} />
-            <DetailLine label="تاريخ الإنشاء" value={formatDate(product.created_at)} />
+            <DetailLine
+              label="تاريخ الإنشاء"
+              value={formatDate(product.created_at)}
+            />
           </div>
 
           <div className="mt-4 border-t border-neutral-100 pt-4">

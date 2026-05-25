@@ -7,7 +7,7 @@ type SlidersStatsProps = {
 
 function SlidersStats({ data }: SlidersStatsProps) {
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {slidersStatConfig.map((stat) => {
         const Icon = stat.icon;
         const value = data?.[stat.key] ?? 0;

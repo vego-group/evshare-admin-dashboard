@@ -1,6 +1,6 @@
 "use client";
 
-import { ImageIcon, Plus, Trash2, Upload, X } from "lucide-react";
+import { ImageIcon, Plus, SaudiRiyal, Trash2, Upload, X } from "lucide-react";
 import Image from "next/image";
 import type { ReactNode } from "react";
 import type {
@@ -260,7 +260,10 @@ function ProductFormFields({
             {existingImagesUrls && existingImagesUrls.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {existingImagesUrls.map((url, i) => (
-                  <span key={i} className="relative block size-20 overflow-hidden rounded-xl opacity-60">
+                  <span
+                    key={i}
+                    className="relative block size-20 overflow-hidden rounded-xl opacity-60"
+                  >
                     <Image
                       src={url}
                       alt={`صورة موجودة ${i + 1}`}
@@ -367,25 +370,20 @@ function Field({
   );
 }
 
-const priceInputClassName =
-  "h-14 w-full rounded-[14px] border border-primary bg-primary/4 px-4 pr-14 text-left text-sm font-medium text-dark-gray outline-none transition focus:bg-primary/8";
-
 function PriceInput({
   placeholder,
   ...props
 }: React.InputHTMLAttributes<HTMLInputElement>) {
   return (
-    <div className="relative flex items-center">
+    <div className="flex h-14 items-center gap-1 rounded-[14px] border border-primary bg-primary/4 px-4 transition focus-within:bg-primary/8">
       <input
         type="text"
         dir="ltr"
         placeholder={placeholder}
-        className={priceInputClassName}
+        className="min-w-0 flex-1 bg-transparent text-sm font-medium text-dark-gray outline-none"
         {...props}
       />
-      <span className="pointer-events-none absolute right-4 text-sm font-medium text-gray">
-        SAR
-      </span>
+      <SaudiRiyal className="size-4 shrink-0 text-gray" />
     </div>
   );
 }
