@@ -30,7 +30,7 @@ function ContactInfoRow({
         <p
           dir={valueDir}
           className={cn(
-            "mt-1 truncate text-base font-medium leading-6 text-[#101828]",
+            "mt-1 break-all text-base font-medium leading-6 text-[#101828]",
             valueClassName,
           )}
         >

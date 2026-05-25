@@ -23,7 +23,7 @@ function OwnerInfoRow({
         <p
           dir={valueDir}
           className={cn(
-            "mt-1 truncate text-base font-normal leading-6 text-secondary",
+            "mt-1 break-all text-base font-normal leading-6 text-secondary",
             valueClassName,
           )}
         >

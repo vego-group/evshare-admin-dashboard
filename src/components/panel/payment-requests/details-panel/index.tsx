@@ -225,7 +225,7 @@ function DetailRow({
       <span className="text-sm text-gray">{label}</span>
       <span
         dir={valueDir}
-        className="min-w-0 truncate text-base font-medium text-secondary"
+        className="min-w-0 break-all text-base font-medium text-secondary"
       >
         {value}
       </span>

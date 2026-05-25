@@ -53,7 +53,6 @@ function ConsultationRequestsTable({
               <TableHead className="w-[211px]">الاسم</TableHead>
               <TableHead>الهاتف</TableHead>
               <TableHead className="w-[250px]">البريد الإلكتروني</TableHead>
-              <TableHead>النوع</TableHead>
               <TableHead>الحالة</TableHead>
               <TableHead>التاريخ</TableHead>
               <TableHead>الإجراءات</TableHead>
@@ -68,9 +67,6 @@ function ConsultationRequestsTable({
                 <TableCell>{request.name}</TableCell>
                 <TableCell>{request.phone}</TableCell>
                 <TableCell>{request.email}</TableCell>
-                <TableCell>
-                  <TypeBadge type={request.type} />
-                </TableCell>
                 <TableCell>
                   <StatusSelect
                     status={request.status}
@@ -142,10 +138,6 @@ function MobileRequestCard({
         <div className="mt-4 grid gap-3">
           <InfoRow label="الهاتف" value={request.phone} />
           <InfoRow label="البريد الإلكتروني" value={request.email} />
-          <div className="flex items-center justify-between gap-3">
-            <span className="text-gray">النوع</span>
-            <TypeBadge type={request.type} />
-          </div>
         </div>
       </div>
 

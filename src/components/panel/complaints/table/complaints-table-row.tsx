@@ -26,8 +26,12 @@ function ComplaintsTableRow({
       className="cursor-pointer text-base font-medium leading-6 text-dark-gray transition hover:bg-primary/5 focus-visible:bg-primary/5 focus-visible:outline-none"
     >
       <TableCell dir="ltr">{complaint.complaint_number}</TableCell>
-      <TableCell>{complaint.title ?? "-"}</TableCell>
-      <TableCell>{complaint.user.name}</TableCell>
+      <TableCell className="max-w-[220px]">
+        <span className="block truncate">{complaint.title ?? "-"}</span>
+      </TableCell>
+      <TableCell className="max-w-[180px]">
+        <span className="block truncate">{complaint.user.name}</span>
+      </TableCell>
       <TableCell>
         <ComplaintStatusBadge status={complaint.status} />
       </TableCell>

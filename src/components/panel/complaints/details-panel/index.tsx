@@ -166,7 +166,7 @@ function ComplaintDetails({ complaint }: { complaint: Complaint }) {
 
       <section className="space-y-4 rounded-[14px] bg-background p-5">
         <DetailRow label="رقم الشكوى" value={complaint.complaint_number} valueDir="ltr" />
-        <DetailRow label="العنوان" value={complaint.title ?? "-"} />
+        <DetailRow label="العنوان" value={complaint.title ?? "-"} breakAll />
         <DetailRow
           label="تاريخ الإنشاء"
           value={formatDate(complaint.created_at)}
@@ -178,7 +178,7 @@ function ComplaintDetails({ complaint }: { complaint: Complaint }) {
           تفاصيل الشكوى
         </h3>
         <div className="rounded-[14px] bg-background p-5">
-          <p className="text-base font-normal leading-7 text-secondary">
+          <p className="break-all text-base font-normal leading-7 text-secondary">
             {complaint.message}
           </p>
         </div>
@@ -290,15 +290,17 @@ function DetailRow({
   label,
   value,
   valueDir,
+  breakAll,
 }: {
   label: string;
   value: string;
   valueDir?: "ltr" | "rtl";
+  breakAll?: boolean;
 }) {
   return (
     <div className="flex items-center justify-between gap-4 rounded-[10px] bg-white px-4 py-3">
       <span className="text-sm text-gray">{label}</span>
-      <span dir={valueDir} className="min-w-0 truncate text-base font-medium text-secondary">
+      <span dir={valueDir} className={cn("min-w-0 text-base font-medium text-secondary", breakAll ? "break-all" : "truncate")}>
         {value}
       </span>
     </div>

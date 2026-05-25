@@ -207,7 +207,7 @@ function DetailRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between gap-4 rounded-[10px] bg-white px-4 py-3">
       <span className="text-sm text-gray">{label}</span>
-      <span className="min-w-0 truncate text-base font-medium text-secondary">
+      <span className="min-w-0 break-all text-base font-medium text-secondary">
         {value}
       </span>
     </div>

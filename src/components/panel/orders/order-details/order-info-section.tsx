@@ -155,7 +155,7 @@ function InfoCard({
       <span className="text-sm font-normal text-gray">{label}</span>
       <span
         dir={dir}
-        className="wrap-break-word text-base font-medium text-secondary"
+        className="break-all text-base font-medium text-secondary"
       >
         {value}
       </span>

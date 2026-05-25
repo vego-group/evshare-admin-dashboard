@@ -25,8 +25,12 @@ function RegistrationRequestsTableRow({
       }}
       className="cursor-pointer text-base font-medium leading-6 text-dark-gray transition hover:bg-primary/5 focus-visible:bg-primary/5 focus-visible:outline-none"
     >
-      <TableCell>{request.name}</TableCell>
-      <TableCell>{request.city?.name ?? "-"}</TableCell>
+      <TableCell className="max-w-[180px]">
+        <span className="block truncate">{request.name}</span>
+      </TableCell>
+      <TableCell className="max-w-[160px]">
+        <span className="block truncate">{request.city?.name ?? "-"}</span>
+      </TableCell>
       <TableCell>
         <RegistrationRequestStatusSelect status={request.status} />
       </TableCell>
