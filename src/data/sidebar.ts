@@ -1,5 +1,6 @@
 import {
   ClipboardList,
+  Images,
   LayoutDashboard,
   MapPin,
   Package,
@@ -42,6 +43,12 @@ export const sidebarNavItems: SidebarNavItem[] = [
     label: "المدن",
     ariaLabel: "المدن",
     icon: MapPin,
+  },
+  {
+    href: "/sliders",
+    label: "السلايدرات",
+    ariaLabel: "السلايدرات",
+    icon: Images,
   },
   {
     href: "/consultation-requests",

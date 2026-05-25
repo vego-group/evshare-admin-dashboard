@@ -1,4 +1,5 @@
 import { ImageIcon, Upload } from "lucide-react";
+import Image from "next/image";
 import type { ReactNode } from "react";
 import type {
   FieldErrors,
@@ -96,12 +97,15 @@ function Field({
 
 function ImagePreview({ previewUrl }: { previewUrl?: string | null }) {
   return previewUrl ? (
-    <span
-      role="img"
-      aria-label="معاينة الصورة"
-      className="size-11 shrink-0 rounded-xl bg-cover bg-center"
-      style={{ backgroundImage: `url(${previewUrl})` }}
-    />
+    <span className="relative size-11 shrink-0 overflow-hidden rounded-xl">
+      <Image
+        src={previewUrl}
+        alt="معاينة الصورة"
+        fill
+        unoptimized
+        className="object-cover"
+      />
+    </span>
   ) : (
     <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-primary/15 text-secondary">
       <ImageIcon className="size-5" />

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
@@ -42,12 +43,15 @@ function OrderItemRow({ item }: { item: OrderItem }) {
       <TableCell>
         <div className="flex items-center gap-3">
           {product.default_image ? (
-            <span
-              role="img"
-              aria-label={product.title}
-              className="block size-10 shrink-0 rounded-lg bg-cover bg-center"
-              style={{ backgroundImage: `url(${product.default_image})` }}
-            />
+            <span className="relative size-10 shrink-0 overflow-hidden rounded-lg">
+              <Image
+                src={product.default_image}
+                alt={product.title}
+                fill
+                sizes="40px"
+                className="object-cover"
+              />
+            </span>
           ) : (
             <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-neutral-100 text-xs text-gray">
               لا صورة

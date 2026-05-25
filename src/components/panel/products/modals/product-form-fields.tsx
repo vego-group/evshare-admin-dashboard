@@ -1,6 +1,7 @@
 "use client";
 
 import { ImageIcon, Plus, Trash2, Upload, X } from "lucide-react";
+import Image from "next/image";
 import type { ReactNode } from "react";
 import type {
   Control,
@@ -202,12 +203,15 @@ function ProductFormFields({
             </label>
             {imagePreviewUrl && (
               <div className="flex flex-wrap gap-2">
-                <span
-                  role="img"
-                  aria-label="معاينة الصورة الرئيسية"
-                  className="block size-20 rounded-xl bg-cover bg-center"
-                  style={{ backgroundImage: `url(${imagePreviewUrl})` }}
-                />
+                <span className="relative size-20 overflow-hidden rounded-xl">
+                  <Image
+                    src={imagePreviewUrl}
+                    alt="معاينة الصورة الرئيسية"
+                    fill
+                    unoptimized
+                    className="object-cover"
+                  />
+                </span>
               </div>
             )}
           </div>
@@ -233,12 +237,15 @@ function ProductFormFields({
               <div className="flex flex-wrap gap-2">
                 {imagesPreviewUrls.map((url, i) => (
                   <div key={i} className="relative">
-                    <span
-                      role="img"
-                      aria-label={`صورة إضافية ${i + 1}`}
-                      className="block size-20 rounded-xl bg-cover bg-center"
-                      style={{ backgroundImage: `url(${url})` }}
-                    />
+                    <span className="relative block size-20 overflow-hidden rounded-xl">
+                      <Image
+                        src={url}
+                        alt={`صورة إضافية ${i + 1}`}
+                        fill
+                        unoptimized
+                        className="object-cover"
+                      />
+                    </span>
                     <button
                       type="button"
                       onClick={() => onImageRemove?.(i)}
@@ -253,13 +260,15 @@ function ProductFormFields({
             {existingImagesUrls && existingImagesUrls.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {existingImagesUrls.map((url, i) => (
-                  <span
-                    key={i}
-                    role="img"
-                    aria-label={`صورة موجودة ${i + 1}`}
-                    className="block size-20 rounded-xl bg-cover bg-center opacity-60"
-                    style={{ backgroundImage: `url(${url})` }}
-                  />
+                  <span key={i} className="relative block size-20 overflow-hidden rounded-xl opacity-60">
+                    <Image
+                      src={url}
+                      alt={`صورة موجودة ${i + 1}`}
+                      fill
+                      sizes="80px"
+                      className="object-cover"
+                    />
+                  </span>
                 ))}
               </div>
             )}

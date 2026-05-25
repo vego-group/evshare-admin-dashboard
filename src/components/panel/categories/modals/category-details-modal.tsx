@@ -1,6 +1,7 @@
 "use client";
 
 import { ImageIcon } from "lucide-react";
+import Image from "next/image";
 
 import Modal from "@/components/ui/modal";
 import { useCategory } from "@/hooks/api";
@@ -37,12 +38,15 @@ function CategoryDetailsModal({
           <>
             <div className="flex flex-col gap-3        rounded-[14px] bg-background p-4">
               {category.image?.url ? (
-                <div
-                  role="img"
-                  aria-label={category.name}
-                  className="size-20 rounded-2xl bg-cover bg-center"
-                  style={{ backgroundImage: `url(${category.image.url})` }}
-                />
+                <div className="relative size-20 overflow-hidden rounded-2xl">
+                  <Image
+                    src={category.image.url}
+                    alt={category.name}
+                    fill
+                    sizes="80px"
+                    className="object-cover"
+                  />
+                </div>
               ) : (
                 <div className="grid size-20 place-items-center rounded-2xl bg-primary/15 text-secondary">
                   <ImageIcon className="size-8" />

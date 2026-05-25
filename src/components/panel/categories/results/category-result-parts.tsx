@@ -1,4 +1,5 @@
 import { Eye, ImageIcon, Pencil, Trash2, type LucideIcon } from "lucide-react";
+import Image from "next/image";
 
 import { cn } from "@/lib/utils";
 import type { CategoryListItem } from "@/types";
@@ -11,12 +12,15 @@ export function CategoryImage({
   className?: string;
 }) {
   return category.image?.url ? (
-    <div
-      role="img"
-      aria-label={category.name}
-      className={cn("size-12 shrink-0 rounded-xl bg-cover bg-center", className)}
-      style={{ backgroundImage: `url(${category.image.url})` }}
-    />
+    <div className={cn("relative size-12 shrink-0 overflow-hidden rounded-xl", className)}>
+      <Image
+        src={category.image.url}
+        alt={category.name}
+        fill
+        sizes="48px"
+        className="object-cover"
+      />
+    </div>
   ) : (
     <div
       className={cn(

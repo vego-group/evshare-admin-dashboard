@@ -1,34 +1,32 @@
-import { Eye, ImageIcon, Pencil, Trash2, type LucideIcon } from "lucide-react";
+import { Images, Pencil, Trash2, type LucideIcon } from "lucide-react";
 import Image from "next/image";
 
 import { cn } from "@/lib/utils";
-import type { ProductListItem } from "@/types";
 
-export function ProductImage({
-  product,
+export function SliderThumbnail({
+  url,
   className,
 }: {
-  product: ProductListItem;
+  url?: string;
   className?: string;
 }) {
-  return product.default_image?.url ? (
-    <div className={cn("relative size-12 shrink-0 overflow-hidden rounded-xl", className)}>
-      <Image
-        src={product.default_image.url}
-        alt={product.title}
-        fill
-        sizes="48px"
-        className="object-cover"
-      />
-    </div>
-  ) : (
-    <div
-      className={cn(
-        "grid size-12 shrink-0 place-items-center rounded-xl bg-primary/15 text-secondary",
-        className,
-      )}
-    >
-      <ImageIcon className="size-5" />
+  if (url) {
+    return (
+      <div className={cn("relative size-12 shrink-0 overflow-hidden rounded-xl", className)}>
+        <Image
+          src={url}
+          alt="صورة السلايدر"
+          fill
+          sizes="48px"
+          className="object-cover"
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className={cn("grid size-12 shrink-0 place-items-center rounded-xl bg-primary/15 text-secondary", className)}>
+      <Images className="size-5" />
     </div>
   );
 }
@@ -41,46 +39,33 @@ export function StatusBadge({ active }: { active: boolean }) {
         active ? "bg-green-50 text-green-600" : "bg-gray-100 text-dark-gray",
       )}
     >
-      <span
-        className={cn(
-          "size-2 rounded-full",
-          active ? "bg-green-500" : "bg-gray-400",
-        )}
-      />
+      <span className={cn("size-2 rounded-full", active ? "bg-green-500" : "bg-gray-400")} />
       {active ? "نشط" : "غير نشط"}
     </span>
   );
 }
 
-export function ProductActions({
+export function SliderActions({
   compact = false,
-  onView,
   onEdit,
   onDelete,
 }: {
   compact?: boolean;
-  onView: () => void;
   onEdit: () => void;
   onDelete: () => void;
 }) {
   return (
     <div className={cn("flex items-center gap-2", compact && "w-full")}>
       <ActionButton
-        icon={Eye}
-        onClick={onView}
-        label="عرض المنتج"
-        className={cn("bg-blue-50 text-blue-600", compact && "flex-1")}
-      />
-      <ActionButton
         icon={Pencil}
         onClick={onEdit}
-        label="تعديل المنتج"
+        label="تعديل السلايدر"
         className={cn("bg-amber-50 text-orange-500", compact && "flex-1")}
       />
       <ActionButton
         icon={Trash2}
         onClick={onDelete}
-        label="حذف المنتج"
+        label="حذف السلايدر"
         className={cn("bg-red-50 text-red-500", compact && "flex-1")}
       />
     </div>
@@ -103,10 +88,7 @@ function ActionButton({
       type="button"
       aria-label={label}
       onClick={onClick}
-      className={cn(
-        "grid size-10 place-items-center rounded-lg transition hover:brightness-95",
-        className,
-      )}
+      className={cn("grid size-10 place-items-center rounded-lg transition hover:brightness-95", className)}
     >
       <Icon className="size-5" />
     </button>
@@ -117,9 +99,7 @@ export function DetailLine({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between gap-4">
       <span className="shrink-0 text-sm text-gray">{label}</span>
-      <span className="min-w-0 truncate text-sm font-medium text-secondary">
-        {value}
-      </span>
+      <span className="min-w-0 truncate text-sm font-medium text-secondary">{value}</span>
     </div>
   );
 }
@@ -127,8 +107,5 @@ export function DetailLine({ label, value }: { label: string; value: string }) {
 export function formatDate(value: string) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
-  return new Intl.DateTimeFormat("ar-EG", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(date);
+  return new Intl.DateTimeFormat("ar-EG", { dateStyle: "medium", timeStyle: "short" }).format(date);
 }
