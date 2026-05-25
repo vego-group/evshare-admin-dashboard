@@ -4,15 +4,15 @@ import { ChevronDown, ListFilter, Search } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
-import type { KycStatus, OrderBy } from "@/types";
+import type { RequestStatus, OrderBy } from "@/types";
 
 type RegistrationRequestsToolbarProps = {
   searchQuery?: string;
   selectedSort?: OrderBy;
-  selectedStatus?: KycStatus;
+  selectedStatus?: RequestStatus;
   onSearchChange?: (value: string) => void;
   onSortChange?: (value: OrderBy) => void;
-  onStatusChange?: (value?: KycStatus) => void;
+  onStatusChange?: (value?: RequestStatus) => void;
 };
 
 type FilterOption<T extends string> = {
@@ -25,7 +25,7 @@ const sortOptions: FilterOption<OrderBy>[] = [
   { label: "الأقدم", value: "asc" },
 ];
 
-const statusOptions: FilterOption<KycStatus | "all">[] = [
+const statusOptions: FilterOption<RequestStatus | "all">[] = [
   { label: "الكل", value: "all" },
   { label: "موافق عليها", value: "approved" },
   { label: "قيد المراجعة", value: "pending" },
@@ -42,7 +42,7 @@ function RegistrationRequestsToolbar({
 }: RegistrationRequestsToolbarProps) {
   const [internalSearchQuery, setInternalSearchQuery] = useState("");
   const [internalSort, setInternalSort] = useState<OrderBy>("desc");
-  const [internalStatus, setInternalStatus] = useState<KycStatus | "all">(
+  const [internalStatus, setInternalStatus] = useState<RequestStatus | "all">(
     "all",
   );
 
@@ -60,7 +60,7 @@ function RegistrationRequestsToolbar({
     onSortChange?.(value);
   };
 
-  const handleStatusChange = (value: KycStatus | "all") => {
+  const handleStatusChange = (value: RequestStatus | "all") => {
     setInternalStatus(value);
     onStatusChange?.(value === "all" ? undefined : value);
   };

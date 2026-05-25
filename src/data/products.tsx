@@ -1,6 +1,6 @@
 import { CheckCircle2, Package, PauseCircle, TrendingUp } from "lucide-react";
 
-export const statConfig = [
+export const productsStatConfig = [
   {
     label: "إجمالي المنتجات",
     key: "total_products",

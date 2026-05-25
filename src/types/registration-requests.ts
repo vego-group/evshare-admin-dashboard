@@ -1,16 +1,14 @@
-import { OrderBy } from ".";
+import { OrderBy, RequestStatus } from ".";
 
 export type {
   RegistrationRequest,
   RegistrationRequestStatus,
 } from "@/data/registration-requests";
 
-export type KycStatus = "pending" | "rejected" | "approved";
-
 export type KycsQueryParams = {
   page: number;
   limit: number;
-  status?: KycStatus;
+  status?: RequestStatus;
   order_by?: OrderBy;
   search?: string;
 };
@@ -23,7 +21,7 @@ export type KycCity = {
 export type KycListItem = {
   id: string;
   name: string;
-  status: KycStatus;
+  status: RequestStatus;
   city: KycCity | null;
   created_at: string;
   updated_at: string;
@@ -71,4 +69,11 @@ export type KycDetailResponse = {
   error: boolean;
   message: string;
   data: KycDetail;
+};
+
+export type RegistrationRequestStatCard = {
+  label: string;
+  value: number | string;
+  icon: React.ReactNode;
+  iconBg: string;
 };

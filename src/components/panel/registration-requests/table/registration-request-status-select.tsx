@@ -1,21 +1,25 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import type { KycStatus } from "@/types";
+import type { RequestStatus } from "@/types";
 
-const STATUS_STYLES: Record<KycStatus, string> = {
+const STATUS_STYLES: Record<RequestStatus, string> = {
   approved: "bg-green-50 text-green",
   rejected: "bg-red-50 text-red",
   pending: "bg-amber-50 text-orange-500",
 };
 
-const STATUS_LABELS: Record<KycStatus, string> = {
+const STATUS_LABELS: Record<RequestStatus, string> = {
   approved: "موافق عليه",
   rejected: "مرفوض",
   pending: "قيد المراجعة",
 };
 
-function RegistrationRequestStatusSelect({ status }: { status: KycStatus }) {
+function RegistrationRequestStatusSelect({
+  status,
+}: {
+  status: RequestStatus;
+}) {
   return (
     <span
       className={cn(

@@ -11,6 +11,21 @@ export const authApi = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_AUTH_BASE_URL,
 });
 
+const attach401Interceptor = (instance: AxiosInstance) => {
+  instance.interceptors.response.use(
+    (response) => response,
+    (error: AxiosError) => {
+      if (error.response?.status === 401 && typeof window !== "undefined") {
+        window.location.replace("/login");
+      }
+      return Promise.reject(error);
+    },
+  );
+};
+
+attach401Interceptor(adminApi);
+attach401Interceptor(authApi);
+
 export const initApi = async () => {
   const token = await getToken();
   if (token) {

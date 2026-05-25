@@ -1,71 +1,140 @@
-import type { OrderDetail } from "@/types";
+"use client";
 
+import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+
+import { updateOrderStatusAPI } from "@/services/mutations";
+import type { OrderDetail, OrderNewStatus } from "@/types";
+
+import { StatusCategoryBadge } from "../table/order-status-badge";
 import {
-  OrderStatusBadge,
-  StatusCategoryBadge,
-} from "../table/order-status-badge";
+  OrderStatusDropdown,
+  OrderStatusUpdateConfirmModal,
+} from "../modals";
 
 function OrderInfoSection({ order }: { order: OrderDetail }) {
+  const queryClient = useQueryClient();
+
+  const [pendingStatus, setPendingStatus] = useState<OrderNewStatus | null>(null);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  async function handleConfirm() {
+    if (!pendingStatus || isUpdating) return;
+
+    setIsUpdating(true);
+    const result = await updateOrderStatusAPI(order.id, pendingStatus);
+    setIsUpdating(false);
+
+    if (result?.ok) {
+      toast.success(result.message || "تم تحديث حالة الطلب بنجاح");
+      setPendingStatus(null);
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["orders"] }),
+        queryClient.invalidateQueries({ queryKey: ["order ", order.id] }),
+      ]);
+      return;
+    }
+
+    toast.error(result?.message || "فشل تحديث حالة الطلب");
+  }
+
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        <InfoCard label="رقم الطلب" value={order.order_code} />
-        <InfoCard label="العميل" value={order.user.name} />
-        <InfoCard label="العنوان" value={order.address?.address ?? "-"} />
-        <InfoCard label="اسم الشارع" value={order.address?.street_name ?? "-"} />
-        <InfoCard label="رقم المبنى" value={order.address?.building_number ?? "-"} />
-        <InfoCard label="المستلم" value={order.address ? `${order.address.recipient_first_name} ${order.address.recipient_last_name}` : "-"} />
-        <InfoCard label="جوال المستلم" value={order.address ? `+${order.address.recipient_mobile}` : "-"} dir="ltr" />
-        <InfoCard
-          label="التاريخ"
-          value={formatDate(order.created_at)}
-          dir="ltr"
-        />
-      </div>
-
-      <div className="flex flex-wrap gap-3">
-        <div className="flex items-center gap-2 rounded-[14px] border border-[#e5e7eb] bg-white px-5 py-3">
-          <span className="text-sm text-gray">الحالة</span>
-          <OrderStatusBadge status={order.status} />
-        </div>
-        <div className="flex items-center gap-2 rounded-[14px] border border-[#e5e7eb] bg-white px-5 py-3">
-          <span className="text-sm text-gray">تصنيف الطلب</span>
-          <StatusCategoryBadge category={order.status_category} />
-        </div>
-      </div>
-
-      {order.notes ? (
-        <div className="rounded-[14px] border border-[#e5e7eb] bg-white px-5 py-4">
-          <p className="mb-1 text-sm text-gray">ملاحظات</p>
-          <p className="text-base text-secondary">{order.notes}</p>
-        </div>
-      ) : null}
-
-      <div className="rounded-[14px] border border-[#e5e7eb] bg-white px-5 py-4 space-y-2">
-        <p className="mb-3 text-base font-semibold text-secondary">
-          التفاصيل المالية
-        </p>
-        <FinancialRow
-          label="المجموع الفرعي"
-          value={`${order.subtotal.toLocaleString("ar-EG")} ر.س`}
-        />
-        <FinancialRow
-          label={`ضريبة القيمة المضافة (${order.vat_percentage}%)`}
-          value={`${order.vat_amount.toLocaleString("ar-EG")} ر.س`}
-        />
-        <FinancialRow
-          label="رسوم التوصيل"
-          value={`${order.delivery_fee.toLocaleString("ar-EG")} ر.س`}
-        />
-        <div className="mt-2 border-t border-neutral-100 pt-2">
-          <FinancialRow
-            label="الإجمالي"
-            value={`${order.total.toLocaleString("ar-EG")} ر.س`}
-            bold
+    <>
+      <div className="space-y-4">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <InfoCard label="رقم الطلب" value={order.order_code} />
+          <InfoCard label="العميل" value={order.user.name} />
+          <InfoCard label="العنوان" value={order.address?.address ?? "-"} />
+          <InfoCard
+            label="اسم الشارع"
+            value={order.address?.street_name ?? "-"}
+          />
+          <InfoCard
+            label="رقم المبنى"
+            value={order.address?.building_number ?? "-"}
+          />
+          <InfoCard
+            label="المستلم"
+            value={
+              order.address
+                ? `${order.address.recipient_first_name} ${order.address.recipient_last_name}`
+                : "-"
+            }
+          />
+          <InfoCard
+            label="جوال المستلم"
+            value={order.address ? `+${order.address.recipient_mobile}` : "-"}
+            dir="ltr"
+          />
+          <InfoCard
+            label="التاريخ"
+            value={formatDate(order.created_at)}
+            dir="ltr"
           />
         </div>
+
+        <div className="flex flex-wrap gap-3">
+          <div className="flex items-center gap-2 rounded-[14px] border border-[#e5e7eb] bg-white px-5 py-3">
+            <span className="text-sm text-gray">الحالة</span>
+            <OrderStatusDropdown
+              currentStatus={order.status}
+              disabled={isUpdating}
+              onSelect={setPendingStatus}
+            />
+          </div>
+          <div className="flex items-center gap-2 rounded-[14px] border border-[#e5e7eb] bg-white px-5 py-3">
+            <span className="text-sm text-gray">تصنيف الطلب</span>
+            <StatusCategoryBadge category={order.status_category} />
+          </div>
+        </div>
+
+        {order.notes ? (
+          <div className="rounded-[14px] border border-[#e5e7eb] bg-white px-5 py-4">
+            <p className="mb-1 text-sm text-gray">ملاحظات</p>
+            <p className="text-base text-secondary">{order.notes}</p>
+          </div>
+        ) : null}
+
+        <div className="space-y-2 rounded-[14px] border border-[#e5e7eb] bg-white px-5 py-4">
+          <p className="mb-3 text-base font-semibold text-secondary">
+            التفاصيل المالية
+          </p>
+          <FinancialRow
+            label="المجموع الفرعي"
+            value={`${order.subtotal.toLocaleString("ar-EG")} ر.س`}
+          />
+          <FinancialRow
+            label={`ضريبة القيمة المضافة (${order.vat_percentage}%)`}
+            value={`${order.vat_amount.toLocaleString("ar-EG")} ر.س`}
+          />
+          <FinancialRow
+            label="رسوم التوصيل"
+            value={`${order.delivery_fee.toLocaleString("ar-EG")} ر.س`}
+          />
+          <div className="mt-2 border-t border-neutral-100 pt-2">
+            <FinancialRow
+              label="الإجمالي"
+              value={`${order.total.toLocaleString("ar-EG")} ر.س`}
+              bold
+            />
+          </div>
+        </div>
       </div>
-    </div>
+
+      {pendingStatus && (
+        <OrderStatusUpdateConfirmModal
+          open
+          isUpdating={isUpdating}
+          orderCode={order.order_code}
+          targetStatus={pendingStatus}
+          onClose={() => {
+            if (!isUpdating) setPendingStatus(null);
+          }}
+          onConfirm={handleConfirm}
+        />
+      )}
+    </>
   );
 }
 
@@ -81,7 +150,10 @@ function InfoCard({
   return (
     <div className="flex flex-col gap-1 rounded-[14px] border border-[#e5e7eb] bg-white px-5 py-4">
       <span className="text-sm font-normal text-gray">{label}</span>
-      <span dir={dir} className="wrap-break-word text-base font-medium text-secondary">
+      <span
+        dir={dir}
+        className="wrap-break-word text-base font-medium text-secondary"
+      >
         {value}
       </span>
     </div>

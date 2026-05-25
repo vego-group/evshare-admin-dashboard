@@ -1,5 +1,5 @@
+import { productsStatConfig } from "@/data";
 import type { ProductsAnalytics } from "@/types";
-import { statConfig } from "@/data";
 
 type ProductsStatsProps = {
   data?: ProductsAnalytics;
@@ -8,7 +8,7 @@ type ProductsStatsProps = {
 function ProductsStats({ data }: ProductsStatsProps) {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      {statConfig.map((stat) => {
+      {productsStatConfig.map((stat) => {
         const Icon = stat.icon;
         const value = data?.[stat.key] ?? 0;
 

@@ -5,7 +5,7 @@ import { useState } from "react";
 import Header from "@/components/ui/header";
 import { PAGE_SIZE } from "@/constants";
 import { useRegistrationRequests } from "@/hooks/api";
-import type { KycsQueryParams, KycStatus, OrderBy } from "@/types";
+import type { KycsQueryParams, RequestStatus, OrderBy } from "@/types";
 
 import RegistrationRequestsContentShimmer from "./content-shimmer";
 import RegistrationRequestsDetailsPanel from "./details-panel";
@@ -50,7 +50,7 @@ function RegistrationRequests() {
             onSortChange={(order_by: OrderBy) =>
               updateParams({ order_by, page: 1 })
             }
-            onStatusChange={(status?: KycStatus) =>
+            onStatusChange={(status?: RequestStatus) =>
               updateParams({ status, page: 1 })
             }
           />

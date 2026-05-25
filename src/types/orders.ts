@@ -1,7 +1,13 @@
 import type { OrderBy } from ".";
 
 export type OrderStatusCategory = "new" | "completed" | "cancelled";
-export type OrderNewStatus = "draft" | "pending" | "preparing" | "ready";
+export type OrderNewStatus =
+  | "draft"
+  | "pending"
+  | "preparing"
+  | "ready"
+  | "completed"
+  | "cancelled";
 
 type BaseOrderQueryParams = {
   page: string;

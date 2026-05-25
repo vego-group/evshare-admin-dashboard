@@ -9,19 +9,19 @@ import Shimmer from "@/components/ui/shimmer";
 import { useRegistrationRequest } from "@/hooks/api";
 import { cn } from "@/lib/utils";
 import { approveKycAPI, rejectKycAPI } from "@/services/mutations";
-import type { KycDetail, KycStatus } from "@/types";
+import type { KycDetail, RequestStatus } from "@/types";
 
 import OwnerInfoSection from "./owner-info-section";
 import RequestDetailsFooter from "./request-details-footer";
 import ReviewAlert from "./review-alert";
 
-const STATUS_STYLES: Record<KycStatus, string> = {
+const STATUS_STYLES: Record<RequestStatus, string> = {
   approved: "bg-green-50 text-green",
   rejected: "bg-red-50 text-red",
   pending: "bg-amber-50 text-orange-500",
 };
 
-const STATUS_LABELS: Record<KycStatus, string> = {
+const STATUS_LABELS: Record<RequestStatus, string> = {
   approved: "موافق عليه",
   rejected: "مرفوض",
   pending: "قيد المراجعة",
@@ -50,7 +50,9 @@ function RegistrationRequestsDetailsPanel({
   async function refreshKycQueries(currentKycId: string) {
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: ["registration-requests"] }),
-      queryClient.invalidateQueries({ queryKey: ["registration-request", currentKycId] }),
+      queryClient.invalidateQueries({
+        queryKey: ["registration-request", currentKycId],
+      }),
     ]);
   }
 
@@ -152,7 +154,7 @@ function KycDetails({ request }: { request: KycDetail }) {
   );
 }
 
-function StatusBadge({ status }: { status: KycStatus }) {
+function StatusBadge({ status }: { status: RequestStatus }) {
   return (
     <span
       className={cn(

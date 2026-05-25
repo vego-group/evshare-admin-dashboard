@@ -56,7 +56,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
     icon: ScrollText,
   },
   {
-    href: "/product-orders",
+    href: "/orders",
     label: "طلبات المنتجات",
     ariaLabel: "طلبات المنتجات",
     icon: ShoppingCart,

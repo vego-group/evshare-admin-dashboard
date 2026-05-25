@@ -1,44 +1,17 @@
-import { CheckCircle2, FolderTree, PauseCircle, Star } from "lucide-react";
-
 import type { CategoriesAnalytics } from "@/types";
+import { categoriesStatConfig } from "@/data";
 
 type CategoriesStatsProps = {
   data?: CategoriesAnalytics;
 };
 
-const statConfig = [
-  {
-    label: "إجمالي التصنيفات",
-    key: "total_categories",
-    icon: FolderTree,
-    iconClassName: "bg-blue-50 text-blue-600",
-  },
-  {
-    label: "تصنيفات نشطة",
-    key: "active_categories",
-    icon: CheckCircle2,
-    iconClassName: "bg-green-50 text-green-600",
-  },
-  {
-    label: "تصنيفات غير نشطة",
-    key: "inactive_categories",
-    icon: PauseCircle,
-    iconClassName: "bg-red-50 text-red-500",
-  },
-  {
-    label: "الأكثر استخداما",
-    key: "most_used_category",
-    icon: Star,
-    iconClassName: "bg-amber-50 text-orange-500",
-  },
-] as const;
-
 function CategoriesStats({ data }: CategoriesStatsProps) {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      {statConfig.map((stat) => {
+      {categoriesStatConfig.map((stat) => {
         const Icon = stat.icon;
-        const value = data?.[stat.key] ?? (stat.key === "most_used_category" ? "-" : 0);
+        const value =
+          data?.[stat.key] ?? (stat.key === "most_used_category" ? "-" : 0);
 
         return (
           <div

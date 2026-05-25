@@ -18,6 +18,8 @@ const STATUS_STYLES: Record<OrderNewStatus, string> = {
   pending: "bg-amber-50 text-orange-500",
   preparing: "bg-orange-50 text-orange-600",
   ready: "bg-green-50 text-green-600",
+  completed: "bg-emerald-50 text-emerald-600",
+  cancelled: "bg-red-50 text-red-500",
 };
 
 const STATUS_LABELS: Record<OrderNewStatus, string> = {
@@ -25,11 +27,13 @@ const STATUS_LABELS: Record<OrderNewStatus, string> = {
   pending: "قيد الانتظار",
   preparing: "قيد التحضير",
   ready: "جاهز",
+  completed: "مكتمل",
+  cancelled: "ملغي",
 };
 
 export function StatusCategoryBadge({ category }: { category: OrderStatusCategory }) {
   return (
-    <span className={cn("inline-flex h-[34px] items-center justify-center whitespace-nowrap rounded-full px-4 text-sm font-medium", CATEGORY_STYLES[category])}>
+    <span className={cn("inline-flex h-8.5 items-center justify-center whitespace-nowrap rounded-full px-4 text-sm font-medium", CATEGORY_STYLES[category])}>
       {CATEGORY_LABELS[category]}
     </span>
   );
@@ -37,7 +41,7 @@ export function StatusCategoryBadge({ category }: { category: OrderStatusCategor
 
 export function OrderStatusBadge({ status }: { status: OrderNewStatus }) {
   return (
-    <span className={cn("inline-flex h-[34px] items-center justify-center whitespace-nowrap rounded-full px-4 text-sm font-medium", STATUS_STYLES[status])}>
+    <span className={cn("inline-flex h-8.5 items-center justify-center whitespace-nowrap rounded-full px-4 text-sm font-medium", STATUS_STYLES[status])}>
       {STATUS_LABELS[status]}
     </span>
   );

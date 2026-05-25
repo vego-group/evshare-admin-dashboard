@@ -1,44 +1,17 @@
-import { CheckCircle2, MapPin, PauseCircle, Star } from "lucide-react";
-
+import { citiesStatConfig } from "@/data";
 import type { CitiesAnalytics } from "@/types";
 
 type CitiesStatsProps = {
   data?: CitiesAnalytics;
 };
 
-const statConfig = [
-  {
-    label: "إجمالي المدن",
-    key: "total_cities",
-    icon: MapPin,
-    iconClassName: "bg-blue-50 text-blue-600",
-  },
-  {
-    label: "مدن نشطة",
-    key: "active_cities",
-    icon: CheckCircle2,
-    iconClassName: "bg-green-50 text-green-600",
-  },
-  {
-    label: "مدن غير نشطة",
-    key: "inactive_cities",
-    icon: PauseCircle,
-    iconClassName: "bg-red-50 text-red-500",
-  },
-  {
-    label: "الأكثر استخداما",
-    key: "most_used_city",
-    icon: Star,
-    iconClassName: "bg-amber-50 text-orange-500",
-  },
-] as const;
-
 function CitiesStats({ data }: CitiesStatsProps) {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      {statConfig.map((stat) => {
+      {citiesStatConfig.map((stat) => {
         const Icon = stat.icon;
-        const value = data?.[stat.key] ?? (stat.key === "most_used_city" ? "-" : 0);
+        const value =
+          data?.[stat.key] ?? (stat.key === "most_used_city" ? "-" : 0);
 
         return (
           <div
@@ -53,7 +26,9 @@ function CitiesStats({ data }: CitiesStatsProps) {
                 {value}
               </p>
             </div>
-            <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-[10px] ${stat.iconClassName}`}>
+            <div
+              className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-[10px] ${stat.iconClassName}`}
+            >
               <Icon className="size-6" />
             </div>
           </div>
