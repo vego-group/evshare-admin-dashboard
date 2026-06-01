@@ -5,10 +5,12 @@ import { getPayloadMessage, getValidationErrors } from "@/lib/utils/helper";
 
 export const adminApi = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_ADMIN_BASE_URL,
+  headers: { "Accept-Language": "ar" },
 });
 
 export const authApi = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_AUTH_BASE_URL,
+  headers: { "Accept-Language": "ar" },
 });
 
 const attach401Interceptor = (instance: AxiosInstance) => {
