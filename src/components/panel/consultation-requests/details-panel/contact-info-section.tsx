@@ -2,11 +2,11 @@ import { Mail, Phone, User } from "lucide-react";
 
 import { formatSaudiPhoneNumber } from "@/lib/utils/format-phone";
 
-import type { ConsultationRequest } from "@/types";
+import type { ConsultationListItem } from "@/types";
 import ContactInfoRow from "./contact-info-row";
 import PanelSectionTitle from "./panel-section-title";
 
-function ContactInfoSection({ request }: { request: ConsultationRequest }) {
+function ContactInfoSection({ request }: { request: ConsultationListItem }) {
   return (
     <section className="space-y-4">
       <PanelSectionTitle>معلومات الاتصال</PanelSectionTitle>

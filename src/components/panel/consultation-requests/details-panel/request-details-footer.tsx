@@ -2,10 +2,10 @@ import { Mail, Phone } from "lucide-react";
 
 import { normalizePhoneForLink } from "@/lib/utils/format-phone";
 
-import type { ConsultationRequest } from "@/types";
+import type { ConsultationListItem } from "@/types";
 import PanelActionLink from "./panel-action-link";
 
-function RequestDetailsFooter({ request }: { request: ConsultationRequest }) {
+function RequestDetailsFooter({ request }: { request: ConsultationListItem }) {
   return (
     <footer className="shrink-0 space-y-3 border-t border-[#e5e7eb] px-6 pb-8 pt-6">
       <PanelActionLink

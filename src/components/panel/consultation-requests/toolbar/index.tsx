@@ -3,60 +3,71 @@
 import { ChevronDown, ListFilter, Search } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import { cn } from "@/lib/utils";
 import useDebounce from "@/hooks/use-debounce";
-import {
-  consultationRequestStatuses,
-  consultationRequestTypes,
-} from "@/data";
-import type {
-  ConsultationRequestStatus,
-  ConsultationRequestType,
-} from "@/types";
+import { cn } from "@/lib/utils";
+import type { ConsultationStatus, OrderBy } from "@/types";
 
-type ConsultationFilterValue<T extends string> = T | "الكل";
-type ConsultationSortValue = "الاحدث" | "الاقدم";
+type StatusFilterValue = ConsultationStatus | "all";
 
 type ConsultationRequestsToolbarProps = {
   searchQuery: string;
-  selectedSort: ConsultationSortValue;
-  selectedStatus: ConsultationFilterValue<ConsultationRequestStatus>;
-  selectedType: ConsultationFilterValue<ConsultationRequestType>;
+  selectedSort: OrderBy;
+  selectedStatus?: ConsultationStatus;
   onSearchChange: (value: string) => void;
-  onSortChange: (value: ConsultationSortValue) => void;
-  onStatusChange: (
-    value: ConsultationFilterValue<ConsultationRequestStatus>,
-  ) => void;
-  onTypeChange: (
-    value: ConsultationFilterValue<ConsultationRequestType>,
-  ) => void;
+  onSortChange: (value: OrderBy) => void;
+  onStatusChange: (value?: ConsultationStatus) => void;
 };
 
-const sortOptions: ConsultationSortValue[] = ["الاحدث", "الاقدم"];
+const sortOptions: { label: string; value: OrderBy }[] = [
+  { label: "الأحدث", value: "desc" },
+  { label: "الأقدم", value: "asc" },
+];
+
+const statusOptions: { label: string; value: StatusFilterValue }[] = [
+  { label: "الكل", value: "all" },
+  { label: "قيد المراجعة", value: "pending" },
+  { label: "تم التواصل", value: "reviewed" },
+  { label: "مغلق", value: "closed" },
+];
 
 function ConsultationRequestsToolbar({
   searchQuery,
   selectedSort,
   selectedStatus,
-  selectedType,
   onSearchChange,
   onSortChange,
   onStatusChange,
-  onTypeChange,
 }: ConsultationRequestsToolbarProps) {
   const [internalSearchQuery, setInternalSearchQuery] = useState(searchQuery);
 
   const debouncedSearch = useDebounce(internalSearchQuery, 500);
   const mounted = useRef(false);
+  const onSearchChangeRef = useRef(onSearchChange);
+
   useEffect(() => {
-    if (!mounted.current) { mounted.current = true; return; }
-    onSearchChange(debouncedSearch);
+    setInternalSearchQuery(searchQuery);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    onSearchChangeRef.current = onSearchChange;
+  }, [onSearchChange]);
+
+  useEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true;
+      return;
+    }
+
+    onSearchChangeRef.current(debouncedSearch);
   }, [debouncedSearch]);
 
   return (
     <section className="space-y-3 lg:flex lg:items-center lg:justify-between lg:gap-3 lg:space-y-0 lg:rounded-2xl lg:border lg:border-neutral-100/60 lg:bg-white lg:p-1.5 lg:shadow-[0_2px_6px_rgba(0,0,0,0.04)]">
       <div className="rounded-2xl border border-neutral-100/60 bg-white p-1.5 shadow-[0_2px_6px_rgba(0,0,0,0.04)] lg:flex-1 lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none">
-        <SearchInput value={internalSearchQuery} onChange={setInternalSearchQuery} />
+        <SearchInput
+          value={internalSearchQuery}
+          onChange={setInternalSearchQuery}
+        />
       </div>
 
       <div className="flex flex-col gap-[13px] sm:flex-row sm:flex-wrap lg:shrink-0">
@@ -68,15 +79,11 @@ function ConsultationRequestsToolbar({
         />
         <FilterSelect
           label="الحالة"
-          options={["الكل", ...consultationRequestStatuses]}
-          value={selectedStatus}
-          onChange={onStatusChange}
-        />
-        <FilterSelect
-          label="النوع"
-          options={["الكل", ...consultationRequestTypes]}
-          value={selectedType}
-          onChange={onTypeChange}
+          options={statusOptions}
+          value={selectedStatus ?? "all"}
+          onChange={(value) =>
+            onStatusChange(value === "all" ? undefined : value)
+          }
         />
       </div>
     </section>
@@ -96,7 +103,7 @@ function SearchInput({
       <input
         type="search"
         aria-label="بحث في طلبات الاستشارة"
-        placeholder="ابحث عن أصل بالاسم أو المعرف..."
+        placeholder="ابحث بالاسم أو الهاتف أو البريد..."
         value={value}
         onChange={(event) => onChange(event.target.value)}
         className="h-full w-full bg-transparent text-right text-sm font-normal text-secondary placeholder:text-[#99a1af] sm:text-base"
@@ -112,15 +119,15 @@ function FilterSelect<T extends string>({
   onChange,
 }: {
   label: string;
-  options: T[];
+  options: { label: string; value: T }[];
   value: T;
   onChange: (value: T) => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const selectedOption = options.find((option) => option.value === value);
 
   return (
-    <div className="relative h-9.5 w-full text-sm font-medium leading-5 text-dark-gray sm:w-49"
-    >
+    <div className="relative h-9.5 w-full text-sm font-medium leading-5 text-dark-gray sm:w-49">
       <button
         type="button"
         aria-label={label}
@@ -133,7 +140,7 @@ function FilterSelect<T extends string>({
         )}
       >
         <span className="flex items-center gap-1">
-          <span>{value}</span>
+          <span>{selectedOption?.label ?? value}</span>
           <ListFilter className="size-3.5 text-primary" />
         </span>
 
@@ -145,23 +152,25 @@ function FilterSelect<T extends string>({
         />
       </button>
 
-      {isOpen && <div className="fixed inset-0 z-20" onClick={() => setIsOpen(false)} />}
+      {isOpen ? (
+        <div className="fixed inset-0 z-20" onClick={() => setIsOpen(false)} />
+      ) : null}
       {isOpen ? (
         <div className="absolute right-0 top-[calc(100%+2px)] z-30 w-full overflow-hidden rounded-[14px] border border-primary bg-bg-warm-ivory shadow-[0_10px_24px_rgba(16,24,40,0.12)]">
           {options.map((option) => (
             <button
-              key={option}
+              key={option.value}
               type="button"
               onClick={() => {
-                onChange(option);
+                onChange(option.value);
                 setIsOpen(false);
               }}
               className={cn(
                 "flex h-10 w-full items-center justify-start px-3 text-right text-sm font-medium text-dark-gray transition hover:bg-primary/10",
-                value === option && "bg-primary/15 text-secondary",
+                value === option.value && "bg-primary/15 text-secondary",
               )}
             >
-              {option}
+              {option.label}
             </button>
           ))}
         </div>

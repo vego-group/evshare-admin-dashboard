@@ -1,104 +1,77 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
-import { consultationRequests } from "@/data";
-import type {
-  ConsultationRequest,
-  ConsultationRequestStatus,
-  ConsultationRequestType,
-} from "@/types";
+import Header from "@/components/ui/header";
+import { PAGE_SIZE } from "@/constants";
+import { useConsultationRequests } from "@/hooks/api";
+import type { ConsultationStatus, ConsultationsQueryParams, OrderBy } from "@/types";
+
+import ConsultationRequestsContentShimmer from "./content-shimmer";
 import ConsultationRequestDetailsPanel from "./details-panel";
+import ConsultationRequestsPagination from "./pagination";
 import ConsultationRequestsStats from "./stats";
 import ConsultationRequestsTable from "./table";
 import ConsultationRequestsToolbar from "./toolbar";
-import Header from "@/components/ui/header";
-
-type ConsultationFilterValue<T extends string> = T | "الكل";
-type ConsultationSortValue = "الاحدث" | "الاقدم";
 
 function ConsultationRequests() {
-  const [requests, setRequests] = useState(consultationRequests);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedRequest, setSelectedRequest] =
-    useState<ConsultationRequest | null>(null);
-  const [selectedSort, setSelectedSort] =
-    useState<ConsultationSortValue>("الاحدث");
-  const [selectedStatus, setSelectedStatus] =
-    useState<ConsultationFilterValue<ConsultationRequestStatus>>("الكل");
-  const [selectedType, setSelectedType] =
-    useState<ConsultationFilterValue<ConsultationRequestType>>("الكل");
+  const [params, setParams] = useState<ConsultationsQueryParams>({
+    page: 1,
+    limit: PAGE_SIZE,
+  });
+  const [selectedConsultationId, setSelectedConsultationId] = useState<
+    string | null
+  >(null);
 
-  const filteredRequests = useMemo(() => {
-    const normalizedQuery = searchQuery.trim().toLowerCase();
+  const { data, isLoading } = useConsultationRequests(params);
 
-    const results = requests.filter((request) => {
-      const matchesSearch =
-        !normalizedQuery ||
-        [
-          request.name,
-          request.phone,
-          request.email,
-          request.type,
-          request.status,
-        ]
-          .join(" ")
-          .toLowerCase()
-          .includes(normalizedQuery);
-      const matchesStatus =
-        selectedStatus === "الكل" || request.status === selectedStatus;
-      const matchesType =
-        selectedType === "الكل" || request.type === selectedType;
-
-      return matchesSearch && matchesStatus && matchesType;
-    });
-
-    return selectedSort === "الاحدث" ? results : [...results].reverse();
-  }, [requests, searchQuery, selectedSort, selectedStatus, selectedType]);
-
-  const handleStatusChange = (
-    requestId: string,
-    status: ConsultationRequestStatus,
-  ) => {
-    setRequests((currentRequests) =>
-      currentRequests.map((request) =>
-        request.id === requestId ? { ...request, status } : request,
-      ),
-    );
-    setSelectedRequest((currentRequest) =>
-      currentRequest?.id === requestId
-        ? { ...currentRequest, status }
-        : currentRequest,
-    );
+  const updateParams = (nextParams: Partial<ConsultationsQueryParams>) => {
+    setParams((currentParams) => ({
+      ...currentParams,
+      ...nextParams,
+    }));
   };
 
   return (
     <div className="flex w-full flex-col gap-6">
-      <Header
-        title="طلبات الاستشارة"
-        subtitle="إدارة ومتابعة طلبات الاستشارة"
-      />
-      <ConsultationRequestsStats requests={requests} />
-      <ConsultationRequestsToolbar
-        searchQuery={searchQuery}
-        selectedSort={selectedSort}
-        selectedStatus={selectedStatus}
-        selectedType={selectedType}
-        onSearchChange={setSearchQuery}
-        onSortChange={setSelectedSort}
-        onStatusChange={setSelectedStatus}
-        onTypeChange={setSelectedType}
-      />
-      <ConsultationRequestsTable
-        requests={filteredRequests}
-        onViewRequest={setSelectedRequest}
-        onStatusChange={handleStatusChange}
-      />
+      {isLoading ? (
+        <ConsultationRequestsContentShimmer />
+      ) : (
+        <>
+          <Header
+            title="طلبات الاستشارة"
+            subtitle="إدارة ومتابعة طلبات الاستشارة"
+          />
+          <ConsultationRequestsStats analytics={data?.analytics} />
+          <ConsultationRequestsToolbar
+            searchQuery={params.search ?? ""}
+            selectedSort={params.order_by ?? "desc"}
+            selectedStatus={params.status}
+            onSearchChange={(search) =>
+              updateParams({ search: search || undefined, page: 1 })
+            }
+            onSortChange={(order_by: OrderBy) =>
+              updateParams({ order_by, page: 1 })
+            }
+            onStatusChange={(status?: ConsultationStatus) =>
+              updateParams({ status, page: 1 })
+            }
+          />
+          <ConsultationRequestsTable
+            requests={data?.data ?? []}
+            onRequestSelect={setSelectedConsultationId}
+          />
+          <ConsultationRequestsPagination
+            meta={data?.meta}
+            onPageChange={(page) => updateParams({ page })}
+          />
+        </>
+      )}
+
       <ConsultationRequestDetailsPanel
-        request={selectedRequest}
-        open={Boolean(selectedRequest)}
-        onClose={() => setSelectedRequest(null)}
-        onStatusChange={handleStatusChange}
+        consultationRequestId={selectedConsultationId}
+        open={Boolean(selectedConsultationId)}
+        onClose={() => setSelectedConsultationId(null)}
       />
     </div>
   );

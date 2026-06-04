@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { TrendingDown, TrendingUp } from "lucide-react";
 
-import type { ConsultationRequest } from "@/types";
+import type { ConsultationAnalytics } from "@/types";
 
 type ConsultationStat = {
   label: string;
@@ -13,24 +13,22 @@ type ConsultationStat = {
 };
 
 function ConsultationRequestsStats({
-  requests,
+  analytics,
 }: {
-  requests: ConsultationRequest[];
+  analytics?: ConsultationAnalytics;
 }) {
   const consultationStats: ConsultationStat[] = [
     {
       label: "إجمالي الطلبات",
-      value: String(requests.length),
+      value: String(analytics?.total ?? 0),
       change: "12%",
       trend: "up",
       iconSrc: "/images/total-consultation-requests.svg",
       iconClassName: "bg-[#eff6ff]",
     },
     {
-      label: "الطلبات الجديدة",
-      value: String(
-        requests.filter((request) => request.status === "جديد").length,
-      ),
+      label: "قيد المراجعة",
+      value: String(analytics?.pending ?? 0),
       change: "2%",
       trend: "down",
       iconSrc: "/images/new-consultation-requests.svg",
@@ -38,9 +36,7 @@ function ConsultationRequestsStats({
     },
     {
       label: "الطلبات المغلقة",
-      value: String(
-        requests.filter((request) => request.status === "مغلق").length,
-      ),
+      value: String(analytics?.closed ?? 0),
       change: "8%",
       trend: "up",
       iconSrc: "/images/closed-consultation-requests.svg",
@@ -48,9 +44,7 @@ function ConsultationRequestsStats({
     },
     {
       label: "تم التواصل",
-      value: String(
-        requests.filter((request) => request.status === "تم التواصل").length,
-      ),
+      value: String(analytics?.reviewed ?? 0),
       change: "3%",
       trend: "down",
       iconSrc: "/images/completed-consultation-requests.svg",
@@ -73,7 +67,7 @@ function ConsultationStatCard({ stat }: { stat: ConsultationStat }) {
 
   return (
     <article className="relative h-[177px] overflow-hidden rounded-2xl border border-neutral-100/80 bg-white p-6">
-      <div className="pointer-events-none absolute -top-16 -right-16 size-32 rounded-full bg-primary/8 opacity-50" />
+      <div className="pointer-events-none absolute -right-16 -top-16 size-32 rounded-full bg-primary/8 opacity-50" />
 
       <div className="relative flex h-full flex-col justify-between">
         <div className="flex items-start justify-between gap-4">
