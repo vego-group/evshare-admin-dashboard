@@ -9,6 +9,8 @@ import {
   ScrollText,
   ShoppingCart,
   Tags,
+  Users,
+  Wallet,
   type LucideIcon,
 } from "lucide-react";
 
@@ -39,6 +41,18 @@ export const sidebarNavItems: SidebarNavItem[] = [
     label: "المنتجات",
     ariaLabel: "المنتجات",
     icon: Package,
+  },
+  {
+    href: "/users",
+    label: "المستخدمون",
+    ariaLabel: "المستخدمون",
+    icon: Users,
+  },
+  {
+    href: "/wallet",
+    label: "المحفظة",
+    ariaLabel: "المحفظة",
+    icon: Wallet,
   },
   {
     href: "/cities",

@@ -1,0 +1,80 @@
+import type { ReactNode } from "react";
+
+import type { UserListItem } from "@/types";
+
+import {
+  formatDate,
+  getUserDisplayName,
+  RoleBadge,
+  UserActions,
+  UserIcon,
+  VerifiedBadge,
+} from "./user-result-parts";
+
+type UsersTableProps = {
+  users: UserListItem[];
+  onDeleteUser: (user: UserListItem) => void;
+};
+
+function UsersTable({ users, onDeleteUser }: UsersTableProps) {
+  return (
+    <section className="overflow-hidden rounded-lg bg-white">
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[800px] border-separate border-spacing-0 text-right">
+          <thead>
+            <tr className="bg-primary/8 text-base font-semibold text-dark-gray">
+              <HeaderCell>المستخدم</HeaderCell>
+              <HeaderCell>الجوال</HeaderCell>
+              <HeaderCell>الدور</HeaderCell>
+              <HeaderCell>التحقق</HeaderCell>
+              <HeaderCell>تاريخ الإنشاء</HeaderCell>
+              <HeaderCell>الإجراءات</HeaderCell>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map((user) => (
+              <tr key={user.id} className="text-dark-gray">
+                <TableCell>
+                  <div className="flex max-w-[240px] items-center gap-3">
+                    <UserIcon />
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-base font-medium" title={getUserDisplayName(user)}>
+                        {getUserDisplayName(user)}
+                      </p>
+                      {user.email && (
+                        <p className="truncate text-xs text-gray" title={user.email}>
+                          {user.email}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell dir="ltr">+{user.mobile}</TableCell>
+                <TableCell>
+                  <RoleBadge role={user.role} />
+                </TableCell>
+                <TableCell>
+                  <VerifiedBadge verified={user.mobile_verified} />
+                </TableCell>
+                <TableCell dir="ltr">{formatDate(user.created_at)}</TableCell>
+                <TableCell>
+                  <UserActions onDelete={() => onDeleteUser(user)} />
+                </TableCell>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+}
+
+function HeaderCell({ children }: { children: ReactNode }) {
+  return <th className="border-b border-primary/15 px-5 py-5">{children}</th>;
+}
+
+function TableCell({ children, dir }: { children: ReactNode; dir?: "ltr" | "rtl" }) {
+  return <td dir={dir} className="border-b border-primary/15 px-5 py-3">{children}</td>;
+}
+
+export default UsersTable;

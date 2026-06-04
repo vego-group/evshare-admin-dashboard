@@ -7,3 +7,5 @@ export * from "./payment-requests";
 export * from "./sliders";
 export * from "./complaints";
 export * from "./consultation-requests";
+export * from "./wallet";
+export * from "./users";
