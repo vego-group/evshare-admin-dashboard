@@ -1,4 +1,7 @@
+"use client";
+
 import type { ReactNode } from "react";
+import { useRouter } from "next/navigation";
 
 import type { UserListItem } from "@/types";
 
@@ -17,6 +20,10 @@ type UsersTableProps = {
 };
 
 function UsersTable({ users, onDeleteUser }: UsersTableProps) {
+  const router = useRouter();
+
+  const openUser = (userId: string) => router.push(`/users/${userId}`);
+
   return (
     <section className="overflow-hidden rounded-lg bg-white">
       <div className="overflow-x-auto">
@@ -33,16 +40,34 @@ function UsersTable({ users, onDeleteUser }: UsersTableProps) {
           </thead>
           <tbody>
             {users.map((user) => (
-              <tr key={user.id} className="text-dark-gray">
+              <tr
+                key={user.id}
+                tabIndex={0}
+                role="button"
+                onClick={() => openUser(user.id)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    openUser(user.id);
+                  }
+                }}
+                className="cursor-pointer text-dark-gray transition hover:bg-primary/5 focus-visible:bg-primary/5 focus-visible:outline-none"
+              >
                 <TableCell>
                   <div className="flex max-w-[240px] items-center gap-3">
                     <UserIcon />
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-base font-medium" title={getUserDisplayName(user)}>
+                      <p
+                        className="truncate text-base font-medium"
+                        title={getUserDisplayName(user)}
+                      >
                         {getUserDisplayName(user)}
                       </p>
                       {user.email && (
-                        <p className="truncate text-xs text-gray" title={user.email}>
+                        <p
+                          className="truncate text-xs text-gray"
+                          title={user.email}
+                        >
                           {user.email}
                         </p>
                       )}
@@ -73,8 +98,18 @@ function HeaderCell({ children }: { children: ReactNode }) {
   return <th className="border-b border-primary/15 px-5 py-5">{children}</th>;
 }
 
-function TableCell({ children, dir }: { children: ReactNode; dir?: "ltr" | "rtl" }) {
-  return <td dir={dir} className="border-b border-primary/15 px-5 py-3">{children}</td>;
+function TableCell({
+  children,
+  dir,
+}: {
+  children: ReactNode;
+  dir?: "ltr" | "rtl";
+}) {
+  return (
+    <td dir={dir} className="border-b border-primary/15 px-5 py-3">
+      {children}
+    </td>
+  );
 }
 
 export default UsersTable;

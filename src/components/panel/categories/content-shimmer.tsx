@@ -26,23 +26,46 @@ function CategoriesContentShimmer() {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-lg bg-white">
-        <div className="min-w-[900px]">
-          <div className="grid grid-cols-6 gap-4 border-b border-neutral-100 bg-neutral-50 px-5 py-4">
-            {Array.from({ length: 6 }).map((_, index) => (
-              <Shimmer key={index} className="h-5 w-24 rounded-md" />
-            ))}
+      <div className="grid gap-4 md:hidden">
+        {Array.from({ length: 4 }).map((_, cardIndex) => (
+          <div
+            key={cardIndex}
+            className="rounded-[14px] border border-neutral-100 bg-white p-4"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0 flex-1 space-y-3">
+                <Shimmer className="h-5 w-2/3 max-w-40 rounded-md" />
+                <Shimmer className="h-4 w-1/2 max-w-32 rounded-md" />
+              </div>
+              <Shimmer className="size-12 shrink-0 rounded-[10px]" />
+            </div>
+            <div className="mt-5 grid grid-cols-2 gap-3">
+              <Shimmer className="h-9 rounded-[12px]" />
+              <Shimmer className="h-9 rounded-[12px]" />
+            </div>
           </div>
-          {Array.from({ length: 5 }).map((_, rowIndex) => (
-            <div
-              key={rowIndex}
-              className="grid h-16 grid-cols-6 items-center gap-4 border-b border-neutral-100 px-5 py-3"
-            >
-              {Array.from({ length: 6 }).map((_, cellIndex) => (
-                <Shimmer key={cellIndex} className="h-5 w-28 rounded-md" />
+        ))}
+      </div>
+
+      <div className="hidden overflow-hidden rounded-lg bg-white md:block">
+        <div className="overflow-x-auto">
+          <div className="min-w-[900px]">
+            <div className="grid grid-cols-6 gap-4 border-b border-neutral-100 bg-neutral-50 px-5 py-4">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <Shimmer key={index} className="h-5 w-24 rounded-md" />
               ))}
             </div>
-          ))}
+            {Array.from({ length: 5 }).map((_, rowIndex) => (
+              <div
+                key={rowIndex}
+                className="grid h-16 grid-cols-6 items-center gap-4 border-b border-neutral-100 px-5 py-3"
+              >
+                {Array.from({ length: 6 }).map((_, cellIndex) => (
+                  <Shimmer key={cellIndex} className="h-5 w-28 rounded-md" />
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

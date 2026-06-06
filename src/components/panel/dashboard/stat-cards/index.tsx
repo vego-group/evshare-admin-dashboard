@@ -1,11 +1,86 @@
-import { dashboardStats } from "@/data/dashboard";
+import {
+  Boxes,
+  DollarSign,
+  SaudiRiyal,
+  ShoppingCart,
+  TrendingUp,
+} from "lucide-react";
+import type { ReactNode } from "react";
+
+import type {
+  DashboardAnalyticsData,
+  DashboardPeriod,
+  DashboardTrendCard,
+} from "@/types";
 import { DashboardSectionCard, TrendBadge } from "../shared";
 
-function StatCardsSection() {
+type StatCardsSectionProps = {
+  data?: DashboardAnalyticsData["top_cards"];
+  period: DashboardPeriod;
+};
+
+const statConfig = [
+  {
+    key: "average_order_value",
+    title: "متوسط قيمة الطلب",
+    icon: TrendingUp,
+    format: (value: number) => formatCurrency(value),
+  },
+  {
+    key: "products",
+    title: "المنتجات",
+    icon: Boxes,
+    format: (value: number) => formatNumber(value),
+  },
+  {
+    key: "revenues",
+    title: "الإيرادات",
+    icon: DollarSign,
+    format: (value: number) => formatCurrency(value),
+  },
+  {
+    key: "orders",
+    title: "الطلبات",
+    icon: ShoppingCart,
+    format: (value: number) => formatNumber(value),
+  },
+] as const;
+
+function formatNumber(value: number) {
+  return value.toLocaleString("en-US");
+}
+
+function formatCurrency(value: number): ReactNode {
+  return (
+    <span className="inline-flex items-center gap-1" dir="ltr">
+      <SaudiRiyal className="size-5" />
+      {value.toLocaleString("en-US", {
+        maximumFractionDigits: 2,
+      })}
+    </span>
+  );
+}
+
+function formatTrend(value: number) {
+  return `${value.toLocaleString("en-US", {
+    maximumFractionDigits: 1,
+  })}%`;
+}
+
+function emptyCard(): DashboardTrendCard {
+  return {
+    value: 0,
+    trend: 0,
+    is_up: false,
+  };
+}
+
+function StatCardsSection({ data, period }: StatCardsSectionProps) {
   return (
     <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-      {dashboardStats.map((stat) => {
+      {statConfig.map((stat) => {
         const Icon = stat.icon;
+        const card = data?.[stat.key] ?? emptyCard();
 
         return (
           <DashboardSectionCard
@@ -25,17 +100,17 @@ function StatCardsSection() {
 
               <div className="flex justify-between gap-3">
                 <p className="text-[30px] leading-[38px] font-semibold tracking-[-0.03em] text-dark-gray">
-                  {stat.value}
+                  {stat.format(card.value)}
                 </p>
                 <TrendBadge
-                  value={stat.delta}
-                  direction={stat.direction}
+                  value={formatTrend(card.trend)}
+                  direction={card.is_up ? "up" : "down"}
                   className="px-0 py-0 text-[14px] font-semibold shadow-none bg-transparent"
                 />
               </div>
 
               <p className="text-xs leading-[18px] font-medium text-gray">
-                {stat.comparison}
+                مقارنة بآخر {period} أيام السابقة
               </p>
             </div>
           </DashboardSectionCard>

@@ -9,6 +9,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { SaudiRiyal } from "lucide-react";
 
 import type { ChartPoint } from "@/types";
 
@@ -28,6 +29,7 @@ type RevenueXAxisTickProps = {
 type PeakReferenceLabelProps = {
   viewBox?: { x?: number; y?: number };
   isMobile?: boolean;
+  peakValue: number;
 };
 
 type RevenueOverviewChartProps = {
@@ -40,6 +42,7 @@ type RevenueOverviewChartProps = {
     bottom: number;
   };
   peakPoint: ChartPoint;
+  peakValue: number;
 };
 
 function RevenueTooltip({ active, payload, label }: RevenueTooltipProps) {
@@ -57,7 +60,7 @@ function RevenueTooltip({ active, payload, label }: RevenueTooltipProps) {
           className={entry.dataKey === "current" ? "text-primary" : "text-gray"}
         >
           {entry.dataKey === "current" ? "الحالي" : "السابق"}:{" "}
-          <span className="font-semibold">{entry.value}k</span>
+          <span className="font-semibold">{formatCurrency(entry.value)}</span>
         </p>
       ))}
     </div>
@@ -91,6 +94,7 @@ function RevenueXAxisTick({
 function PeakReferenceLabel({
   viewBox,
   isMobile,
+  peakValue,
 }: PeakReferenceLabelProps) {
   const x = viewBox?.x ?? 0;
   const y = viewBox?.y ?? 0;
@@ -107,7 +111,7 @@ function PeakReferenceLabel({
         direction="rtl"
         unicodeBidi="plaintext"
       >
-        ذروة • 246k
+        ذروة • {formatCompact(peakValue)}
       </text>
     </g>
   );
@@ -118,7 +122,13 @@ function RevenueOverviewChart({
   isMobile,
   margins,
   peakPoint,
+  peakValue,
 }: RevenueOverviewChartProps) {
+  const values = chartData.flatMap((point) => [point.current, point.previous]);
+  const maxValue = Math.max(...values, 0);
+  const yMax = Math.max(1, Math.ceil(maxValue / 4) * 4);
+  const ticks = buildTicks(yMax);
+
   return (
     <div
       className="[&_.recharts-surface:focus-visible]:outline-none [&_.recharts-surface:focus]:outline-none [&_.recharts-wrapper:focus]:outline-none grid h-[220px] grid-cols-[minmax(0,1fr)_44px] gap-2 sm:h-[288px]"
@@ -150,7 +160,7 @@ function RevenueOverviewChart({
               tick={<RevenueXAxisTick isMobile={isMobile} />}
             />
 
-            <YAxis hide domain={[0, 260]} />
+            <YAxis hide domain={[0, yMax]} />
 
             <Tooltip
               content={<RevenueTooltip />}
@@ -184,16 +194,23 @@ function RevenueOverviewChart({
               isAnimationActive={false}
             />
 
-            <ReferenceDot
-              x={peakPoint.label}
-              y={peakPoint.current}
-              r={isMobile ? 4 : 6}
-              fill="#ffce27"
-              stroke="#ffffff"
-              strokeWidth={2}
-              ifOverflow="extendDomain"
-              label={<PeakReferenceLabel isMobile={isMobile} />}
-            />
+            {peakPoint.label ? (
+              <ReferenceDot
+                x={peakPoint.label}
+                y={peakPoint.current}
+                r={isMobile ? 4 : 6}
+                fill="#ffce27"
+                stroke="#ffffff"
+                strokeWidth={2}
+                ifOverflow="extendDomain"
+                label={
+                  <PeakReferenceLabel
+                    isMobile={isMobile}
+                    peakValue={peakValue}
+                  />
+                }
+              />
+            ) : null}
           </ComposedChart>
         </ResponsiveContainer>
       </div>
@@ -206,13 +223,39 @@ function RevenueOverviewChart({
             bottom: margins.bottom,
           }}
         >
-          {["260k", "195k", "130k", "65k", "0k"].map((tick) => (
-            <span key={tick}>{tick}</span>
+          {ticks.map((tick) => (
+            <span key={tick}>{formatCompact(tick)}</span>
           ))}
         </div>
       </div>
     </div>
   );
+}
+
+function buildTicks(maxValue: number) {
+  const step = maxValue / 4;
+
+  return Array.from({ length: 5 }, (_, index) =>
+    Math.max(0, Math.round(maxValue - step * index)),
+  );
+}
+
+function formatCurrency(value: number) {
+  return (
+    <span className="inline-flex items-center gap-1" dir="ltr">
+      <SaudiRiyal className="size-3.5" />
+      {value.toLocaleString("en-US", {
+        maximumFractionDigits: 2,
+      })}
+    </span>
+  );
+}
+
+function formatCompact(value: number) {
+  return Intl.NumberFormat("en-US", {
+    notation: "compact",
+    maximumFractionDigits: 1,
+  }).format(value);
 }
 
 export default RevenueOverviewChart;

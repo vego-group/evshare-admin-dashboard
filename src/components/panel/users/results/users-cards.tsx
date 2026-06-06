@@ -1,4 +1,7 @@
+"use client";
+
 import type { UserListItem } from "@/types";
+import { useRouter } from "next/navigation";
 
 import {
   DetailLine,
@@ -7,7 +10,6 @@ import {
   RoleBadge,
   UserActions,
   UserIcon,
-  VerifiedBadge,
 } from "./user-result-parts";
 
 type UsersCardsProps = {
@@ -16,12 +18,25 @@ type UsersCardsProps = {
 };
 
 function UsersCards({ users, onDeleteUser }: UsersCardsProps) {
+  const router = useRouter();
+
+  const openUser = (userId: string) => router.push(`/users/${userId}`);
+
   return (
     <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
       {users.map((user) => (
         <article
           key={user.id}
-          className="overflow-hidden rounded-2xl border border-neutral-100 bg-white p-4"
+          role="button"
+          tabIndex={0}
+          onClick={() => openUser(user.id)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              openUser(user.id);
+            }
+          }}
+          className="cursor-pointer overflow-hidden rounded-2xl border border-neutral-100 bg-white p-4 transition hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
           <div className="flex items-start gap-3">
             <UserIcon className="size-16" />

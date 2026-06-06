@@ -1,8 +1,22 @@
 import { Button } from "@/components/ui/button";
+import type { DashboardPeriod } from "@/types";
 
-import { periodOptions } from "./revenue-overview.constants";
+const periodOptions: { label: string; value: DashboardPeriod }[] = [
+  { label: "7 أيام", value: 7 },
+  { label: "14 يوم", value: 14 },
+  { label: "30 يوم", value: 30 },
+  { label: "90 يوم", value: 90 },
+];
 
-function RevenueOverviewControls() {
+type RevenueOverviewControlsProps = {
+  period: DashboardPeriod;
+  onPeriodChange: (period: DashboardPeriod) => void;
+};
+
+function RevenueOverviewControls({
+  period,
+  onPeriodChange,
+}: RevenueOverviewControlsProps) {
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-center gap-4 text-[11.5px] text-gray">
@@ -17,18 +31,19 @@ function RevenueOverviewControls() {
       </div>
 
       <div className="inline-flex w-fit rounded-full bg-gray-100/70 p-1">
-        {periodOptions.map((period, index) => (
+        {periodOptions.map((option) => (
           <Button
-            key={period}
+            key={option.value}
             variant="ghost"
             size="xs"
+            onClick={() => onPeriodChange(option.value)}
             className={
-              index === periodOptions.length - 1
+              option.value === period
                 ? "rounded-full bg-white px-3 text-secondary shadow-sm hover:bg-white sm:px-4"
                 : "rounded-full px-3 text-gray hover:bg-white/70 hover:text-secondary sm:px-4"
             }
           >
-            {period}
+            {option.label}
           </Button>
         ))}
       </div>

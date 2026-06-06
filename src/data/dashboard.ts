@@ -41,7 +41,7 @@ function sortByWeekDay<T extends { label: string }>(items: T[]) {
 export const dashboardStats: DashboardStat[] = [
   {
     title: "متوسط قيمة الطلب",
-    value: "298 ر.س",
+    value: "298",
     delta: "5.3٪",
     comparison: "مقارنة بالأسبوع الماضي",
     direction: "up",
@@ -87,7 +87,7 @@ export const chartTicks = ["0k", "65k", "130k", "195k", "260k"];
 
 export const quickStats: QuickStat[] = [
   {
-    title: "إجمالي الأصول",
+    title: "إجمالي المنتجات",
     value: "4,237",
     delta: "12.4٪",
     direction: "up",
@@ -96,7 +96,7 @@ export const quickStats: QuickStat[] = [
     chart: [42, 44, 46, 48, 51, 53],
   },
   {
-    title: "أصول قيد الشحن",
+    title: "منتجات قيد الشحن",
     value: "3,891",
     delta: "3.2٪",
     direction: "up",

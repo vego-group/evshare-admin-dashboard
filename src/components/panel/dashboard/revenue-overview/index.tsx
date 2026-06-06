@@ -1,6 +1,11 @@
 "use client";
 
-import { revenueChart, weekDays } from "@/data/dashboard";
+import type {
+  ChartPoint,
+  DashboardPeriod,
+  DashboardRevenueChart,
+} from "@/types";
+import { useIsMobile } from "@/hooks";
 import { DashboardSectionCard } from "../shared";
 import RevenueOverviewChart from "./revenue-overview-chart";
 import {
@@ -9,24 +14,32 @@ import {
 } from "./revenue-overview.constants";
 import RevenueOverviewControls from "./revenue-overview-controls";
 import RevenueOverviewInfoPanel from "./revenue-overview-info-panel";
-import { useIsMobile } from "@/hooks";
 
-function RevenueOverviewSection() {
+type RevenueOverviewSectionProps = {
+  data?: DashboardRevenueChart;
+  period: DashboardPeriod;
+  onPeriodChange: (period: DashboardPeriod) => void;
+};
+
+function RevenueOverviewSection({
+  data,
+  period,
+  onPeriodChange,
+}: RevenueOverviewSectionProps) {
   const isMobile = useIsMobile();
   const margins = isMobile ? revenueChartMarginsMobile : revenueChartMargins;
 
-  const displayWeekDays = [...weekDays].reverse();
-  const chartData = displayWeekDays.map(
-    (day) =>
-      revenueChart.find((point) => point.label === day) ?? {
-        label: day,
-        current: 0,
-        previous: 0,
-      },
-  );
-  const peakPoint = chartData.reduce((max, point) =>
-    point.current > max.current ? point : max,
-  );
+  const chartData = (data?.series ?? []).map<ChartPoint>((point) => ({
+    label: formatChartLabel(point),
+    current: point.current,
+    previous: point.previous,
+  }));
+  const fallbackPoint = { label: "", current: 0, previous: 0 };
+  const peakPoint = chartData.length
+    ? chartData.reduce((max, point) =>
+        point.current > max.current ? point : max,
+      )
+    : fallbackPoint;
 
   return (
     <DashboardSectionCard className="relative overflow-hidden border-primary/12 p-4 sm:p-8">
@@ -36,20 +49,37 @@ function RevenueOverviewSection() {
         className="relative grid gap-6 sm:gap-8 xl:grid-cols-[338px_minmax(0,1fr)] xl:items-start"
         dir="rtl"
       >
-        <RevenueOverviewInfoPanel />
+        <RevenueOverviewInfoPanel data={data} period={period} />
 
         <div className="space-y-4 sm:space-y-6">
-          <RevenueOverviewControls />
+          <RevenueOverviewControls
+            period={period}
+            onPeriodChange={onPeriodChange}
+          />
           <RevenueOverviewChart
             chartData={chartData}
             isMobile={isMobile}
             margins={margins}
             peakPoint={peakPoint}
+            peakValue={data?.peak_day.value ?? 0}
           />
         </div>
       </div>
     </DashboardSectionCard>
   );
+}
+
+function formatChartLabel(point: DashboardRevenueChart["series"][number]) {
+  const date = new Date(point.date);
+
+  if (Number.isNaN(date.getTime())) {
+    return point.day_name;
+  }
+
+  return date.toLocaleDateString("ar-SA", {
+    weekday: "short",
+    day: "numeric",
+  });
 }
 
 export default RevenueOverviewSection;

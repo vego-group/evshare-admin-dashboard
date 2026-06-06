@@ -1,25 +1,34 @@
-import FleetMapSection from "./fleet-map";
-import OrderDistributionSection from "./order-distribution";
+"use client";
+
+import { useState } from "react";
+
+import { useDashboardAnalytics } from "@/hooks/api";
+import type { DashboardPeriod } from "@/types";
+
+import DashboardContentShimmer from "./content-shimmer";
 import QuickStatsSection from "./quick-stats";
 import RevenueOverviewSection from "./revenue-overview";
 import StatCardsSection from "./stat-cards";
-import TopModelsSection from "./top-models";
-import WeeklyRevenueSection from "./weekly-revenue";
 
 function Dashboard() {
+  const [period, setPeriod] = useState<DashboardPeriod>(7);
+  const { data, isLoading } = useDashboardAnalytics({ period });
+
   return (
     <div className="flex w-full flex-col gap-4">
-      <StatCardsSection />
-      <RevenueOverviewSection />
-      <QuickStatsSection />
-      <div className="grid gap-4 xl:grid-cols-2">
-        <WeeklyRevenueSection />
-        <OrderDistributionSection />
-      </div>
-      <div className="grid gap-4 xl:grid-cols-2">
-        <TopModelsSection />
-        <FleetMapSection />
-      </div>
+      {isLoading ? (
+        <DashboardContentShimmer />
+      ) : (
+        <>
+          <StatCardsSection data={data?.data.top_cards} period={period} />
+          <RevenueOverviewSection
+            data={data?.data.revenue_chart}
+            period={period}
+            onPeriodChange={setPeriod}
+          />
+          <QuickStatsSection data={data?.data.assets} />
+        </>
+      )}
     </div>
   );
 }

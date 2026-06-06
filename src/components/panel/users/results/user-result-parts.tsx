@@ -1,12 +1,14 @@
-import { Pencil, Trash2, User, type LucideIcon } from "lucide-react";
+import type { MouseEvent } from "react";
+import { Trash2, User, type LucideIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import type { UserListItem, UserRole } from "@/types";
+import type { UserKycStatus, UserListItem, UserRole } from "@/types";
 
 export const roleLabels: Record<UserRole, string> = {
   user: "مستخدم",
   merchant: "تاجر",
   driver: "سائق",
+  rider: "سائق",
   root: "مدير",
 };
 
@@ -14,7 +16,20 @@ export const roleBadgeClass: Record<UserRole, string> = {
   user: "bg-blue-50 text-blue-600",
   merchant: "bg-purple-50 text-purple-600",
   driver: "bg-orange-50 text-orange-500",
+  rider: "bg-orange-50 text-orange-500",
   root: "bg-red-50 text-red-600",
+};
+
+export const kycStatusLabels: Record<UserKycStatus, string> = {
+  not_verified: "غير موثق",
+  pending: "قيد المراجعة",
+  approved: "موثق",
+};
+
+export const kycStatusClasses: Record<UserKycStatus, string> = {
+  not_verified: "bg-gray-100 text-dark-gray",
+  pending: "bg-yellow-50 text-yellow-700",
+  approved: "bg-green-50 text-green-600",
 };
 
 export function UserIcon({ className }: { className?: string }) {
@@ -33,6 +48,7 @@ export function RoleBadge({ role }: { role: UserRole | null }) {
       </span>
     );
   }
+
   return (
     <span
       className={cn(
@@ -54,7 +70,20 @@ export function VerifiedBadge({ verified }: { verified: boolean }) {
       )}
     >
       <span className={cn("size-2 rounded-full", verified ? "bg-green-500" : "bg-gray-400")} />
-      {verified ? "موثّق" : "غير موثّق"}
+      {verified ? "موثق" : "غير موثق"}
+    </span>
+  );
+}
+
+export function KycBadge({ status }: { status: UserKycStatus }) {
+  return (
+    <span
+      className={cn(
+        "inline-flex h-[34px] w-fit items-center justify-center whitespace-nowrap rounded-full px-4 text-sm font-medium",
+        kycStatusClasses[status],
+      )}
+    >
+      {kycStatusLabels[status]}
     </span>
   );
 }
@@ -89,11 +118,16 @@ function ActionButton({
   label: string;
   onClick: () => void;
 }) {
+  function handleClick(event: MouseEvent<HTMLButtonElement>) {
+    event.stopPropagation();
+    onClick();
+  }
+
   return (
     <button
       type="button"
       aria-label={label}
-      onClick={onClick}
+      onClick={handleClick}
       className={cn("grid size-10 place-items-center rounded-lg transition hover:brightness-95", className)}
     >
       <Icon className="size-5" />
@@ -111,12 +145,22 @@ export function DetailLine({ label, value }: { label: string; value: string }) {
 }
 
 export function formatDate(value: string | null) {
-  if (!value) return "—";
-  const date = new Date(value);
+  if (!value) return "-";
+  const date = new Date(value.replace(" ", "T"));
   if (Number.isNaN(date.getTime())) return value;
   return new Intl.DateTimeFormat("ar-EG", { dateStyle: "medium" }).format(date);
 }
 
+export function formatDateTime(value: string | null) {
+  if (!value) return "-";
+  const date = new Date(value.replace(" ", "T"));
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat("ar-EG", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(date);
+}
+
 export function getUserDisplayName(user: UserListItem) {
-  return user.name || "—";
+  return user.name || "-";
 }

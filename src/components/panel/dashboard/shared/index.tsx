@@ -11,7 +11,7 @@ type DashboardSectionCardProps = {
 };
 
 type TrendBadgeProps = {
-  value: string;
+  value: ReactNode;
   direction: TrendDirection;
   className?: string;
 };

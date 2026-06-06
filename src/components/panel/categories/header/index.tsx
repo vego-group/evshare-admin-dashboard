@@ -19,10 +19,7 @@ function CategoriesHeader({
 }: CategoriesHeaderProps) {
   return (
     <section className="flex w-full flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-      <Header
-        title="التصنيفات"
-        subtitle="إدارة ومتابعة تصنيفات المنتجات"
-      />
+      <Header title="التصنيفات" subtitle="إدارة ومتابعة تصنيفات المنتجات" />
 
       <div className="flex items-center gap-3 self-start sm:self-auto">
         <div className="flex h-13.25 items-center gap-1 rounded-2xl border border-neutral-100/80 bg-white p-1.5">
