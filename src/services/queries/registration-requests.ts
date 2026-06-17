@@ -1,5 +1,5 @@
 import { PAGE_SIZE } from "@/constants";
-import { buildQuery } from "@/lib";
+import { buildQuery } from "@/lib/utils/build-query";
 import type {
   KycDetailResponse,
   KycsListResponse,

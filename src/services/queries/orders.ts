@@ -1,5 +1,5 @@
 import { baseAPI } from "..";
-import { buildQuery } from "@/lib";
+import { buildQuery } from "@/lib/utils/build-query";
 import {
   OrderDetailResponse,
   OrderQueryParams,

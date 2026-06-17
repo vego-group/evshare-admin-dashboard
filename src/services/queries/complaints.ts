@@ -5,7 +5,7 @@ import {
   ComplaintsQueryParams,
 } from "@/types";
 import { baseAPI } from "..";
-import { buildQuery } from "@/lib";
+import { buildQuery } from "@/lib/utils/build-query";
 
 export const complaintsAPI = async (
   params: ComplaintsQueryParams,

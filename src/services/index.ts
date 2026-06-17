@@ -1,5 +1,4 @@
 import axios, { AxiosError, AxiosInstance, Method } from "axios";
-import { getToken } from "@/lib";
 import { ApiResult, ErrorBody, ExtraConfig } from "@/types";
 import { getPayloadMessage, getValidationErrors } from "@/lib/utils/helper";
 
@@ -29,6 +28,9 @@ attach401Interceptor(adminApi);
 attach401Interceptor(authApi);
 
 export const initApi = async () => {
+  if (typeof window !== "undefined") return;
+
+  const { getToken } = await import("@/lib/utils/auth");
   const token = await getToken();
   if (token) {
     adminApi.defaults.headers.common.Authorization = `Bearer ${token}`;
@@ -97,6 +99,28 @@ export const safeAuthApi = async <
 ) => await safe<T, E>(authApi, method, url, data, config);
 
 export const baseAPI = async (method: Method, url: string) => {
+  if (typeof window !== "undefined") {
+    const response = await fetch(`/api/admin${url}`, {
+      method,
+      headers: { Accept: "application/json" },
+      credentials: "include",
+    });
+    const contentType = response.headers.get("content-type");
+    const data = contentType?.includes("application/json")
+      ? await response.json()
+      : await response.text();
+
+    if (!response.ok) {
+      const message =
+        typeof data === "object" && data && "message" in data
+          ? String(data.message)
+          : "Request failed";
+      throw new Error(message);
+    }
+
+    return data;
+  }
+
   await initApi();
   const response = await adminApi.request({
     method,
