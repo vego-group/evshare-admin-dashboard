@@ -27,7 +27,7 @@ function UsersTable({ users, onDeleteUser }: UsersTableProps) {
   return (
     <section className="overflow-hidden rounded-lg bg-white">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[800px] border-separate border-spacing-0 text-right">
+        <table className="w-full min-w-200 border-separate border-spacing-0 text-right">
           <thead>
             <tr className="bg-primary/8 text-base font-semibold text-dark-gray">
               <HeaderCell>المستخدم</HeaderCell>
@@ -54,7 +54,7 @@ function UsersTable({ users, onDeleteUser }: UsersTableProps) {
                 className="cursor-pointer text-dark-gray transition hover:bg-primary/5 focus-visible:bg-primary/5 focus-visible:outline-none"
               >
                 <TableCell>
-                  <div className="flex max-w-[240px] items-center gap-3">
+                  <div className="flex max-w-60 items-center gap-3">
                     <UserIcon />
                     <div className="min-w-0 flex-1">
                       <p

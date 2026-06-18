@@ -85,7 +85,7 @@ function StatCardsSection({ data, period }: StatCardsSectionProps) {
         return (
           <DashboardSectionCard
             key={stat.title}
-            className="flex h-[172px] flex-col justify-center gap-4 rounded-[14px] border border-primary/8 px-6 py-4 shadow-[0_1px_3px_rgba(17,24,39,0.04)]"
+            className="flex h-43 flex-col justify-center gap-4 rounded-[14px] border border-primary/8 px-6 py-4 shadow-[0_1px_3px_rgba(17,24,39,0.04)]"
           >
             <div>
               <div className="grid size-10 shrink-0 place-items-center rounded-[10px] bg-neutral-100 text-gray">
@@ -99,7 +99,7 @@ function StatCardsSection({ data, period }: StatCardsSectionProps) {
               </p>
 
               <div className="flex justify-between gap-3">
-                <p className="text-[30px] leading-[38px] font-semibold tracking-[-0.03em] text-dark-gray">
+                <p className="text-[30px] leading-9.5 font-semibold tracking-[-0.03em] text-dark-gray">
                   {stat.format(card.value)}
                 </p>
                 <TrendBadge
@@ -109,7 +109,7 @@ function StatCardsSection({ data, period }: StatCardsSectionProps) {
                 />
               </div>
 
-              <p className="text-xs leading-[18px] font-medium text-gray">
+              <p className="text-xs leading-4.5 font-medium text-gray">
                 مقارنة بآخر {period} أيام السابقة
               </p>
             </div>
