@@ -1,5 +1,6 @@
 import {
   ClipboardList,
+  CircleDollarSign,
   CreditCard,
   Images,
   LayoutDashboard,
@@ -89,6 +90,12 @@ export const sidebarNavItems: SidebarNavItem[] = [
     label: "طلبات الدفع",
     ariaLabel: "طلبات الدفع",
     icon: CreditCard,
+  },
+  {
+    href: "/payment-gateways",
+    label: "بوابات الدفع",
+    ariaLabel: "بوابات الدفع",
+    icon: CircleDollarSign,
   },
   {
     href: "/complaints",
