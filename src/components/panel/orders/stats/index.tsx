@@ -1,38 +1,10 @@
-import { CheckCircle2, ShoppingCart, Sparkles, XCircle } from "lucide-react";
-
+import { orderStatConfig } from "@/data";
 import type { OrdersAnalytics } from "@/types";
-
-const statConfig = [
-  {
-    label: "إجمالي الطلبات",
-    key: "total",
-    icon: ShoppingCart,
-    iconClassName: "bg-blue-50 text-blue-600",
-  },
-  {
-    label: "طلبات جديدة",
-    key: "new",
-    icon: Sparkles,
-    iconClassName: "bg-amber-50 text-orange-500",
-  },
-  {
-    label: "طلبات مكتملة",
-    key: "completed",
-    icon: CheckCircle2,
-    iconClassName: "bg-green-50 text-green-600",
-  },
-  {
-    label: "طلبات ملغية",
-    key: "cancelled",
-    icon: XCircle,
-    iconClassName: "bg-red-50 text-red-500",
-  },
-] as const;
 
 function OrdersStats({ data }: { data?: OrdersAnalytics }) {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      {statConfig.map((stat) => {
+      {orderStatConfig.map((stat) => {
         const Icon = stat.icon;
         const value = data?.[stat.key] ?? 0;
         return (

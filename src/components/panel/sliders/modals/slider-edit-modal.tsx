@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import toast from "react-hot-toast";
 
@@ -46,7 +46,6 @@ function SliderEditModal({ open, slider, onClose, onSaved }: SliderEditModalProp
   useEffect(() => {
     if (!open) {
       reset(sliderDefaultValues);
-      setImagePreviewUrl(null);
       return;
     }
     if (slider) {
@@ -54,18 +53,32 @@ function SliderEditModal({ open, slider, onClose, onSaved }: SliderEditModalProp
     }
   }, [slider, open, reset]);
 
-  const handleClose = () => onClose();
+  useEffect(() => {
+    if (!imagePreviewUrl) return;
+    return () => URL.revokeObjectURL(imagePreviewUrl);
+  }, [imagePreviewUrl]);
+
+  const clearImagePreview = () => {
+    setImagePreviewUrl(null);
+  };
+
+  const handleClose = () => {
+    clearImagePreview();
+    onClose();
+  };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      setImagePreviewUrl(URL.createObjectURL(file));
+      clearImagePreview();
+      const previewUrl = URL.createObjectURL(file);
+      setImagePreviewUrl(previewUrl);
     }
   };
 
   const handleImageClear = () => {
     setValue("image", undefined, { shouldDirty: true, shouldValidate: true });
-    setImagePreviewUrl(null);
+    clearImagePreview();
   };
 
   const onSubmit = async (values: SliderFormValues) => {

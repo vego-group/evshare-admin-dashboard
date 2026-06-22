@@ -60,7 +60,6 @@ function OtpForm({ mobile }: OtpFormProps) {
       toast.success(result.message || "تم تسجيل الدخول بنجاح");
       const token = result.data?.data?.access_token;
       if (token) await setToken(token);
-      router.refresh();
       router.replace("/");
       return;
     }

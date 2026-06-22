@@ -1,10 +1,10 @@
 "use client";
 
 import { ChevronDown, ListFilter, Search } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 import { cn } from "@/lib/utils";
-import useDebounce from "@/hooks/use-debounce";
+import useDebouncedChange from "@/hooks/use-debounced-change";
 import type { RequestStatus, OrderBy } from "@/types";
 
 type PaymentRequestsToolbarProps = {
@@ -47,12 +47,7 @@ function PaymentRequestsToolbar({
     "all",
   );
 
-  const debouncedSearch = useDebounce(internalSearchQuery, 500);
-  const mounted = useRef(false);
-  useEffect(() => {
-    if (!mounted.current) { mounted.current = true; return; }
-    onSearchChange?.(debouncedSearch);
-  }, [debouncedSearch]);
+  useDebouncedChange(internalSearchQuery, onSearchChange, 500);
 
   const searchValue = internalSearchQuery;
   const sortValue = selectedSort ?? internalSort;

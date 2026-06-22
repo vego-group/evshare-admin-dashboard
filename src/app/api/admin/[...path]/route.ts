@@ -24,7 +24,10 @@ export async function GET(request: NextRequest, context: RouteContext) {
   }
 
   const { path } = await context.params;
-  const upstreamUrl = new URL(path.join("/"), baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`);
+  const upstreamUrl = new URL(
+    path.join("/"),
+    baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`,
+  );
   upstreamUrl.search = request.nextUrl.search;
 
   const upstreamResponse = await fetch(upstreamUrl, {

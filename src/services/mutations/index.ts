@@ -10,3 +10,4 @@ export * from "./complaints";
 export * from "./consultation-requests";
 export * from "./users";
 export * from "./payment-gateways";
+export * from "./app-versions";

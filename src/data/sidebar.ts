@@ -9,6 +9,7 @@ import {
   Package,
   ScrollText,
   ShoppingCart,
+  Smartphone,
   Tags,
   Users,
   Wallet,
@@ -66,6 +67,12 @@ export const sidebarNavItems: SidebarNavItem[] = [
     label: "السلايدرات",
     ariaLabel: "السلايدرات",
     icon: Images,
+  },
+  {
+    href: "/app-versions",
+    label: "إصدارات التطبيقات",
+    ariaLabel: "إصدارات التطبيقات",
+    icon: Smartphone,
   },
   {
     href: "/consultation-requests",

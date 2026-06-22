@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
-import useDebounce from "@/hooks/use-debounce";
+import useDebouncedChange from "@/hooks/use-debounced-change";
 import type { UserRole } from "@/types";
 
 import FilterSelect, { type FilterOption } from "./filter-select";
@@ -42,12 +42,7 @@ function UsersToolbar({
   const [internalSort, setInternalSort] = useState<"asc" | "desc">("desc");
   const [internalRole, setInternalRole] = useState<UserRole | "all">("all");
 
-  const debouncedSearch = useDebounce(internalSearch, 500);
-  const mounted = useRef(false);
-  useEffect(() => {
-    if (!mounted.current) { mounted.current = true; return; }
-    onSearchChange?.(debouncedSearch);
-  }, [debouncedSearch]);
+  useDebouncedChange(internalSearch, onSearchChange, 500);
 
   return (
     <section className="space-y-3 lg:flex lg:items-center lg:justify-between lg:gap-3 lg:space-y-0 lg:rounded-2xl lg:border lg:border-neutral-100/60 lg:bg-white lg:p-1.5 lg:shadow-[0_2px_6px_rgba(0,0,0,0.04)]">

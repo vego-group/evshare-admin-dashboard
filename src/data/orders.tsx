@@ -1,6 +1,6 @@
 import { ShoppingCart, Sparkles, CheckCircle2, XCircle } from "lucide-react";
 
-const statConfig = [
+export const orderStatConfig = [
   {
     label: "إجمالي الطلبات",
     key: "total",

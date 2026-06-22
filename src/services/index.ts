@@ -12,13 +12,19 @@ export const authApi = axios.create({
   headers: { "Accept-Language": "ar" },
 });
 
+let isRedirectingToLogin = false;
+
+function redirectToExpiredLogin() {
+  if (typeof window === "undefined" || isRedirectingToLogin) return;
+  isRedirectingToLogin = true;
+  window.location.replace("/login?expired=1");
+}
+
 const attach401Interceptor = (instance: AxiosInstance) => {
   instance.interceptors.response.use(
     (response) => response,
     (error: AxiosError) => {
-      if (error.response?.status === 401 && typeof window !== "undefined") {
-        window.location.replace("/login");
-      }
+      if (error.response?.status === 401) redirectToExpiredLogin();
       return Promise.reject(error);
     },
   );
@@ -103,12 +109,14 @@ export const baseAPI = async (method: Method, url: string) => {
     const response = await fetch(`/api/admin${url}`, {
       method,
       headers: { Accept: "application/json" },
-      credentials: "include",
+      credentials: "same-origin",
     });
     const contentType = response.headers.get("content-type");
     const data = contentType?.includes("application/json")
       ? await response.json()
       : await response.text();
+
+    if (response.status === 401) redirectToExpiredLogin();
 
     if (!response.ok) {
       const message =

@@ -17,3 +17,4 @@ export * from "./consultation-requests";
 export * from "./wallet";
 export * from "./users";
 export * from "./payment-gateways";
+export * from "./app-versions";

@@ -1,10 +1,10 @@
 "use client";
 
 import { ChevronDown, ListFilter, Search } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 import { cn } from "@/lib/utils";
-import useDebounce from "@/hooks/use-debounce";
+import useDebouncedChange from "@/hooks/use-debounced-change";
 import type { OrderBy, OrderNewStatus, OrderStatusCategory } from "@/types";
 
 type OrdersToolbarProps = {
@@ -55,12 +55,7 @@ function OrdersToolbar({
   const [internalCategory, setInternalCategory] = useState<OrderStatusCategory | "all">("all");
   const [internalStatus, setInternalStatus] = useState<OrderNewStatus | "all">("all");
 
-  const debouncedSearch = useDebounce(internalSearch, 500);
-  const mounted = useRef(false);
-  useEffect(() => {
-    if (!mounted.current) { mounted.current = true; return; }
-    onSearchChange?.(debouncedSearch);
-  }, [debouncedSearch]);
+  useDebouncedChange(internalSearch, onSearchChange, 500);
 
   const searchValue = internalSearch;
   const sortValue = selectedSort ?? internalSort;
