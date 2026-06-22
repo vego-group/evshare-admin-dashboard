@@ -80,7 +80,7 @@ function AppVersionDetailsModal({
             </section>
           </>
         ) : (
-          <div className="grid min-h-[220px] place-items-center rounded-[14px] bg-background px-4 text-center text-base text-gray">
+          <div className="grid min-h-55 place-items-center rounded-[14px] bg-background px-4 text-center text-base text-gray">
             فشل تحميل تفاصيل الإصدار.
           </div>
         )}
@@ -108,10 +108,10 @@ function DetailRow({
       <span
         dir={dir}
         className={cn(
-          "block min-w-0 max-w-full whitespace-pre-wrap break-words text-base font-medium text-secondary",
+          "block min-w-0 max-w-full whitespace-pre-wrap wrap-break-word text-base font-medium text-secondary",
           scrollable &&
             "max-h-15 overflow-y-auto [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-button]:hidden [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray/40 [&::-webkit-scrollbar-track]:my-2 [&::-webkit-scrollbar-track]:bg-transparent",
-          wrapAnywhere && "break-all [overflow-wrap:anywhere]",
+          wrapAnywhere && "break-all wrap-anywhere",
         )}
       >
         {value}
