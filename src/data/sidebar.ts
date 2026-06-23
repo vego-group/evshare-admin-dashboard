@@ -8,6 +8,7 @@ import {
   MessageSquareWarning,
   Package,
   ScrollText,
+  ShieldCheck,
   ShoppingCart,
   Smartphone,
   Tags,
@@ -49,6 +50,12 @@ export const sidebarNavItems: SidebarNavItem[] = [
     label: "المستخدمون",
     ariaLabel: "المستخدمون",
     icon: Users,
+  },
+  {
+    href: "/roles-permissions",
+    label: "الأدوار والصلاحيات",
+    ariaLabel: "الأدوار والصلاحيات",
+    icon: ShieldCheck,
   },
   {
     href: "/wallet",
