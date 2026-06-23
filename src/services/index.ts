@@ -123,7 +123,9 @@ export const baseAPI = async (method: Method, url: string) => {
         typeof data === "object" && data && "message" in data
           ? String(data.message)
           : "Request failed";
-      throw new Error(message);
+      const error = new Error(message) as Error & { status: number };
+      error.status = response.status;
+      throw error;
     }
 
     return data;

@@ -6,3 +6,4 @@ export * from "./sliders";
 export * from "./complaints";
 export * from "./users";
 export * from "./app-versions";
+export * from "./roles-permissions";

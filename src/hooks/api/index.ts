@@ -12,3 +12,4 @@ export * from "./users";
 export * from "./dashboard";
 export * from "./payment-gateways";
 export * from "./app-versions";
+export * from "./roles-permissions";

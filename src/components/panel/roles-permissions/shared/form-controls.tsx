@@ -1,0 +1,1 @@
+export const inputClass = "h-12 w-full rounded-[14px] border border-neutral-200 bg-white px-4 text-sm text-secondary outline-none transition placeholder:text-gray focus:border-primary focus:ring-3 focus:ring-primary/15";
