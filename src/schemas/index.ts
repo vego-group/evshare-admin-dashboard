@@ -8,3 +8,4 @@ export * from "./users";
 export * from "./app-versions";
 export * from "./roles-permissions";
 export * from "./feature-flags";
+export * from "./payment-methods";

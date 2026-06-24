@@ -1,5 +1,6 @@
 import type { MouseEvent } from "react";
 
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { sidebarNavItems } from "@/data";
 import SidebarLogoutButton from "./sidebar-logout-button";
 import SidebarNavLink from "./sidebar-nav-link";
@@ -24,25 +25,50 @@ function SidebarNav({
   onNavigate,
 }: SidebarNavProps) {
   return (
-    <>
-      {sidebarNavItems.map((item, index) => (
-        <SidebarNavLink
-          key={item.href}
-          item={item}
-          active={pathname === item.href}
-          collapsed={collapsed}
-          className={index === 0 || collapsed ? undefined : linkSpacingClassName}
-          onDashboardClick={onDashboardClick}
-          onNavigate={onNavigate}
-        />
-      ))}
+    <div className="flex min-h-0 flex-1 flex-col">
+      <ScrollArea
+        type="auto"
+        className={`min-h-0 flex-1 ${
+          collapsed
+            ? "**:data-[slot=scroll-area-scrollbar]:hidden"
+            : "**:data-[slot=scroll-area-scrollbar]:left-0 **:data-[slot=scroll-area-scrollbar]:right-auto **:data-[slot=scroll-area-scrollbar]:w-1.5 **:data-[slot=scroll-area-thumb]:bg-neutral-300/80"
+        }`}
+      >
+        <div
+          dir="rtl"
+          className={`flex flex-col pb-3 ${
+            collapsed ? "items-center" : "items-stretch pr-3"
+          }`}
+        >
+          {sidebarNavItems.map((item, index) => (
+            <SidebarNavLink
+              key={item.href}
+              item={item}
+              active={pathname === item.href}
+              collapsed={collapsed}
+              className={
+                index === 0 || collapsed ? undefined : linkSpacingClassName
+              }
+              onDashboardClick={onDashboardClick}
+              onNavigate={onNavigate}
+            />
+          ))}
+        </div>
+      </ScrollArea>
 
-      <SidebarLogoutButton
-        collapsed={collapsed}
-        expanded={expanded}
-        onClick={onLogout}
-      />
-    </>
+      <div
+        dir="rtl"
+        className={`shrink-0 border-t border-neutral-100 pt-3 ${
+          collapsed ? "flex justify-center" : "pr-3"
+        }`}
+      >
+        <SidebarLogoutButton
+          collapsed={collapsed}
+          expanded={expanded}
+          onClick={onLogout}
+        />
+      </div>
+    </div>
   );
 }
 

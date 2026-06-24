@@ -38,8 +38,8 @@ function SidebarMobile({
         </button>
       </div>
 
-      <nav className="flex flex-1 flex-col px-3 py-4">
-        <p className="mb-2 px-3 text-right text-[11px] font-medium text-gray/80">
+      <nav className="flex min-h-0 flex-1 flex-col overflow-hidden py-4">
+        <p className="mb-2 px-6 text-right text-[11px] font-medium text-gray/80">
           القائمة الرئيسية
         </p>
         <SidebarNav

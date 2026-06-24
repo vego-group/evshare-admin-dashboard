@@ -119,6 +119,12 @@ export const sidebarNavItems: SidebarNavItem[] = [
     icon: CircleDollarSign,
   },
   {
+    href: "/payment-methods",
+    label: "طرق الدفع",
+    ariaLabel: "طرق الدفع",
+    icon: CreditCard,
+  },
+  {
     href: "/complaints",
     label: "الشكاوى",
     ariaLabel: "الشكاوى",

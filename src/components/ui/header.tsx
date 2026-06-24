@@ -12,7 +12,7 @@ export default function Header({ title, subtitle }: HeaderProps) {
       </h1>
 
       {/* Subtitle */}
-      <p className="text-[#6a7282] font-medium leading-6 text-base whitespace-nowrap">
+      <p className="text-[#6a7282] font-medium leading-6 text-base">
         {subtitle}
       </p>
     </div>
