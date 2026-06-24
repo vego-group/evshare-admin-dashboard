@@ -7,7 +7,7 @@ export default function Header({ title, subtitle }: HeaderProps) {
   return (
     <div className="flex flex-col gap-2 w-full">
       {/* Title */}
-      <h1 className="text-[#101828] font-medium leading-[38px] text-[30px] whitespace-nowrap">
+      <h1 className="text-[#101828] font-medium leading-9.5 text-[30px] whitespace-nowrap">
         {title}
       </h1>
 
