@@ -2,6 +2,7 @@ import {
   ClipboardList,
   CircleDollarSign,
   CreditCard,
+  Flag,
   Images,
   LayoutDashboard,
   MapPin,
@@ -80,6 +81,12 @@ export const sidebarNavItems: SidebarNavItem[] = [
     label: "إصدارات التطبيقات",
     ariaLabel: "إصدارات التطبيقات",
     icon: Smartphone,
+  },
+  {
+    href: "/feature-flags",
+    label: "إدارة الميزات",
+    ariaLabel: "إدارة الميزات",
+    icon: Flag,
   },
   {
     href: "/consultation-requests",
