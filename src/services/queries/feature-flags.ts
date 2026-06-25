@@ -14,6 +14,7 @@ export const featureFlagsAPI = async (
     page: params.page,
     limit: params.limit,
     search: params.search,
+    is_enabled: params.is_enabled,
   });
 
   return await baseAPI("GET", `/feature-flags${query ? `?${query}` : ""}`);

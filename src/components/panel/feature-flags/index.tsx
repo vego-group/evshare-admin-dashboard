@@ -18,6 +18,7 @@ function FeatureFlags() {
   const {
     data,
     isLoading,
+    params,
     setParams,
     searchValue,
     setSearchValue,
@@ -41,7 +42,14 @@ function FeatureFlags() {
   return (
     <div className="flex w-full flex-col gap-6">
       <FeatureFlagsHeader onAdd={() => setIsAddOpen(true)} />
-      <FeatureFlagsToolbar value={searchValue} onChange={setSearchValue} />
+      <FeatureFlagsToolbar
+        value={searchValue}
+        onChange={setSearchValue}
+        selectedStatus={params.is_enabled}
+        onStatusChange={(is_enabled) =>
+          setParams((current) => ({ ...current, page: 1, is_enabled }))
+        }
+      />
       <FeatureFlagsResults
         featureFlags={data?.data ?? []}
         onView={setPendingView}

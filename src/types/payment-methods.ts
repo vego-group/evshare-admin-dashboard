@@ -1,5 +1,8 @@
 export type PaymentMethodsQueryParams = {
+  page?: number;
   limit?: number;
+  search?: string;
+  is_active?: boolean;
 };
 
 export type PaymentMethod = {

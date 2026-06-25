@@ -2,6 +2,7 @@ export type FeatureFlagsQueryParams = {
   page?: number;
   limit?: number;
   search?: string;
+  is_enabled?: boolean;
 };
 
 export type FeatureFlag = {
