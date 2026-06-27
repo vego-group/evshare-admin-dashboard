@@ -8,6 +8,7 @@ import {
   MapPin,
   MessageSquareWarning,
   Package,
+  Route,
   ScrollText,
   ShieldCheck,
   ShoppingCart,
@@ -45,6 +46,12 @@ export const sidebarNavItems: SidebarNavItem[] = [
     label: "المنتجات",
     ariaLabel: "المنتجات",
     icon: Package,
+  },
+  {
+    href: "/vehicle-operating-pricing",
+    label: "تشغيل وتسعير المركبات",
+    ariaLabel: "تشغيل وتسعير المركبات",
+    icon: Route,
   },
   {
     href: "/users",

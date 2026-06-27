@@ -102,12 +102,28 @@ export function ProductDetailsContent({ product, isLoading }: Props) {
           }
         />
         <DetailRow
-          label="السعر المفتوح"
+          label="سعر فتح القفل"
           value={
             <span className="inline-flex items-center gap-1" dir="ltr">
               <SaudiRiyal className="size-4" /> {product.open_price}
             </span>
           }
+        />
+        <DetailRow
+          label="سعر الدقيقة"
+          value={<MoneyValue value={product.price_per_minute} />}
+        />
+        <DetailRow
+          label="سعر الكيلومتر"
+          value={<MoneyValue value={product.price_per_km} />}
+        />
+        <DetailRow
+          label="سعر الساعة"
+          value={<MoneyValue value={product.price_per_hour} />}
+        />
+        <DetailRow
+          label="سعر اليوم"
+          value={<MoneyValue value={product.price_per_day} />}
         />
         <DetailRow
           label="تاريخ الإنشاء"
@@ -161,6 +177,16 @@ export function ProductDetailsContent({ product, isLoading }: Props) {
         </section>
       )}
     </div>
+  );
+}
+
+function MoneyValue({ value }: { value: ReactNode }) {
+  return value === null || value === undefined || value === "" ? (
+    "-"
+  ) : (
+    <span className="inline-flex items-center gap-1" dir="ltr">
+      <SaudiRiyal className="size-4" /> {value}
+    </span>
   );
 }
 

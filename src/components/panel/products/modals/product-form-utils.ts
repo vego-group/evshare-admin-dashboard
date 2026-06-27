@@ -13,6 +13,10 @@ export const productDefaultValues: ProductFormValues = {
   quantity: 0,
   monthly_subscription_price: "",
   open_price: "",
+  price_per_minute: "",
+  price_per_km: "",
+  price_per_hour: "",
+  price_per_day: "",
   active: true,
   category_id: "",
   default_image: undefined,
@@ -58,6 +62,10 @@ export function buildProductPayload(values: ProductFormValues) {
   formData.append("quantity", String(values.quantity));
   formData.append("monthly_subscription_price", values.monthly_subscription_price);
   formData.append("open_price", values.open_price);
+  appendOptional(formData, "price_per_minute", values.price_per_minute);
+  appendOptional(formData, "price_per_km", values.price_per_km);
+  appendOptional(formData, "price_per_hour", values.price_per_hour);
+  appendOptional(formData, "price_per_day", values.price_per_day);
   formData.append("active", values.active ? "1" : "0");
   formData.append("category_id", values.category_id);
 
@@ -95,6 +103,10 @@ export function buildChangedProductPayload(
   if (dirtyFields.quantity) formData.append("quantity", String(values.quantity));
   if (dirtyFields.monthly_subscription_price) formData.append("monthly_subscription_price", values.monthly_subscription_price);
   if (dirtyFields.open_price) formData.append("open_price", values.open_price);
+  if (dirtyFields.price_per_minute) appendOptional(formData, "price_per_minute", values.price_per_minute);
+  if (dirtyFields.price_per_km) appendOptional(formData, "price_per_km", values.price_per_km);
+  if (dirtyFields.price_per_hour) appendOptional(formData, "price_per_hour", values.price_per_hour);
+  if (dirtyFields.price_per_day) appendOptional(formData, "price_per_day", values.price_per_day);
   if (dirtyFields.active) formData.append("active", values.active ? "1" : "0");
   if (dirtyFields.category_id) formData.append("category_id", values.category_id);
 
@@ -120,4 +132,8 @@ export function buildChangedProductPayload(
 
 export function hasFormDataEntries(formData: FormData) {
   return Array.from(formData.keys()).length > 0;
+}
+
+function appendOptional(formData: FormData, key: string, value?: string) {
+  if (value !== undefined && value !== "") formData.append(key, value);
 }

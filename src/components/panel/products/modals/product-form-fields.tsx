@@ -167,11 +167,27 @@ function ProductFormFields({
         </Field>
 
         <Field
-          label="السعر المفتوح"
+          label="سعر فتح القفل"
           required
           error={errors.open_price?.message}
         >
           <PriceInput placeholder="10.00" {...register("open_price")} />
+        </Field>
+
+        <Field label="سعر الدقيقة" error={errors.price_per_minute?.message}>
+          <PriceInput placeholder="2.50" {...register("price_per_minute")} />
+        </Field>
+
+        <Field label="سعر الكيلومتر" error={errors.price_per_km?.message}>
+          <PriceInput placeholder="1.25" {...register("price_per_km")} />
+        </Field>
+
+        <Field label="سعر الساعة" error={errors.price_per_hour?.message}>
+          <PriceInput placeholder="60.00" {...register("price_per_hour")} />
+        </Field>
+
+        <Field label="سعر اليوم" error={errors.price_per_day?.message}>
+          <PriceInput placeholder="300.00" {...register("price_per_day")} />
         </Field>
 
         <Field label="الحالة" required error={errors.active?.message}>

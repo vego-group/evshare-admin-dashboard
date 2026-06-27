@@ -36,6 +36,10 @@ export type ProductListItem = {
   quantity: number;
   monthly_subscription_price: string;
   open_price: string;
+  price_per_minute: number | string | null;
+  price_per_km: number | string | null;
+  price_per_hour: number | string | null;
+  price_per_day: number | string | null;
   active: boolean;
   default_image: ProductImage | null;
   category: ProductCategory | null;
