@@ -22,3 +22,4 @@ export * from "./roles-permissions";
 export * from "./feature-flags";
 export * from "./payment-methods";
 export * from "./vehicle-operating-pricing";
+export * from "./mobility-receipts";

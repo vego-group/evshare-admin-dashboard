@@ -48,12 +48,6 @@ export const sidebarNavItems: SidebarNavItem[] = [
     icon: Package,
   },
   {
-    href: "/vehicle-operating-pricing",
-    label: "تشغيل وتسعير المركبات",
-    ariaLabel: "تشغيل وتسعير المركبات",
-    icon: Route,
-  },
-  {
     href: "/users",
     label: "المستخدمون",
     ariaLabel: "المستخدمون",
@@ -118,6 +112,18 @@ export const sidebarNavItems: SidebarNavItem[] = [
     label: "طلبات الدفع",
     ariaLabel: "طلبات الدفع",
     icon: CreditCard,
+  },
+  {
+    href: "/vehicle-operating-pricing",
+    label: "تشغيل وتسعير المركبات",
+    ariaLabel: "تشغيل وتسعير المركبات",
+    icon: Route,
+  },
+  {
+    href: "/mobility-receipts",
+    label: "سندات الاستلام",
+    ariaLabel: "سندات الاستلام",
+    icon: ScrollText,
   },
   {
     href: "/payment-gateways",
