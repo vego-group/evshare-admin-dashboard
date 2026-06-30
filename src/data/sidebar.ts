@@ -10,7 +10,7 @@ import {
   Package,
   Route,
   ScrollText,
-  ShieldCheck,
+  // ShieldCheck,
   ShoppingCart,
   Smartphone,
   Tags,
