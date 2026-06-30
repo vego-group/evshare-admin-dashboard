@@ -53,12 +53,12 @@ export const sidebarNavItems: SidebarNavItem[] = [
     ariaLabel: "المستخدمون",
     icon: Users,
   },
-  {
-    href: "/roles-permissions",
-    label: "الأدوار والصلاحيات",
-    ariaLabel: "الأدوار والصلاحيات",
-    icon: ShieldCheck,
-  },
+  // {
+  //   href: "/roles-permissions",
+  //   label: "الأدوار والصلاحيات",
+  //   ariaLabel: "الأدوار والصلاحيات",
+  //   icon: ShieldCheck,
+  // },
   {
     href: "/wallet",
     label: "المحفظة",
