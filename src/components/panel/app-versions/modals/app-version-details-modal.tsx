@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 
 import {
   CriticalBadge,
+  formatAppVersionType,
   formatDate,
   formatPlatform,
   StatusBadge,
@@ -42,7 +43,8 @@ function AppVersionDetailsModal({
             <section className="flex flex-col gap-3 rounded-[14px] bg-background p-4">
               <div className="min-w-0">
                 <p className="text-sm text-gray">
-                  {formatPlatform(appVersion.platform)}
+                  {formatPlatform(appVersion.platform)} -{" "}
+                  {formatAppVersionType(appVersion.type)}
                 </p>
                 <h3 dir="ltr" className="text-2xl font-semibold text-secondary">
                   {appVersion.version}
@@ -54,6 +56,10 @@ function AppVersionDetailsModal({
               </div>
             </section>
             <section className="space-y-3 rounded-[14px] bg-background p-4">
+              <DetailRow
+                label="النوع"
+                value={formatAppVersionType(appVersion.type)}
+              />
               <DetailRow label="المعرّف" value={appVersion.id} dir="ltr" />
               <DetailRow
                 label="رمز الإصدار"

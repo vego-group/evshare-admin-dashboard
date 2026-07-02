@@ -23,6 +23,7 @@ function AppVersions() {
   const queryClient = useQueryClient();
   const [params, setParams] = useState<AppVersionsQueryParams>({
     limit: PAGE_SIZE,
+    type: "merchant",
   });
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [pendingView, setPendingView] = useState<AppVersionListItem | null>(null);
@@ -42,6 +43,7 @@ function AppVersions() {
   async function refreshQueries(appVersionId?: string) {
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: ["app-versions"] }),
+      queryClient.invalidateQueries({ queryKey: ["app-version-latest-values"] }),
       ...(appVersionId
         ? [queryClient.invalidateQueries({ queryKey: ["app-version", appVersionId] })]
         : []),

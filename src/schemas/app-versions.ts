@@ -1,10 +1,22 @@
 import { z } from "zod";
 
-import { appVersionPlatforms, appVersionStatuses } from "@/types/app-versions";
+import {
+  appVersionPlatforms,
+  appVersionStatuses,
+  appVersionTypes,
+} from "@/types/app-versions";
 
 export const appVersionSchema = z.object({
+  type: z.enum(appVersionTypes, { error: "النوع مطلوب" }),
   platform: z.enum(appVersionPlatforms, { error: "المنصة مطلوبة" }),
-  version: z.string().trim().min(1, "الإصدار مطلوب"),
+  version: z
+    .string()
+    .trim()
+    .min(1, "الإصدار مطلوب")
+    .regex(
+      /^\d+\.\d+\.\d+$/,
+      "صيغة الإصدار يجب أن تكون مثل 1.0.0",
+    ),
   version_code: z.coerce
     .number({ error: "رمز الإصدار مطلوب" })
     .int("رمز الإصدار يجب أن يكون رقمًا صحيحًا")

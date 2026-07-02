@@ -4,6 +4,7 @@ import type {
   AppVersionsQueryParams,
   AppVersionPlatform,
   AppVersionStatus,
+  AppVersionType,
 } from "@/types";
 
 import AppVersionsTable from "./results/app-versions-table";
@@ -33,10 +34,12 @@ function AppVersionsMainContent({
       <AppVersionsToolbar
         selectedPlatform={params.platform}
         selectedStatus={params.status}
+        selectedType={params.type}
         onPlatformChange={(platform?: AppVersionPlatform) =>
           onParamsChange({ platform })
         }
         onStatusChange={(status?: AppVersionStatus) => onParamsChange({ status })}
+        onTypeChange={(type: AppVersionType) => onParamsChange({ type })}
       />
       <AppVersionsTable
         appVersions={data?.data ?? []}

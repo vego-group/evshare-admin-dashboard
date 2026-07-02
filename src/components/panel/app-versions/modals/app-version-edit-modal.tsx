@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 
 import Modal from "@/components/ui/modal";
 import Shimmer from "@/components/ui/shimmer";
+import { useLatestAppVersionValues } from "@/hooks/api/app-versions";
 import type { AppVersionFormValues } from "@/schemas/app-versions";
 import { editAppVersion } from "@/services/mutations";
 import type { AppVersionDetail, AppVersionPlatform } from "@/types";
@@ -14,8 +15,9 @@ import AppVersionFormActions from "./app-version-form-actions";
 import AppVersionFormFields from "./app-version-form-fields";
 import {
   appVersionDefaultValues,
-  appVersionFormResolver,
   buildChangedAppVersionPayload,
+  createAppVersionFormResolver,
+  getLatestValuesKey,
   hasPayloadEntries,
 } from "./app-version-form-utils";
 
@@ -34,14 +36,63 @@ function AppVersionEditModal({
   onClose,
   onSaved,
 }: AppVersionEditModalProps) {
+  const androidMerchantLatestValuesQuery = useLatestAppVersionValues(
+    "android",
+    "merchant",
+    open,
+  );
+  const androidDriverLatestValuesQuery = useLatestAppVersionValues(
+    "android",
+    "driver",
+    open,
+  );
+  const iosMerchantLatestValuesQuery = useLatestAppVersionValues(
+    "ios",
+    "merchant",
+    open,
+  );
+  const iosDriverLatestValuesQuery = useLatestAppVersionValues(
+    "ios",
+    "driver",
+    open,
+  );
   const form = useForm<AppVersionFormValues>({
-    resolver: appVersionFormResolver,
+    resolver: createAppVersionFormResolver({
+      latestValuesByTarget: {
+        [getLatestValuesKey("android", "merchant")]:
+          androidMerchantLatestValuesQuery.data?.data,
+        [getLatestValuesKey("android", "driver")]:
+          androidDriverLatestValuesQuery.data?.data,
+        [getLatestValuesKey("ios", "merchant")]:
+          iosMerchantLatestValuesQuery.data?.data,
+        [getLatestValuesKey("ios", "driver")]:
+          iosDriverLatestValuesQuery.data?.data,
+      },
+      currentIdentity: appVersion ? toFormValues(appVersion) : null,
+    }),
     defaultValues: appVersionDefaultValues,
     mode: "onChange",
   });
+  const type = useWatch({ control: form.control, name: "type" });
   const platform = useWatch({ control: form.control, name: "platform" });
+  const version = useWatch({ control: form.control, name: "version" });
+  const versionCode = useWatch({ control: form.control, name: "version_code" });
   const status = useWatch({ control: form.control, name: "status" });
   const isCritical = useWatch({ control: form.control, name: "is_critical" });
+  const latestValuesQuery = getLatestValuesQuery(type, platform, {
+    androidMerchant: androidMerchantLatestValuesQuery,
+    androidDriver: androidDriverLatestValuesQuery,
+    iosMerchant: iosMerchantLatestValuesQuery,
+    iosDriver: iosDriverLatestValuesQuery,
+  });
+  const latestValues = latestValuesQuery.data?.data;
+  const isLatestValuesLoading = latestValuesQuery.isLoading;
+  const shouldValidateAgainstLatest = Boolean(
+    form.formState.dirtyFields.type ||
+      form.formState.dirtyFields.platform ||
+      form.formState.dirtyFields.version ||
+      form.formState.dirtyFields.version_code,
+  );
 
   useEffect(() => {
     if (!open) {
@@ -50,6 +101,34 @@ function AppVersionEditModal({
     }
     if (appVersion) form.reset(toFormValues(appVersion));
   }, [appVersion, open, form]);
+
+  useEffect(() => {
+    if (open && latestValues && shouldValidateAgainstLatest) {
+      const targetChanged = Boolean(
+        form.formState.dirtyFields.type || form.formState.dirtyFields.platform,
+      );
+      const fieldsToValidate: Array<"version" | "version_code"> = [];
+      if ((targetChanged || form.formState.dirtyFields.version) && version?.trim()) {
+        fieldsToValidate.push("version");
+      }
+      if (
+        (targetChanged || form.formState.dirtyFields.version_code) &&
+        Number.isFinite(versionCode)
+      ) {
+        fieldsToValidate.push("version_code");
+      }
+      if (fieldsToValidate.length > 0) void form.trigger(fieldsToValidate);
+    }
+  }, [
+    form,
+    latestValues,
+    open,
+    platform,
+    shouldValidateAgainstLatest,
+    type,
+    version,
+    versionCode,
+  ]);
 
   const onSubmit = async (values: AppVersionFormValues) => {
     if (!appVersion || !form.formState.isDirty) return;
@@ -84,6 +163,7 @@ function AppVersionEditModal({
         ) : (
           <>
             <AppVersionFormFields
+              type={type}
               platform={platform}
               status={status}
               isCritical={isCritical}
@@ -94,7 +174,10 @@ function AppVersionEditModal({
             <AppVersionFormActions
               submitLabel="حفظ التعديلات"
               isSubmitting={form.formState.isSubmitting}
-              isSubmitDisabled={!form.formState.isDirty}
+              isSubmitDisabled={
+                !form.formState.isDirty ||
+                (shouldValidateAgainstLatest && isLatestValuesLoading)
+              }
               onClose={onClose}
             />
           </>
@@ -106,6 +189,7 @@ function AppVersionEditModal({
 
 function toFormValues(appVersion: AppVersionDetail): AppVersionFormValues {
   return {
+    type: appVersion.type,
     platform: appVersion.platform as AppVersionPlatform,
     version: appVersion.version,
     version_code: appVersion.version_code,
@@ -130,3 +214,20 @@ function FormShimmer() {
 }
 
 export default AppVersionEditModal;
+
+function getLatestValuesQuery(
+  type: AppVersionFormValues["type"],
+  platform: AppVersionFormValues["platform"],
+  queries: {
+    androidMerchant: ReturnType<typeof useLatestAppVersionValues>;
+    androidDriver: ReturnType<typeof useLatestAppVersionValues>;
+    iosMerchant: ReturnType<typeof useLatestAppVersionValues>;
+    iosDriver: ReturnType<typeof useLatestAppVersionValues>;
+  },
+) {
+  if (platform === "ios") {
+    return type === "driver" ? queries.iosDriver : queries.iosMerchant;
+  }
+
+  return type === "driver" ? queries.androidDriver : queries.androidMerchant;
+}

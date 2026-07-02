@@ -6,6 +6,7 @@ import type { AppVersionListItem } from "@/types";
 import {
   AppVersionActions,
   CriticalBadge,
+  formatAppVersionType,
   formatDate,
   formatPlatform,
   StatusBadge,
@@ -37,9 +38,10 @@ function AppVersionsTable({
   return (
     <section className="overflow-hidden rounded-lg bg-white">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[980px] border-separate border-spacing-0 text-right">
+        <table className="w-full min-w-[1080px] border-separate border-spacing-0 text-right">
           <thead>
             <tr className="bg-primary/8 text-base font-semibold text-dark-gray">
+              <HeaderCell>النوع</HeaderCell>
               <HeaderCell>المنصة</HeaderCell>
               <HeaderCell>الإصدار</HeaderCell>
               <HeaderCell>رمز الإصدار</HeaderCell>
@@ -52,6 +54,7 @@ function AppVersionsTable({
           <tbody>
             {appVersions.map((appVersion) => (
               <tr key={appVersion.id} className="text-dark-gray">
+                <TableCell>{formatAppVersionType(appVersion.type)}</TableCell>
                 <TableCell>{formatPlatform(appVersion.platform)}</TableCell>
                 <TableCell dir="ltr">{appVersion.version}</TableCell>
                 <TableCell dir="ltr">{appVersion.version_code}</TableCell>
