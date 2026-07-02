@@ -5,7 +5,12 @@ import { useQueryClient } from "@tanstack/react-query";
 
 import { PAGE_SIZE } from "@/constants";
 import { usePaymentMethod, usePaymentMethods } from "@/hooks/api";
-import type { PaymentMethod, PaymentMethodsQueryParams } from "@/types";
+import type {
+  PaymentMethod,
+  PaymentMethodAllowedType,
+  PaymentMethodsAnalysis,
+  PaymentMethodsQueryParams,
+} from "@/types";
 
 import PaymentMethodsShimmer from "./content-shimmer";
 import PaymentMethodFormModal from "./form";
@@ -52,12 +57,17 @@ function PaymentMethods() {
   return (
     <div className="flex w-full flex-col gap-6">
       <PaymentMethodsHeader />
+      <PaymentMethodsAnalysisCards analysis={data?.analysis} />
       <PaymentMethodsToolbar
         searchValue={searchValue}
         selectedStatus={params.is_active}
+        selectedAllowedType={params.allowed_user_type}
         onSearchChange={setSearchValue}
         onStatusChange={(is_active) =>
           setParams((current) => ({ ...current, page: 1, is_active }))
+        }
+        onAllowedTypeChange={(allowed_user_type?: PaymentMethodAllowedType) =>
+          setParams((current) => ({ ...current, page: 1, allowed_user_type }))
         }
       />
       <PaymentMethodsResults
@@ -76,6 +86,41 @@ function PaymentMethods() {
         onClose={() => setPendingEdit(null)}
         onSaved={refresh}
       />
+    </div>
+  );
+}
+
+function PaymentMethodsAnalysisCards({
+  analysis,
+}: {
+  analysis?: PaymentMethodsAnalysis;
+}) {
+  if (!analysis) return null;
+  const optionalCards = [
+    { label: "متاحة للتجار", value: analysis.merchant },
+    { label: "متاحة للسائقين", value: analysis.driver },
+  ].filter(
+    (card): card is { label: string; value: number } =>
+      typeof card.value === "number",
+  );
+
+  return (
+    <section className="grid gap-4 md:grid-cols-3 xl:grid-cols-5">
+      <AnalysisCard label="إجمالي طرق الدفع" value={analysis.total} />
+      <AnalysisCard label="طرق الدفع النشطة" value={analysis.active} />
+      <AnalysisCard label="طرق الدفع غير النشطة" value={analysis.inactive} />
+      {optionalCards.map((card) => (
+        <AnalysisCard key={card.label} label={card.label} value={card.value} />
+      ))}
+    </section>
+  );
+}
+
+function AnalysisCard({ label, value }: { label: string; value: number }) {
+  return (
+    <div className="rounded-2xl border border-neutral-100 bg-white p-4 shadow-sm">
+      <p className="text-sm text-gray">{label}</p>
+      <p className="mt-2 text-2xl font-semibold text-secondary">{value}</p>
     </div>
   );
 }

@@ -30,6 +30,10 @@ export function usePaymentMethodForm(options: Options) {
     mode: "onChange",
   });
   const isActive = useWatch({ control: form.control, name: "is_active" });
+  const allowedTypes = useWatch({
+    control: form.control,
+    name: "allowed_user_types",
+  });
 
   useEffect(() => {
     if (!open) {
@@ -41,6 +45,7 @@ export function usePaymentMethodForm(options: Options) {
         name_ar: paymentMethod.name_ar,
         name_en: paymentMethod.name_en,
         is_active: paymentMethod.is_active,
+        allowed_user_types: paymentMethod.allowed_user_types ?? [],
       });
     }
   }, [form, open, paymentMethod]);
@@ -71,5 +76,5 @@ export function usePaymentMethodForm(options: Options) {
     await onSaved(paymentMethod.id);
   };
 
-  return { form, isActive, close, onSubmit };
+  return { form, isActive, allowedTypes, close, onSubmit };
 }

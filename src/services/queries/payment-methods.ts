@@ -16,6 +16,7 @@ export async function paymentMethodsAPI(
     limit: params.limit ?? PAGE_SIZE,
     search: params.search,
     is_active: params.is_active,
+    allowed_user_type: params.allowed_user_type,
   });
 
   return await baseAPI("GET", `/payment-methods${query ? `?${query}` : ""}`);

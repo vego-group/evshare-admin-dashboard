@@ -3,7 +3,18 @@ import type { FieldErrors, Resolver } from "react-hook-form";
 import { paymentMethodSchema, type PaymentMethodFormValues } from "@/schemas/payment-methods";
 import type { UpdatePaymentMethodPayload } from "@/types";
 
-export const paymentMethodDefaults: PaymentMethodFormValues = { name_ar: "", name_en: "", is_active: true };
+type PaymentMethodDirtyFields = Partial<{
+  [Key in keyof PaymentMethodFormValues]:
+    | boolean
+    | (PaymentMethodFormValues[Key] extends unknown[] ? boolean[] : never);
+}>;
+
+export const paymentMethodDefaults: PaymentMethodFormValues = {
+  name_ar: "",
+  name_en: "",
+  is_active: true,
+  allowed_user_types: [],
+};
 
 export const paymentMethodResolver: Resolver<PaymentMethodFormValues> = async (values) => {
   const result = paymentMethodSchema.safeParse(values);
@@ -18,13 +29,20 @@ export const paymentMethodResolver: Resolver<PaymentMethodFormValues> = async (v
 
 export function buildChangedPaymentMethodPayload(
   values: PaymentMethodFormValues,
-  dirty: Partial<Record<keyof PaymentMethodFormValues, boolean>>,
+  dirty: PaymentMethodDirtyFields,
 ): UpdatePaymentMethodPayload {
   const payload: UpdatePaymentMethodPayload = {};
   if (dirty.name_ar) payload.name_ar = values.name_ar.trim();
   if (dirty.name_en) payload.name_en = values.name_en.trim();
   if (dirty.is_active) payload.is_active = values.is_active;
+  if (isDirty(dirty.allowed_user_types)) {
+    payload.allowed_user_types = values.allowed_user_types;
+  }
   return payload;
 }
 
 export const hasPaymentMethodChanges = (payload: UpdatePaymentMethodPayload) => Object.keys(payload).length > 0;
+
+function isDirty(value: boolean | boolean[] | undefined) {
+  return Array.isArray(value) ? value.some(Boolean) : Boolean(value);
+}
