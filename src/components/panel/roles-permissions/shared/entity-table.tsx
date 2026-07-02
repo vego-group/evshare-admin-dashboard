@@ -18,8 +18,8 @@ type Props<T extends { id: string }> = {
   columns: TableColumn<T>[];
   isLoading: boolean;
   onView: (item: T) => void;
-  onEdit: (item: T) => void;
-  onDelete: (item: T) => void;
+  onEdit?: (item: T) => void;
+  onDelete?: (item: T) => void;
   onPermissions?: (item: T) => void;
   canEdit?: (item: T) => boolean;
   canDelete?: (item: T) => boolean;
@@ -33,20 +33,23 @@ export default function EntityTable<T extends { id: string }>(props: Props<T>) {
     return <EntityTableShimmer columns={props.columns.length + 1} />;
   }
   if (!props.rows.length) {
-    return <EmptyState className="min-h-[420px]" />;
+    return <EmptyState className="min-h-105" />;
   }
   const defaultColumnWidth = `${100 / (props.columns.length + 1)}%`;
   return (
     <div className="overflow-x-auto rounded-lg bg-white">
       <table
         className={cn(
-          "w-full min-w-[760px] table-fixed border-separate border-spacing-0 text-right text-sm",
+          "w-full min-w-190 table-fixed border-separate border-spacing-0 text-right text-sm",
           props.tableClassName,
         )}
       >
         <colgroup>
           {props.columns.map((column) => (
-            <col key={column.key} style={{ width: column.width ?? defaultColumnWidth }} />
+            <col
+              key={column.key}
+              style={{ width: column.width ?? defaultColumnWidth }}
+            />
           ))}
           <col style={{ width: props.actionsWidth ?? defaultColumnWidth }} />
         </colgroup>
@@ -110,19 +113,19 @@ export default function EntityTable<T extends { id: string }>(props: Props<T>) {
                       onClick={() => props.onPermissions!(row)}
                     />
                   )}
-                  {props.canEdit?.(row) !== false && (
+                  {props.onEdit && props.canEdit?.(row) !== false && (
                     <TableAction
                       icon={<Pencil />}
                       label="تعديل"
-                      onClick={() => props.onEdit(row)}
+                      onClick={() => props.onEdit?.(row)}
                     />
                   )}
-                  {props.canDelete?.(row) !== false && (
+                  {props.onDelete && props.canDelete?.(row) !== false && (
                     <TableAction
                       destructive
                       icon={<Trash2 />}
                       label="حذف"
-                      onClick={() => props.onDelete(row)}
+                      onClick={() => props.onDelete?.(row)}
                     />
                   )}
                 </div>

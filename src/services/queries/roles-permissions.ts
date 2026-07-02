@@ -117,14 +117,6 @@ const slicePage = <T>(items: T[], params: RolesPermissionsQueryParams) => {
   return items.slice(start, start + limit);
 };
 
-const withListQuery = (path: string, params: RolesPermissionsQueryParams) => {
-  const query = buildQuery({
-    search: params.search,
-    order_by: params.order_by,
-  });
-  return query ? `${path}?${query}` : path;
-};
-
 const withPaginatedQuery = (path: string, params: RolesPermissionsQueryParams) => {
   const query = buildQuery({
     page: params.page,
@@ -136,7 +128,7 @@ const withPaginatedQuery = (path: string, params: RolesPermissionsQueryParams) =
 };
 
 export const rolesAPI = async (params: RolesPermissionsQueryParams): Promise<RolesListResponse> =>
-  normalizeList(await baseAPI("GET", withListQuery("/roles", params)), params);
+  normalizeList(await baseAPI("GET", withPaginatedQuery("/roles", params)), params);
 
 export const roleDetailsAPI = (roleId: string): Promise<RoleDetailResponse> =>
   baseAPI("GET", `/roles/${roleId}`);
@@ -144,7 +136,7 @@ export const roleDetailsAPI = (roleId: string): Promise<RoleDetailResponse> =>
 export const permissionsAPI = (
   params: RolesPermissionsQueryParams,
 ): Promise<PermissionsListResponse> =>
-  baseAPI("GET", withListQuery("/permissions", params)).then((value) => normalizeList(value, params));
+  baseAPI("GET", withPaginatedQuery("/permissions", params)).then((value) => normalizeList(value, params));
 
 export const permissionDetailsAPI = (
   permissionId: string,
