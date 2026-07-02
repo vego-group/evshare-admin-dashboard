@@ -7,7 +7,7 @@ import type { UseFormSetValue } from "react-hook-form";
 import { cn } from "@/lib/utils";
 import type { AppVersionFormValues } from "@/schemas/app-versions";
 
-type DropdownField = "platform" | "status";
+type DropdownField = "platform" | "status" | "type";
 
 type AppVersionFormDropdownProps = {
   field: DropdownField;

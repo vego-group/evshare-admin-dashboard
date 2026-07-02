@@ -105,3 +105,9 @@ export function formatPlatform(value: string) {
   if (value === "ios") return "iOS";
   return value;
 }
+
+export function formatAppVersionType(value: string) {
+  if (value === "merchant") return "تاجر";
+  if (value === "driver") return "سائق";
+  return value;
+}

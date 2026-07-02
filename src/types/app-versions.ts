@@ -1,13 +1,16 @@
 export const appVersionPlatforms = ["android", "ios"] as const;
 export const appVersionStatuses = ["draft", "active", "archived"] as const;
+export const appVersionTypes = ["merchant", "driver"] as const;
 
 export type AppVersionPlatform = (typeof appVersionPlatforms)[number];
 export type AppVersionStatus = (typeof appVersionStatuses)[number];
+export type AppVersionType = (typeof appVersionTypes)[number];
 
 export type AppVersionsQueryParams = {
   limit?: number;
   platform?: AppVersionPlatform;
   status?: AppVersionStatus;
+  type?: AppVersionType;
 };
 
 export type AppVersionReleaseNotes = {
@@ -24,6 +27,7 @@ export type AppVersionCreatedBy = {
 
 export type AppVersionListItem = {
   id: string;
+  type: AppVersionType;
   platform: AppVersionPlatform;
   version: string;
   version_code: number;
@@ -53,7 +57,19 @@ export type AppVersionDetailResponse = {
   data: AppVersionDetail;
 };
 
+export type AppVersionLatestValues = {
+  version: string;
+  version_code: number;
+};
+
+export type AppVersionLatestValuesResponse = {
+  error: boolean;
+  message: string;
+  data: AppVersionLatestValues;
+};
+
 export type AppVersionPayload = {
+  type: AppVersionType;
   platform: AppVersionPlatform;
   version: string;
   version_code: number;

@@ -12,6 +12,7 @@ import AppVersionFormDropdown from "./app-version-form-dropdown";
 import AppVersionSwitchField from "./app-version-switch-field";
 
 type AppVersionFormFieldsProps = {
+  type: AppVersionFormValues["type"];
   platform: AppVersionFormValues["platform"];
   status: AppVersionFormValues["status"];
   isCritical: boolean;
@@ -21,6 +22,7 @@ type AppVersionFormFieldsProps = {
 };
 
 function AppVersionFormFields({
+  type,
   platform,
   status,
   isCritical,
@@ -30,6 +32,17 @@ function AppVersionFormFields({
 }: AppVersionFormFieldsProps) {
   return (
     <div className="grid gap-x-5 gap-y-5 sm:grid-cols-2">
+      <Field label="النوع" required error={errors.type?.message}>
+        <AppVersionFormDropdown
+          field="type"
+          value={type}
+          options={[
+            { label: "تاجر", value: "merchant" },
+            { label: "سائق", value: "driver" },
+          ]}
+          setValue={setValue}
+        />
+      </Field>
       <Field label="المنصة" required error={errors.platform?.message}>
         <AppVersionFormDropdown
           field="platform"
