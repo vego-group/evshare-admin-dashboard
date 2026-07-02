@@ -3,12 +3,10 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { PAGE_SIZE } from "@/constants";
 import { useDeleteRole, useRole, useRoles } from "@/hooks/api";
 import type { Role } from "@/types";
 import DeleteModal from "../shared/delete-modal";
 import DetailsModal from "../shared/details-modal";
-import EntityPagination from "../shared/entity-pagination";
 import EntityTable, { type TableColumn } from "../shared/entity-table";
 import EntityToolbar from "../shared/entity-toolbar";
 import RoleFormModal from "./role-form-modal";
@@ -18,12 +16,13 @@ import BooleanBadge from "../shared/boolean-badge";
 const columns: TableColumn<Role>[] = [
   { key: "name", label: "الدور", render: (item) => item.name },
   { key: "allowed", label: "السماح للمستخدم", render: (item) => <BooleanBadge value={item.allowed_user} /> },
-  { key: "permissions", label: "عدد الصلاحيات", render: (item) => <span className="inline-flex min-w-9 justify-center rounded-full bg-violet-50 px-3 py-1.5 font-semibold text-violet-600">{item.permissions?.length ?? "—"}</span> },
 ];
+
+const protectedRoleNames = new Set(["merchant", "root", "driver"]);
+const canModifyRole = (role: Role) => !protectedRoleNames.has(role.name.trim().toLowerCase());
 
 export default function RolesPanel() {
   const client = useQueryClient();
-  const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [orderBy, setOrderBy] = useState<"asc" | "desc">("desc");
   const [form, setForm] = useState<Role | "new" | null>(null);
@@ -31,7 +30,7 @@ export default function RolesPanel() {
   const [permissionsRole, setPermissionsRole] = useState<Role | null>(null);
   const [pendingDelete, setPendingDelete] = useState<Role | null>(null);
   const deleteMutation = useDeleteRole();
-  const { data, isLoading } = useRoles({ page, limit: PAGE_SIZE, search, order_by: orderBy });
+  const { data, isLoading } = useRoles({ search, order_by: orderBy });
   const { data: detail, isLoading: detailLoading, error: detailError } = useRole(view?.id ?? null);
 
   const refresh = async () => {
@@ -51,9 +50,8 @@ export default function RolesPanel() {
 
   return (
     <section className="space-y-4">
-      <EntityToolbar title="الأدوار" description="إدارة الأدوار والصلاحيات المرتبطة بها" addLabel="إضافة دور" search={search} orderBy={orderBy} onSort={(value) => { setOrderBy(value); setPage(1); }} onSearch={(value) => { setSearch(value); setPage(1); }} onAdd={() => setForm("new")} />
-      <EntityTable rows={Array.isArray(data?.data) ? data.data : []} columns={columns} isLoading={isLoading} onView={setView} onEdit={setForm} onDelete={setPendingDelete} onPermissions={setPermissionsRole} />
-      <EntityPagination meta={data?.meta} onChange={setPage} />
+      <EntityToolbar title="الأدوار" description="إدارة الأدوار والصلاحيات المرتبطة بها" addLabel="إضافة دور" search={search} orderBy={orderBy} onSort={setOrderBy} onSearch={setSearch} onAdd={() => setForm("new")} />
+      <EntityTable rows={Array.isArray(data?.data) ? data.data : []} columns={columns} isLoading={isLoading} onView={setView} onEdit={setForm} onDelete={setPendingDelete} onPermissions={setPermissionsRole} canEdit={canModifyRole} canDelete={canModifyRole} />
       {form && <RoleFormModal open role={form === "new" ? null : form} onClose={() => setForm(null)} onSaved={refresh} />}
       <RolePermissionsModal role={permissionsRole} onClose={() => setPermissionsRole(null)} onSaved={refresh} />
       <DetailsModal open={Boolean(view)} title="تفاصيل الدور" loading={detailLoading} error={detailError} onClose={() => setView(null)} fields={[

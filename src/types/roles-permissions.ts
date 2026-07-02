@@ -1,6 +1,6 @@
 export type RolesPermissionsQueryParams = {
-  page: number;
-  limit: number;
+  page?: number;
+  limit?: number;
   search?: string;
   order_by?: "asc" | "desc";
 };
@@ -8,6 +8,7 @@ export type RolesPermissionsQueryParams = {
 export type Permission = {
   id: string;
   name: string;
+  slug?: string;
   name_ar: string;
   name_en: string;
   permission_category_id: string | number | null;

@@ -16,8 +16,6 @@ import PermissionCategoryFormModal from "./permission-category-form-modal";
 const columns: TableColumn<PermissionCategory>[] = [
   { key: "name", label: "الاسم", render: (item) => item.name },
   { key: "slug", label: "المعرّف", render: (item) => <span dir="ltr">{item.slug}</span> },
-  { key: "ar", label: "العربية", render: (item) => item.name_ar || "—" },
-  { key: "en", label: "الإنجليزية", render: (item) => item.name_en || "—" },
 ];
 
 export default function PermissionCategoriesPanel() {

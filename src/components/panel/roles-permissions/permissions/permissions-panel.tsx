@@ -12,13 +12,30 @@ import EntityPagination from "../shared/entity-pagination";
 import EntityTable, { type TableColumn } from "../shared/entity-table";
 import EntityToolbar from "../shared/entity-toolbar";
 import PermissionFormModal from "./permission-form-modal";
-import BooleanBadge from "../shared/boolean-badge";
 
 const columns: TableColumn<Permission>[] = [
-  { key: "name", label: "الاسم البرمجي", render: (item) => <span dir="ltr">{item.name}</span> },
-  { key: "ar", label: "العربية", render: (item) => item.name_ar },
-  { key: "en", label: "الإنجليزية", render: (item) => item.name_en },
-  { key: "dashboard", label: "لوحة التحكم", render: (item) => <BooleanBadge value={item.dashboard_permissions} yes="مفعّلة" no="غير مفعّلة" /> },
+  {
+    key: "slug",
+    label: "الصلاحية",
+    render: (item) => (
+      <span className="inline-flex max-w-full whitespace-normal break-words rounded-lg bg-neutral-50 px-3 py-2 font-semibold leading-6 text-secondary" dir="ltr">
+        {item.slug || item.name}
+      </span>
+    ),
+  },
+  {
+    key: "dashboard",
+    label: "لوحة التحكم",
+    render: (item) => item.dashboard_permissions ? (
+      <span className="inline-flex rounded-full bg-green-50 px-3 py-1.5 text-sm font-medium text-green-600">
+        مفعّلة
+      </span>
+    ) : (
+      <span className="inline-flex rounded-full bg-neutral-100 px-3 py-1.5 text-sm font-medium text-dark-gray">
+        غير مفعّلة
+      </span>
+    ),
+  },
 ];
 
 export default function PermissionsPanel() {
@@ -49,7 +66,7 @@ export default function PermissionsPanel() {
   return (
     <section className="space-y-4">
       <EntityToolbar title="الصلاحيات" description="إدارة صلاحيات النظام وربطها بالتصنيفات" addLabel="إضافة صلاحية" search={search} orderBy={orderBy} onSort={(value) => { setOrderBy(value); setPage(1); }} onSearch={(value) => { setSearch(value); setPage(1); }} onAdd={() => setForm("new")} />
-      <EntityTable rows={Array.isArray(data?.data) ? data.data : []} columns={columns} isLoading={isLoading} onView={setView} onEdit={setForm} onDelete={setPendingDelete} />
+      <EntityTable rows={Array.isArray(data?.data) ? data.data : []} columns={columns} isLoading={isLoading} onView={setView} onEdit={setForm} onDelete={setPendingDelete} tableClassName="min-w-[680px]" />
       <EntityPagination meta={data?.meta} onChange={setPage} />
       {form && <PermissionFormModal open permission={form === "new" ? null : form} onClose={() => setForm(null)} onSaved={refresh} />}
       <DetailsModal open={Boolean(view)} title="تفاصيل الصلاحية" loading={detailLoading} error={detailError} onClose={() => setView(null)} fields={[

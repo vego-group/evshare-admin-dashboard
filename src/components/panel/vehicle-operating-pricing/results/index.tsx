@@ -7,6 +7,8 @@ type Props = {
   onView: (vehicle: VehicleListItem) => void;
   onEdit: (vehicle: VehicleListItem) => void;
   onReview: (vehicle: VehicleListItem) => void;
+  onReviewReceipt: (vehicle: VehicleListItem) => void;
+  onEditTemplate: (vehicle: VehicleListItem) => void;
   onCommission: (vehicle: VehicleListItem) => void;
   onDelete: (vehicle: VehicleListItem) => void;
 };

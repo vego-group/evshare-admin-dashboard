@@ -1,6 +1,8 @@
 import {
+  CheckCircle2,
   Eye,
   FileCheck2,
+  FileUp,
   Pencil,
   Percent,
   Trash2,
@@ -15,6 +17,8 @@ type Props = {
   onView: () => void;
   onEdit: () => void;
   onReview: () => void;
+  onReviewReceipt: () => void;
+  onEditTemplate: () => void;
   onCommission: () => void;
   onDelete: () => void;
 };
@@ -25,6 +29,8 @@ function VehicleActions({
   onView,
   onEdit,
   onReview,
+  onReviewReceipt,
+  onEditTemplate,
   onCommission,
   onDelete,
 }: Props) {
@@ -33,6 +39,8 @@ function VehicleActions({
       <Action icon={Eye} label="عرض" onClick={onView} className="bg-blue-50 text-blue-600" />
       <Action icon={Pencil} label="تعديل" onClick={onEdit} className="bg-amber-50 text-orange-500" />
       <Action icon={FileCheck2} label="مراجعة العقد" onClick={onReview} className="bg-green-50 text-green-600" />
+      <Action icon={CheckCircle2} label="مراجعة السند" onClick={onReviewReceipt} className="bg-lime-50 text-lime-700" />
+      <Action icon={FileUp} label="رفع قالب السند" onClick={onEditTemplate} className="bg-cyan-50 text-cyan-600" />
       {canUpdateCommission && <Action icon={Percent} label="العمولة" onClick={onCommission} className="bg-purple-50 text-purple-600" />}
       <Action icon={Trash2} label="حذف" onClick={onDelete} className="bg-red-50 text-red-500" />
     </div>

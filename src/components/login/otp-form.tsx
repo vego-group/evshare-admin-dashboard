@@ -55,7 +55,7 @@ function OtpForm({ mobile }: OtpFormProps) {
 
   const onSubmit = async (data: VerifyOtpFormValues) => {
     const result = await verifyLoginAPI(data);
-
+    console.log(result);
     if (result?.ok) {
       toast.success(result.message || "تم تسجيل الدخول بنجاح");
       const token = result.data?.data?.access_token;

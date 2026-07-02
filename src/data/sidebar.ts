@@ -120,12 +120,6 @@ export const sidebarNavItems: SidebarNavItem[] = [
     icon: Route,
   },
   {
-    href: "/mobility-receipts",
-    label: "سندات الاستلام",
-    ariaLabel: "سندات الاستلام",
-    icon: ScrollText,
-  },
-  {
     href: "/payment-gateways",
     label: "بوابات الدفع",
     ariaLabel: "بوابات الدفع",

@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 import type { VehicleListItem } from "@/types";
 import StatusBadge from "../status-badge";
-import { formatPercentage, vehicleTitle } from "../utils";
+import { formatPercentage, getVehicleTemplateStatus, vehicleTitle } from "../utils";
 import VehicleActions from "./action-buttons";
 
 type Props = {
@@ -10,18 +10,32 @@ type Props = {
   onView: (vehicle: VehicleListItem) => void;
   onEdit: (vehicle: VehicleListItem) => void;
   onReview: (vehicle: VehicleListItem) => void;
+  onReviewReceipt: (vehicle: VehicleListItem) => void;
+  onEditTemplate: (vehicle: VehicleListItem) => void;
   onCommission: (vehicle: VehicleListItem) => void;
   onDelete: (vehicle: VehicleListItem) => void;
 };
+
+const headers = [
+  "المركبة",
+  "الحالة",
+  "التفعيل",
+  "نوع التشغيل",
+  "شركة التشغيل",
+  "العمولة",
+  "العقد",
+  "قالب السند",
+  "الإجراءات",
+];
 
 function VehiclesTable(props: Props) {
   return (
     <section className="overflow-hidden rounded-lg bg-white">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[1250px] border-separate border-spacing-0 text-right">
+        <table className="w-full min-w-[1360px] border-separate border-spacing-0 text-right">
           <thead>
             <tr className="bg-primary/8 text-base font-semibold text-dark-gray">
-              {["المركبة", "الحالة", "التفعيل", "نوع التشغيل", "شركة التشغيل", "العمولة", "العقد", "الإجراءات"].map((h) => <HeaderCell key={h}>{h}</HeaderCell>)}
+              {headers.map((h) => <HeaderCell key={h}>{h}</HeaderCell>)}
             </tr>
           </thead>
           <tbody>
@@ -34,8 +48,9 @@ function VehiclesTable(props: Props) {
                 <TableCell>{vehicle.operation_company?.name ?? "-"}</TableCell>
                 <TableCell>{formatPercentage(vehicle.operation_company?.pricing_percentage ?? vehicle.operation_company?.commission_percentage)}</TableCell>
                 <TableCell>{vehicle.vehicle_contract ? <StatusBadge status={vehicle.vehicle_contract.status} /> : "-"}</TableCell>
+                <TableCell><StatusBadge status={getVehicleTemplateStatus(vehicle)} /></TableCell>
                 <TableCell>
-                  <VehicleActions canUpdateCommission={Boolean(vehicle.operation_company)} onView={() => props.onView(vehicle)} onEdit={() => props.onEdit(vehicle)} onReview={() => props.onReview(vehicle)} onCommission={() => props.onCommission(vehicle)} onDelete={() => props.onDelete(vehicle)} />
+                  <VehicleActions canUpdateCommission={Boolean(vehicle.operation_company)} onView={() => props.onView(vehicle)} onEdit={() => props.onEdit(vehicle)} onReview={() => props.onReview(vehicle)} onReviewReceipt={() => props.onReviewReceipt(vehicle)} onEditTemplate={() => props.onEditTemplate(vehicle)} onCommission={() => props.onCommission(vehicle)} onDelete={() => props.onDelete(vehicle)} />
                 </TableCell>
               </tr>
             ))}
