@@ -21,9 +21,9 @@ function PaymentMethodsResults({ paymentMethods, onEdit }: Props) {
         <tbody>
           {paymentMethods.map((method) => (
             <tr key={method.id} className="border-b border-primary/15 last:border-0">
-              <td className="px-5 py-4 font-medium">{method.name_ar}</td>
-              <td dir="ltr" className="px-5 py-4 text-right">{method.name_en}</td>
-              <td className="px-5 py-4">
+              <td className="max-w-0 overflow-hidden text-ellipsis whitespace-nowrap px-5 py-4 font-medium">{method.name_ar}</td>
+              <td dir="ltr" className="max-w-0 overflow-hidden text-ellipsis whitespace-nowrap px-5 py-4 text-right">{method.name_en}</td>
+              <td className="max-w-0 overflow-hidden text-ellipsis whitespace-nowrap px-5 py-4">
                 <AllowedTypesBadge types={method.allowed_user_types ?? []} />
               </td>
               <td className="px-5 py-4"><StatusBadge active={method.is_active} /></td>

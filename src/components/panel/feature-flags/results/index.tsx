@@ -48,11 +48,11 @@ function FeatureFlagsResults({
               key={getFeatureFlagId(flag)}
               className="border-b border-primary/15 last:border-0"
             >
-              <td dir="ltr" className="px-5 py-4 font-mono text-sm">
+              <td dir="ltr" className="max-w-0 overflow-hidden text-ellipsis whitespace-nowrap px-5 py-4 font-mono text-sm">
                 {flag.key}
               </td>
-              <td className="px-5 py-4">{flag.name_ar}</td>
-              <td dir="ltr" className="px-5 py-4">{flag.name_en}</td>
+              <td className="max-w-0 overflow-hidden text-ellipsis whitespace-nowrap px-5 py-4">{flag.name_ar}</td>
+              <td dir="ltr" className="max-w-0 overflow-hidden text-ellipsis whitespace-nowrap px-5 py-4">{flag.name_en}</td>
               <td className="px-5 py-4">
                 <FeatureFlagStatusBadge isEnabled={flag.is_enabled} />
               </td>

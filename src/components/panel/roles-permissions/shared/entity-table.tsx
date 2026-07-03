@@ -86,7 +86,7 @@ export default function EntityTable<T extends { id: string }>(props: Props<T>) {
                 <td
                   key={column.key}
                   className={cn(
-                    "border-b border-primary/15 px-5 py-3.5",
+                    "max-w-0 overflow-hidden text-ellipsis whitespace-nowrap border-b border-primary/15 px-5 py-3.5",
                     column.className,
                   )}
                 >

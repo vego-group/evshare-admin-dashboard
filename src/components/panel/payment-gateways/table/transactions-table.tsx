@@ -88,7 +88,7 @@ function TransactionTableRow({
       <TableCell dir="ltr">
         <MoneyValue amount={transaction.amount} />
       </TableCell>
-      <TableCell>
+      <TableCell className="max-w-none overflow-visible whitespace-normal">
         <TransactionStatusBadge status={transaction.status} />
       </TableCell>
       <TableCell dir="ltr">{formatDate(transaction.created_at)}</TableCell>

@@ -82,7 +82,7 @@ function UsersTable({ users, onDeleteUser }: UsersTableProps) {
                   <VerifiedBadge verified={user.mobile_verified} />
                 </TableCell>
                 <TableCell dir="ltr">{formatDate(user.created_at)}</TableCell>
-                <TableCell>
+                <TableCell truncate={false}>
                   <UserActions onDelete={() => onDeleteUser(user)} />
                 </TableCell>
               </tr>
@@ -101,12 +101,21 @@ function HeaderCell({ children }: { children: ReactNode }) {
 function TableCell({
   children,
   dir,
+  truncate = true,
 }: {
   children: ReactNode;
   dir?: "ltr" | "rtl";
+  truncate?: boolean;
 }) {
   return (
-    <td dir={dir} className="border-b border-primary/15 px-5 py-3">
+    <td
+      dir={dir}
+      className={
+        truncate
+          ? "max-w-0 overflow-hidden text-ellipsis whitespace-nowrap border-b border-primary/15 px-5 py-3"
+          : "border-b border-primary/15 px-5 py-3"
+      }
+    >
       {children}
     </td>
   );

@@ -86,7 +86,13 @@ function TableCell({
   dir?: "ltr" | "rtl";
 }) {
   return (
-    <td dir={dir} className={cn("h-16 border-b border-primary/15 px-5 py-3 text-right", className)}>
+    <td
+      dir={dir}
+      className={cn(
+        "h-16 max-w-0 overflow-hidden text-ellipsis whitespace-nowrap border-b border-primary/15 px-5 py-3 text-right",
+        className,
+      )}
+    >
       {children}
     </td>
   );
