@@ -1,7 +1,5 @@
 import { z } from "zod";
 
-export const userRoles = ["user", "root", "merchant", "driver"] as const;
-
 export const addUserSchema = z.object({
   first_name: z
     .string()
@@ -17,7 +15,7 @@ export const addUserSchema = z.object({
     .string()
     .min(1, "رقم الجوال مطلوب")
     .regex(/^5\d{8}$/, "من فضلك أدخل رقم جوال صحيح"),
-  role: z.enum(userRoles, "الدور مطلوب"),
+  role: z.string().min(1, "الدور مطلوب"),
   email: z
     .union([
       z.string().trim().email("البريد الإلكتروني غير صحيح"),

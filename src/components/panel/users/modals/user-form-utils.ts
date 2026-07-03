@@ -6,7 +6,7 @@ export const addUserDefaultValues: AddUserFormValues = {
   first_name: "",
   last_name: "",
   mobile: "",
-  role: "user",
+  role: "",
   email: "",
 };
 

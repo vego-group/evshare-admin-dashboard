@@ -54,6 +54,18 @@ export type DetailResponse<T> = {
   data: T;
 };
 
+export type AuthPermission = {
+  id: string;
+  slug: string;
+  name?: string;
+};
+
+export type AuthPermissionsResponse = {
+  status: boolean;
+  message: string;
+  data: AuthPermission[];
+};
+
 export type RolesListResponse = PaginatedResponse<Role>;
 export type PermissionsListResponse = PaginatedResponse<Permission>;
 export type PermissionCategoriesListResponse = PaginatedResponse<PermissionCategory>;

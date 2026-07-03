@@ -1,5 +1,6 @@
 import { buildQuery } from "@/lib/utils/build-query";
 import type {
+  AuthPermissionsResponse,
   PermissionCategoriesListResponse,
   PermissionCategoryDetailResponse,
   PermissionDetailResponse,
@@ -151,3 +152,6 @@ export const permissionCategoryDetailsAPI = (
   categoryId: string,
 ): Promise<PermissionCategoryDetailResponse> =>
   baseAPI("GET", `/permission-categories/${categoryId}`);
+
+export const authPermissionsAPI = (): Promise<AuthPermissionsResponse> =>
+  baseAPI("GET", "/permissions/auth-permissions");

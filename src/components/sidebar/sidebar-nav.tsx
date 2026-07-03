@@ -2,6 +2,7 @@ import type { MouseEvent } from "react";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { sidebarNavItems } from "@/data";
+import { useUserPermissions } from "@/hooks";
 import SidebarLogoutButton from "./sidebar-logout-button";
 import SidebarNavLink from "./sidebar-nav-link";
 
@@ -24,6 +25,11 @@ function SidebarNav({
   onLogout,
   onNavigate,
 }: SidebarNavProps) {
+  const { hasAnyPermission } = useUserPermissions();
+  const visibleNavItems = sidebarNavItems.filter(
+    (item) => !item.permission || hasAnyPermission(item.permission),
+  );
+
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <ScrollArea
@@ -40,7 +46,7 @@ function SidebarNav({
             collapsed ? "items-center" : "items-stretch pr-3"
           }`}
         >
-          {sidebarNavItems.map((item, index) => (
+          {visibleNavItems.map((item, index) => (
             <SidebarNavLink
               key={item.href}
               item={item}

@@ -1,4 +1,5 @@
 import {
+  authPermissionsAPI,
   permissionCategoriesAPI,
   permissionCategoryDetailsAPI,
   permissionDetailsAPI,
@@ -40,6 +41,7 @@ export const rolesPermissionsKeys = {
   permission: ["permission"] as const,
   categories: ["permission-categories"] as const,
   category: ["permission-category"] as const,
+  authPermissions: ["auth-permissions"] as const,
 };
 
 export const useRoles = (params: RolesPermissionsQueryParams) =>
@@ -67,6 +69,12 @@ export const usePermissionCategory = (categoryId: string | null) =>
     () => permissionCategoryDetailsAPI(categoryId!),
     { enabled: Boolean(categoryId) },
   );
+
+export const useAuthPermissions = () =>
+  useCustomQuery(rolesPermissionsKeys.authPermissions, authPermissionsAPI, {
+    staleTime: 5 * 60 * 1000,
+    retry: false,
+  });
 
 const useInvalidate = (...keys: QueryKey[]) => {
   const client = useQueryClient();
