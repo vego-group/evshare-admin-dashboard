@@ -93,13 +93,17 @@ function PaymentMethodsToolbar({
             isTypeOpen && "bg-primary/10",
           )}
         >
-          <span className="flex items-center gap-1.5">
-            <ListFilter className="size-4 text-primary" />
-            <span>{selectedAllowedTypeLabel}</span>
+          <span className="flex items-center gap-1.5 truncate">
+            <ListFilter className="size-4 shrink-0 text-primary" />
+            <span className="truncate">
+              {allowedTypeValue === "all"
+                ? "كل الأنواع"
+                : selectedAllowedTypeLabel}
+            </span>
           </span>
           <ChevronDown
             className={cn(
-              "size-5 text-primary transition",
+              "size-5 shrink-0 text-primary transition",
               isTypeOpen && "rotate-180",
             )}
           />
@@ -153,13 +157,15 @@ function PaymentMethodsToolbar({
             isOpen && "bg-primary/10",
           )}
         >
-          <span className="flex items-center gap-1.5">
-            <ListFilter className="size-4 text-primary" />
-            <span>{selectedLabel}</span>
+          <span className="flex items-center gap-1.5 truncate">
+            <ListFilter className="size-4 shrink-0 text-primary" />
+            <span className="truncate">
+              {statusValue === "all" ? "كل الحالات" : selectedLabel}
+            </span>
           </span>
           <ChevronDown
             className={cn(
-              "size-5 text-primary transition",
+              "size-5 shrink-0 text-primary transition",
               isOpen && "rotate-180",
             )}
           />
