@@ -11,20 +11,24 @@ type Props = {
   onDelete: (commissionSetting: CommissionSetting) => void;
 };
 
-function CommissionSettingsResults({ commissionSettings, onEdit, onDelete }: Props) {
+function CommissionSettingsResults({
+  commissionSettings,
+  onEdit,
+  onDelete,
+}: Props) {
   if (!commissionSettings.length) {
     return (
       <EmptyState
         title="لا توجد إعدادات عمولة"
         description="لم يتم العثور على إعدادات عمولة مطابقة."
-        className="min-h-[360px] rounded-2xl bg-white"
+        className="min-h-90 rounded-2xl bg-white"
       />
     );
   }
 
   return (
     <div className="overflow-x-auto rounded-2xl bg-white">
-      <table className="w-full min-w-[860px] text-right">
+      <table className="w-full min-w-215 text-right">
         <thead className="bg-primary/8 text-dark-gray">
           <tr>
             <th className="px-5 py-4">الاسم بالعربية</th>
@@ -37,11 +41,17 @@ function CommissionSettingsResults({ commissionSettings, onEdit, onDelete }: Pro
         </thead>
         <tbody>
           {commissionSettings.map((commissionSetting) => (
-            <tr key={commissionSetting.id} className="border-b border-primary/15 last:border-0">
+            <tr
+              key={commissionSetting.id}
+              className="border-b border-primary/15 last:border-0"
+            >
               <td className="max-w-0 overflow-hidden text-ellipsis whitespace-nowrap px-5 py-4 font-medium">
                 {commissionSetting.name_ar}
               </td>
-              <td dir="ltr" className="max-w-0 overflow-hidden text-ellipsis whitespace-nowrap px-5 py-4 text-right">
+              <td
+                dir="ltr"
+                className="max-w-0 overflow-hidden text-ellipsis whitespace-nowrap px-5 py-4 text-right"
+              >
                 {commissionSetting.name_en}
               </td>
               <td className="px-5 py-4">
@@ -56,7 +66,12 @@ function CommissionSettingsResults({ commissionSettings, onEdit, onDelete }: Pro
               </td>
               <td className="px-5 py-4">
                 <div className="flex gap-2">
-                  <PermissionGate slug={["View Commission Settings", "Edit Commission Settings"]}>
+                  <PermissionGate
+                    slug={[
+                      "View Commission Settings",
+                      "Edit Commission Settings",
+                    ]}
+                  >
                     <Button
                       size="icon-sm"
                       variant="ghost"

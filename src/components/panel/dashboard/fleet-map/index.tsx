@@ -22,11 +22,11 @@ function FleetMapSection() {
       </div>
 
       <div
-        className="relative mt-5 overflow-hidden rounded-[20px] border border-primary/10 bg-[#eef3e8] sm:mt-8 sm:rounded-[22px]"
+        className="relative mt-5 overflow-hidden rounded-4xl border border-primary/10 bg-[#eef3e8] sm:mt-8 sm:rounded-[22px]"
         style={{ isolation: "isolate" }}
       >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(37,147,95,0.12),transparent_28%),radial-gradient(circle_at_74%_60%,rgba(255,206,39,0.2),transparent_26%),linear-gradient(120deg,rgba(255,255,255,0.45),rgba(255,255,255,0.2))]" />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(108,115,127,0.08)_1px,transparent_1px),linear-gradient(rgba(108,115,127,0.08)_1px,transparent_1px)] bg-[size:54px_54px]" />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(108,115,127,0.08)_1px,transparent_1px),linear-gradient(rgba(108,115,127,0.08)_1px,transparent_1px)] bg-size-[54px_54px]" />
 
         <svg
           viewBox="0 0 100 100"
@@ -57,7 +57,7 @@ function FleetMapSection() {
           />
         </svg>
 
-        <div className="relative aspect-[1.08/1] min-h-[250px] sm:aspect-[1.4/1] sm:min-h-[280px] lg:aspect-[1.68/1]">
+        <div className="relative aspect-[1.08/1] min-h-62.5 sm:aspect-[1.4/1] sm:min-h-70 lg:aspect-[1.68/1]">
           {fleetMarkers.map((marker) => (
             <div
               key={marker.id}

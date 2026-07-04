@@ -12,10 +12,30 @@ import { sendVehicleCommandAPI } from "@/services/mutations";
 import type { VehicleListItem } from "@/types";
 import { vehicleTitle } from "../utils";
 
-const commands: { command: VehicleCommandValues["command"]; label: string; icon: LucideIcon; className: string }[] = [
-  { command: "lock", label: "قفل", icon: Lock, className: "bg-red-50 text-red-600" },
-  { command: "unlock", label: "فتح", icon: Unlock, className: "bg-green-50 text-green-600" },
-  { command: "sound_alarm", label: "تشغيل الجرس", icon: Volume2, className: "bg-amber-50 text-orange-500" },
+const commands: {
+  command: VehicleCommandValues["command"];
+  label: string;
+  icon: LucideIcon;
+  className: string;
+}[] = [
+  {
+    command: "lock",
+    label: "قفل",
+    icon: Lock,
+    className: "bg-red-50 text-red-600",
+  },
+  {
+    command: "unlock",
+    label: "فتح",
+    icon: Unlock,
+    className: "bg-green-50 text-green-600",
+  },
+  {
+    command: "sound_alarm",
+    label: "تشغيل الجرس",
+    icon: Volume2,
+    className: "bg-amber-50 text-orange-500",
+  },
 ];
 
 function CommandPanelModal({
@@ -27,7 +47,9 @@ function CommandPanelModal({
   open: boolean;
   onClose: () => void;
 }) {
-  const [pendingCommand, setPendingCommand] = useState<VehicleCommandValues["command"] | null>(null);
+  const [pendingCommand, setPendingCommand] = useState<
+    VehicleCommandValues["command"] | null
+  >(null);
   if (!vehicle) return null;
 
   const hasDevice = Boolean(vehicle.iot_device_id);
@@ -45,14 +67,19 @@ function CommandPanelModal({
   }
 
   return (
-    <Modal open={open} onClose={onClose} title={`لوحة التحكم - ${vehicleTitle(vehicle)}`} contentClassName="max-w-lg">
+    <Modal
+      open={open}
+      onClose={onClose}
+      title={`لوحة التحكم - ${vehicleTitle(vehicle)}`}
+      contentClassName="max-w-lg"
+    >
       <div className="space-y-4 p-1">
         <p className="text-sm text-dark-gray">
           معرف الجهاز: <span dir="ltr">{vehicle.iot_device_id ?? "-"}</span>
         </p>
 
         {!hasDevice ? (
-          <p className="rounded-[12px] bg-red-50 p-4 text-center text-sm text-red-600">
+          <p className="rounded-2xl bg-red-50 p-4 text-center text-sm text-red-600">
             لا يوجد جهاز IoT مربوط بهذه المركبة، لا يمكن إرسال أوامر إليها.
           </p>
         ) : (
@@ -64,11 +91,15 @@ function CommandPanelModal({
                 disabled={Boolean(pendingCommand)}
                 onClick={() => dispatch(command)}
                 className={cn(
-                  "flex flex-col items-center gap-2 rounded-[12px] p-4 text-sm font-medium transition hover:brightness-95 disabled:opacity-60",
+                  "flex flex-col items-center gap-2 rounded-2xl p-4 text-sm font-medium transition hover:brightness-95 disabled:opacity-60",
                   className,
                 )}
               >
-                {pendingCommand === command ? <Loader /> : <Icon className="size-6" />}
+                {pendingCommand === command ? (
+                  <Loader />
+                ) : (
+                  <Icon className="size-6" />
+                )}
                 {label}
               </button>
             ))}

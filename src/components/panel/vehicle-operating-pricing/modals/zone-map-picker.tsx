@@ -41,7 +41,16 @@ function PolygonDrawer({
 
   const emitChange = useCallback(() => {
     const polygon = polygonRef.current;
-    onChange(polygon ? toWkt(polygon.getPath().getArray().map((point) => point.toJSON())) : "");
+    onChange(
+      polygon
+        ? toWkt(
+            polygon
+              .getPath()
+              .getArray()
+              .map((point) => point.toJSON()),
+          )
+        : "",
+    );
   }, [onChange]);
 
   const attachPathListeners = useCallback(
@@ -56,7 +65,12 @@ function PolygonDrawer({
 
   useEffect(() => {
     if (!map || !initialPath.length || polygonRef.current) return;
-    const polygon = new google.maps.Polygon({ map, paths: initialPath, editable: true, draggable: true });
+    const polygon = new google.maps.Polygon({
+      map,
+      paths: initialPath,
+      editable: true,
+      draggable: true,
+    });
     polygonRef.current = polygon;
     attachPathListeners(polygon);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -73,24 +87,27 @@ function PolygonDrawer({
   useEffect(() => {
     if (!map || !isDrawing) return;
 
-    const listener = map.addListener("click", (event: google.maps.MapMouseEvent) => {
-      if (!event.latLng) return;
+    const listener = map.addListener(
+      "click",
+      (event: google.maps.MapMouseEvent) => {
+        if (!event.latLng) return;
 
-      if (!polygonRef.current) {
-        const polygon = new google.maps.Polygon({
-          map,
-          paths: [event.latLng.toJSON()],
-          editable: true,
-          draggable: true,
-        });
-        polygonRef.current = polygon;
-        attachPathListeners(polygon);
-        emitChange();
-        return;
-      }
+        if (!polygonRef.current) {
+          const polygon = new google.maps.Polygon({
+            map,
+            paths: [event.latLng.toJSON()],
+            editable: true,
+            draggable: true,
+          });
+          polygonRef.current = polygon;
+          attachPathListeners(polygon);
+          emitChange();
+          return;
+        }
 
-      polygonRef.current.getPath().push(event.latLng);
-    });
+        polygonRef.current.getPath().push(event.latLng);
+      },
+    );
 
     return () => listener.remove();
   }, [map, isDrawing, attachPathListeners, emitChange]);
@@ -118,14 +135,14 @@ function ZoneMapPicker({
 
   if (!apiKey) {
     return (
-      <p className="rounded-[12px] border border-dashed border-primary/30 p-4 text-center text-sm text-dark-gray">
+      <p className="rounded-2xl border border-dashed border-primary/30 p-4 text-center text-sm text-dark-gray">
         لم يتم إعداد مفتاح خرائط جوجل (NEXT_PUBLIC_GOOGLE_MAPS_API_KEY)
       </p>
     );
   }
 
   return (
-    <div className="relative h-72 w-full overflow-hidden rounded-[12px] border border-primary/15">
+    <div className="relative h-72 w-full overflow-hidden rounded-2xl border border-primary/15">
       <APIProvider apiKey={apiKey}>
         <Map
           defaultCenter={initialPath[0] ?? DEFAULT_CENTER}

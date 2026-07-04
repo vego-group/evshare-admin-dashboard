@@ -30,7 +30,7 @@ function AppVersionsTable({
       <EmptyState
         title="لا توجد إصدارات تطبيقات"
         description="لم يتم العثور على إصدارات مطابقة، جرب تعديل البحث أو الفلاتر"
-        className="min-h-[360px] rounded-lg"
+        className="min-h-90 rounded-lg"
       />
     );
   }
@@ -38,7 +38,7 @@ function AppVersionsTable({
   return (
     <section className="overflow-hidden rounded-lg bg-white">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[1080px] border-separate border-spacing-0 text-right">
+        <table className="w-full min-w-270 border-separate border-spacing-0 text-right">
           <thead>
             <tr className="bg-primary/8 text-base font-semibold text-dark-gray">
               <HeaderCell>النوع</HeaderCell>
@@ -64,7 +64,9 @@ function AppVersionsTable({
                 <TableCell truncate={false}>
                   <StatusBadge status={appVersion.status} />
                 </TableCell>
-                <TableCell dir="ltr">{formatDate(appVersion.created_at)}</TableCell>
+                <TableCell dir="ltr">
+                  {formatDate(appVersion.created_at)}
+                </TableCell>
                 <TableCell truncate={false}>
                   <AppVersionActions
                     onView={() => onViewAppVersion(appVersion)}

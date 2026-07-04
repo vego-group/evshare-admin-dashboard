@@ -19,7 +19,9 @@ function ActiveTrips() {
   const trips = data?.data ?? [];
   const [selectedTripId, setSelectedTripId] = useState<string | null>(null);
   const [pendingTrip, setPendingTrip] = useState<TripListItem | null>(null);
-  const [pendingAction, setPendingAction] = useState<"cancel" | "end" | null>(null);
+  const [pendingAction, setPendingAction] = useState<"cancel" | "end" | null>(
+    null,
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   function requestAction(action: "cancel" | "end") {
@@ -50,12 +52,15 @@ function ActiveTrips() {
 
   return (
     <div className="flex w-full flex-col gap-6">
-      <Header title="الرحلات النشطة" subtitle="متابعة مباشرة للرحلات الجارية على الخريطة" />
+      <Header
+        title="الرحلات النشطة"
+        subtitle="متابعة مباشرة للرحلات الجارية على الخريطة"
+      />
 
       {isLoading ? (
         <p className="p-6 text-center text-sm text-gray">جارٍ التحميل...</p>
       ) : (
-        <div className="flex h-[70vh] min-h-[420px] flex-col gap-4 lg:h-[75vh] lg:flex-row">
+        <div className="flex h-[70vh] min-h-105 flex-col gap-4 lg:h-[75vh] lg:flex-row">
           <div className="order-2 min-h-64 flex-1 lg:order-1 lg:min-h-0">
             <TripMap
               trips={trips}
@@ -80,13 +85,19 @@ function ActiveTrips() {
       <CancelTripConfirmModal
         open={pendingAction === "cancel"}
         isSubmitting={isSubmitting}
-        onClose={() => { setPendingAction(null); setPendingTrip(null); }}
+        onClose={() => {
+          setPendingAction(null);
+          setPendingTrip(null);
+        }}
         onConfirm={handleConfirm}
       />
       <EndTripConfirmModal
         open={pendingAction === "end"}
         isSubmitting={isSubmitting}
-        onClose={() => { setPendingAction(null); setPendingTrip(null); }}
+        onClose={() => {
+          setPendingAction(null);
+          setPendingTrip(null);
+        }}
         onConfirm={handleConfirm}
       />
     </div>

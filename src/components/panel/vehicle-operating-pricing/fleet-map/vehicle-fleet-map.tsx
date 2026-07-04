@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect } from "react";
-import { APIProvider, InfoWindow, Map, useMap } from "@vis.gl/react-google-maps";
+import {
+  APIProvider,
+  InfoWindow,
+  Map,
+  useMap,
+} from "@vis.gl/react-google-maps";
 
 import { useUserLocation } from "@/hooks";
 import type { VehicleListItem } from "@/types";
@@ -11,15 +16,27 @@ import VehicleMarker from "./vehicle-marker";
 const DEFAULT_CENTER = { lat: 30.0444, lng: 31.2357 };
 const FOCUS_ZOOM = 15;
 
-function FocusSelectedVehicle({ vehicle }: { vehicle: VehicleListItem | null }) {
+function FocusSelectedVehicle({
+  vehicle,
+}: {
+  vehicle: VehicleListItem | null;
+}) {
   const map = useMap();
 
   useEffect(() => {
     if (!map || !vehicle?.location) return;
-    map.panTo({ lat: Number(vehicle.location.latitude), lng: Number(vehicle.location.longitude) });
+    map.panTo({
+      lat: Number(vehicle.location.latitude),
+      lng: Number(vehicle.location.longitude),
+    });
     if ((map.getZoom() ?? 0) < FOCUS_ZOOM) map.setZoom(FOCUS_ZOOM);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, vehicle?.id, vehicle?.location?.latitude, vehicle?.location?.longitude]);
+  }, [
+    map,
+    vehicle?.id,
+    vehicle?.location?.latitude,
+    vehicle?.location?.longitude,
+  ]);
 
   return null;
 }
@@ -35,22 +52,26 @@ function VehicleFleetMap({
 }) {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
   const userLocation = useUserLocation();
-  const selected = vehicles.find((vehicle) => vehicle.id === selectedVehicleId) ?? null;
+  const selected =
+    vehicles.find((vehicle) => vehicle.id === selectedVehicleId) ?? null;
   const firstLocation = vehicles[0]?.location;
   const initialCenter = firstLocation
-    ? { lat: Number(firstLocation.latitude), lng: Number(firstLocation.longitude) }
+    ? {
+        lat: Number(firstLocation.latitude),
+        lng: Number(firstLocation.longitude),
+      }
     : DEFAULT_CENTER;
 
   if (!apiKey) {
     return (
-      <p className="grid h-full place-items-center rounded-[12px] border border-dashed border-primary/30 p-4 text-center text-sm text-dark-gray">
+      <p className="grid h-full place-items-center rounded-2xl border border-dashed border-primary/30 p-4 text-center text-sm text-dark-gray">
         لم يتم إعداد مفتاح خرائط جوجل (NEXT_PUBLIC_GOOGLE_MAPS_API_KEY)
       </p>
     );
   }
 
   return (
-    <div className="h-full w-full overflow-hidden rounded-[12px] border border-primary/15">
+    <div className="h-full w-full overflow-hidden rounded-2xl border border-primary/15">
       <APIProvider apiKey={apiKey}>
         <Map
           defaultCenter={initialCenter}
@@ -70,11 +91,17 @@ function VehicleFleetMap({
           <FocusSelectedVehicle vehicle={selected} />
           {selected?.location && (
             <InfoWindow
-              position={{ lat: Number(selected.location.latitude), lng: Number(selected.location.longitude) }}
+              position={{
+                lat: Number(selected.location.latitude),
+                lng: Number(selected.location.longitude),
+              }}
               onCloseClick={() => onSelectVehicle(null)}
               pixelOffset={[0, -38]}
             >
-              <VehicleInfoContent vehicle={selected} userLocation={userLocation} />
+              <VehicleInfoContent
+                vehicle={selected}
+                userLocation={userLocation}
+              />
             </InfoWindow>
           )}
         </Map>

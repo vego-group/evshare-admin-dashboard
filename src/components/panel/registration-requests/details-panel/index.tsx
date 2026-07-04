@@ -110,7 +110,7 @@ function RegistrationRequestsDetailsPanel({
           ) : request ? (
             <KycDetails request={request} />
           ) : (
-            <div className="flex h-full min-h-[320px] items-center justify-center rounded-[14px] bg-background px-4 text-center text-base text-gray">
+            <div className="flex h-full min-h-80 items-center justify-center rounded-[14px] bg-background px-4 text-center text-base text-gray">
               تعذر تحميل تفاصيل الطلب.
             </div>
           )}
@@ -158,7 +158,7 @@ function StatusBadge({ status }: { status: RequestStatus }) {
   return (
     <span
       className={cn(
-        "inline-flex h-[34px] items-center justify-center whitespace-nowrap rounded-full px-4 text-sm font-medium",
+        "inline-flex h-8.5 items-center justify-center whitespace-nowrap rounded-full px-4 text-sm font-medium",
         STATUS_STYLES[status],
       )}
     >
@@ -170,9 +170,9 @@ function StatusBadge({ status }: { status: RequestStatus }) {
 function KycDetailsShimmer() {
   return (
     <div className="space-y-8">
-      <div className="flex h-[58px] items-center justify-between gap-3 rounded-[14px] border border-blue/10 bg-blue/5 px-4">
+      <div className="flex h-14.5 items-center justify-between gap-3 rounded-[14px] border border-blue/10 bg-blue/5 px-4">
         <Shimmer className="h-4 w-24" />
-        <Shimmer className="h-[34px] w-28" />
+        <Shimmer className="h-8.5 w-28" />
       </div>
       <section className="space-y-4 rounded-[14px] bg-background p-5">
         {Array.from({ length: 4 }).map((_, index) => (

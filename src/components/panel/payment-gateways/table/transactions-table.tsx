@@ -30,15 +30,15 @@ function PaymentTransactionsTable({
           isFetching && "opacity-60",
         )}
       >
-        <table className="w-full min-w-[1160px] border-separate border-spacing-0 text-right">
+        <table className="w-full min-w-290 border-separate border-spacing-0 text-right">
           <thead>
             <tr className="bg-primary/8 text-base font-semibold leading-6 text-dark-gray">
-              <TableHead className="w-[240px]">رقم المعاملة</TableHead>
-              <TableHead className="w-[160px]">بوابة الدفع</TableHead>
-              <TableHead className="w-[160px]">طريقة الدفع</TableHead>
-              <TableHead className="w-[150px]">المبلغ</TableHead>
-              <TableHead className="w-[150px]">الحالة</TableHead>
-              <TableHead className="w-[190px]">تاريخ الإنشاء</TableHead>
+              <TableHead className="w-60">رقم المعاملة</TableHead>
+              <TableHead className="w-40">بوابة الدفع</TableHead>
+              <TableHead className="w-40">طريقة الدفع</TableHead>
+              <TableHead className="w-37.5">المبلغ</TableHead>
+              <TableHead className="w-37.5">الحالة</TableHead>
+              <TableHead className="w-47.5">تاريخ الإنشاء</TableHead>
             </tr>
           </thead>
           <tbody>
@@ -80,10 +80,11 @@ function TransactionTableRow({
       }}
       className={cn(
         "text-base font-medium leading-6 text-dark-gray transition",
-        onSelect && "cursor-pointer hover:bg-primary/5 focus-visible:bg-primary/5 focus-visible:outline-none",
+        onSelect &&
+          "cursor-pointer hover:bg-primary/5 focus-visible:bg-primary/5 focus-visible:outline-none",
       )}
     >
-      <TableCell dir="ltr" className="max-w-[240px]">
+      <TableCell dir="ltr" className="max-w-60">
         <span className="block truncate">{transaction.transaction_id}</span>
       </TableCell>
       <TableCell>{formatGateway(transaction.payment_gateway)}</TableCell>

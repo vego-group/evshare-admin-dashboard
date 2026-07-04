@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect } from "react";
-import { APIProvider, InfoWindow, Map, useMap } from "@vis.gl/react-google-maps";
+import {
+  APIProvider,
+  InfoWindow,
+  Map,
+  useMap,
+} from "@vis.gl/react-google-maps";
 
 import { useUserLocation } from "@/hooks";
 import type { TripListItem } from "@/types";
@@ -22,7 +27,14 @@ function FocusSelectedTrip({ trip }: { trip: TripListItem | null }) {
     map.panTo(position);
     if ((map.getZoom() ?? 0) < FOCUS_ZOOM) map.setZoom(FOCUS_ZOOM);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, trip?.id, trip?.live_location?.latitude, trip?.live_location?.longitude, trip?.pickup_location.latitude, trip?.pickup_location.longitude]);
+  }, [
+    map,
+    trip?.id,
+    trip?.live_location?.latitude,
+    trip?.live_location?.longitude,
+    trip?.pickup_location.latitude,
+    trip?.pickup_location.longitude,
+  ]);
 
   return null;
 }
@@ -44,18 +56,19 @@ function TripMap({
   const userLocation = useUserLocation();
   const selectedTrip = trips.find((trip) => trip.id === selectedTripId) ?? null;
   const selectedPosition = selectedTrip ? tripMapLatLng(selectedTrip) : null;
-  const initialCenter = (trips[0] ? tripMapLatLng(trips[0]) : null) ?? DEFAULT_CENTER;
+  const initialCenter =
+    (trips[0] ? tripMapLatLng(trips[0]) : null) ?? DEFAULT_CENTER;
 
   if (!apiKey) {
     return (
-      <p className="grid h-full place-items-center rounded-[12px] border border-dashed border-primary/30 p-4 text-center text-sm text-dark-gray">
+      <p className="grid h-full place-items-center rounded-2xl border border-dashed border-primary/30 p-4 text-center text-sm text-dark-gray">
         لم يتم إعداد مفتاح خرائط جوجل (NEXT_PUBLIC_GOOGLE_MAPS_API_KEY)
       </p>
     );
   }
 
   return (
-    <div className="h-full w-full overflow-hidden rounded-[12px] border border-primary/15">
+    <div className="h-full w-full overflow-hidden rounded-2xl border border-primary/15">
       <APIProvider apiKey={apiKey}>
         <Map
           defaultCenter={initialCenter}
@@ -65,13 +78,27 @@ function TripMap({
           onClick={() => onSelectTrip(null)}
         >
           {trips.map((trip) => (
-            <TripMarker key={trip.id} trip={trip} isSelected={trip.id === selectedTripId} onSelect={() => onSelectTrip(trip.id)} />
+            <TripMarker
+              key={trip.id}
+              trip={trip}
+              isSelected={trip.id === selectedTripId}
+              onSelect={() => onSelectTrip(trip.id)}
+            />
           ))}
           {selectedTrip && <TripRoutePolyline route={selectedTrip.route} />}
           <FocusSelectedTrip trip={selectedTrip} />
           {selectedTrip && selectedPosition && (
-            <InfoWindow position={selectedPosition} onCloseClick={() => onSelectTrip(null)} pixelOffset={[0, -38]}>
-              <TripInfoContent trip={selectedTrip} userLocation={userLocation} onCancelTrip={onCancelTrip} onEndTrip={onEndTrip} />
+            <InfoWindow
+              position={selectedPosition}
+              onCloseClick={() => onSelectTrip(null)}
+              pixelOffset={[0, -38]}
+            >
+              <TripInfoContent
+                trip={selectedTrip}
+                userLocation={userLocation}
+                onCancelTrip={onCancelTrip}
+                onEndTrip={onEndTrip}
+              />
             </InfoWindow>
           )}
         </Map>
