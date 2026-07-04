@@ -8,6 +8,10 @@ import InputErrorMessage from "@/components/ui/input-error-message";
 import Loader from "@/components/ui/loader";
 import Modal from "@/components/ui/modal";
 import {
+  preventNegativeNumberInput,
+  preventNegativeNumberPaste,
+} from "@/lib/utils/non-negative-input";
+import {
   commissionSchema,
   type CommissionValues,
 } from "@/schemas/vehicle-operating-pricing";
@@ -60,7 +64,12 @@ function CommissionModal({ vehicle, isSaving, open, onClose, onSaved, setIsSavin
           <span className="mb-2 block text-sm text-dark-gray">العمولة الحالية</span>
           <input
             type="number"
+            min="0"
             step="0.01"
+            onKeyDown={preventNegativeNumberInput}
+            onPaste={(event) =>
+              preventNegativeNumberPaste(event, { allowDecimal: true })
+            }
             className="h-12 w-full rounded-[12px] border border-primary bg-primary/4 px-3 text-left outline-none"
             dir="ltr"
             {...register("commission_percentage", { valueAsNumber: true })}

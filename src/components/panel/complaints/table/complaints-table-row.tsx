@@ -32,7 +32,7 @@ function ComplaintsTableRow({
       <TableCell className="max-w-[180px]">
         <span className="block truncate">{complaint.user.name}</span>
       </TableCell>
-      <TableCell>
+      <TableCell className="max-w-none overflow-visible whitespace-normal">
         <ComplaintStatusBadge status={complaint.status} />
       </TableCell>
       <TableCell dir="ltr">{formatDate(complaint.created_at)}</TableCell>
@@ -64,7 +64,7 @@ function TableCell({
     <td
       dir={dir}
       className={cn(
-        "h-16 border-b border-primary/15 px-5 py-3 text-right",
+        "h-16 max-w-0 overflow-hidden text-ellipsis whitespace-nowrap border-b border-primary/15 px-5 py-3 text-right",
         className,
       )}
     >

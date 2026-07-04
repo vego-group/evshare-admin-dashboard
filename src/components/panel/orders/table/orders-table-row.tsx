@@ -74,14 +74,14 @@ function OrdersTableRow({ order }: { order: OrderListItem }) {
         <TableCell dir="ltr" className="text-right">
           <span className="inline-flex items-center gap-1"><SaudiRiyal className="size-4" /> {order.total}</span>
         </TableCell>
-        <TableCell>
+        <TableCell className="max-w-none overflow-visible whitespace-normal">
           <OrderStatusDropdown
             currentStatus={order.status}
             disabled={isUpdating}
             onSelect={setPendingStatus}
           />
         </TableCell>
-        <TableCell>
+        <TableCell className="max-w-none overflow-visible whitespace-normal">
           <StatusCategoryBadge category={order.status_category} />
         </TableCell>
         <TableCell dir="ltr">{formatDate(order.created_at)}</TableCell>
@@ -116,7 +116,7 @@ function TableCell({
     <td
       dir={dir}
       className={cn(
-        "h-16 border-b border-primary/15 px-5 py-3 text-right",
+        "h-16 max-w-0 overflow-hidden text-ellipsis whitespace-nowrap border-b border-primary/15 px-5 py-3 text-right",
         className,
       )}
     >

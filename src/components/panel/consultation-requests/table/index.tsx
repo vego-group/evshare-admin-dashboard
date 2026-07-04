@@ -118,7 +118,10 @@ function ConsultationRequestTableRow({
             {request.email}
           </span>
         </TableCell>
-        <TableCell onClick={(event) => event.stopPropagation()}>
+        <TableCell
+          className="max-w-none overflow-visible whitespace-normal"
+          onClick={(event) => event.stopPropagation()}
+        >
           <ConsultationStatusDropdown
             currentStatus={request.status}
             disabled={isUpdating}
@@ -173,7 +176,10 @@ function TableCell({
     <td
       dir={dir}
       onClick={onClick}
-      className={cn("h-16 border-b border-primary/15 px-5 py-3", className)}
+      className={cn(
+        "h-16 max-w-0 overflow-hidden text-ellipsis whitespace-nowrap border-b border-primary/15 px-5 py-3",
+        className,
+      )}
     >
       {children}
     </td>

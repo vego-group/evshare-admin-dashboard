@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import Modal from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
 import Loader from "@/components/ui/loader";
+import { PAGE_SIZE } from "@/constants";
 import { usePermission, usePermissionCategories } from "@/hooks/api";
 import { permissionSchema, type PermissionFormInput } from "@/schemas/roles-permissions";
 import { addPermission, editPermission } from "@/services/mutations";
@@ -30,7 +31,7 @@ export default function PermissionFormModal({ open, permission, onClose, onSaved
     dashboard_permissions: permission.dashboard_permissions,
   } : empty;
   const [submitError, setSubmitError] = useState<unknown>(null);
-  const { data: categories, isLoading: categoriesLoading } = usePermissionCategories({ page: 1, limit: 1000 });
+  const { data: categories, isLoading: categoriesLoading } = usePermissionCategories({ page: 1, limit: PAGE_SIZE });
   const { isLoading: detailLoading, error: detailError } = usePermission(permission?.id ?? null);
   const categoryItems = Array.isArray(categories?.data) ? categories.data : [];
   const { register, control, handleSubmit, formState: { errors, isSubmitting } } = useForm<PermissionFormInput>({

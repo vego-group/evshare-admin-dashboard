@@ -7,7 +7,8 @@ import toast from "react-hot-toast";
 import { PAGE_SIZE } from "@/constants";
 import { useVehicle, useVehicles } from "@/hooks/api";
 import { deleteVehicleAPI } from "@/services/mutations";
-import type { VehicleListItem, VehiclesQueryParams } from "@/types";
+import type { MobilityReceipt, VehicleListItem, VehiclesQueryParams } from "@/types";
+import { ReviewReceiptModal, UploadTemplateModal } from "../mobility-receipts/modals";
 import VehicleContentShimmer from "./content-shimmer";
 import VehicleOperatingPricingHeader from "./header";
 import VehicleMainContent from "./main-content";
@@ -24,7 +25,7 @@ function VehicleOperatingPricing() {
   const queryClient = useQueryClient();
   const [params, setParams] = useState<VehiclesQueryParams>({ page: 1, limit: PAGE_SIZE });
   const [activeVehicle, setActiveVehicle] = useState<VehicleListItem | null>(null);
-  const [modal, setModal] = useState<"details" | "edit" | "review" | "commission" | "delete" | null>(null);
+  const [modal, setModal] = useState<"details" | "edit" | "review" | "receiptReview" | "template" | "commission" | "delete" | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const { data, isLoading } = useVehicles(params);
   const shouldFetchVehicle =
@@ -33,6 +34,7 @@ function VehicleOperatingPricing() {
     modal !== "delete";
   const { data: vehicleData } = useVehicle(shouldFetchVehicle ? activeVehicle.id : null);
   const selectedVehicle = vehicleData?.data ?? activeVehicle;
+  const selectedReceipt = selectedVehicle as MobilityReceipt | null;
 
   const openModal = (nextModal: NonNullable<typeof modal>) => (vehicle: VehicleListItem) => {
     setActiveVehicle(vehicle);
@@ -70,6 +72,8 @@ function VehicleOperatingPricing() {
             onView={openModal("details")}
             onEdit={openModal("edit")}
             onReview={openModal("review")}
+            onReviewReceipt={openModal("receiptReview")}
+            onEditTemplate={openModal("template")}
             onCommission={openModal("commission")}
             onDelete={openModal("delete")}
           />
@@ -78,6 +82,8 @@ function VehicleOperatingPricing() {
       <VehicleDetailsModal open={modal === "details"} vehicle={selectedVehicle} onClose={() => setModal(null)} />
       <VehicleEditModal key={`edit-${selectedVehicle?.id ?? "none"}`} open={modal === "edit"} vehicle={selectedVehicle} isSaving={isSaving} setIsSaving={setIsSaving} onSaved={refresh} onClose={() => setModal(null)} />
       <ContractReviewModal key={`review-${selectedVehicle?.id ?? "none"}`} open={modal === "review"} vehicle={selectedVehicle} isSaving={isSaving} setIsSaving={setIsSaving} onSaved={refresh} onClose={() => setModal(null)} />
+      <ReviewReceiptModal open={modal === "receiptReview"} receipt={selectedReceipt} onClose={() => setModal(null)} onSaved={refresh} />
+      <UploadTemplateModal open={modal === "template"} receipt={selectedReceipt} onClose={() => setModal(null)} onSaved={refresh} />
       <CommissionModal key={`commission-${modal === "commission" ? "open" : "closed"}-${selectedVehicle?.operation_company?.id ?? selectedVehicle?.id ?? "none"}`} open={modal === "commission"} vehicle={selectedVehicle} isSaving={isSaving} setIsSaving={setIsSaving} onSaved={refresh} onClose={() => setModal(null)} />
       <VehicleDeleteConfirmModal open={modal === "delete"} vehicleName={activeVehicle ? vehicleTitle(activeVehicle) : undefined} isDeleting={isSaving} onClose={() => setModal(null)} onConfirm={handleDelete} />
     </div>

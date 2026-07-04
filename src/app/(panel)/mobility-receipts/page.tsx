@@ -1,11 +1,7 @@
-import MobilityReceipts from "@/components/panel/mobility-receipts";
+import { redirect } from "next/navigation";
 
 function MobilityReceiptPage() {
-  return (
-    <>
-      <MobilityReceipts />
-    </>
-  );
+  redirect("/vehicle-operating-pricing");
 }
 
 export default MobilityReceiptPage;

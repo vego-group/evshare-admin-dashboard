@@ -9,12 +9,12 @@ import Dropdown from "./dropdown";
 type Props = {
   title: string;
   description: string;
-  addLabel: string;
+  addLabel?: string;
   search: string;
   onSearch: (value: string) => void;
   orderBy?: "asc" | "desc";
   onSort?: (value: "asc" | "desc") => void;
-  onAdd: () => void;
+  onAdd?: () => void;
 };
 
 export default function EntityToolbar(props: Props) {
@@ -27,9 +27,11 @@ export default function EntityToolbar(props: Props) {
           <h2 className="text-xl font-semibold text-secondary">{props.title}</h2>
           <p className="mt-1 text-sm font-medium text-gray">{props.description}</p>
         </div>
-        <Button onClick={props.onAdd} type="button" className="h-12 rounded-2xl px-6 text-base font-medium text-secondary shadow-[0_4px_12px_rgba(255,213,79,0.25)]">
-          <Plus className="size-5" /> {props.addLabel}
-        </Button>
+        {props.onAdd && (
+          <Button onClick={props.onAdd} type="button" className="h-12 rounded-2xl px-6 text-base font-medium text-secondary shadow-[0_4px_12px_rgba(255,213,79,0.25)]">
+            <Plus className="size-5" /> {props.addLabel}
+          </Button>
+        )}
       </div>
       <div className="flex flex-col gap-3 rounded-2xl border border-neutral-100/60 bg-white p-1.5 shadow-[0_2px_6px_rgba(0,0,0,0.04)] sm:flex-row">
         <label className="relative flex min-h-14 flex-1 items-center rounded-[14px] px-5 pr-14">

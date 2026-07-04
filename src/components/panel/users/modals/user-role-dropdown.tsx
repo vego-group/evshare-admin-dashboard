@@ -4,12 +4,9 @@ import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type { UseFormSetValue } from "react-hook-form";
 
+import { useRoles } from "@/hooks/api";
 import { cn } from "@/lib/utils";
 import type { AddUserFormValues } from "@/schemas/users";
-import { roleLabels } from "../results/user-result-parts";
-import { userRoles } from "@/schemas/users";
-
-const roleOptions = userRoles.map((role) => ({ label: roleLabels[role], value: role }));
 
 function UserRoleDropdown({
   value,
@@ -21,6 +18,9 @@ function UserRoleDropdown({
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const { data, isLoading } = useRoles({ page: 1, limit: 100 });
+  const roles = data?.data ?? [];
+
   useEffect(() => {
     if (!isOpen) return;
     const handleClickOutside = (event: MouseEvent) => {
@@ -29,8 +29,6 @@ function UserRoleDropdown({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen]);
-
-  const selectedLabel = roleOptions.find((o) => o.value === value)?.label ?? "اختر الدور";
 
   return (
     <div ref={containerRef} className="relative h-14 w-full">
@@ -44,28 +42,36 @@ function UserRoleDropdown({
           !value && "text-[#99a1af]",
         )}
       >
-        <span>{selectedLabel}</span>
+        <span>{value || "اختر الدور"}</span>
         <ChevronDown className={cn("size-5 text-primary transition", isOpen && "rotate-180")} />
       </button>
 
       {isOpen ? (
         <div className="absolute right-0 top-[calc(100%+4px)] z-30 w-full overflow-hidden rounded-[14px] border border-primary bg-bg-warm-ivory shadow-[0_10px_24px_rgba(16,24,40,0.12)]">
-          {roleOptions.map((option) => (
-            <button
-              key={option.value}
-              type="button"
-              onClick={() => {
-                setValue("role", option.value, { shouldDirty: true, shouldValidate: true });
-                setIsOpen(false);
-              }}
-              className={cn(
-                "flex h-11 w-full items-center justify-start px-4 text-right text-sm font-medium text-dark-gray transition hover:bg-primary/10",
-                value === option.value && "bg-primary/15 text-secondary",
-              )}
-            >
-              {option.label}
-            </button>
-          ))}
+          <div className="max-h-48 overflow-y-auto">
+            {isLoading ? (
+              <p className="px-4 py-3 text-sm text-gray">جار التحميل...</p>
+            ) : roles.length === 0 ? (
+              <p className="px-4 py-3 text-sm text-gray">لا توجد أدوار</p>
+            ) : (
+              roles.map((role) => (
+                <button
+                  key={role.id}
+                  type="button"
+                  onClick={() => {
+                    setValue("role", role.name, { shouldDirty: true, shouldValidate: true });
+                    setIsOpen(false);
+                  }}
+                  className={cn(
+                    "flex h-11 w-full items-center justify-start px-4 text-right text-sm font-medium text-dark-gray transition hover:bg-primary/10",
+                    value === role.name && "bg-primary/15 text-secondary",
+                  )}
+                >
+                  {role.name}
+                </button>
+              ))
+            )}
+          </div>
         </div>
       ) : null}
     </div>

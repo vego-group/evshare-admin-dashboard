@@ -34,11 +34,11 @@ function CitiesTable({ cities, onEditCity, onDeleteCity }: CitiesTableProps) {
                     </p>
                   </div>
                 </TableCell>
-                <TableCell>
+                <TableCell truncate={false}>
                   <StatusBadge active={city.active} />
                 </TableCell>
                 <TableCell dir="ltr">{formatDate(city.created_at)}</TableCell>
-                <TableCell>
+                <TableCell truncate={false}>
                   <CityActions
                     onEdit={() => onEditCity(city)}
                     onDelete={() => onDeleteCity(city)}
@@ -57,8 +57,27 @@ function HeaderCell({ children }: { children: ReactNode }) {
   return <th className="border-b border-primary/15 px-5 py-5">{children}</th>;
 }
 
-function TableCell({ children, dir }: { children: ReactNode; dir?: "ltr" | "rtl" }) {
-  return <td dir={dir} className="border-b border-primary/15 px-5 py-3">{children}</td>;
+function TableCell({
+  children,
+  dir,
+  truncate = true,
+}: {
+  children: ReactNode;
+  dir?: "ltr" | "rtl";
+  truncate?: boolean;
+}) {
+  return (
+    <td
+      dir={dir}
+      className={
+        truncate
+          ? "max-w-0 overflow-hidden text-ellipsis whitespace-nowrap border-b border-primary/15 px-5 py-3"
+          : "border-b border-primary/15 px-5 py-3"
+      }
+    >
+      {children}
+    </td>
+  );
 }
 
 export default CitiesTable;

@@ -10,7 +10,7 @@ import {
   Package,
   Route,
   ScrollText,
-  // ShieldCheck,
+  ShieldCheck,
   ShoppingCart,
   Smartphone,
   Tags,
@@ -25,6 +25,8 @@ export type SidebarNavItem = {
   ariaLabel: string;
   icon: LucideIcon;
   isDashboard?: boolean;
+  /** Permission slug(s) required to see this item (any one matches); omit to show it to everyone. */
+  permission?: string | string[];
 };
 
 export const sidebarNavItems: SidebarNavItem[] = [
@@ -40,42 +42,54 @@ export const sidebarNavItems: SidebarNavItem[] = [
     label: "التصنيفات",
     ariaLabel: "التصنيفات",
     icon: Tags,
+    permission: "Admin Index Categories",
   },
   {
     href: "/products",
     label: "المنتجات",
     ariaLabel: "المنتجات",
     icon: Package,
+    permission: "Admin Index Products",
   },
   {
     href: "/users",
     label: "المستخدمون",
     ariaLabel: "المستخدمون",
     icon: Users,
+    permission: [
+      "Admin View Admins",
+      "Admin View Merchants",
+      "Admin View Partners",
+      "Admin View Farmers",
+    ],
   },
-  // {
-  //   href: "/roles-permissions",
-  //   label: "الأدوار والصلاحيات",
-  //   ariaLabel: "الأدوار والصلاحيات",
-  //   icon: ShieldCheck,
-  // },
+  {
+    href: "/roles-permissions",
+    label: "الأدوار والصلاحيات",
+    ariaLabel: "الأدوار والصلاحيات",
+    icon: ShieldCheck,
+    permission: ["Admin Index Roles", "Admin Index Permissions"],
+  },
   {
     href: "/wallet",
     label: "المحفظة",
     ariaLabel: "المحفظة",
     icon: Wallet,
+    permission: ["Admin Index Checkouts", "Admin Index Transactions"],
   },
   {
     href: "/cities",
     label: "المدن",
     ariaLabel: "المدن",
     icon: MapPin,
+    permission: "Admin Index Cities",
   },
   {
     href: "/sliders",
     label: "السلايدرات",
     ariaLabel: "السلايدرات",
     icon: Images,
+    permission: "Admin Index Slides",
   },
   {
     href: "/app-versions",
@@ -94,6 +108,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
     label: "طلبات الاستشارة",
     ariaLabel: "طلبات الاستشارة",
     icon: ClipboardList,
+    permission: "Admin Index Consultations",
   },
   {
     href: "/registration-requests",
@@ -106,24 +121,20 @@ export const sidebarNavItems: SidebarNavItem[] = [
     label: "طلبات المنتجات",
     ariaLabel: "طلبات المنتجات",
     icon: ShoppingCart,
+    permission: "Admin Index Orders",
   },
   {
     href: "/payment-requests",
     label: "طلبات الدفع",
     ariaLabel: "طلبات الدفع",
     icon: CreditCard,
+    permission: "Admin View Payment Requests",
   },
   {
     href: "/vehicle-operating-pricing",
     label: "تشغيل وتسعير المركبات",
     ariaLabel: "تشغيل وتسعير المركبات",
     icon: Route,
-  },
-  {
-    href: "/mobility-receipts",
-    label: "سندات الاستلام",
-    ariaLabel: "سندات الاستلام",
-    icon: ScrollText,
   },
   {
     href: "/payment-gateways",
@@ -136,11 +147,13 @@ export const sidebarNavItems: SidebarNavItem[] = [
     label: "طرق الدفع",
     ariaLabel: "طرق الدفع",
     icon: CreditCard,
+    permission: "Admin Index Payment Methods",
   },
   {
     href: "/complaints",
     label: "الشكاوى",
     ariaLabel: "الشكاوى",
     icon: MessageSquareWarning,
+    permission: "Admin Index Complaints",
   },
 ];

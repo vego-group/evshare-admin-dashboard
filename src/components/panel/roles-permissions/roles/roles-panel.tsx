@@ -18,8 +18,10 @@ import BooleanBadge from "../shared/boolean-badge";
 const columns: TableColumn<Role>[] = [
   { key: "name", label: "الدور", render: (item) => item.name },
   { key: "allowed", label: "السماح للمستخدم", render: (item) => <BooleanBadge value={item.allowed_user} /> },
-  { key: "permissions", label: "عدد الصلاحيات", render: (item) => <span className="inline-flex min-w-9 justify-center rounded-full bg-violet-50 px-3 py-1.5 font-semibold text-violet-600">{item.permissions?.length ?? "—"}</span> },
 ];
+
+const protectedRoleNames = new Set(["merchant", "root", "driver"]);
+const canModifyRole = (role: Role) => !protectedRoleNames.has(role.name.trim().toLowerCase());
 
 export default function RolesPanel() {
   const client = useQueryClient();
@@ -52,7 +54,7 @@ export default function RolesPanel() {
   return (
     <section className="space-y-4">
       <EntityToolbar title="الأدوار" description="إدارة الأدوار والصلاحيات المرتبطة بها" addLabel="إضافة دور" search={search} orderBy={orderBy} onSort={(value) => { setOrderBy(value); setPage(1); }} onSearch={(value) => { setSearch(value); setPage(1); }} onAdd={() => setForm("new")} />
-      <EntityTable rows={Array.isArray(data?.data) ? data.data : []} columns={columns} isLoading={isLoading} onView={setView} onEdit={setForm} onDelete={setPendingDelete} onPermissions={setPermissionsRole} />
+      <EntityTable rows={Array.isArray(data?.data) ? data.data : []} columns={columns} isLoading={isLoading} onView={setView} onEdit={setForm} onDelete={setPendingDelete} onPermissions={setPermissionsRole} canEdit={canModifyRole} canDelete={canModifyRole} />
       <EntityPagination meta={data?.meta} onChange={setPage} />
       {form && <RoleFormModal open role={form === "new" ? null : form} onClose={() => setForm(null)} onSaved={refresh} />}
       <RolePermissionsModal role={permissionsRole} onClose={() => setPermissionsRole(null)} onSaved={refresh} />

@@ -38,7 +38,7 @@ function PaymentRequestsTableRow({
           <SaudiRiyal className="size-4" /> {request.amount}
         </span>
       </TableCell>
-      <TableCell>
+      <TableCell className="max-w-none overflow-visible whitespace-normal">
         <PaymentRequestStatusBadge status={request.status} />
       </TableCell>
       <TableCell dir="ltr">{formatDate(request.created_at)}</TableCell>
@@ -70,7 +70,7 @@ function TableCell({
     <td
       dir={dir}
       className={cn(
-        "h-16 border-b border-primary/15 px-5 py-3 text-right",
+        "h-16 max-w-0 overflow-hidden text-ellipsis whitespace-nowrap border-b border-primary/15 px-5 py-3 text-right",
         className,
       )}
     >

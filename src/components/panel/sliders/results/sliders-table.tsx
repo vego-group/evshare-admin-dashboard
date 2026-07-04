@@ -29,11 +29,11 @@ function SlidersTable({ sliders, onEditSlider, onDeleteSlider }: SlidersTablePro
                 <TableCell>
                   <SliderThumbnail url={slider.image?.url} className="size-16 rounded-xl" />
                 </TableCell>
-                <TableCell>
+                <TableCell truncate={false}>
                   <StatusBadge active={slider.active} />
                 </TableCell>
                 <TableCell dir="ltr">{formatDate(slider.created_at)}</TableCell>
-                <TableCell>
+                <TableCell truncate={false}>
                   <SliderActions
                     onEdit={() => onEditSlider(slider)}
                     onDelete={() => onDeleteSlider(slider)}
@@ -52,8 +52,27 @@ function HeaderCell({ children }: { children: ReactNode }) {
   return <th className="border-b border-primary/15 px-5 py-5">{children}</th>;
 }
 
-function TableCell({ children, dir }: { children: ReactNode; dir?: "ltr" | "rtl" }) {
-  return <td dir={dir} className="border-b border-primary/15 px-5 py-3">{children}</td>;
+function TableCell({
+  children,
+  dir,
+  truncate = true,
+}: {
+  children: ReactNode;
+  dir?: "ltr" | "rtl";
+  truncate?: boolean;
+}) {
+  return (
+    <td
+      dir={dir}
+      className={
+        truncate
+          ? "max-w-0 overflow-hidden text-ellipsis whitespace-nowrap border-b border-primary/15 px-5 py-3"
+          : "border-b border-primary/15 px-5 py-3"
+      }
+    >
+      {children}
+    </td>
+  );
 }
 
 export default SlidersTable;

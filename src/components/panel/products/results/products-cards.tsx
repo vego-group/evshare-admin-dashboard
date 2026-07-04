@@ -4,7 +4,6 @@ import type { ProductListItem } from "@/types";
 
 import {
   DetailLine,
-  formatDate,
   ProductActions,
   ProductImage,
   StatusBadge,
@@ -30,18 +29,22 @@ function ProductsCards({
           key={product.id}
           className="overflow-hidden rounded-2xl border border-neutral-100 bg-white p-4"
         >
-          <div className="flex items-start gap-3">
-            <ProductImage product={product} className="size-16 shrink-0" />
-            <div className="min-w-0 flex-1 text-right">
-              <h3 className="truncate text-lg font-semibold text-secondary">
-                {product.title}
-              </h3>
-              <p className="truncate text-sm text-gray">
-                {product.category?.name ?? "-"}
-              </p>
+          <div className="space-y-3">
+            <div className="flex justify-center rounded-[14px] bg-background p-3">
+              <ProductImage product={product} className="size-24" />
             </div>
-            <div className="shrink-0">
-              <StatusBadge active={product.active} />
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0 flex-1 text-right">
+                <h3 className="truncate text-lg font-semibold text-secondary">
+                  {product.title}
+                </h3>
+                <p className="truncate text-sm text-gray">
+                  {product.category?.name ?? "-"}
+                </p>
+              </div>
+              <div className="shrink-0">
+                <StatusBadge active={product.active} />
+              </div>
             </div>
           </div>
 
@@ -55,10 +58,6 @@ function ProductsCards({
               }
             />
             <DetailLine label="الكمية" value={String(product.quantity)} />
-            <DetailLine
-              label="تاريخ الإنشاء"
-              value={formatDate(product.created_at)}
-            />
           </div>
 
           <div className="mt-4 border-t border-neutral-100 pt-4">
@@ -76,3 +75,4 @@ function ProductsCards({
 }
 
 export default ProductsCards;
+

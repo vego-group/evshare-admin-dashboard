@@ -1,13 +1,12 @@
 "use server";
 
 import { safeApi } from "..";
-import type { UserRole } from "@/types";
 
 type AddUserPayload = {
   first_name: string;
   last_name: string;
   mobile: string;
-  role: UserRole;
+  role: string;
   email?: string;
 };
 

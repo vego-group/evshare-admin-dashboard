@@ -43,6 +43,25 @@ export type VehicleContract = {
   created_at: string;
 };
 
+export type VehicleContractTemplateFile = {
+  url: string;
+  name?: string;
+  file_name?: string;
+  type?: string;
+  document_type?: string | null;
+  disk?: string;
+  created_at?: string;
+};
+
+export type VehicleLocation = {
+  id: string;
+  longitude: string;
+  latitude: string;
+  address?: string;
+  label?: string;
+  created_at?: string;
+};
+
 export type VehiclePricing = {
   open_price: number | string | null;
   price_per_minute: number | string | null;
@@ -61,7 +80,8 @@ export type VehicleListItem = VehiclePricing & {
   order_item_id?: number | null;
   operation_company: OperationCompany | null;
   vehicle_contract: VehicleContract | null;
-  location?: unknown;
+  contract_template?: VehicleContractTemplateFile[];
+  location?: VehicleLocation | null;
   zone?: unknown;
   created_at: string;
 };

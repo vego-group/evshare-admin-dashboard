@@ -96,7 +96,7 @@ function CheckoutTableRow({
           {checkout.payable?.uuid ?? checkout.payable?.id ?? "-"}
         </span>
       </TableCell>
-      <TableCell>
+      <TableCell className="max-w-none overflow-visible whitespace-normal">
         <ProcessedBadge isProcessed={checkout.is_processed} />
       </TableCell>
       <TableCell dir="ltr">{formatDate(checkout.created_at)}</TableCell>

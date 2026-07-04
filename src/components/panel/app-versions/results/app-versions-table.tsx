@@ -61,11 +61,11 @@ function AppVersionsTable({
                 <TableCell>
                   <CriticalBadge isCritical={appVersion.is_critical} />
                 </TableCell>
-                <TableCell>
+                <TableCell truncate={false}>
                   <StatusBadge status={appVersion.status} />
                 </TableCell>
                 <TableCell dir="ltr">{formatDate(appVersion.created_at)}</TableCell>
-                <TableCell>
+                <TableCell truncate={false}>
                   <AppVersionActions
                     onView={() => onViewAppVersion(appVersion)}
                     onEdit={() => onEditAppVersion(appVersion)}
@@ -88,12 +88,21 @@ function HeaderCell({ children }: { children: ReactNode }) {
 function TableCell({
   children,
   dir,
+  truncate = true,
 }: {
   children: ReactNode;
   dir?: "ltr" | "rtl";
+  truncate?: boolean;
 }) {
   return (
-    <td dir={dir} className="border-b border-primary/15 px-5 py-3">
+    <td
+      dir={dir}
+      className={
+        truncate
+          ? "max-w-0 overflow-hidden text-ellipsis whitespace-nowrap border-b border-primary/15 px-5 py-3"
+          : "border-b border-primary/15 px-5 py-3"
+      }
+    >
       {children}
     </td>
   );

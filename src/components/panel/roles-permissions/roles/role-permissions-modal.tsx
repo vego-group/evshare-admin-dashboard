@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import Modal from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
 import Loader from "@/components/ui/loader";
+import { PAGE_SIZE } from "@/constants";
 import { useAssignRolePermissionsByCategory, usePermissionCategories, usePermissions, useRole, useSyncRolePermissions } from "@/hooks/api";
 import type { Role } from "@/types";
 import EntityError from "../shared/entity-error";
@@ -12,7 +13,7 @@ import RolePermissionsShimmer from "./role-permissions-shimmer";
 import Dropdown from "../shared/dropdown";
 
 type Props = { role: Role | null; onClose: () => void; onSaved: () => void };
-const allParams = { page: 1, limit: 1000 };
+const allParams = { page: 1, limit: PAGE_SIZE };
 
 export default function RolePermissionsModal({ role, onClose, onSaved }: Props) {
   const { data: roleData, isLoading, error: roleError } = useRole(role?.id ?? null);

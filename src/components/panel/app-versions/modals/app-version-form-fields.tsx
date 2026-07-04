@@ -6,6 +6,10 @@ import type {
 } from "react-hook-form";
 
 import InputErrorMessage from "@/components/ui/input-error-message";
+import {
+  preventNegativeNumberInput,
+  preventNegativeNumberPaste,
+} from "@/lib/utils/non-negative-input";
 import type { AppVersionFormValues } from "@/schemas/app-versions";
 
 import AppVersionFormDropdown from "./app-version-form-dropdown";
@@ -69,6 +73,8 @@ function AppVersionFormFields({
           dir="ltr"
           min={1}
           step={1}
+          onKeyDown={preventNegativeNumberInput}
+          onPaste={(event) => preventNegativeNumberPaste(event)}
           placeholder="10"
           className="h-14 w-full rounded-[14px] border border-primary bg-primary/4 px-4 text-left text-sm font-medium text-dark-gray outline-none transition focus:bg-primary/8"
           {...register("version_code", { valueAsNumber: true })}

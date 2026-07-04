@@ -14,6 +14,11 @@ import { useFieldArray } from "react-hook-form";
 import InputErrorMessage from "@/components/ui/input-error-message";
 import Shimmer from "@/components/ui/shimmer";
 import { Button } from "@/components/ui/button";
+import {
+  normalizeNonNegativeNumberInput,
+  preventNegativeNumberInput,
+  preventNegativeNumberPaste,
+} from "@/lib/utils/non-negative-input";
 import type { ProductFormValues } from "@/schemas/products";
 
 import ProductCategorySelect from "./product-category-select";
@@ -149,6 +154,8 @@ function ProductFormFields({
           <input
             type="number"
             min="0"
+            onKeyDown={preventNegativeNumberInput}
+            onPaste={(event) => preventNegativeNumberPaste(event)}
             placeholder="0"
             className={inputClassName}
             {...register("quantity")}
@@ -388,6 +395,9 @@ function Field({
 
 function PriceInput({
   placeholder,
+  onChange,
+  onKeyDown,
+  onPaste,
   ...props
 }: React.InputHTMLAttributes<HTMLInputElement>) {
   return (
@@ -396,8 +406,27 @@ function PriceInput({
         type="text"
         dir="ltr"
         placeholder={placeholder}
+        inputMode="decimal"
         className="min-w-0 flex-1 bg-transparent text-sm font-medium text-dark-gray outline-none"
         {...props}
+        onKeyDown={(event) => {
+          preventNegativeNumberInput(event);
+          onKeyDown?.(event);
+        }}
+        onPaste={(event) => {
+          preventNegativeNumberPaste(event, { allowDecimal: true });
+          onPaste?.(event);
+        }}
+        onChange={(event) => {
+          const normalizedValue = normalizeNonNegativeNumberInput(
+            event.target.value,
+            { allowDecimal: true },
+          );
+          if (event.target.value !== normalizedValue) {
+            event.target.value = normalizedValue;
+          }
+          onChange?.(event);
+        }}
       />
       <SaudiRiyal className="size-4 shrink-0 text-gray" />
     </div>

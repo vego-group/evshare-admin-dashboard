@@ -34,6 +34,10 @@ export function vehicleTitle(vehicle: VehicleListItem) {
   return vehicle.label || `Vehicle ${vehicle.id.slice(0, 8)}`;
 }
 
+export function getVehicleTemplateStatus(vehicle: VehicleListItem) {
+  return vehicle.contract_template?.length ? "template_uploaded" : "template_missing";
+}
+
 export function getVehicleAnalytics(vehicles: VehicleListItem[] = []) {
   return {
     total: vehicles.length,

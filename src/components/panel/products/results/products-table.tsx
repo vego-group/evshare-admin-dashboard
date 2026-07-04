@@ -4,7 +4,6 @@ import type { ReactNode } from "react";
 import type { ProductListItem } from "@/types";
 
 import {
-  formatDate,
   ProductActions,
   ProductImage,
   StatusBadge,
@@ -29,28 +28,28 @@ function ProductsTable({
         <table className="w-full min-w-[900px] border-separate border-spacing-0 text-right">
           <thead>
             <tr className="bg-primary/8 text-base font-semibold text-dark-gray">
-              <HeaderCell>المنتج</HeaderCell>
+              <HeaderCell>الصورة</HeaderCell>
+              <HeaderCell>العنوان</HeaderCell>
               <HeaderCell>التصنيف</HeaderCell>
               <HeaderCell>السعر</HeaderCell>
               <HeaderCell>الكمية</HeaderCell>
               <HeaderCell>الحالة</HeaderCell>
-              <HeaderCell>تاريخ الإنشاء</HeaderCell>
               <HeaderCell>الإجراءات</HeaderCell>
             </tr>
           </thead>
           <tbody>
             {products.map((product) => (
               <tr key={product.id} className="text-dark-gray">
+                <TableCell truncate={false}>
+                  <ProductImage product={product} />
+                </TableCell>
                 <TableCell>
-                  <div className="flex max-w-[260px] items-center gap-3">
-                    <ProductImage product={product} />
-                    <p
-                      className="min-w-0 flex-1 truncate text-base font-medium"
-                      title={product.title}
-                    >
-                      {product.title}
-                    </p>
-                  </div>
+                  <p
+                    className="truncate text-base font-medium"
+                    title={product.title}
+                  >
+                    {product.title}
+                  </p>
                 </TableCell>
                 <TableCell>{product.category?.name ?? "-"}</TableCell>
                 <TableCell>
@@ -59,13 +58,10 @@ function ProductsTable({
                   </span>
                 </TableCell>
                 <TableCell>{product.quantity}</TableCell>
-                <TableCell>
+                <TableCell truncate={false}>
                   <StatusBadge active={product.active} />
                 </TableCell>
-                <TableCell dir="ltr">
-                  {formatDate(product.created_at)}
-                </TableCell>
-                <TableCell>
+                <TableCell truncate={false}>
                   <ProductActions
                     onView={() => onViewProduct(product)}
                     onEdit={() => onEditProduct(product)}
@@ -88,15 +84,26 @@ function HeaderCell({ children }: { children: ReactNode }) {
 function TableCell({
   children,
   dir,
+  truncate = true,
 }: {
   children: ReactNode;
   dir?: "ltr" | "rtl";
+  truncate?: boolean;
 }) {
   return (
-    <td dir={dir} className="border-b border-primary/15 px-5 py-3">
+    <td
+      dir={dir}
+      className={
+        truncate
+          ? "max-w-0 overflow-hidden text-ellipsis whitespace-nowrap border-b border-primary/15 px-5 py-3"
+          : "border-b border-primary/15 px-5 py-3"
+      }
+    >
       {children}
     </td>
   );
 }
 
 export default ProductsTable;
+
+

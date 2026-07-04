@@ -6,6 +6,11 @@ import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import Loader from "@/components/ui/loader";
 import Modal from "@/components/ui/modal";
+import {
+  normalizeNonNegativeNumberInput,
+  preventNegativeNumberInput,
+  preventNegativeNumberPaste,
+} from "@/lib/utils/non-negative-input";
 import { editVehicleAPI } from "@/services/mutations";
 import type { VehicleListItem, VehicleStatus } from "@/types";
 import FilterSelect, { type FilterOption } from "../toolbar/filter-select";
@@ -93,10 +98,17 @@ function VehicleEditModal({ vehicle, isSaving, open, onClose, onSaved, setIsSavi
                   min="0"
                   step="0.01"
                   value={values[key] ?? ""}
+                  onKeyDown={preventNegativeNumberInput}
+                  onPaste={(event) =>
+                    preventNegativeNumberPaste(event, { allowDecimal: true })
+                  }
                   onChange={(event) =>
                     setValues((current) => ({
                       ...current,
-                      [key]: event.target.value,
+                      [key]: normalizeNonNegativeNumberInput(
+                        event.target.value,
+                        { allowDecimal: true },
+                      ),
                     }))
                   }
                   className={numberInputClassName}

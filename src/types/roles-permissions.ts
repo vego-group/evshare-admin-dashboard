@@ -1,6 +1,6 @@
 export type RolesPermissionsQueryParams = {
-  page: number;
-  limit: number;
+  page?: number;
+  limit?: number;
   search?: string;
   order_by?: "asc" | "desc";
 };
@@ -8,6 +8,7 @@ export type RolesPermissionsQueryParams = {
 export type Permission = {
   id: string;
   name: string;
+  slug?: string;
   name_ar: string;
   name_en: string;
   permission_category_id: string | number | null;
@@ -51,6 +52,18 @@ export type DetailResponse<T> = {
   error: boolean;
   message: string;
   data: T;
+};
+
+export type AuthPermission = {
+  id: string;
+  slug: string;
+  name?: string;
+};
+
+export type AuthPermissionsResponse = {
+  status: boolean;
+  message: string;
+  data: AuthPermission[];
 };
 
 export type RolesListResponse = PaginatedResponse<Role>;
