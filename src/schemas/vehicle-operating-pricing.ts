@@ -38,6 +38,30 @@ export const commissionSchema = z.object({
   ),
 });
 
+export const vehicleZoneSchema = z
+  .object({
+    name_ar: z.string().trim().min(1, "الاسم بالعربية مطلوب"),
+    name_en: z.string().trim().min(1, "الاسم بالإنجليزية مطلوب"),
+    type: z.enum(["slow", "normal"], { error: "نوع المنطقة مطلوب" }),
+    speed_limit: z.preprocess(
+      (value) => (value === "" || value == null ? undefined : value),
+      z.coerce.number().min(0, "حد السرعة يجب أن يكون 0 أو أكثر").optional(),
+    ),
+    coordinates: z.string().trim().min(1, "يجب رسم حدود المنطقة على الخريطة"),
+    is_active: z.boolean(),
+  })
+  .refine((value) => value.type !== "slow" || value.speed_limit != null, {
+    path: ["speed_limit"],
+    message: "حد السرعة مطلوب لهذا النوع من المناطق",
+  });
+
+export const vehicleCommandSchema = z.object({
+  command: z.enum(["lock", "unlock", "sound_alarm"]),
+  params: z.record(z.string(), z.unknown()).optional(),
+});
+
 export type VehiclePricingSchemaValues = z.infer<typeof vehiclePricingSchema>;
 export type ContractReviewValues = z.infer<typeof contractReviewSchema>;
 export type CommissionValues = z.infer<typeof commissionSchema>;
+export type VehicleZoneValues = z.infer<typeof vehicleZoneSchema>;
+export type VehicleCommandValues = z.infer<typeof vehicleCommandSchema>;

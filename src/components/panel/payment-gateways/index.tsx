@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import Header from "@/components/ui/header";
+import { useHasPermission } from "@/hooks";
 import {
   usePaymentCheckouts,
   usePaymentTransactions,
@@ -23,7 +24,19 @@ import PaymentTransactionsTable from "./table/transactions-table";
 import PaymentGatewaysToolbar from "./toolbar";
 
 function PaymentGateways() {
+  const canIndexCheckouts = useHasPermission("Admin Index Checkouts");
+  const canIndexTransactions = useHasPermission("Admin Index Transactions");
+  const canShowCheckouts = useHasPermission("Admin Show Checkouts");
+  const canShowTransactions = useHasPermission("Admin Show Transactions");
+  const availableTabs: PaymentGatewayTab[] = [
+    ...(canIndexCheckouts ? (["checkouts"] as const) : []),
+    ...(canIndexTransactions ? (["transactions"] as const) : []),
+  ];
+
   const [activeTab, setActiveTab] = useState<PaymentGatewayTab>("checkouts");
+  const effectiveTab = availableTabs.includes(activeTab)
+    ? activeTab
+    : (availableTabs[0] ?? activeTab);
   const [checkoutParams, setCheckoutParams] =
     useState<PaymentCheckoutQueryParams>({
       page: 1,
@@ -43,17 +56,17 @@ function PaymentGateways() {
     data: checkoutsData,
     isLoading: isCheckoutsLoading,
     isFetching: isCheckoutsFetching,
-  } = usePaymentCheckouts(checkoutParams, activeTab === "checkouts");
+  } = usePaymentCheckouts(checkoutParams, effectiveTab === "checkouts");
   const {
     data: transactionsData,
     isLoading: isTransactionsLoading,
     isFetching: isTransactionsFetching,
-  } = usePaymentTransactions(transactionParams, activeTab === "transactions");
+  } = usePaymentTransactions(transactionParams, effectiveTab === "transactions");
 
   const isLoading =
-    activeTab === "checkouts" ? isCheckoutsLoading : isTransactionsLoading;
+    effectiveTab === "checkouts" ? isCheckoutsLoading : isTransactionsLoading;
   const isFetching =
-    activeTab === "checkouts" ? isCheckoutsFetching : isTransactionsFetching;
+    effectiveTab === "checkouts" ? isCheckoutsFetching : isTransactionsFetching;
 
   const updateCheckoutParams = (
     nextParams: Partial<PaymentCheckoutQueryParams>,
@@ -99,6 +112,20 @@ function PaymentGateways() {
     setSelectedTransactionId(null);
   };
 
+  if (!availableTabs.length) {
+    return (
+      <div className="flex w-full flex-col gap-6">
+        <Header
+          title="بوابات الدفع"
+          subtitle="متابعة عمليات الدفع، روابط التحقق، وحالة المعاملات"
+        />
+        <p className="rounded-2xl bg-white p-6 text-center text-sm text-gray">
+          ليس لديك صلاحية لعرض عمليات التحقق أو المعاملات.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex w-full flex-col gap-6">
       {isLoading ? (
@@ -111,11 +138,12 @@ function PaymentGateways() {
           />
 
           <PaymentGatewayTabs
-            activeTab={activeTab}
+            activeTab={effectiveTab}
+            availableTabs={availableTabs}
             onChange={handleTabChange}
           />
 
-          {activeTab === "checkouts" ? (
+          {effectiveTab === "checkouts" ? (
             <>
               <CheckoutStatsCards checkouts={checkoutsData?.data ?? []} />
               <PaymentGatewaysToolbar
@@ -132,7 +160,7 @@ function PaymentGateways() {
               <PaymentCheckoutsTable
                 checkouts={checkoutsData?.data ?? []}
                 isFetching={isFetching}
-                onCheckoutSelect={openCheckout}
+                onCheckoutSelect={canShowCheckouts ? openCheckout : undefined}
               />
               <PaymentGatewaysPagination
                 meta={checkoutsData?.meta}
@@ -159,7 +187,7 @@ function PaymentGateways() {
               <PaymentTransactionsTable
                 transactions={transactionsData?.data ?? []}
                 isFetching={isFetching}
-                onTransactionSelect={openTransaction}
+                onTransactionSelect={canShowTransactions ? openTransaction : undefined}
               />
               <PaymentGatewaysPagination
                 meta={transactionsData?.meta}
@@ -173,7 +201,7 @@ function PaymentGateways() {
       )}
 
       <PaymentGatewayDetailsPanel
-        activeTab={activeTab}
+        activeTab={effectiveTab}
         checkoutId={selectedCheckoutId}
         transactionId={selectedTransactionId}
         open={Boolean(selectedCheckoutId || selectedTransactionId)}

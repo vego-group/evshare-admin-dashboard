@@ -9,6 +9,7 @@ import {
   pricingFields,
   vehicleTitle,
 } from "../utils";
+
 import DetailRow from "./detail-row";
 
 function VehicleDetailsModal({
@@ -76,6 +77,43 @@ function VehicleDetailsModal({
             <DetailRow label="حالة القالب" value={<StatusBadge status={getVehicleTemplateStatus(vehicle)} />} />
             <DetailRow label="ملفات القالب" value={<FilesList files={templateFiles} />} />
           </div>
+        </section>
+
+        <section>
+          <h3 className="mb-3 font-semibold text-secondary">جهاز IoT والبطارية</h3>
+          <div className="grid gap-2 sm:grid-cols-2">
+            <DetailRow label="معرف الجهاز" value={<span dir="ltr">{vehicle.iot_device_id ?? "-"}</span>} />
+            <DetailRow label="نسبة البطارية" value={vehicle.battery_percentage != null ? `${vehicle.battery_percentage}%` : "-"} />
+            <DetailRow label="آخر تحديث" value={<span dir="ltr">{formatDate(vehicle.updated_at)}</span>} />
+          </div>
+        </section>
+
+        <section>
+          <h3 className="mb-3 font-semibold text-secondary">المنتج المرتبط</h3>
+          {vehicle.product ? (
+            <div className="grid gap-2 sm:grid-cols-2">
+              <DetailRow label="اسم المنتج" value={vehicle.product.title} />
+              <DetailRow label="السعر" value={formatMoney(vehicle.product.price)} />
+              <DetailRow label="الكمية" value={vehicle.product.quantity} />
+              <DetailRow label="الحالة" value={<StatusBadge status={vehicle.product.active ? "active" : "disabled"} />} />
+            </div>
+          ) : (
+            <p className="text-sm text-gray">لا يوجد منتج مرتبط</p>
+          )}
+        </section>
+
+        <section>
+          <h3 className="mb-3 font-semibold text-secondary">منطقة التشغيل</h3>
+          {vehicle.zone ? (
+            <div className="grid gap-2 sm:grid-cols-2">
+              <DetailRow label="اسم المنطقة" value={vehicle.zone.name_ar} />
+              <DetailRow label="النوع" value={vehicle.zone.type === "slow" ? "بطيئة" : "عادية"} />
+              <DetailRow label="حد السرعة" value={vehicle.zone.speed_limit ?? "-"} />
+              <DetailRow label="الحالة" value={<StatusBadge status={vehicle.zone.is_active ? "active" : "disabled"} />} />
+            </div>
+          ) : (
+            <p className="text-sm text-gray">لم يتم تعيين منطقة تشغيل لهذه المركبة</p>
+          )}
         </section>
       </div>
     </Modal>

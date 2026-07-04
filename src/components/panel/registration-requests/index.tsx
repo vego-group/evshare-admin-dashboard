@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import Header from "@/components/ui/header";
 import { PAGE_SIZE } from "@/constants";
+import { useHasPermission } from "@/hooks";
 import { useRegistrationRequests } from "@/hooks/api";
 import type { KycsQueryParams, RequestStatus, OrderBy } from "@/types";
 
@@ -20,6 +21,7 @@ function RegistrationRequests() {
     limit: PAGE_SIZE,
   });
   const [selectedKycId, setSelectedKycId] = useState<string | null>(null);
+  const canShowDetails = useHasPermission("Admin Show KYC");
 
   const { data, isLoading } = useRegistrationRequests(params);
 
@@ -56,7 +58,7 @@ function RegistrationRequests() {
           />
           <RegistrationRequestsTable
             requests={data?.data ?? []}
-            onRequestSelect={setSelectedKycId}
+            onRequestSelect={canShowDetails ? setSelectedKycId : undefined}
           />
           <RegistrationRequestsPagination
             meta={data?.meta}

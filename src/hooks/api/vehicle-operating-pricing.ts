@@ -1,7 +1,11 @@
 import { keepPreviousData } from "@tanstack/react-query";
 
 import { useCustomQuery } from "..";
-import { singleVehicleAPI, vehiclesAPI } from "@/services/queries";
+import {
+  allVehiclesAPI,
+  singleVehicleAPI,
+  vehiclesAPI,
+} from "@/services/queries";
 import type { VehiclesQueryParams } from "@/types";
 
 export function useVehicles(params: VehiclesQueryParams) {
@@ -15,5 +19,13 @@ export function useVehicle(vehicleId: string | null) {
     ["vehicle", vehicleId],
     async () => singleVehicleAPI(vehicleId!),
     { enabled: Boolean(vehicleId) },
+  );
+}
+
+export function useAllVehicles(
+  params: Omit<VehiclesQueryParams, "page"> = { limit: 100 },
+) {
+  return useCustomQuery(["vehicles-all", params], async () =>
+    allVehiclesAPI(params),
   );
 }

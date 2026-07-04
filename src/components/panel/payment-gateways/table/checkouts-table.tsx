@@ -14,7 +14,7 @@ import { TableCell, TableHead } from "./table-cell";
 type PaymentCheckoutsTableProps = {
   checkouts: PaymentCheckout[];
   isFetching?: boolean;
-  onCheckoutSelect: (checkoutId: string) => void;
+  onCheckoutSelect?: (checkoutId: string) => void;
 };
 
 function PaymentCheckoutsTable({
@@ -65,20 +65,23 @@ function CheckoutTableRow({
   onSelect,
 }: {
   checkout: PaymentCheckout;
-  onSelect: (checkoutId: string) => void;
+  onSelect?: (checkoutId: string) => void;
 }) {
   return (
     <tr
-      tabIndex={0}
-      role="button"
-      onClick={() => onSelect(checkout.id)}
+      tabIndex={onSelect ? 0 : undefined}
+      role={onSelect ? "button" : undefined}
+      onClick={() => onSelect?.(checkout.id)}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
           event.preventDefault();
-          onSelect(checkout.id);
+          onSelect?.(checkout.id);
         }
       }}
-      className="cursor-pointer text-base font-medium leading-6 text-dark-gray transition hover:bg-primary/5 focus-visible:bg-primary/5 focus-visible:outline-none"
+      className={cn(
+        "text-base font-medium leading-6 text-dark-gray transition",
+        onSelect && "cursor-pointer hover:bg-primary/5 focus-visible:bg-primary/5 focus-visible:outline-none",
+      )}
     >
       <TableCell className="max-w-[190px]">
         <span className="block truncate">{checkout.user?.name ?? "-"}</span>

@@ -1,3 +1,4 @@
+import type { ProductListItem } from "./products";
 import type { QueryParams } from ".";
 
 export type VehicleOperatingType = "evshare" | "operation_company";
@@ -70,6 +71,18 @@ export type VehiclePricing = {
   price_per_day: number | string | null;
 };
 
+export type VehicleZoneType = "slow" | "normal";
+
+export type VehicleZone = {
+  id: string;
+  name_ar: string;
+  name_en: string;
+  type: VehicleZoneType;
+  speed_limit: number | null;
+  coordinates: string;
+  is_active: boolean;
+};
+
 export type VehicleListItem = VehiclePricing & {
   id: string;
   label?: string | null;
@@ -82,7 +95,11 @@ export type VehicleListItem = VehiclePricing & {
   vehicle_contract: VehicleContract | null;
   contract_template?: VehicleContractTemplateFile[];
   location?: VehicleLocation | null;
-  zone?: unknown;
+  zone: VehicleZone | null;
+  iot_device_id: string | null;
+  battery_percentage: number | null;
+  product: ProductListItem | null;
+  updated_at: string;
   created_at: string;
 };
 

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { BatteryMedium } from "lucide-react";
 
 import type { VehicleListItem } from "@/types";
 import StatusBadge from "../status-badge";
@@ -13,6 +14,8 @@ type Props = {
   onReviewReceipt: (vehicle: VehicleListItem) => void;
   onEditTemplate: (vehicle: VehicleListItem) => void;
   onCommission: (vehicle: VehicleListItem) => void;
+  onManageZone: (vehicle: VehicleListItem) => void;
+  onControlPanel: (vehicle: VehicleListItem) => void;
   onDelete: (vehicle: VehicleListItem) => void;
 };
 
@@ -23,6 +26,7 @@ const headers = [
   "نوع التشغيل",
   "شركة التشغيل",
   "العمولة",
+  "البطارية",
   "العقد",
   "قالب السند",
   "الإجراءات",
@@ -47,10 +51,11 @@ function VehiclesTable(props: Props) {
                 <TableCell>{vehicle.operating_type === "evshare" ? "EvShare" : "شركة تشغيل"}</TableCell>
                 <TableCell>{vehicle.operation_company?.name ?? "-"}</TableCell>
                 <TableCell>{formatPercentage(vehicle.operation_company?.pricing_percentage ?? vehicle.operation_company?.commission_percentage)}</TableCell>
+                <TableCell truncate={false}><BatteryIndicator vehicle={vehicle} /></TableCell>
                 <TableCell truncate={false}>{vehicle.vehicle_contract ? <StatusBadge status={vehicle.vehicle_contract.status} /> : "-"}</TableCell>
                 <TableCell truncate={false}><StatusBadge status={getVehicleTemplateStatus(vehicle)} /></TableCell>
                 <TableCell truncate={false}>
-                  <VehicleActions canUpdateCommission={Boolean(vehicle.operation_company)} onView={() => props.onView(vehicle)} onEdit={() => props.onEdit(vehicle)} onReview={() => props.onReview(vehicle)} onReviewReceipt={() => props.onReviewReceipt(vehicle)} onEditTemplate={() => props.onEditTemplate(vehicle)} onCommission={() => props.onCommission(vehicle)} onDelete={() => props.onDelete(vehicle)} />
+                  <VehicleActions canUpdateCommission={Boolean(vehicle.operation_company)} onView={() => props.onView(vehicle)} onEdit={() => props.onEdit(vehicle)} onReview={() => props.onReview(vehicle)} onReviewReceipt={() => props.onReviewReceipt(vehicle)} onEditTemplate={() => props.onEditTemplate(vehicle)} onCommission={() => props.onCommission(vehicle)} onManageZone={() => props.onManageZone(vehicle)} onControlPanel={() => props.onControlPanel(vehicle)} onDelete={() => props.onDelete(vehicle)} />
                 </TableCell>
               </tr>
             ))}
@@ -63,6 +68,16 @@ function VehiclesTable(props: Props) {
 
 function VehicleName({ vehicle }: { vehicle: VehicleListItem }) {
   return <p className="truncate font-medium text-secondary">{vehicleTitle(vehicle)}</p>;
+}
+
+function BatteryIndicator({ vehicle }: { vehicle: VehicleListItem }) {
+  if (!vehicle.iot_device_id) return "-";
+  return (
+    <span dir="ltr" className="inline-flex items-center gap-1">
+      <BatteryMedium className="size-4 text-dark-gray" />
+      {vehicle.battery_percentage != null ? `${vehicle.battery_percentage}%` : "-"}
+    </span>
+  );
 }
 
 function HeaderCell({ children }: { children: ReactNode }) {

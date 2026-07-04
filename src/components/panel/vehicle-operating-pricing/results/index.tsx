@@ -10,6 +10,8 @@ type Props = {
   onReviewReceipt: (vehicle: VehicleListItem) => void;
   onEditTemplate: (vehicle: VehicleListItem) => void;
   onCommission: (vehicle: VehicleListItem) => void;
+  onManageZone: (vehicle: VehicleListItem) => void;
+  onControlPanel: (vehicle: VehicleListItem) => void;
   onDelete: (vehicle: VehicleListItem) => void;
 };
 
