@@ -59,9 +59,8 @@ export function getTemplateStatus(receipt: MobilityReceipt) {
 }
 
 export function reviewDefaults(receipt?: MobilityReceipt | null) {
-  const current = receipt?.vehicle_contract?.status;
   return {
-    status: current === "contract_rejected" ? "rejected" : "approved",
+    status: null,
     rejection_reason: receipt?.vehicle_contract?.rejection_reason ?? "",
   } satisfies MobilityReceiptReviewValues;
 }
@@ -70,6 +69,7 @@ export function buildReviewPayload(
   values: MobilityReceiptReviewValues,
   dirtyFields: FieldNamesMarkedBoolean<MobilityReceiptReviewValues>,
 ) {
+  if (!values.status) return null;
   if (!dirtyFields.status && !dirtyFields.rejection_reason) return null;
   const payload: MobilityReceiptReviewValues = { status: values.status };
   if (values.status === "rejected") {
