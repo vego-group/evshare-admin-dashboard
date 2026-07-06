@@ -27,9 +27,17 @@ type Props = {
   setIsSaving: (value: boolean) => void;
 };
 
-function CommissionModal({ vehicle, isSaving, open, onClose, onSaved, setIsSaving }: Props) {
+function CommissionModal({
+  vehicle,
+  isSaving,
+  open,
+  onClose,
+  onSaved,
+  setIsSaving,
+}: Props) {
   const company = vehicle?.operation_company;
-  const currentPercentage = company?.pricing_percentage ?? company?.commission_percentage ?? "";
+  const currentPercentage =
+    company?.pricing_percentage ?? company?.commission_percentage ?? "";
   const {
     register,
     handleSubmit,
@@ -45,7 +53,10 @@ function CommissionModal({ vehicle, isSaving, open, onClose, onSaved, setIsSavin
   async function submit(values: CommissionValues) {
     if (!company || isSaving || !isDirty) return;
     setIsSaving(true);
-    const result = await updateOperationCompanyCommissionAPI(company.id, values);
+    const result = await updateOperationCompanyCommissionAPI(
+      company.id,
+      values,
+    );
     setIsSaving(false);
     if (result?.ok) {
       toast.success(result.message || "تم تحديث العمولة");
@@ -58,10 +69,21 @@ function CommissionModal({ vehicle, isSaving, open, onClose, onSaved, setIsSavin
 
   if (!company) return null;
   return (
-    <Modal open={open} onClose={onClose} title={`عمولة ${company.name}`} contentClassName="max-w-md">
-      <form onSubmit={handleSubmit(submit)} noValidate className="space-y-4 p-1">
+    <Modal
+      open={open}
+      onClose={onClose}
+      title={`عمولة ${company.name}`}
+      contentClassName="max-w-md"
+    >
+      <form
+        onSubmit={handleSubmit(submit)}
+        noValidate
+        className="space-y-4 p-1"
+      >
         <label className="block">
-          <span className="mb-2 block text-sm text-dark-gray">العمولة الحالية</span>
+          <span className="mb-2 block text-sm text-dark-gray">
+            العمولة الحالية
+          </span>
           <input
             type="number"
             min="0"
@@ -70,15 +92,26 @@ function CommissionModal({ vehicle, isSaving, open, onClose, onSaved, setIsSavin
             onPaste={(event) =>
               preventNegativeNumberPaste(event, { allowDecimal: true })
             }
-            className="h-12 w-full rounded-[12px] border border-primary bg-primary/4 px-3 text-left outline-none"
+            className="h-12 w-full rounded-2xl border border-primary bg-primary/4 px-3 text-left outline-none"
             dir="ltr"
             {...register("commission_percentage", { valueAsNumber: true })}
           />
           <InputErrorMessage msg={errors.commission_percentage?.message} />
         </label>
         <div className="flex justify-end gap-2">
-          <Button type="button" variant="outline" onClick={onClose} disabled={isSaving}>إلغاء</Button>
-          <Button type="submit" disabled={isSaving || !isDirty} className="min-w-17 bg-primary text-secondary hover:bg-primary/90">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onClose}
+            disabled={isSaving}
+          >
+            إلغاء
+          </Button>
+          <Button
+            type="submit"
+            disabled={isSaving || !isDirty}
+            className="min-w-17 bg-primary text-secondary hover:bg-primary/90"
+          >
             {isSaving ? <Loader borderColor="#1f2937" /> : "حفظ"}
           </Button>
         </div>

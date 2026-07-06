@@ -40,7 +40,7 @@ function VehicleFleetMapPage() {
       {isLoading ? (
         <p className="p-6 text-center text-sm text-gray">جارٍ التحميل...</p>
       ) : (
-        <div className="flex h-[70vh] min-h-[420px] flex-col gap-4 lg:h-[75vh] lg:flex-row">
+        <div className="flex h-[70vh] min-h-105 flex-col gap-4 lg:h-[75vh] lg:flex-row">
           <div className="order-2 min-h-64 flex-1 lg:order-1 lg:min-h-0">
             <VehicleFleetMap
               vehicles={vehicles}

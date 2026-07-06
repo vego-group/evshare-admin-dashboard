@@ -10,16 +10,18 @@ function OrderItemsSection({ items }: { items: OrderItem[] }) {
   return (
     <section className="overflow-hidden rounded-[14px] border border-[#e5e7eb] bg-white">
       <div className="border-b border-neutral-100 px-5 py-4">
-        <h2 className="text-base font-semibold text-secondary">المنتجات المطلوبة</h2>
+        <h2 className="text-base font-semibold text-secondary">
+          المنتجات المطلوبة
+        </h2>
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[700px] border-separate border-spacing-0 text-right">
+        <table className="w-full min-w-175 border-separate border-spacing-0 text-right">
           <thead>
             <tr className="bg-primary/8 text-sm font-semibold leading-6 text-dark-gray">
-              <TableHead className="w-[280px]">المنتج</TableHead>
-              <TableHead className="w-[120px]">الكمية</TableHead>
-              <TableHead className="w-[160px]">سعر الوحدة</TableHead>
-              <TableHead className="w-[160px]">الإجمالي</TableHead>
+              <TableHead className="w-70">المنتج</TableHead>
+              <TableHead className="w-30">الكمية</TableHead>
+              <TableHead className="w-40">سعر الوحدة</TableHead>
+              <TableHead className="w-40">الإجمالي</TableHead>
             </tr>
           </thead>
           <tbody>
@@ -30,7 +32,10 @@ function OrderItemsSection({ items }: { items: OrderItem[] }) {
         </table>
       </div>
       {!items.length ? (
-        <EmptyState description="لا توجد منتجات في هذا الطلب." className="min-h-[220px] rounded-none bg-transparent" />
+        <EmptyState
+          description="لا توجد منتجات في هذا الطلب."
+          className="min-h-55 rounded-none bg-transparent"
+        />
       ) : null}
     </section>
   );
@@ -57,22 +62,38 @@ function OrderItemRow({ item }: { item: OrderItem }) {
               لا صورة
             </span>
           )}
-          <span className="line-clamp-2 min-w-0 font-medium text-secondary">{product.title}</span>
+          <span className="line-clamp-2 min-w-0 font-medium text-secondary">
+            {product.title}
+          </span>
         </div>
       </TableCell>
       <TableCell>{item.quantity}</TableCell>
       <TableCell dir="ltr" className="text-right">
-        <span className="inline-flex items-center gap-1"><SaudiRiyal className="size-4" /> {item.unit_price}</span>
+        <span className="inline-flex items-center gap-1">
+          <SaudiRiyal className="size-4" /> {item.unit_price}
+        </span>
       </TableCell>
       <TableCell dir="ltr" className="text-right font-semibold text-secondary">
-        <span className="inline-flex items-center gap-1"><SaudiRiyal className="size-4" /> {item.total_price}</span>
+        <span className="inline-flex items-center gap-1">
+          <SaudiRiyal className="size-4" /> {item.total_price}
+        </span>
       </TableCell>
     </tr>
   );
 }
 
-function TableHead({ children, className }: { children: ReactNode; className?: string }) {
-  return <th className={cn("border-b border-primary/15 px-5 py-4", className)}>{children}</th>;
+function TableHead({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <th className={cn("border-b border-primary/15 px-5 py-4", className)}>
+      {children}
+    </th>
+  );
 }
 
 function TableCell({

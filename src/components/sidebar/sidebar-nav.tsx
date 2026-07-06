@@ -43,7 +43,7 @@ function SidebarNav({
         <div
           dir="rtl"
           className={`flex flex-col pb-3 ${
-            collapsed ? "items-center" : "items-stretch pr-3"
+            collapsed ? "items-center" : "items-stretch px-3"
           }`}
         >
           {visibleNavItems.map((item, index) => (
@@ -65,7 +65,7 @@ function SidebarNav({
       <div
         dir="rtl"
         className={`shrink-0 border-t border-neutral-100 pt-3 ${
-          collapsed ? "flex justify-center" : "pr-3"
+          collapsed ? "flex justify-center" : "px-3"
         }`}
       >
         <SidebarLogoutButton

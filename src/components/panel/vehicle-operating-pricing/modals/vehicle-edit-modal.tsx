@@ -37,11 +37,20 @@ const vehicleStatusOptions: FilterOption<VehicleStatus>[] = [
 const numberInputClassName =
   "h-12 w-full rounded-[14px] border border-primary bg-white px-4 text-left text-sm font-semibold text-secondary shadow-sm outline-none transition focus:bg-primary/5 focus:ring-2 focus:ring-primary/30 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none";
 
-function VehicleEditModal({ vehicle, isSaving, open, onClose, onSaved, setIsSaving }: Props) {
+function VehicleEditModal({
+  vehicle,
+  isSaving,
+  open,
+  onClose,
+  onSaved,
+  setIsSaving,
+}: Props) {
   const [values, setValues] = useState<Record<string, string>>(() =>
     vehicle ? getInitialValues(vehicle) : {},
   );
-  const isChanged = Boolean(vehicle && Object.keys(buildChangedPayload(values, vehicle)).length);
+  const isChanged = Boolean(
+    vehicle && Object.keys(buildChangedPayload(values, vehicle)).length,
+  );
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -61,13 +70,22 @@ function VehicleEditModal({ vehicle, isSaving, open, onClose, onSaved, setIsSavi
 
   if (!vehicle) return null;
   return (
-    <Modal open={open} onClose={onClose} title={`تعديل ${vehicleTitle(vehicle)}`} contentClassName="max-w-xl">
+    <Modal
+      open={open}
+      onClose={onClose}
+      title={`تعديل ${vehicleTitle(vehicle)}`}
+      contentClassName="max-w-xl"
+    >
       <form onSubmit={handleSubmit} className="space-y-5 p-1">
-        <section className="rounded-[18px] border border-primary/40 bg-gradient-to-br from-primary/12 to-white p-4 shadow-sm">
+        <section className="rounded-[18px] border border-primary/40 bg-linear-to-br from-primary/12 to-white p-4 shadow-sm">
           <div className="mb-3 flex items-center justify-between gap-3">
             <div>
-              <p className="text-sm font-semibold text-secondary">حالة المركبة</p>
-              <p className="mt-1 text-xs text-gray">اختر حالة التشغيل الحالية للمركبة</p>
+              <p className="text-sm font-semibold text-secondary">
+                حالة المركبة
+              </p>
+              <p className="mt-1 text-xs text-gray">
+                اختر حالة التشغيل الحالية للمركبة
+              </p>
             </div>
           </div>
           <FilterSelect
@@ -83,8 +101,12 @@ function VehicleEditModal({ vehicle, isSaving, open, onClose, onSaved, setIsSavi
 
         <section className="rounded-[18px] border border-primary/25 bg-white p-4 shadow-sm">
           <div className="mb-4">
-            <p className="text-sm font-semibold text-secondary">تسعير المركبة</p>
-            <p className="mt-1 text-xs text-gray">هذه القيم تُحدّث أسعار تشغيل المركبة فقط</p>
+            <p className="text-sm font-semibold text-secondary">
+              تسعير المركبة
+            </p>
+            <p className="mt-1 text-xs text-gray">
+              هذه القيم تُحدّث أسعار تشغيل المركبة فقط
+            </p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             {pricingFields.map(([key, label]) => (
@@ -120,8 +142,20 @@ function VehicleEditModal({ vehicle, isSaving, open, onClose, onSaved, setIsSavi
         </section>
 
         <div className="flex justify-end gap-2 pt-1">
-          <Button type="button" variant="outline" onClick={onClose} disabled={isSaving} className="h-10 rounded-[12px] px-5">إلغاء</Button>
-          <Button type="submit" disabled={isSaving || !isChanged} className="min-w-17 bg-primary text-secondary hover:bg-primary/90">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onClose}
+            disabled={isSaving}
+            className="h-10 rounded-2xl px-5"
+          >
+            إلغاء
+          </Button>
+          <Button
+            type="submit"
+            disabled={isSaving || !isChanged}
+            className="min-w-17 bg-primary text-secondary hover:bg-primary/90"
+          >
             {isSaving ? <Loader borderColor="#1f2937" /> : "حفظ"}
           </Button>
         </div>

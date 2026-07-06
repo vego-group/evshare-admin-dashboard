@@ -14,7 +14,7 @@ function RegistrationRequestsTable({
   return (
     <section className="overflow-hidden rounded-lg bg-white">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[1024px] border-separate border-spacing-0 text-right">
+        <table className="w-full min-w-5xl border-separate border-spacing-0 text-right">
           <RegistrationRequestsTableHeader />
           <tbody>
             {requests.map((request) => (

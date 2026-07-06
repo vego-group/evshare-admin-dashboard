@@ -30,15 +30,15 @@ function PaymentCheckoutsTable({
           isFetching && "opacity-60",
         )}
       >
-        <table className="w-full min-w-[1120px] border-separate border-spacing-0 text-right">
+        <table className="w-full min-w-280 border-separate border-spacing-0 text-right">
           <thead>
             <tr className="bg-primary/8 text-base font-semibold leading-6 text-dark-gray">
-              <TableHead className="w-[190px]">المستخدم</TableHead>
-              <TableHead className="w-[160px]">بوابة الدفع</TableHead>
-              <TableHead className="w-[150px]">المبلغ</TableHead>
-              <TableHead className="w-[160px]">المرجع</TableHead>
-              <TableHead className="w-[140px]">المعالجة</TableHead>
-              <TableHead className="w-[190px]">تاريخ الإنشاء</TableHead>
+              <TableHead className="w-47.5">المستخدم</TableHead>
+              <TableHead className="w-40">بوابة الدفع</TableHead>
+              <TableHead className="w-37.5">المبلغ</TableHead>
+              <TableHead className="w-40">المرجع</TableHead>
+              <TableHead className="w-35">المعالجة</TableHead>
+              <TableHead className="w-47.5">تاريخ الإنشاء</TableHead>
             </tr>
           </thead>
           <tbody>
@@ -80,10 +80,11 @@ function CheckoutTableRow({
       }}
       className={cn(
         "text-base font-medium leading-6 text-dark-gray transition",
-        onSelect && "cursor-pointer hover:bg-primary/5 focus-visible:bg-primary/5 focus-visible:outline-none",
+        onSelect &&
+          "cursor-pointer hover:bg-primary/5 focus-visible:bg-primary/5 focus-visible:outline-none",
       )}
     >
-      <TableCell className="max-w-[190px]">
+      <TableCell className="max-w-47.5">
         <span className="block truncate">{checkout.user?.name ?? "-"}</span>
         <span dir="ltr" className="mt-1 block truncate text-sm text-gray">
           {checkout.user?.mobile ? `+${checkout.user.mobile}` : "-"}
