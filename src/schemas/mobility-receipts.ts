@@ -17,10 +17,17 @@ export const uploadContractTemplateSchema = z.object({
 
 export const mobilityReceiptReviewSchema = z
   .object({
-    status: z.enum(["approved", "rejected"]),
+    status: z.enum(["approved", "rejected"]).nullable(),
     rejection_reason: z.string().trim().optional(),
   })
   .superRefine((values, ctx) => {
+    if (!values.status) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["status"],
+        message: "قرار المراجعة مطلوب",
+      });
+    }
     if (values.status === "rejected" && !values.rejection_reason) {
       ctx.addIssue({
         code: "custom",

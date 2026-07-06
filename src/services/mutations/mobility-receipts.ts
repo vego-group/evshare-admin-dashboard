@@ -1,8 +1,7 @@
 "use server";
 
-import type { MobilityReceiptReviewValues } from "@/schemas/mobility-receipts";
-
 import { safeApi } from "..";
+import { MobilityReceiptReviewValues } from "@/schemas";
 
 export const uploadMobilityReceiptTemplateAPI = async (
   vehicleId: string,

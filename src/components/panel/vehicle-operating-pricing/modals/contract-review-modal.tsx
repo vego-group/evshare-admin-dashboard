@@ -36,18 +36,16 @@ function ContractReviewModal({
   onSaved,
   setIsSaving,
 }: Props) {
-  const initialStatus = getReviewStatus(vehicle?.vehicle_contract?.status);
   const initialReason = vehicle?.vehicle_contract?.rejection_reason ?? "";
-  const [status, setStatus] = useState<ReviewStatus>(initialStatus);
+  const [status, setStatus] = useState<ReviewStatus | null>(null);
   const [reason, setReason] = useState(initialReason);
-  const isChanged = status !== initialStatus || reason.trim() !== initialReason;
   const isSubmitDisabled =
     isSaving ||
-    !isChanged ||
+    !status ||
     (status === "contract_rejected" && !reason.trim());
 
   async function submit() {
-    if (!vehicle || isSubmitDisabled) return;
+    if (!vehicle || !status || isSubmitDisabled) return;
     if (status === "contract_rejected" && !reason.trim()) {
       toast.error("سبب الرفض مطلوب");
       return;
@@ -124,12 +122,12 @@ function ReviewStatusDropdown({
   value,
   onChange,
 }: {
-  value: ReviewStatus;
+  value: ReviewStatus | null;
   onChange: (value: ReviewStatus) => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const selectedLabel =
-    reviewStatusOptions.find((option) => option.value === value)?.label ?? "";
+  const selectedOption = reviewStatusOptions.find((option) => option.value === value);
+  const selectedLabel = selectedOption?.label ?? "اختر القرار";
 
   return (
     <div className="overflow-hidden rounded-[14px] border border-primary bg-white">
@@ -141,7 +139,7 @@ function ReviewStatusDropdown({
       >
         <span className="flex min-w-0 items-center gap-2">
           <ListFilter className="size-4 shrink-0 text-primary" />
-          <span className="truncate">{selectedLabel}</span>
+          <span className={cn("truncate", !selectedOption && "text-gray")}>{selectedLabel}</span>
         </span>
         <ChevronDown
           className={cn(
@@ -173,10 +171,6 @@ function ReviewStatusDropdown({
       ) : null}
     </div>
   );
-}
-
-function getReviewStatus(status?: string): ReviewStatus {
-  return status === "contract_rejected" ? "contract_rejected" : "working";
 }
 
 function Attachment({

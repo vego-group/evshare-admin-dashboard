@@ -59,8 +59,3 @@ export type MobilityReceiptPaginationMeta = VehiclesPaginationMeta;
 export type UploadContractTemplatePayload = {
   contract_template?: File;
 };
-
-export type ReviewMobilityReceiptPayload = {
-  status: MobilityReceiptReviewStatus;
-  rejection_reason?: string;
-};

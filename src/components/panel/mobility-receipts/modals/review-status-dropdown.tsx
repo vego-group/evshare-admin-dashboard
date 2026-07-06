@@ -21,8 +21,8 @@ type Props = {
 
 function ReviewStatusDropdown({ value, onChange }: Props) {
   const [isOpen, setIsOpen] = useState(false);
-  const selectedLabel =
-    reviewStatusOptions.find((option) => option.value === value)?.label ?? "";
+  const selectedOption = reviewStatusOptions.find((option) => option.value === value);
+  const selectedLabel = selectedOption?.label ?? "اختر القرار";
 
   return (
     <div className="overflow-hidden rounded-[14px] border border-primary bg-white">
@@ -34,7 +34,7 @@ function ReviewStatusDropdown({ value, onChange }: Props) {
       >
         <span className="flex min-w-0 items-center gap-2">
           <ListFilter className="size-4 shrink-0 text-primary" />
-          <span className="truncate">{selectedLabel}</span>
+          <span className={cn("truncate", !selectedOption && "text-gray")}>{selectedLabel}</span>
         </span>
         <ChevronDown className={cn("size-4 shrink-0 text-primary transition", isOpen && "rotate-180")} />
       </button>
