@@ -2,6 +2,7 @@ import { SaudiRiyal } from "lucide-react";
 import Image from "next/image";
 import type { ReactNode } from "react";
 
+import EmptyState from "@/components/ui/empty-state";
 import { cn } from "@/lib/utils";
 import type { OrderItem } from "@/types";
 
@@ -29,9 +30,7 @@ function OrderItemsSection({ items }: { items: OrderItem[] }) {
         </table>
       </div>
       {!items.length ? (
-        <div className="flex min-h-[120px] items-center justify-center text-sm text-gray">
-          لا توجد منتجات في هذا الطلب.
-        </div>
+        <EmptyState description="لا توجد منتجات في هذا الطلب." className="min-h-[220px] rounded-none bg-transparent" />
       ) : null}
     </section>
   );

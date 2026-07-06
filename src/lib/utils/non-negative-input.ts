@@ -36,11 +36,18 @@ export function normalizeNonNegativeNumberInput(
     const [integerPart, ...decimalParts] = normalized.split(".");
     normalized =
       decimalParts.length > 0
-        ? `${integerPart}.${decimalParts.join("")}`
-        : integerPart;
+        ? `${stripLeadingZeros(integerPart)}.${decimalParts.join("")}`
+        : stripLeadingZeros(integerPart);
+  } else {
+    normalized = stripLeadingZeros(normalized);
   }
 
   return normalized;
+}
+
+function stripLeadingZeros(digits: string) {
+  const stripped = digits.replace(/^0+(?=\d)/, "");
+  return stripped || (digits ? "0" : "");
 }
 
 function isNonNegativeNumericInput(

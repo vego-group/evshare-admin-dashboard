@@ -1,5 +1,6 @@
 import { Eye, Pencil, Trash2 } from "lucide-react";
 
+import PermissionGate from "@/components/permission-gate";
 import EmptyState from "@/components/ui/empty-state";
 import type { FeatureFlag } from "@/types";
 
@@ -58,15 +59,21 @@ function FeatureFlagsResults({
               </td>
               <td className="px-5 py-4">
                 <div className="flex gap-2">
-                  <FeatureFlagActionButton label="عرض" onClick={() => onView(flag)}>
-                    <Eye className="size-4" />
-                  </FeatureFlagActionButton>
-                  <FeatureFlagActionButton label="تعديل" onClick={() => onEdit(flag)}>
-                    <Pencil className="size-4" />
-                  </FeatureFlagActionButton>
-                  <FeatureFlagActionButton label="حذف" danger onClick={() => onDelete(flag)}>
-                    <Trash2 className="size-4" />
-                  </FeatureFlagActionButton>
+                  <PermissionGate slug="Admin Show Feature Flags">
+                    <FeatureFlagActionButton label="عرض" onClick={() => onView(flag)}>
+                      <Eye className="size-4" />
+                    </FeatureFlagActionButton>
+                  </PermissionGate>
+                  <PermissionGate slug="Admin Edit Feature Flags">
+                    <FeatureFlagActionButton label="تعديل" onClick={() => onEdit(flag)}>
+                      <Pencil className="size-4" />
+                    </FeatureFlagActionButton>
+                  </PermissionGate>
+                  <PermissionGate slug="Admin Delete Feature Flags">
+                    <FeatureFlagActionButton label="حذف" danger onClick={() => onDelete(flag)}>
+                      <Trash2 className="size-4" />
+                    </FeatureFlagActionButton>
+                  </PermissionGate>
                 </div>
               </td>
             </tr>

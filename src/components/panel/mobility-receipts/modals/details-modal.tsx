@@ -54,7 +54,7 @@ function ReceiptDetailsModal({ open, receipt, onClose }: Props) {
           <InfoSection
             title="التسعير"
             rows={[
-              ["سعر الفتح", formatMoney(receipt.open_price)],
+              ["سعر فتح القفل", formatMoney(receipt.open_price)],
               ["سعر الدقيقة", formatMoney(receipt.price_per_minute)],
               ["سعر الكيلومتر", formatMoney(receipt.price_per_km)],
               ["سعر الساعة", formatMoney(receipt.price_per_hour)],

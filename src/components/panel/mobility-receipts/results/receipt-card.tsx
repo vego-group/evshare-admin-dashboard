@@ -30,7 +30,7 @@ function MobilityReceiptCard(props: Props) {
     ["نوع التشغيل", formatOperatingType(receipt.operating_type)],
     ["شركة التشغيل", receipt.operation_company?.name ?? "-"],
     ["الموقع", formatLocation(receipt)],
-    ["سعر الفتح", formatMoney(receipt.open_price)],
+    ["سعر فتح القفل", formatMoney(receipt.open_price)],
     ["سعر الدقيقة", formatMoney(receipt.price_per_minute)],
     ["تاريخ الإنشاء", formatReceiptDate(receipt.created_at)],
     [

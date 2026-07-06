@@ -14,7 +14,7 @@ import { TableCell, TableHead } from "./table-cell";
 type PaymentTransactionsTableProps = {
   transactions: PaymentTransaction[];
   isFetching?: boolean;
-  onTransactionSelect: (transactionId: string) => void;
+  onTransactionSelect?: (transactionId: string) => void;
 };
 
 function PaymentTransactionsTable({
@@ -65,20 +65,23 @@ function TransactionTableRow({
   onSelect,
 }: {
   transaction: PaymentTransaction;
-  onSelect: (transactionId: string) => void;
+  onSelect?: (transactionId: string) => void;
 }) {
   return (
     <tr
-      tabIndex={0}
-      role="button"
-      onClick={() => onSelect(transaction.id)}
+      tabIndex={onSelect ? 0 : undefined}
+      role={onSelect ? "button" : undefined}
+      onClick={() => onSelect?.(transaction.id)}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
           event.preventDefault();
-          onSelect(transaction.id);
+          onSelect?.(transaction.id);
         }
       }}
-      className="cursor-pointer text-base font-medium leading-6 text-dark-gray transition hover:bg-primary/5 focus-visible:bg-primary/5 focus-visible:outline-none"
+      className={cn(
+        "text-base font-medium leading-6 text-dark-gray transition",
+        onSelect && "cursor-pointer hover:bg-primary/5 focus-visible:bg-primary/5 focus-visible:outline-none",
+      )}
     >
       <TableCell dir="ltr" className="max-w-[240px]">
         <span className="block truncate">{transaction.transaction_id}</span>

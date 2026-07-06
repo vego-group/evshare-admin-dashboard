@@ -1,5 +1,6 @@
 import { Pencil } from "lucide-react";
 
+import PermissionGate from "@/components/permission-gate";
 import EmptyState from "@/components/ui/empty-state";
 import { Button } from "@/components/ui/button";
 import type { PaymentMethod, PaymentMethodAllowedType } from "@/types";
@@ -28,7 +29,9 @@ function PaymentMethodsResults({ paymentMethods, onEdit }: Props) {
               </td>
               <td className="px-5 py-4"><StatusBadge active={method.is_active} /></td>
               <td className="px-5 py-4"><div className="flex gap-2">
-                <Button size="icon-sm" variant="ghost" aria-label="تعديل" onClick={() => onEdit(method)}><Pencil /></Button>
+                <PermissionGate slug={["Admin Show Payment Methods", "Admin Edit Payment Methods"]}>
+                  <Button size="icon-sm" variant="ghost" aria-label="تعديل" onClick={() => onEdit(method)}><Pencil /></Button>
+                </PermissionGate>
               </div></td>
             </tr>
           ))}

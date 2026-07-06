@@ -50,12 +50,13 @@ export default function PermissionCategoryFormModal({
   const [submitError, setSubmitError] = useState<unknown>(null);
   const { isLoading: detailLoading, error: detailError } =
     usePermissionCategory(category?.id ?? null);
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<PermissionCategoryFormInput>({
+  const { register, handleSubmit, formState: { errors, isSubmitting, isDirty } } = useForm<PermissionCategoryFormInput>({
     resolver: categoryFormResolver,
     defaultValues,
     mode: "onChange",
   });
   async function submit(values: PermissionCategoryFormInput) {
+    if (!isDirty) return;
     const payload = permissionCategorySchema.parse(values);
     const result = category
       ? await editPermissionCategory(category.id, payload)
@@ -99,7 +100,7 @@ export default function PermissionCategoryFormModal({
             <Button type="button" variant="ghost" onClick={onClose} disabled={isSubmitting} className="h-12 rounded-[14px] bg-neutral-100 text-dark-gray">
               إلغاء
             </Button>
-            <Button disabled={isSubmitting} className="h-12 rounded-[14px] text-secondary">{isSubmitting ? <Loader /> : "حفظ"}</Button>
+            <Button disabled={isSubmitting || !isDirty} className="h-12 rounded-[14px] text-secondary">{isSubmitting ? <Loader /> : "حفظ"}</Button>
           </div>
         </form>
       )}

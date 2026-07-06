@@ -1,5 +1,6 @@
 import { Eye, Pencil, Trash2 } from "lucide-react";
 
+import PermissionGate from "@/components/permission-gate";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { AppVersionStatus } from "@/types";
@@ -49,15 +50,21 @@ export function AppVersionActions({
 }) {
   return (
     <div className="flex items-center gap-2">
-      <ActionButton label="عرض الإصدار" onClick={onView}>
-        <Eye className="size-4" />
-      </ActionButton>
-      <ActionButton label="تعديل الإصدار" onClick={onEdit}>
-        <Pencil className="size-4" />
-      </ActionButton>
-      <ActionButton label="حذف الإصدار" onClick={onDelete} danger>
-        <Trash2 className="size-4" />
-      </ActionButton>
+      <PermissionGate slug="Admin View App Releases">
+        <ActionButton label="عرض الإصدار" onClick={onView}>
+          <Eye className="size-4" />
+        </ActionButton>
+      </PermissionGate>
+      <PermissionGate slug="Admin Edit App Releases">
+        <ActionButton label="تعديل الإصدار" onClick={onEdit}>
+          <Pencil className="size-4" />
+        </ActionButton>
+      </PermissionGate>
+      <PermissionGate slug="Admin Delete App Releases">
+        <ActionButton label="حذف الإصدار" onClick={onDelete} danger>
+          <Trash2 className="size-4" />
+        </ActionButton>
+      </PermissionGate>
     </div>
   );
 }

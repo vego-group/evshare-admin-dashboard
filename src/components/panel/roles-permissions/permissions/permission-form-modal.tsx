@@ -34,13 +34,14 @@ export default function PermissionFormModal({ open, permission, onClose, onSaved
   const { data: categories, isLoading: categoriesLoading } = usePermissionCategories({ page: 1, limit: PAGE_SIZE });
   const { isLoading: detailLoading, error: detailError } = usePermission(permission?.id ?? null);
   const categoryItems = Array.isArray(categories?.data) ? categories.data : [];
-  const { register, control, handleSubmit, formState: { errors, isSubmitting } } = useForm<PermissionFormInput>({
+  const { register, control, handleSubmit, formState: { errors, isSubmitting, isDirty } } = useForm<PermissionFormInput>({
     resolver: permissionFormResolver,
     defaultValues,
     mode: "onChange",
   });
 
   async function submit(values: PermissionFormInput) {
+    if (!isDirty) return;
     const payload = permissionSchema.parse(values);
     const result = permission
       ? await editPermission(permission.id, payload)
@@ -74,7 +75,7 @@ export default function PermissionFormModal({ open, permission, onClose, onSaved
         )} />
         <div className="grid grid-cols-2 gap-3 pt-2 sm:col-span-2">
           <Button type="button" variant="ghost" onClick={onClose} disabled={isSubmitting} className="h-12 rounded-[14px] bg-neutral-100 text-dark-gray">إلغاء</Button>
-          <Button disabled={isSubmitting} className="h-12 rounded-[14px] text-secondary">{isSubmitting ? <Loader /> : "حفظ"}</Button>
+          <Button disabled={isSubmitting || !isDirty} className="h-12 rounded-[14px] text-secondary">{isSubmitting ? <Loader /> : "حفظ"}</Button>
         </div>
       </form>}
     </Modal>

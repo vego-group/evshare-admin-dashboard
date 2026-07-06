@@ -1,7 +1,11 @@
 import type { VehicleListItem } from "@/types";
 
+export { batteryBarClass, batteryLevel, batteryTextClass } from "@/lib/utils/battery";
+export { formatDistanceParts, haversineDistanceKm } from "@/lib/utils/geo";
+export { hasMoneyValue } from "@/lib/utils/money";
+
 export const pricingFields = [
-  ["open_price", "سعر الفتح"],
+  ["open_price", "سعر فتح القفل"],
   ["price_per_minute", "سعر الدقيقة"],
   ["price_per_km", "سعر الكيلومتر"],
   ["price_per_hour", "سعر الساعة"],
@@ -68,3 +72,4 @@ function normalize(value: unknown) {
   const numberValue = Number(value);
   return Number.isNaN(numberValue) ? String(value) : String(numberValue);
 }
+

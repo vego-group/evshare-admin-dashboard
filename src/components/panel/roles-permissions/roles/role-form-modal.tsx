@@ -22,13 +22,14 @@ type Props = { open: boolean; role?: Role | null; onClose: () => void; onSaved: 
 export default function RoleFormModal({ open, role, onClose, onSaved }: Props) {
   const [submitError, setSubmitError] = useState<unknown>(null);
   const { isLoading: detailLoading, error: detailError } = useRole(role?.id ?? null);
-  const { register, control, handleSubmit, formState: { errors, isSubmitting } } = useForm<RoleEditFormValues>({
+  const { register, control, handleSubmit, formState: { errors, isSubmitting, isDirty } } = useForm<RoleEditFormValues>({
     resolver: roleFormResolver,
     defaultValues: { name: role?.name ?? "", allowed_user: role?.allowed_user ?? false },
     mode: "onChange",
   });
 
   async function submit(values: RoleEditFormValues) {
+    if (!isDirty) return;
     const result = role
       ? await editRole(role.id, values)
       : await addRole({ ...values, permissions: [] });
@@ -54,7 +55,7 @@ export default function RoleFormModal({ open, role, onClose, onSaved }: Props) {
         )} />
         <div className="grid grid-cols-2 gap-3 pt-2">
           <Button type="button" variant="ghost" onClick={onClose} disabled={isSubmitting} className="h-12 rounded-[14px] bg-neutral-100 text-dark-gray">إلغاء</Button>
-          <Button disabled={isSubmitting} className="h-12 rounded-[14px] text-secondary">{isSubmitting ? <Loader /> : "حفظ"}</Button>
+          <Button disabled={isSubmitting || !isDirty} className="h-12 rounded-[14px] text-secondary">{isSubmitting ? <Loader /> : "حفظ"}</Button>
         </div>
       </form>}
     </Modal>

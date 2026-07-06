@@ -7,11 +7,12 @@ import type { PaymentGatewayTab } from "@/types";
 
 type PaymentGatewayTabsProps = {
   activeTab: PaymentGatewayTab;
+  availableTabs: PaymentGatewayTab[];
   onChange: (tab: PaymentGatewayTab) => void;
 };
 
-function PaymentGatewayTabs({ activeTab, onChange }: PaymentGatewayTabsProps) {
-  const tabs: { label: string; value: PaymentGatewayTab; icon: ReactNode }[] = [
+function PaymentGatewayTabs({ activeTab, availableTabs, onChange }: PaymentGatewayTabsProps) {
+  const allTabs: { label: string; value: PaymentGatewayTab; icon: ReactNode }[] = [
     {
       label: "عمليات التحقق",
       value: "checkouts",
@@ -23,6 +24,9 @@ function PaymentGatewayTabs({ activeTab, onChange }: PaymentGatewayTabsProps) {
       icon: <ReceiptText className="size-4" />,
     },
   ];
+  const tabs = allTabs.filter((tab) => availableTabs.includes(tab.value));
+
+  if (tabs.length < 2) return null;
 
   return (
     <div className="flex flex-col gap-2 rounded-2xl border border-neutral-100/60 bg-white p-1.5 shadow-[0_2px_6px_rgba(0,0,0,0.04)] sm:w-fit sm:flex-row">
