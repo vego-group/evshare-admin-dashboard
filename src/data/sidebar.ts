@@ -13,6 +13,7 @@ import {
   Radar,
   Route,
   ScrollText,
+  Settings,
   ShieldCheck,
   ShoppingCart,
   Smartphone,
@@ -189,5 +190,12 @@ export const sidebarNavItems: SidebarNavItem[] = [
     ariaLabel: "الشكاوى",
     icon: MessageSquareWarning,
     permission: "Admin Index Complaints",
+  },
+  {
+    href: "/settings",
+    label: "الإعدادات",
+    ariaLabel: "الإعدادات",
+    icon: Settings,
+    permission: "Admin Index Settings",
   },
 ];

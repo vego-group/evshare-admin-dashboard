@@ -18,3 +18,4 @@ export * from "./vehicle-operating-pricing";
 export * from "./mobility-receipts";
 export * from "./trips";
 export * from "./commission-settings";
+export * from "./settings";
