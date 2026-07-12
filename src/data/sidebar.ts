@@ -20,6 +20,7 @@ import {
   Tags,
   Users,
   Wallet,
+  Webhook,
   type LucideIcon,
 } from "lucide-react";
 
@@ -176,6 +177,13 @@ export const sidebarNavItems: SidebarNavItem[] = [
     ariaLabel: "طرق الدفع",
     icon: CreditCard,
     permission: "Admin Index Payment Methods",
+  },
+  {
+    href: "/webhook-logs",
+    label: "سجلات الويب هوك",
+    ariaLabel: "سجلات الويب هوك",
+    icon: Webhook,
+    permission: "Admin Index Webhook Logs",
   },
   {
     href: "/commission-settings",
