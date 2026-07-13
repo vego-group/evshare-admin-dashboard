@@ -27,3 +27,4 @@ export * from "./trips";
 export * from "./commission-settings";
 export * from "./settings";
 export * from "./webhook-logs";
+export * from "./pages";
