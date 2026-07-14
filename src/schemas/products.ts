@@ -33,6 +33,7 @@ export const productSchema = z.object({
   key_features: z
     .array(
       z.object({
+        id: z.string().optional(),
         title_ar: z.string().trim().min(1, "عنوان الميزة العربي مطلوب"),
         title_en: z.string().trim().min(1, "عنوان الميزة الإنجليزي مطلوب"),
       }),

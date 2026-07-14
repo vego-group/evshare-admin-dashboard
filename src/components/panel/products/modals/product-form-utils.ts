@@ -1,6 +1,12 @@
 import type { FieldErrors, Resolver } from "react-hook-form";
 
 import { productAddSchema, productSchema, type ProductFormValues } from "@/schemas/products";
+import {
+  addProductFeatureAPI,
+  deleteProductFeatureAPI,
+  editProductFeatureAPI,
+} from "@/services/mutations";
+import type { ProductFeature } from "@/types";
 
 export const productDefaultValues: ProductFormValues = {
   title_ar: "",
@@ -120,13 +126,6 @@ export function buildChangedProductPayload(
     });
   }
 
-  if (dirtyFields.key_features) {
-    values.key_features.forEach((feature, index) => {
-      formData.append(`key_features[${index}][title_ar]`, feature.title_ar);
-      formData.append(`key_features[${index}][title_en]`, feature.title_en);
-    });
-  }
-
   return formData;
 }
 
@@ -136,4 +135,38 @@ export function hasFormDataEntries(formData: FormData) {
 
 function appendOptional(formData: FormData, key: string, value?: string) {
   if (value !== undefined && value !== "") formData.append(key, value);
+}
+
+export async function syncProductFeatures(
+  productId: string,
+  originalFeatures: ProductFeature[],
+  currentFeatures: ProductFormValues["key_features"],
+) {
+  const currentIds = new Set(
+    currentFeatures.map((feature) => feature.id).filter(Boolean),
+  );
+  const removedFeatures = originalFeatures.filter(
+    (feature) => !currentIds.has(feature.id),
+  );
+
+  const results = await Promise.all([
+    ...removedFeatures.map((feature) =>
+      deleteProductFeatureAPI(productId, feature.id),
+    ),
+    ...currentFeatures.map((feature) => {
+      if (!feature.id) return addProductFeatureAPI(productId, feature);
+
+      const original = originalFeatures.find((f) => f.id === feature.id);
+      const changed =
+        original &&
+        (original.title_ar !== feature.title_ar ||
+          original.title_en !== feature.title_en);
+
+      return changed
+        ? editProductFeatureAPI(productId, feature.id, feature)
+        : null;
+    }),
+  ]);
+
+  return results.every((result) => result === null || result?.ok);
 }
