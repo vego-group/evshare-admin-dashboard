@@ -18,6 +18,7 @@ const STATUS_STYLES: Record<OrderNewStatus, string> = {
   pending: "bg-amber-50 text-orange-500",
   preparing: "bg-orange-50 text-orange-600",
   ready: "bg-green-50 text-green-600",
+  delivered: "bg-blue-50 text-blue-600",
   completed: "bg-emerald-50 text-emerald-600",
   cancelled: "bg-red-50 text-red-500",
 };
@@ -27,6 +28,7 @@ const STATUS_LABELS: Record<OrderNewStatus, string> = {
   pending: "قيد الانتظار",
   preparing: "قيد التحضير",
   ready: "جاهز",
+  delivered: "تم التسليم",
   completed: "مكتمل",
   cancelled: "ملغي",
 };

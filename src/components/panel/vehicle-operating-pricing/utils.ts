@@ -1,4 +1,14 @@
-import type { VehicleListItem } from "@/types";
+import type { VehicleListItem, VehicleZoneType } from "@/types";
+
+const zoneTypeLabels: Record<VehicleZoneType, string> = {
+  normal: "عادية",
+  slow: "بطيئة",
+  restricted: "محظورة",
+};
+
+export function zoneTypeLabel(type: VehicleZoneType) {
+  return zoneTypeLabels[type];
+}
 
 export { batteryBarClass, batteryLevel, batteryTextClass } from "@/lib/utils/battery";
 export { formatDistanceParts, haversineDistanceKm } from "@/lib/utils/geo";
@@ -36,10 +46,6 @@ export function formatDate(value?: string) {
 
 export function vehicleTitle(vehicle: VehicleListItem) {
   return vehicle.label || `Vehicle ${vehicle.id.slice(0, 8)}`;
-}
-
-export function getVehicleTemplateStatus(vehicle: VehicleListItem) {
-  return vehicle.contract_template?.length ? "template_uploaded" : "template_missing";
 }
 
 export function getVehicleAnalytics(vehicles: VehicleListItem[] = []) {

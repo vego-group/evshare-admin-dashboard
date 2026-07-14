@@ -2,6 +2,7 @@ import {
   ClipboardList,
   CircleDollarSign,
   CreditCard,
+  FileText,
   Flag,
   Images,
   LayoutDashboard,
@@ -205,5 +206,12 @@ export const sidebarNavItems: SidebarNavItem[] = [
     ariaLabel: "الإعدادات",
     icon: Settings,
     permission: "Admin Index Settings",
+  },
+  {
+    href: "/pages",
+    label: "الصفحات الثابتة",
+    ariaLabel: "الصفحات الثابتة",
+    icon: FileText,
+    permission: "Admin Index Pages",
   },
 ];

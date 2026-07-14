@@ -1,15 +1,12 @@
 import type { VehicleListItem } from "@/types";
 import StatusBadge from "../status-badge";
-import { getVehicleTemplateStatus, vehicleTitle } from "../utils";
+import { vehicleTitle } from "../utils";
 import VehicleActions from "./action-buttons";
 
 type Props = {
   vehicle: VehicleListItem;
   onView: (vehicle: VehicleListItem) => void;
   onEdit: (vehicle: VehicleListItem) => void;
-  onReview: (vehicle: VehicleListItem) => void;
-  onReviewReceipt: (vehicle: VehicleListItem) => void;
-  onEditTemplate: (vehicle: VehicleListItem) => void;
   onCommission: (vehicle: VehicleListItem) => void;
   onManageZone: (vehicle: VehicleListItem) => void;
   onControlPanel: (vehicle: VehicleListItem) => void;
@@ -22,8 +19,6 @@ function VehicleCard(props: Props) {
     ["نوع التشغيل", vehicle.operating_type === "evshare" ? "EvShare" : "شركة تشغيل"],
     ["شركة التشغيل", vehicle.operation_company?.name ?? "-"],
     ["البطارية", vehicle.battery_percentage != null ? `${vehicle.battery_percentage}%` : "-"],
-    ["العقد", vehicle.vehicle_contract ? <StatusBadge key="contract" status={vehicle.vehicle_contract.status} /> : "-"],
-    ["قالب السند", <StatusBadge key="template" status={getVehicleTemplateStatus(vehicle)} />],
   ] as const;
 
   return (
@@ -35,11 +30,10 @@ function VehicleCard(props: Props) {
           </h3>
           <div className="mt-2 flex flex-wrap gap-2">
             <StatusBadge status={vehicle.status} />
-            <StatusBadge status={vehicle.activation_status} />
           </div>
         </div>
         <div className="shrink-0">
-          <VehicleActions compact canUpdateCommission={Boolean(vehicle.operation_company)} onView={() => props.onView(vehicle)} onEdit={() => props.onEdit(vehicle)} onReview={() => props.onReview(vehicle)} onReviewReceipt={() => props.onReviewReceipt(vehicle)} onEditTemplate={() => props.onEditTemplate(vehicle)} onCommission={() => props.onCommission(vehicle)} onManageZone={() => props.onManageZone(vehicle)} onControlPanel={() => props.onControlPanel(vehicle)} onDelete={() => props.onDelete(vehicle)} />
+          <VehicleActions compact canUpdateCommission={Boolean(vehicle.operation_company)} onView={() => props.onView(vehicle)} onEdit={() => props.onEdit(vehicle)} onCommission={() => props.onCommission(vehicle)} onManageZone={() => props.onManageZone(vehicle)} onControlPanel={() => props.onControlPanel(vehicle)} onDelete={() => props.onDelete(vehicle)} />
         </div>
       </div>
       <div className="divide-y divide-primary/10 text-sm">

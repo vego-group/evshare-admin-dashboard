@@ -38,6 +38,7 @@ function PolygonDrawer({
 }) {
   const map = useMap();
   const polygonRef = useRef<google.maps.Polygon | null>(null);
+  const hasDrawnInitialRef = useRef(false);
 
   const emitChange = useCallback(() => {
     const polygon = polygonRef.current;
@@ -63,8 +64,13 @@ function PolygonDrawer({
     [emitChange],
   );
 
+  // Draws the zone's existing boundary once the map instance and coordinates are both
+  // ready. `initialPath` may arrive a render or two after `map` (e.g. while the vehicle's
+  // full detail record is still loading), so this re-checks on every render instead of
+  // only reacting to `map` — `hasDrawnInitialRef` keeps it a one-time draw once it succeeds.
   useEffect(() => {
-    if (!map || !initialPath.length || polygonRef.current) return;
+    if (!map || !initialPath.length || hasDrawnInitialRef.current) return;
+    hasDrawnInitialRef.current = true;
     const polygon = new google.maps.Polygon({
       map,
       paths: initialPath,
@@ -73,13 +79,17 @@ function PolygonDrawer({
     });
     polygonRef.current = polygon;
     attachPathListeners(polygon);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map]);
+
+    const bounds = new google.maps.LatLngBounds();
+    initialPath.forEach((point) => bounds.extend(point));
+    map.fitBounds(bounds);
+  });
 
   useEffect(() => {
     if (clearSignal === 0) return;
     polygonRef.current?.setMap(null);
     polygonRef.current = null;
+    hasDrawnInitialRef.current = false;
     onChange("");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clearSignal]);

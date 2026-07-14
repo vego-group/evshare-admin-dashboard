@@ -15,6 +15,7 @@ import {
   hasFormDataEntries,
   productDefaultValues,
   productFormResolver,
+  syncProductFeatures,
 } from "../modals/product-form-utils";
 
 export function useEditProductForm() {
@@ -63,7 +64,7 @@ export function useEditProductForm() {
       price_per_day: String(product.price_per_day ?? ""),
       active: product.active,
       category_id: product.category?.id ?? "",
-      key_features: product.features.map((f) => ({ title_ar: f.title_ar, title_en: f.title_en })),
+      key_features: product.features.map((f) => ({ id: f.id, title_ar: f.title_ar, title_en: f.title_en })),
       default_image: undefined,
       images: undefined,
     });
@@ -104,19 +105,34 @@ export function useEditProductForm() {
 
   const onSubmit = async (values: ProductFormValues) => {
     if (!product || !isDirty) return;
+
     const payload = buildChangedProductPayload(values, dirtyFields);
-    if (!hasFormDataEntries(payload)) return;
-    const result = await editProductAPI(product.id, payload);
-    if (result?.ok) {
-      toast.success(result.message || "تم تعديل المنتج بنجاح");
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ["products"] }),
-        queryClient.invalidateQueries({ queryKey: ["product", product.id] }),
-      ]);
-      router.push("/products");
-      return;
+    if (hasFormDataEntries(payload)) {
+      const result = await editProductAPI(product.id, payload);
+      if (!result?.ok) {
+        toast.error(result?.message || "فشل تعديل المنتج");
+        return;
+      }
     }
-    toast.error(result?.message || "فشل تعديل المنتج");
+
+    if (dirtyFields.key_features) {
+      const featuresSynced = await syncProductFeatures(
+        product.id,
+        product.features,
+        values.key_features,
+      );
+      if (!featuresSynced) {
+        toast.error("فشل تحديث المزايا الرئيسية");
+        return;
+      }
+    }
+
+    toast.success("تم تعديل المنتج بنجاح");
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["products"] }),
+      queryClient.invalidateQueries({ queryKey: ["product", product.id] }),
+    ]);
+    router.push("/products");
   };
 
   return {

@@ -1,13 +1,13 @@
 import Modal from "@/components/ui/modal";
-import type { VehicleContractTemplateFile, VehicleListItem } from "@/types";
+import type { VehicleListItem } from "@/types";
 import StatusBadge from "../status-badge";
 import {
   formatDate,
   formatMoney,
   formatPercentage,
-  getVehicleTemplateStatus,
   pricingFields,
   vehicleTitle,
+  zoneTypeLabel,
 } from "../utils";
 
 import DetailRow from "./detail-row";
@@ -23,9 +23,7 @@ function VehicleDetailsModal({
 }) {
   if (!vehicle) return null;
 
-  const contract = vehicle.vehicle_contract;
   const location = vehicle.location;
-  const templateFiles = vehicle.contract_template ?? [];
 
   return (
     <Modal open={open} onClose={onClose} title={vehicleTitle(vehicle)} contentClassName="max-w-3xl">
@@ -33,7 +31,6 @@ function VehicleDetailsModal({
         <section className="grid gap-2 sm:grid-cols-2">
           <DetailRow label="معرف المركبة" value={<span dir="ltr">{vehicle.id}</span>} />
           <DetailRow label="الحالة" value={<StatusBadge status={vehicle.status} />} />
-          <DetailRow label="حالة التفعيل" value={<StatusBadge status={vehicle.activation_status} />} />
           <DetailRow label="نوع التشغيل" value={vehicle.operating_type === "evshare" ? "EvShare" : "شركة تشغيل"} />
           <DetailRow label="شركة التشغيل" value={vehicle.operation_company?.name ?? "-"} />
           <DetailRow label="العمولة" value={formatPercentage(vehicle.operation_company?.pricing_percentage ?? vehicle.operation_company?.commission_percentage)} />
@@ -62,24 +59,6 @@ function VehicleDetailsModal({
         </section>
 
         <section>
-          <h3 className="mb-3 font-semibold text-secondary">العقد</h3>
-          <div className="grid gap-2">
-            <DetailRow label="حالة العقد" value={<StatusBadge status={contract?.status} />} />
-            <DetailRow label="سبب الرفض" value={contract?.rejection_reason ?? "-"} />
-            <DetailRow label="تاريخ العقد" value={<span dir="ltr">{formatDate(contract?.created_at)}</span>} />
-            <DetailRow label="مرفقات العقد" value={<FilesList files={contract?.attachments ?? []} />} />
-          </div>
-        </section>
-
-        <section>
-          <h3 className="mb-3 font-semibold text-secondary">قالب السند</h3>
-          <div className="grid gap-2">
-            <DetailRow label="حالة القالب" value={<StatusBadge status={getVehicleTemplateStatus(vehicle)} />} />
-            <DetailRow label="ملفات القالب" value={<FilesList files={templateFiles} />} />
-          </div>
-        </section>
-
-        <section>
           <h3 className="mb-3 font-semibold text-secondary">جهاز IoT والبطارية</h3>
           <div className="grid gap-2 sm:grid-cols-2">
             <DetailRow label="معرف الجهاز" value={<span dir="ltr">{vehicle.iot_device_id ?? "-"}</span>} />
@@ -103,45 +82,24 @@ function VehicleDetailsModal({
         </section>
 
         <section>
-          <h3 className="mb-3 font-semibold text-secondary">منطقة التشغيل</h3>
-          {vehicle.zone ? (
-            <div className="grid gap-2 sm:grid-cols-2">
-              <DetailRow label="اسم المنطقة" value={vehicle.zone.name_ar} />
-              <DetailRow label="النوع" value={vehicle.zone.type === "slow" ? "بطيئة" : "عادية"} />
-              <DetailRow label="حد السرعة" value={vehicle.zone.speed_limit ?? "-"} />
-              <DetailRow label="الحالة" value={<StatusBadge status={vehicle.zone.is_active ? "active" : "disabled"} />} />
+          <h3 className="mb-3 font-semibold text-secondary">مناطق التشغيل</h3>
+          {vehicle.zones.length ? (
+            <div className="space-y-3">
+              {vehicle.zones.map((zone) => (
+                <div key={zone.id} className="grid gap-2 rounded-lg border border-primary/10 p-3 sm:grid-cols-2">
+                  <DetailRow label="اسم المنطقة" value={zone.name_ar} />
+                  <DetailRow label="النوع" value={zoneTypeLabel(zone.type)} />
+                  <DetailRow label="حد السرعة" value={zone.speed_limit ?? "-"} />
+                  <DetailRow label="الحالة" value={<StatusBadge status={zone.is_active ? "active" : "disabled"} />} />
+                </div>
+              ))}
             </div>
           ) : (
-            <p className="text-sm text-gray">لم يتم تعيين منطقة تشغيل لهذه المركبة</p>
+            <p className="text-sm text-gray">لم يتم تعيين مناطق تشغيل لهذه المركبة</p>
           )}
         </section>
       </div>
     </Modal>
-  );
-}
-
-type FileLike = VehicleContractTemplateFile | string | { url?: string; name?: string; file_name?: string; document_type?: string | null };
-
-function FilesList({ files }: { files: FileLike[] }) {
-  if (!files.length) return "-";
-
-  return (
-    <div className="flex flex-col gap-1 text-left" dir="ltr">
-      {files.map((file, index) => {
-        const url = typeof file === "string" ? file : file.url;
-        const label = typeof file === "string"
-          ? `File ${index + 1}`
-          : file.name || file.file_name || file.document_type || `File ${index + 1}`;
-
-        return url ? (
-          <a key={index} href={url} target="_blank" rel="noreferrer" className="font-medium text-secondary underline">
-            {label}
-          </a>
-        ) : (
-          <span key={index}>{label}</span>
-        );
-      })}
-    </div>
   );
 }
 

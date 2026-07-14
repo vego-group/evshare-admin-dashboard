@@ -18,16 +18,6 @@ export const vehiclePricingSchema = z.object({
   price_per_day: optionalPrice,
 });
 
-export const contractReviewSchema = z
-  .object({
-    status: z.enum(["working", "contract_rejected"]),
-    rejection_reason: z.string().trim().optional(),
-  })
-  .refine(
-    (value) => value.status === "working" || Boolean(value.rejection_reason),
-    { path: ["rejection_reason"], message: "Rejection reason is required" },
-  );
-
 export const commissionSchema = z.object({
   commission_percentage: z.preprocess(
     (value) => (value === "" || value == null ? undefined : value),
@@ -42,7 +32,7 @@ export const vehicleZoneSchema = z
   .object({
     name_ar: z.string().trim().min(1, "الاسم بالعربية مطلوب"),
     name_en: z.string().trim().min(1, "الاسم بالإنجليزية مطلوب"),
-    type: z.enum(["slow", "normal"], { error: "نوع المنطقة مطلوب" }),
+    type: z.enum(["normal", "slow", "restricted"], { error: "نوع المنطقة مطلوب" }),
     speed_limit: z.preprocess(
       (value) => (value === "" || value == null ? undefined : value),
       z.coerce.number().min(0, "حد السرعة يجب أن يكون 0 أو أكثر").optional(),
@@ -61,7 +51,6 @@ export const vehicleCommandSchema = z.object({
 });
 
 export type VehiclePricingSchemaValues = z.infer<typeof vehiclePricingSchema>;
-export type ContractReviewValues = z.infer<typeof contractReviewSchema>;
 export type CommissionValues = z.infer<typeof commissionSchema>;
 export type VehicleZoneValues = z.infer<typeof vehicleZoneSchema>;
 export type VehicleCommandValues = z.infer<typeof vehicleCommandSchema>;

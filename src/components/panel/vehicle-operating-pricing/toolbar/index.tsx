@@ -5,7 +5,6 @@ import { useState } from "react";
 import useDebouncedChange from "@/hooks/use-debounced-change";
 import type {
   OrderBy,
-  VehicleActivationStatus,
   VehicleOperatingType,
   VehicleStatus,
 } from "@/types";
@@ -17,12 +16,10 @@ type Props = {
   searchQuery: string;
   selectedSort?: OrderBy;
   selectedStatus?: VehicleStatus;
-  selectedActivationStatus?: VehicleActivationStatus;
   selectedOperatingType?: VehicleOperatingType;
   onSearchChange: (value: string) => void;
   onSortChange: (value: OrderBy) => void;
   onStatusChange: (value?: VehicleStatus) => void;
-  onActivationStatusChange: (value?: VehicleActivationStatus) => void;
   onOperatingTypeChange: (value?: VehicleOperatingType) => void;
 };
 
@@ -41,15 +38,6 @@ const statusOptions: FilterOption<VehicleStatus | "all">[] = [
   { label: "قيد الاستخدام", value: "in_use" },
 ];
 
-const activationStatusOptions: FilterOption<VehicleActivationStatus | "all">[] = [
-  { label: "كل حالات التفعيل", value: "all" },
-  { label: "مسودة", value: "draft" },
-  { label: "بانتظار رفع العقد", value: "pending_contract_upload" },
-  { label: "بانتظار الموافقة", value: "pending_admin_approval" },
-  { label: "العقد مرفوض", value: "contract_rejected" },
-  { label: "يعمل", value: "working" },
-];
-
 const operatingTypeOptions: FilterOption<VehicleOperatingType | "all">[] = [
   { label: "كل أنواع التشغيل", value: "all" },
   { label: "EvShare", value: "evshare" },
@@ -60,19 +48,15 @@ function VehicleToolbar({
   searchQuery,
   selectedSort = "desc",
   selectedStatus,
-  selectedActivationStatus,
   selectedOperatingType,
   onSearchChange,
   onSortChange,
   onStatusChange,
-  onActivationStatusChange,
   onOperatingTypeChange,
 }: Props) {
   const [internalSearchQuery, setInternalSearchQuery] = useState(searchQuery);
   const [internalSort, setInternalSort] = useState<OrderBy>("desc");
   const [internalStatus, setInternalStatus] = useState<VehicleStatus | "all">("all");
-  const [internalActivationStatus, setInternalActivationStatus] =
-    useState<VehicleActivationStatus | "all">("all");
   const [internalOperatingType, setInternalOperatingType] =
     useState<VehicleOperatingType | "all">("all");
 
@@ -92,15 +76,6 @@ function VehicleToolbar({
           onChange={(value) => {
             setInternalStatus(value);
             onStatusChange(value === "all" ? undefined : value);
-          }}
-        />
-        <FilterSelect
-          label="حالة التفعيل"
-          options={activationStatusOptions}
-          value={selectedActivationStatus ?? internalActivationStatus}
-          onChange={(value) => {
-            setInternalActivationStatus(value);
-            onActivationStatusChange(value === "all" ? undefined : value);
           }}
         />
         <FilterSelect

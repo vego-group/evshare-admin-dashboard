@@ -2,12 +2,6 @@ import type { ProductListItem } from "./products";
 import type { QueryParams } from ".";
 
 export type VehicleOperatingType = "evshare" | "operation_company";
-export type VehicleActivationStatus =
-  | "draft"
-  | "pending_contract_upload"
-  | "pending_admin_approval"
-  | "contract_rejected"
-  | "working";
 export type VehicleStatus =
   | "new"
   | "active"
@@ -18,7 +12,6 @@ export type VehicleStatus =
 
 export type VehiclesQueryParams = Omit<QueryParams, "status"> & {
   status?: VehicleStatus;
-  activation_status?: VehicleActivationStatus;
   operating_type?: VehicleOperatingType;
 };
 
@@ -33,24 +26,6 @@ export type OperationCompany = {
   slug?: string;
   mobile?: string;
   email?: string;
-  created_at?: string;
-};
-
-export type VehicleContract = {
-  id: string;
-  status: VehicleActivationStatus;
-  rejection_reason: string | null;
-  attachments: Array<{ url?: string; name?: string; file_name?: string } | string>;
-  created_at: string;
-};
-
-export type VehicleContractTemplateFile = {
-  url: string;
-  name?: string;
-  file_name?: string;
-  type?: string;
-  document_type?: string | null;
-  disk?: string;
   created_at?: string;
 };
 
@@ -71,7 +46,7 @@ export type VehiclePricing = {
   price_per_day: number | string | null;
 };
 
-export type VehicleZoneType = "slow" | "normal";
+export type VehicleZoneType = "normal" | "slow" | "restricted";
 
 export type VehicleZone = {
   id: string;
@@ -87,15 +62,12 @@ export type VehicleListItem = VehiclePricing & {
   id: string;
   label?: string | null;
   status: VehicleStatus;
-  activation_status: VehicleActivationStatus;
   operating_type: VehicleOperatingType;
   user_id?: number | null;
   order_item_id?: number | null;
   operation_company: OperationCompany | null;
-  vehicle_contract: VehicleContract | null;
-  contract_template?: VehicleContractTemplateFile[];
   location?: VehicleLocation | null;
-  zone: VehicleZone | null;
+  zones: VehicleZone[];
   iot_device_id: string | null;
   battery_percentage: number | null;
   product: ProductListItem | null;
