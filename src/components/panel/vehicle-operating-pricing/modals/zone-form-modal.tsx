@@ -1,12 +1,14 @@
 "use client";
 
-import { Controller, useForm } from "react-hook-form";
+import { useEffect, useRef } from "react";
+import { Controller, useForm, type FieldErrors } from "react-hook-form";
 import toast from "react-hot-toast";
 
 import { Button } from "@/components/ui/button";
 import InputErrorMessage from "@/components/ui/input-error-message";
 import Loader from "@/components/ui/loader";
 import Modal from "@/components/ui/modal";
+import { cn } from "@/lib/utils";
 import {
   normalizeNonNegativeNumberInput,
   preventNegativeNumberInput,
@@ -14,7 +16,7 @@ import {
 } from "@/lib/utils/non-negative-input";
 import type { VehicleZoneValues } from "@/schemas/vehicle-operating-pricing";
 import { addVehicleZoneAPI, editVehicleZoneAPI } from "@/services/mutations";
-import type { VehicleListItem } from "@/types";
+import type { VehicleListItem, VehicleZone } from "@/types";
 import ZoneMapPicker from "./zone-map-picker";
 import ZoneTypeDropdown from "./zone-type-dropdown";
 import {
@@ -29,34 +31,46 @@ const inputClassName =
 
 type Props = {
   vehicle: VehicleListItem | null;
+  zone: VehicleZone | null;
   isSaving: boolean;
   open: boolean;
   onClose: () => void;
   onSaved: () => Promise<void>;
   setIsSaving: (value: boolean) => void;
-  onRequestDelete?: () => void;
 };
 
-function ZoneFormModal({ vehicle, isSaving, open, onClose, onSaved, setIsSaving, onRequestDelete }: Props) {
-  const isEdit = Boolean(vehicle?.zone);
+function ZoneFormModal({ vehicle, zone, isSaving, open, onClose, onSaved, setIsSaving }: Props) {
+  const isEdit = Boolean(zone);
   const {
     register,
     control,
     handleSubmit,
     watch,
     setValue,
+    reset,
     formState: { errors, isDirty, dirtyFields },
   } = useForm<VehicleZoneValues>({
     resolver: zoneFormResolver,
-    defaultValues: vehicle?.zone ? zoneValuesFromExisting(vehicle.zone) : zoneDefaultValues,
+    defaultValues: zone ? zoneValuesFromExisting(zone) : zoneDefaultValues,
     mode: "onChange",
   });
+
+  const mapSectionRef = useRef<HTMLDivElement>(null);
+
+  // The form stays mounted across close/reopen of the same zone (same key), so
+  // useForm's one-time defaultValues won't reflect the saved data on a second open —
+  // any unsaved edits (e.g. an accidental map clear) from a prior open would otherwise
+  // silently reappear. Force a fresh reset every time the modal is opened.
+  useEffect(() => {
+    if (open) reset(zone ? zoneValuesFromExisting(zone) : zoneDefaultValues);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, zone]);
 
   async function submit(values: VehicleZoneValues) {
     if (!vehicle || isSaving || !isDirty) return;
     setIsSaving(true);
-    const result = isEdit
-      ? await editVehicleZoneAPI(vehicle.id, buildChangedZonePayload(values, dirtyFields))
+    const result = isEdit && zone
+      ? await editVehicleZoneAPI(vehicle.id, zone.id, buildChangedZonePayload(values, dirtyFields))
       : await addVehicleZoneAPI(vehicle.id, values);
     setIsSaving(false);
     if (result?.ok) {
@@ -68,13 +82,21 @@ function ZoneFormModal({ vehicle, isSaving, open, onClose, onSaved, setIsSaving,
     toast.error(result?.message || "فشل حفظ المنطقة");
   }
 
+  function onInvalid(formErrors: FieldErrors<VehicleZoneValues>) {
+    if (formErrors.coordinates) {
+      mapSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      toast.error(formErrors.coordinates.message || "يجب رسم حدود المنطقة على الخريطة");
+    }
+  }
+
   if (!vehicle) return null;
   const type = watch("type");
   const speedLimitField = register("speed_limit");
+  const coordinates = watch("coordinates");
 
   return (
     <Modal open={open} onClose={onClose} title={isEdit ? "تعديل المنطقة" : "إضافة منطقة"} contentClassName="max-w-2xl">
-      <form onSubmit={handleSubmit(submit)} noValidate className="space-y-4 p-1">
+      <form onSubmit={handleSubmit(submit, onInvalid)} noValidate className="space-y-4 p-1">
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="block">
             <span className="mb-2 block text-sm text-dark-gray">الاسم بالعربية</span>
@@ -123,22 +145,28 @@ function ZoneFormModal({ vehicle, isSaving, open, onClose, onSaved, setIsSaving,
           منطقة نشطة
         </label>
 
-        <div>
-          <span className="mb-2 block text-sm text-dark-gray">حدود المنطقة</span>
-          <ZoneMapPicker value={watch("coordinates")} onChange={(value) => setValue("coordinates", value, { shouldDirty: true, shouldValidate: true })} />
+        <div
+          ref={mapSectionRef}
+          className={cn(
+            "rounded-2xl transition",
+            errors.coordinates && "ring-2 ring-red-500 ring-offset-2",
+          )}
+        >
+          <span className="mb-2 block text-sm text-dark-gray">
+            حدود المنطقة <span className="text-red-600">*</span>
+          </span>
+          <ZoneMapPicker value={coordinates} onChange={(value) => setValue("coordinates", value, { shouldDirty: true, shouldValidate: true })} />
           <InputErrorMessage msg={errors.coordinates?.message} />
+          {!coordinates && !errors.coordinates && (
+            <p className="pt-2 text-sm text-dark-gray">رسم حدود المنطقة على الخريطة إلزامي قبل الحفظ</p>
+          )}
         </div>
 
-        <div className="flex items-center justify-between gap-2">
-          {isEdit && onRequestDelete ? (
-            <Button type="button" variant="destructive" onClick={onRequestDelete} disabled={isSaving}>حذف المنطقة</Button>
-          ) : <span />}
-          <div className="flex gap-2">
-            <Button type="button" variant="outline" onClick={onClose} disabled={isSaving}>إلغاء</Button>
-            <Button type="submit" disabled={isSaving || !isDirty} className="min-w-17 bg-primary text-secondary hover:bg-primary/90">
-              {isSaving ? <Loader borderColor="#1f2937" /> : "حفظ"}
-            </Button>
-          </div>
+        <div className="flex items-center justify-end gap-2">
+          <Button type="button" variant="outline" onClick={onClose} disabled={isSaving}>إلغاء</Button>
+          <Button type="submit" disabled={isSaving || !isDirty || !coordinates} className="min-w-17 bg-primary text-secondary hover:bg-primary/90">
+            {isSaving ? <Loader borderColor="#1f2937" /> : "حفظ"}
+          </Button>
         </div>
       </form>
     </Modal>

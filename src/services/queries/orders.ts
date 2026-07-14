@@ -3,6 +3,7 @@ import { buildQuery } from "@/lib/utils/build-query";
 import {
   OrderDetailResponse,
   OrderQueryParams,
+  OrderReceiptResponse,
   OrdersListResponse,
 } from "@/types";
 
@@ -24,3 +25,8 @@ export const ordersAPI = async (
 export const singleOrderAPI = async (
   orderId: string,
 ): Promise<OrderDetailResponse> => await baseAPI("GET", `/orders/${orderId}`);
+
+export const orderReceiptAPI = async (
+  orderId: string,
+): Promise<OrderReceiptResponse> =>
+  await baseAPI("GET", `/orders/${orderId}/receipt`);

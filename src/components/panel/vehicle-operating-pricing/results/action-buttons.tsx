@@ -1,8 +1,5 @@
 import {
-  CheckCircle2,
   Eye,
-  FileCheck2,
-  FileUp,
   MapPin,
   MoreVertical,
   Pencil,
@@ -26,9 +23,6 @@ type Props = {
   canUpdateCommission: boolean;
   onView: () => void;
   onEdit: () => void;
-  onReview: () => void;
-  onReviewReceipt: () => void;
-  onEditTemplate: () => void;
   onCommission: () => void;
   onManageZone: () => void;
   onControlPanel: () => void;
@@ -40,9 +34,6 @@ function VehicleActions({
   canUpdateCommission,
   onView,
   onEdit,
-  onReview,
-  onReviewReceipt,
-  onEditTemplate,
   onCommission,
   onManageZone,
   onControlPanel,
@@ -71,18 +62,6 @@ function VehicleActions({
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem onSelect={onReview}>
-            <FileCheck2 className="size-4 shrink-0 text-green-600" />
-            <span className="flex-1 truncate text-right">مراجعة العقد</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem onSelect={onReviewReceipt}>
-            <CheckCircle2 className="size-4 shrink-0 text-lime-700" />
-            <span className="flex-1 truncate text-right">مراجعة السند</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem onSelect={onEditTemplate}>
-            <FileUp className="size-4 shrink-0 text-cyan-600" />
-            <span className="flex-1 truncate text-right">رفع قالب السند</span>
-          </DropdownMenuItem>
           {canUpdateCommission && (
             <PermissionGate slug="Admin View Operation Companies">
               <DropdownMenuItem onSelect={onCommission}>
@@ -94,7 +73,7 @@ function VehicleActions({
           <PermissionGate slug="Admin Edit Vehicles">
             <DropdownMenuItem onSelect={onManageZone}>
               <MapPin className="size-4 shrink-0 text-indigo-600" />
-              <span className="flex-1 truncate text-right">منطقة التشغيل</span>
+              <span className="flex-1 truncate text-right">مناطق التشغيل</span>
             </DropdownMenuItem>
             <DropdownMenuItem onSelect={onControlPanel}>
               <Radio className="size-4 shrink-0 text-teal-600" />

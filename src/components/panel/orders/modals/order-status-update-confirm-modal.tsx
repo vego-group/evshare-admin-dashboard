@@ -8,6 +8,7 @@ const STATUS_LABELS: Record<OrderNewStatus, string> = {
   pending: "قيد الانتظار",
   preparing: "قيد التحضير",
   ready: "جاهز",
+  delivered: "تم التسليم",
   completed: "مكتمل",
   cancelled: "ملغي",
 };

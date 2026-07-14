@@ -2,20 +2,13 @@ import type { ReactNode } from "react";
 
 import type { VehicleListItem } from "@/types";
 import StatusBadge from "../status-badge";
-import {
-  formatPercentage,
-  getVehicleTemplateStatus,
-  vehicleTitle,
-} from "../utils";
+import { formatPercentage, vehicleTitle } from "../utils";
 import VehicleActions from "./action-buttons";
 
 type Props = {
   vehicles: VehicleListItem[];
   onView: (vehicle: VehicleListItem) => void;
   onEdit: (vehicle: VehicleListItem) => void;
-  onReview: (vehicle: VehicleListItem) => void;
-  onReviewReceipt: (vehicle: VehicleListItem) => void;
-  onEditTemplate: (vehicle: VehicleListItem) => void;
   onCommission: (vehicle: VehicleListItem) => void;
   onManageZone: (vehicle: VehicleListItem) => void;
   onControlPanel: (vehicle: VehicleListItem) => void;
@@ -25,12 +18,9 @@ type Props = {
 const headers = [
   "المركبة",
   "الحالة",
-  "التفعيل",
   "نوع التشغيل",
   "شركة التشغيل",
   "العمولة",
-  "العقد",
-  "قالب السند",
   "الإجراءات",
 ];
 
@@ -55,9 +45,6 @@ function VehiclesTable(props: Props) {
                 <TableCell truncate={false}>
                   <StatusBadge status={vehicle.status} />
                 </TableCell>
-                <TableCell truncate={false}>
-                  <StatusBadge status={vehicle.activation_status} />
-                </TableCell>
                 <TableCell>
                   {vehicle.operating_type === "evshare"
                     ? "EvShare"
@@ -71,23 +58,10 @@ function VehiclesTable(props: Props) {
                   )}
                 </TableCell>
                 <TableCell truncate={false}>
-                  {vehicle.vehicle_contract ? (
-                    <StatusBadge status={vehicle.vehicle_contract.status} />
-                  ) : (
-                    "-"
-                  )}
-                </TableCell>
-                <TableCell truncate={false}>
-                  <StatusBadge status={getVehicleTemplateStatus(vehicle)} />
-                </TableCell>
-                <TableCell truncate={false}>
                   <VehicleActions
                     canUpdateCommission={Boolean(vehicle.operation_company)}
                     onView={() => props.onView(vehicle)}
                     onEdit={() => props.onEdit(vehicle)}
-                    onReview={() => props.onReview(vehicle)}
-                    onReviewReceipt={() => props.onReviewReceipt(vehicle)}
-                    onEditTemplate={() => props.onEditTemplate(vehicle)}
                     onCommission={() => props.onCommission(vehicle)}
                     onManageZone={() => props.onManageZone(vehicle)}
                     onControlPanel={() => props.onControlPanel(vehicle)}

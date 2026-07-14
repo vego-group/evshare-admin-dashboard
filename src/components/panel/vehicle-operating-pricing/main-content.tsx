@@ -10,9 +10,6 @@ type Props = {
   onParamsChange: (params: Partial<VehiclesQueryParams>) => void;
   onView: (vehicle: VehicleListItem) => void;
   onEdit: (vehicle: VehicleListItem) => void;
-  onReview: (vehicle: VehicleListItem) => void;
-  onReviewReceipt: (vehicle: VehicleListItem) => void;
-  onEditTemplate: (vehicle: VehicleListItem) => void;
   onCommission: (vehicle: VehicleListItem) => void;
   onManageZone: (vehicle: VehicleListItem) => void;
   onControlPanel: (vehicle: VehicleListItem) => void;
@@ -27,12 +24,10 @@ function VehicleMainContent({ data, params, onParamsChange, ...handlers }: Props
         searchQuery={params.search ?? ""}
         selectedSort={params.order_by ?? "desc"}
         selectedStatus={params.status}
-        selectedActivationStatus={params.activation_status}
         selectedOperatingType={params.operating_type}
         onSearchChange={(search) => onParamsChange({ search: search || undefined, page: 1 })}
         onSortChange={(order_by: OrderBy) => onParamsChange({ order_by, page: 1 })}
         onStatusChange={(status) => onParamsChange({ status, page: 1 })}
-        onActivationStatusChange={(activation_status) => onParamsChange({ activation_status, page: 1 })}
         onOperatingTypeChange={(operating_type) => onParamsChange({ operating_type, page: 1 })}
       />
       <VehiclesResults vehicles={data?.data ?? []} {...handlers} />

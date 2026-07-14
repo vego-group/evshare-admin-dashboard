@@ -1,4 +1,4 @@
-import { ordersAPI, singleOrderAPI } from "@/services/queries";
+import { orderReceiptAPI, ordersAPI, singleOrderAPI } from "@/services/queries";
 import { useCustomQuery } from "..";
 import { OrderQueryParams } from "@/types";
 
@@ -11,5 +11,13 @@ export function useOrder(orderId: string | null) {
     ["order ", orderId],
     async () => singleOrderAPI(orderId!),
     { enabled: Boolean(orderId) },
+  );
+}
+
+export function useOrderReceipt(orderId: string | null, enabled = true) {
+  return useCustomQuery(
+    ["order-receipt", orderId],
+    async () => orderReceiptAPI(orderId!),
+    { enabled: Boolean(orderId) && enabled, retry: false },
   );
 }

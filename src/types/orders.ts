@@ -6,6 +6,7 @@ export type OrderNewStatus =
   | "pending"
   | "preparing"
   | "ready"
+  | "delivered"
   | "completed"
   | "cancelled";
 
@@ -87,6 +88,7 @@ export type OrderDetail = {
   user: OrderUser;
   address: OrderAddress;
   items: OrderItem[];
+  receipt?: OrderReceipt | null;
   created_at: string;
 };
 
@@ -119,3 +121,56 @@ export type OrderDetailResponse = {
   message: string;
   data: OrderDetail;
 };
+
+export type OrderReceiptStatus =
+  | "pending_admin_approval"
+  | "approved"
+  | "rejected";
+
+export type OrderRefundStatus = "not_applicable" | "pending" | "resolved";
+export type OrderRefundMethod = "wallet" | "contact";
+
+export type OrderReceiptVehicle = {
+  id: string;
+  label: string;
+};
+
+export type OrderReceiptItem = {
+  id: string;
+  vehicle: OrderReceiptVehicle;
+  received: boolean;
+  issue_description: string | null;
+  refund_status: OrderRefundStatus;
+  refund_method: OrderRefundMethod | null;
+  refund_notes: string | null;
+  refund_amount: number | null;
+  refund_resolved_at: string | null;
+};
+
+export type OrderReceiptAttachment = {
+  url: string;
+  type: string;
+};
+
+export type OrderReceipt = {
+  id: string;
+  status: OrderReceiptStatus;
+  rejection_reason: string | null;
+  items: OrderReceiptItem[];
+  attachments: OrderReceiptAttachment[];
+  created_at: string;
+};
+
+export type OrderReceiptResponse = {
+  error: boolean;
+  message: string;
+  data: OrderReceipt;
+};
+
+export type ReviewOrderReceiptPayload =
+  | { status: "approved"; rejection_reason?: undefined }
+  | { status: "rejected"; rejection_reason: string };
+
+export type ResolveOrderRefundPayload =
+  | { method: "wallet"; amount: number; notes?: string }
+  | { method: "contact"; amount?: undefined; notes?: string };

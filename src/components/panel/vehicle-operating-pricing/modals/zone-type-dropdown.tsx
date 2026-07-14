@@ -9,6 +9,7 @@ import type { VehicleZoneType } from "@/types";
 const zoneTypeOptions: Array<{ label: string; value: VehicleZoneType }> = [
   { label: "عادية", value: "normal" },
   { label: "بطيئة", value: "slow" },
+  { label: "محظورة", value: "restricted" },
 ];
 
 function ZoneTypeDropdown({

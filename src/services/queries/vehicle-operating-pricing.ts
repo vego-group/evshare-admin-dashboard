@@ -18,7 +18,6 @@ export const vehiclesAPI = async (
     status: params.status,
     order_by: params.order_by,
     search: params.search,
-    activation_status: params.activation_status,
     operating_type: params.operating_type,
   });
 
