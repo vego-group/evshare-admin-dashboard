@@ -19,7 +19,7 @@ export function ProductDetailsContent({ product, isLoading }: Props) {
 
   if (!product) {
     return (
-      <div className="flex min-h-[220px] items-center justify-center rounded-[14px] bg-background px-4 text-center text-base text-gray">
+      <div className="flex min-h-55 items-center justify-center rounded-[14px] bg-background px-4 text-center text-base text-gray">
         تعذر تحميل تفاصيل المنتج.
       </div>
     );

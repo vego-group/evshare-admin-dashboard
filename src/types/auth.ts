@@ -1,3 +1,5 @@
+import type { UserRole } from "./users";
+
 export type AuthResponse = {
   data: {
     access_token: string;
@@ -9,7 +11,7 @@ export type AuthResponse = {
       id: string;
       name: string;
       mobile: number;
-      role: string;
+      role: UserRole;
     };
   };
 };

@@ -25,7 +25,7 @@ function ProductsTable({
   return (
     <section className="overflow-hidden rounded-lg bg-white">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[900px] border-separate border-spacing-0 text-right">
+        <table className="w-full min-w-225 border-separate border-spacing-0 text-right">
           <thead>
             <tr className="bg-primary/8 text-base font-semibold text-dark-gray">
               <HeaderCell>الصورة</HeaderCell>
@@ -105,5 +105,3 @@ function TableCell({
 }
 
 export default ProductsTable;
-
-
