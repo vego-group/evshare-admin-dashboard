@@ -257,7 +257,7 @@ function buildTicks(maxValue: number) {
 function formatCurrency(value: number) {
   return (
     <span className="inline-flex items-center gap-1" dir="ltr">
-      <SaudiRiyal className="size-3.5" />
+      <SaudiRiyal className="size-3.5 shrink-0" />
       {value.toLocaleString("en-US", {
         maximumFractionDigits: 2,
       })}

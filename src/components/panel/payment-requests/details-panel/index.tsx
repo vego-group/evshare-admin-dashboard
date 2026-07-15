@@ -147,7 +147,7 @@ function PaymentRequestDetails({ request }: { request: PaymentRequestDetail }) {
           valueDir="ltr"
           value={
             <span className="inline-flex items-center gap-1">
-              <SaudiRiyal className="size-4" /> {request.amount}
+              <SaudiRiyal className="size-4 shrink-0" /> {request.amount}
             </span>
           }
         />

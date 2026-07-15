@@ -5,7 +5,7 @@ import type { PaymentTransaction } from "@/types";
 export function MoneyValue({ amount }: { amount: number }) {
   return (
     <span className="inline-flex items-center gap-1">
-      <SaudiRiyal className="size-4" />
+      <SaudiRiyal className="size-4 shrink-0" />
       {Number(amount || 0).toLocaleString("en-US")}
     </span>
   );

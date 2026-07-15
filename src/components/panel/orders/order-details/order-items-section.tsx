@@ -72,12 +72,12 @@ function OrderItemRow({ item }: { item: OrderItem }) {
       <TableCell>{item.quantity}</TableCell>
       <TableCell dir="ltr" className="text-right">
         <span className="inline-flex items-center gap-1">
-          <SaudiRiyal className="size-4" /> {item.unit_price}
+          <SaudiRiyal className="size-4 shrink-0" /> {item.unit_price}
         </span>
       </TableCell>
       <TableCell dir="ltr" className="text-right font-semibold text-secondary">
         <span className="inline-flex items-center gap-1">
-          <SaudiRiyal className="size-4" /> {item.total_price}
+          <SaudiRiyal className="size-4 shrink-0" /> {item.total_price}
         </span>
       </TableCell>
       <TableCell className="max-w-none overflow-visible whitespace-normal">

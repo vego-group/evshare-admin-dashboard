@@ -53,7 +53,7 @@ function formatNumber(value: number) {
 function formatCurrency(value: number): ReactNode {
   return (
     <span className="inline-flex items-center gap-1" dir="ltr">
-      <SaudiRiyal className="size-5" />
+      <SaudiRiyal className="size-5 shrink-0" />
       {value.toLocaleString("en-US", {
         maximumFractionDigits: 2,
       })}

@@ -92,7 +92,7 @@ function PriceStat({ label, value }: { label: string; value: unknown }) {
       >
         {hasMoneyValue(value) ? (
           <>
-            <SaudiRiyal className="size-3.5" />
+            <SaudiRiyal className="size-3.5 shrink-0" />
             {String(value)}
           </>
         ) : (

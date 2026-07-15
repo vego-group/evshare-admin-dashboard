@@ -2,7 +2,13 @@
 
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { CheckCircle, FileDown, FileText, SaudiRiyal, XCircle } from "lucide-react";
+import {
+  CheckCircle,
+  FileDown,
+  FileText,
+  SaudiRiyal,
+  XCircle,
+} from "lucide-react";
 import toast from "react-hot-toast";
 
 import PermissionGate from "@/components/permission-gate";
@@ -52,7 +58,9 @@ function OrderReceiptSection({
   receipt: OrderReceipt;
 }) {
   const queryClient = useQueryClient();
-  const [reviewLoading, setReviewLoading] = useState<"approved" | "rejected" | null>(null);
+  const [reviewLoading, setReviewLoading] = useState<
+    "approved" | "rejected" | null
+  >(null);
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [refundItem, setRefundItem] = useState<OrderReceiptItem | null>(null);
 
@@ -154,7 +162,8 @@ function OrderReceiptSection({
                 className="inline-flex items-center gap-1.5 rounded-[10px] border border-neutral-200 px-3 py-2 text-sm font-medium text-secondary hover:bg-neutral-50"
               >
                 <FileText className="size-4" />
-                المستند الموقع من العميل {attachments.length > 1 ? index + 1 : ""}
+                المستند الموقع من العميل{" "}
+                {attachments.length > 1 ? index + 1 : ""}
               </a>
             ))
           : null}
@@ -165,16 +174,25 @@ function OrderReceiptSection({
           <table className="w-full min-w-150 border-separate border-spacing-0 text-right">
             <thead>
               <tr className="bg-primary/8 text-sm font-semibold leading-6 text-dark-gray">
-                <th className="border-b border-primary/15 px-4 py-3">المركبة</th>
+                <th className="border-b border-primary/15 px-4 py-3">
+                  المركبة
+                </th>
                 <th className="border-b border-primary/15 px-4 py-3">الحالة</th>
-                <th className="border-b border-primary/15 px-4 py-3">ملاحظة العميل</th>
-                <th className="border-b border-primary/15 px-4 py-3">حالة الاسترداد</th>
+                <th className="border-b border-primary/15 px-4 py-3">
+                  ملاحظة العميل
+                </th>
+                <th className="border-b border-primary/15 px-4 py-3">
+                  حالة الاسترداد
+                </th>
                 <th className="border-b border-primary/15 px-4 py-3" />
               </tr>
             </thead>
             <tbody>
               {items.map((item) => (
-                <tr key={item.id} className="text-sm font-medium text-dark-gray">
+                <tr
+                  key={item.id}
+                  className="text-sm font-medium text-dark-gray"
+                >
                   <td className="border-b border-primary/15 px-4 py-3 text-secondary">
                     {item.vehicle.label ?? "-"}
                   </td>
@@ -206,7 +224,8 @@ function OrderReceiptSection({
                           {item.refund_amount != null ? (
                             <span className="inline-flex items-center gap-1">
                               {" "}
-                              <SaudiRiyal className="size-3" /> {item.refund_amount}
+                              <SaudiRiyal className="size-3 shrink-0" />{" "}
+                              {item.refund_amount}
                             </span>
                           ) : null}
                         </span>
@@ -214,7 +233,8 @@ function OrderReceiptSection({
                     </div>
                   </td>
                   <td className="border-b border-primary/15 px-4 py-3">
-                    {receipt.status === "approved" && item.refund_status === "pending" ? (
+                    {receipt.status === "approved" &&
+                    item.refund_status === "pending" ? (
                       <PermissionGate slug="Admin Resolve Order Refunds">
                         <Button
                           type="button"
@@ -233,9 +253,8 @@ function OrderReceiptSection({
           </table>
         </div>
       ) : null}
-
       {receipt.status === "pending_admin_approval" ? (
-        <div className="grid grid-cols-2 gap-3 pt-2">
+        <div className="grid grid-cols-2 gap-3 sm:gap-5 pt-2">
           <PermissionGate slug="Admin Review Order Receipts">
             <Button
               type="button"

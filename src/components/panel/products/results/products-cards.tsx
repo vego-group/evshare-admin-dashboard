@@ -53,7 +53,7 @@ function ProductsCards({
               label="السعر"
               value={
                 <span className="inline-flex items-center gap-1" dir="ltr">
-                  <SaudiRiyal className="size-4" /> {product.price}
+                  <SaudiRiyal className="size-4 shrink-0" /> {product.price}
                 </span>
               }
             />

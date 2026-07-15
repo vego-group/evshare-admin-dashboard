@@ -72,7 +72,7 @@ function OrdersTableRow({ order }: { order: OrderListItem }) {
           </span>
         </TableCell>
         <TableCell dir="ltr" className="text-right">
-          <span className="inline-flex items-center gap-1"><SaudiRiyal className="size-4" /> {order.total}</span>
+          <span className="inline-flex items-center gap-1"><SaudiRiyal className="size-4 shrink-0" /> {order.total}</span>
         </TableCell>
         <TableCell className="max-w-none overflow-visible whitespace-normal">
           <OrderStatusDropdown

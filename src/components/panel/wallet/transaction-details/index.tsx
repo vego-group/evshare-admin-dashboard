@@ -94,7 +94,7 @@ function AmountValue({ value, color }: { value: number; color?: string }) {
   if (!value) return <span className="text-gray">—</span>;
   return (
     <span className={`inline-flex items-center gap-1 ${color ?? ""}`} dir="ltr">
-      <SaudiRiyal className="size-4" />
+      <SaudiRiyal className="size-4 shrink-0" />
       {value.toLocaleString("en-US")}
     </span>
   );
