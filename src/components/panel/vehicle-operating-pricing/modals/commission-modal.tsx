@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm, type FieldErrors, type Resolver } from "react-hook-form";
 import toast from "react-hot-toast";
 
@@ -41,6 +42,7 @@ function CommissionModal({
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isDirty },
   } = useForm<CommissionValues>({
     resolver: commissionResolver,
@@ -49,6 +51,13 @@ function CommissionModal({
     },
     mode: "onChange",
   });
+
+  // The modal instance is reused across vehicles, so useForm's one-time
+  // defaultValues won't reflect a newly selected vehicle's commission. Force
+  // a fresh reset every time it opens.
+  useEffect(() => {
+    if (open) reset({ commission_percentage: Number(currentPercentage || 0) });
+  }, [open, currentPercentage, reset]);
 
   async function submit(values: CommissionValues) {
     if (!company || isSaving || !isDirty) return;
@@ -88,7 +97,9 @@ function CommissionModal({
             type="number"
             min="0"
             step="0.01"
-            onKeyDown={preventNegativeNumberInput}
+            onKeyDown={(event) =>
+              preventNegativeNumberInput(event, { allowDecimal: true })
+            }
             onPaste={(event) =>
               preventNegativeNumberPaste(event, { allowDecimal: true })
             }

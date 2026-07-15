@@ -120,7 +120,9 @@ function VehicleEditModal({
                   min="0"
                   step="0.01"
                   value={values[key] ?? ""}
-                  onKeyDown={preventNegativeNumberInput}
+                  onKeyDown={(event) =>
+                    preventNegativeNumberInput(event, { allowDecimal: true })
+                  }
                   onPaste={(event) =>
                     preventNegativeNumberPaste(event, { allowDecimal: true })
                   }

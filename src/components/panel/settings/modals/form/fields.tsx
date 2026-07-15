@@ -50,7 +50,9 @@ function SettingFormFields({
           <input
             dir="ltr"
             className={inputClass}
-            onKeyDown={preventNegativeNumberInput}
+            onKeyDown={(event) =>
+              preventNegativeNumberInput(event, { allowDecimal: true })
+            }
             onPaste={(event) =>
               preventNegativeNumberPaste(event, { allowDecimal: true })
             }
