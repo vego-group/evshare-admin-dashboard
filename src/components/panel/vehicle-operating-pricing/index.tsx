@@ -1,14 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 import { PAGE_SIZE } from "@/constants";
-import { useVehicle, useVehicles } from "@/hooks/api";
+import { useAllVehicles, useVehicle, useVehicles } from "@/hooks/api";
 import { deleteVehicleAPI } from "@/services/mutations";
-import type { VehicleListItem, VehiclesQueryParams } from "@/types";
+import type { OperationCompany, VehicleListItem, VehiclesQueryParams } from "@/types";
 import VehicleContentShimmer from "./content-shimmer";
 import VehicleOperatingPricingHeader from "./header";
 import VehicleMainContent from "./main-content";
@@ -38,6 +38,14 @@ function VehicleOperatingPricing() {
   const [modal, setModal] = useState<ModalKey | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const { data, isLoading } = useVehicles(params);
+  const { data: allVehicles } = useAllVehicles();
+  const companies = useMemo(() => {
+    const byId = new Map<string, OperationCompany>();
+    for (const vehicle of allVehicles ?? []) {
+      if (vehicle.operation_company) byId.set(vehicle.operation_company.id, vehicle.operation_company);
+    }
+    return Array.from(byId.values());
+  }, [allVehicles]);
   const shouldFetchVehicle =
     activeVehicle &&
     modal !== null &&
@@ -77,6 +85,7 @@ function VehicleOperatingPricing() {
           <VehicleOperatingPricingHeader onOpenMap={() => router.push("/vehicle-operating-pricing/map")} />
           <VehicleMainContent
             data={data}
+            companies={companies}
             params={params}
             onParamsChange={(next) => setParams((current) => ({ ...current, ...next }))}
             onView={openModal("details")}

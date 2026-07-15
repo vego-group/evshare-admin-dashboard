@@ -5,7 +5,7 @@ import {
   preventNegativeNumberInput,
   preventNegativeNumberPaste,
 } from "@/lib/utils/non-negative-input";
-import { KYC_DEFAULT_STATUS_KEY } from "@/types";
+import { KYC_DEFAULT_STATUS_KEY, WORK_CONDITIONS_EN_KEY } from "@/types";
 import type { SettingFormValues } from "@/schemas/settings";
 
 import { isRichTextSetting } from "../../utils";
@@ -40,7 +40,7 @@ function SettingFormFields({
           <KycDefaultStatusDropdown value={value} setValue={setValue} />
         ) : isRichText ? (
           <RichTextEditor
-            dir="rtl"
+            dir={settingName === WORK_CONDITIONS_EN_KEY ? "ltr" : "rtl"}
             value={value}
             onChange={(next) =>
               setValue("value", next, { shouldDirty: true, shouldValidate: true })
