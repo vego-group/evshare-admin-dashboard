@@ -58,7 +58,9 @@ function CommissionSettingFields({ type, isActive, errors, register, setValue }:
           min="0"
           dir="ltr"
           placeholder="0.00"
-          onKeyDown={preventNegativeNumberInput}
+          onKeyDown={(event) =>
+            preventNegativeNumberInput(event, { allowDecimal: true })
+          }
           onPaste={(event) => preventNegativeNumberPaste(event, { allowDecimal: true })}
           className={`${inputClass} mt-2 text-left`}
           {...register("amount")}

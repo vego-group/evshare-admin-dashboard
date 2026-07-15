@@ -8,8 +8,9 @@ const blockedKeys = new Set(["-", "+", "e", "E"]);
 
 export function preventNegativeNumberInput(
   event: KeyboardEvent<HTMLInputElement>,
+  options: NonNegativeInputOptions = {},
 ) {
-  if (blockedKeys.has(event.key)) {
+  if (blockedKeys.has(event.key) || (!options.allowDecimal && event.key === ".")) {
     event.preventDefault();
   }
 }

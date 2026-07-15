@@ -410,7 +410,7 @@ function PriceInput({
         className="min-w-0 flex-1 bg-transparent text-sm font-medium text-dark-gray outline-none"
         {...props}
         onKeyDown={(event) => {
-          preventNegativeNumberInput(event);
+          preventNegativeNumberInput(event, { allowDecimal: true });
           onKeyDown?.(event);
         }}
         onPaste={(event) => {
