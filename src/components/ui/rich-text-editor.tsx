@@ -22,8 +22,10 @@ function RichTextEditor({ value, onChange, dir = "rtl" }: RichTextEditorProps) {
     editorProps: {
       attributes: {
         dir,
-        class:
+        class: cn(
           "prose prose-sm max-w-none min-h-50 rounded-b-[14px] bg-primary/4 px-4 py-3 text-sm text-dark-gray outline-none focus:bg-primary/8 [&_p]:my-2",
+          dir === "ltr" ? "text-left" : "text-right",
+        ),
       },
     },
     onUpdate: ({ editor }) => onChange(editor.getHTML()),

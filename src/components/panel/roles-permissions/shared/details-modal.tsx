@@ -7,19 +7,33 @@ export default function DetailsModal(props: {
   title: string;
   loading: boolean;
   error?: unknown;
-  fields: { label: string; value: React.ReactNode }[];
+  fields: { label: string; value: React.ReactNode; fullWidth?: boolean }[];
   onClose: () => void;
 }) {
   return (
-    <Modal open={props.open} onClose={props.onClose} title={props.title} contentClassName="max-w-xl rounded-2xl">
-      {props.loading ? <DetailsShimmer /> : props.error ? (
-        <div className="p-4"><EntityError error={props.error} /></div>
+    <Modal
+      open={props.open}
+      onClose={props.onClose}
+      title={props.title}
+      contentClassName="max-w-xl rounded-2xl"
+    >
+      {props.loading ? (
+        <DetailsShimmer />
+      ) : props.error ? (
+        <div className="p-4">
+          <EntityError error={props.error} />
+        </div>
       ) : (
         <dl className="grid gap-3 p-4 sm:grid-cols-2">
           {props.fields.map((field) => (
-            <div key={field.label} className="rounded-[14px] bg-background p-4">
+            <div
+              key={field.label}
+              className={`rounded-[14px] bg-background p-4 ${field.fullWidth ? "sm:col-span-2" : ""}`}
+            >
               <dt className="text-xs font-medium text-gray">{field.label}</dt>
-              <dd className="mt-1.5 break-words text-sm font-semibold text-secondary">{field.value || "—"}</dd>
+              <dd className="mt-1.5 wrap-break-word text-sm font-semibold text-secondary">
+                {field.value || "—"}
+              </dd>
             </div>
           ))}
         </dl>

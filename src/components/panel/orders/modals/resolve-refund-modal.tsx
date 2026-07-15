@@ -1,6 +1,7 @@
 "use client";
 
 import { Wallet, Phone } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useForm, type FieldErrors, type Resolver } from "react-hook-form";
 import toast from "react-hot-toast";
 
@@ -10,7 +11,7 @@ import Loader from "@/components/ui/loader";
 import Modal from "@/components/ui/modal";
 import { cn } from "@/lib/utils";
 import {
-  preventNegativeNumberInput,
+  normalizeNonNegativeNumberInput,
   preventNegativeNumberPaste,
 } from "@/lib/utils/non-negative-input";
 import {
@@ -43,10 +44,16 @@ function ResolveRefundModal({ orderId, item, open, onClose, onSaved }: Props) {
   });
 
   const method = watch("method");
+  const [amountText, setAmountText] = useState("");
+
+  useEffect(() => {
+    if (!open) setAmountText("");
+  }, [open]);
 
   function handleClose() {
     if (isSubmitting) return;
     reset();
+    setAmountText("");
     onClose();
   }
 
@@ -62,6 +69,7 @@ function ResolveRefundModal({ orderId, item, open, onClose, onSaved }: Props) {
     if (result?.ok) {
       toast.success(result.message || "تم حل الاسترداد بنجاح");
       reset();
+      setAmountText("");
       await onSaved();
       onClose();
       return;
@@ -75,7 +83,7 @@ function ResolveRefundModal({ orderId, item, open, onClose, onSaved }: Props) {
     <Modal
       open={open}
       onClose={handleClose}
-      title={`حل استرداد ${item.vehicle.label}`}
+      title={`حل استرداد ${item.vehicle.label ?? "المركبة"}`}
       contentClassName="max-w-md"
     >
       <form onSubmit={handleSubmit(submit)} noValidate className="space-y-4 p-1">
@@ -98,16 +106,27 @@ function ResolveRefundModal({ orderId, item, open, onClose, onSaved }: Props) {
           <label className="block">
             <span className="mb-2 block text-sm text-dark-gray">المبلغ</span>
             <input
-              type="number"
-              min="0"
-              step="0.01"
-              onKeyDown={preventNegativeNumberInput}
+              type="text"
+              inputMode="decimal"
+              value={amountText}
+              onChange={(event) => {
+                const normalized = normalizeNonNegativeNumberInput(
+                  event.target.value,
+                  { allowDecimal: true },
+                );
+                setAmountText(normalized);
+                const numeric = Number(normalized);
+                setValue(
+                  "amount",
+                  normalized === "" || Number.isNaN(numeric) ? undefined : numeric,
+                  { shouldValidate: true, shouldDirty: true },
+                );
+              }}
               onPaste={(event) =>
                 preventNegativeNumberPaste(event, { allowDecimal: true })
               }
               className="h-12 w-full rounded-[14px] border border-primary bg-primary/4 px-3 text-left outline-none"
               dir="ltr"
-              {...register("amount", { valueAsNumber: true })}
             />
             <InputErrorMessage msg={errors.amount?.message} />
           </label>

@@ -7,7 +7,7 @@ export default function BooleanBadge({ value, yes = "نعم", no = "لا" }: {
 }) {
   return (
     <span className={cn(
-      "inline-flex h-[34px] items-center gap-2 rounded-full px-4 text-sm font-medium",
+      "inline-flex h-8.5 items-center gap-2 rounded-full px-4 text-sm font-medium",
       value ? "bg-green-50 text-green-600" : "bg-neutral-100 text-gray",
     )}>
       <span className={cn("size-2 rounded-full", value ? "bg-green-500" : "bg-gray-400")} />

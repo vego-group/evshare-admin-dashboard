@@ -61,7 +61,21 @@ export default function RolesPanel() {
       <DetailsModal open={Boolean(view)} title="تفاصيل الدور" loading={detailLoading} error={detailError} onClose={() => setView(null)} fields={[
         { label: "المعرّف", value: detail?.data.id }, { label: "الاسم", value: detail?.data.name },
         { label: "السماح للمستخدم", value: detail?.data.allowed_user ? "نعم" : "لا" },
-        { label: "الصلاحيات", value: detail?.data.permissions?.map((item) => item.name).join("، ") },
+        {
+          label: "الصلاحيات",
+          fullWidth: true,
+          value: detail?.data.permissions?.length ? (
+            <div className="max-h-56 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-primary/40 hover:[&::-webkit-scrollbar-thumb]:bg-primary/60">
+              <div className="flex flex-wrap gap-2">
+                {detail.data.permissions.map((permission) => (
+                  <span key={permission.id} className="inline-flex h-7.5 items-center rounded-full bg-primary/10 px-3 text-xs font-medium text-secondary">
+                    {permission.name}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ) : undefined,
+        },
       ]} />
       <DeleteModal open={Boolean(pendingDelete)} name={pendingDelete?.name} loading={deleteMutation.isPending} onClose={() => setPendingDelete(null)} onConfirm={remove} />
     </section>

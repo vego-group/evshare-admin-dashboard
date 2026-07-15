@@ -5,20 +5,21 @@ import toast from "react-hot-toast";
 import Modal from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
 import Loader from "@/components/ui/loader";
-import { PAGE_SIZE } from "@/constants";
 import { useAssignRolePermissionsByCategory, usePermissionCategories, usePermissions, useRole, useSyncRolePermissions } from "@/hooks/api";
 import type { Role } from "@/types";
 import EntityError from "../shared/entity-error";
+import EntityPagination from "../shared/entity-pagination";
 import RolePermissionsShimmer from "./role-permissions-shimmer";
 import Dropdown from "../shared/dropdown";
 
 type Props = { role: Role | null; onClose: () => void; onSaved: () => void };
-const allParams = { page: 1, limit: PAGE_SIZE };
+const categoriesParams = { page: 1, limit: 200 };
 
 export default function RolePermissionsModal({ role, onClose, onSaved }: Props) {
+  const [permissionsPage, setPermissionsPage] = useState(1);
   const { data: roleData, isLoading, error: roleError } = useRole(role?.id ?? null);
-  const { data: permissions, isLoading: permissionsLoading } = usePermissions(allParams);
-  const { data: categories, isLoading: categoriesLoading } = usePermissionCategories(allParams);
+  const { data: permissions, isLoading: permissionsLoading } = usePermissions({ page: permissionsPage, limit: 200 });
+  const { data: categories, isLoading: categoriesLoading } = usePermissionCategories(categoriesParams);
   const syncMutation = useSyncRolePermissions();
   const assignMutation = useAssignRolePermissionsByCategory();
   const [selection, setSelection] = useState<string[] | null>(null);
@@ -27,11 +28,14 @@ export default function RolePermissionsModal({ role, onClose, onSaved }: Props) 
   const categoryItems = Array.isArray(categories?.data) ? categories.data : [];
   const permissionItems = Array.isArray(permissions?.data) ? permissions.data : [];
 
-  const selected = selection ?? roleData?.data.permissions?.map((item) => item.name) ?? [];
+  const original = roleData?.data.permissions?.map((item) => item.name) ?? [];
+  const selected = selection ?? original;
   const selectedSet = new Set(selected);
   const toggle = (name: string) => setSelection(
     selected.includes(name) ? selected.filter((item) => item !== name) : [...selected, name],
   );
+  const hasChanges =
+    selected.length !== original.length || selected.some((name) => !original.includes(name));
 
   async function sync() {
     if (!role) return;
@@ -47,6 +51,7 @@ export default function RolePermissionsModal({ role, onClose, onSaved }: Props) 
     if (!result.ok) return toast.error(result.message || "تعذر إسناد التصنيف");
     toast.success(result.message || "تم إسناد صلاحيات التصنيف");
     setSelection(null);
+    setCategoryId("");
     onSaved();
   }
 
@@ -68,9 +73,10 @@ export default function RolePermissionsModal({ role, onClose, onSaved }: Props) 
               </label>
             ))}
           </div>
+          <EntityPagination meta={permissions?.meta} onChange={setPermissionsPage} />
         <div className="grid grid-cols-2 gap-3 pt-2">
           <Button variant="ghost" type="button" disabled={saving} onClick={onClose} className="h-12 rounded-[14px] bg-neutral-100 text-dark-gray">إغلاق</Button>
-          <Button type="button" disabled={saving} onClick={sync} className="h-12 rounded-[14px] text-secondary">{syncMutation.isPending ? <Loader /> : "حفظ الصلاحيات"}</Button>
+          <Button type="button" disabled={saving || !hasChanges} onClick={sync} className="h-12 rounded-[14px] text-secondary">{syncMutation.isPending ? <Loader /> : "حفظ الصلاحيات"}</Button>
         </div>
         </>}
       </div>

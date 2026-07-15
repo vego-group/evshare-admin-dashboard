@@ -30,6 +30,7 @@ export type PermissionCategory = {
   name_ar: string | null;
   name_en: string | null;
   slug: string;
+  permissions?: Permission[];
   created_at: string;
   updated_at: string;
 };

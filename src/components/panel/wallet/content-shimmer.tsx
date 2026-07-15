@@ -25,19 +25,19 @@ function WalletContentShimmer() {
           <Shimmer className="h-6 w-36 rounded-md" />
           <Shimmer className="h-9 w-48 rounded-xl" />
         </div>
-        <Shimmer className="h-[260px] w-full rounded-[10px]" />
+        <Shimmer className="h-65 w-full rounded-[10px]" />
       </div>
 
       {/* Toolbar */}
       <div className="flex flex-col gap-3 rounded-2xl border border-neutral-100/60 bg-white p-3 sm:flex-row sm:justify-end">
-        <Shimmer className="h-9.5 w-full rounded-[14px] sm:w-[196px]" />
-        <Shimmer className="h-9.5 w-full rounded-[14px] sm:w-[196px]" />
+        <Shimmer className="h-9.5 w-full rounded-[14px] sm:w-49" />
+        <Shimmer className="h-9.5 w-full rounded-[14px] sm:w-49" />
       </div>
 
       {/* Table */}
       <div className="overflow-hidden rounded-lg bg-white">
         <div className="overflow-x-auto">
-          <div className="min-w-[900px]">
+          <div className="min-w-225">
             <div className="grid grid-cols-7 gap-4 border-b border-neutral-100 bg-neutral-50 px-5 py-4">
               {Array.from({ length: 7 }).map((_, i) => (
                 <Shimmer key={i} className="h-5 w-20 rounded-md" />

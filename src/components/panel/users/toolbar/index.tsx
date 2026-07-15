@@ -28,6 +28,8 @@ const roleOptions: FilterOption<UserRole | "all">[] = [
   { label: "تاجر", value: "merchant" },
   { label: "سائق", value: "driver" },
   { label: "مدير", value: "root" },
+  { label: "مسؤول", value: "admin" },
+  { label: "مبيعات", value: "sales" },
 ];
 
 function UsersToolbar({

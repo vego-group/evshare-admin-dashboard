@@ -11,6 +11,7 @@ import {
 } from "recharts";
 import { SaudiRiyal } from "lucide-react";
 
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import type { ChartPoint } from "@/types";
 
 type RevenueTooltipProps = {
@@ -67,12 +68,7 @@ function RevenueTooltip({ active, payload, label }: RevenueTooltipProps) {
   );
 }
 
-function RevenueXAxisTick({
-  x,
-  y,
-  payload,
-  isMobile,
-}: RevenueXAxisTickProps) {
+function RevenueXAxisTick({ x, y, payload, isMobile }: RevenueXAxisTickProps) {
   return (
     <g transform={`translate(${x},${y})`}>
       <text
@@ -128,91 +124,109 @@ function RevenueOverviewChart({
   const maxValue = Math.max(...values, 0);
   const yMax = Math.max(1, Math.ceil(maxValue / 4) * 4);
   const ticks = buildTicks(yMax);
+  const minWidthPx = chartData.length * (isMobile ? 48 : 70);
 
   return (
     <div
-      className="[&_.recharts-surface:focus-visible]:outline-none [&_.recharts-surface:focus]:outline-none [&_.recharts-wrapper:focus]:outline-none grid h-[220px] grid-cols-[minmax(0,1fr)_44px] gap-2 sm:h-[288px]"
+      className="[&_.recharts-surface:focus-visible]:outline-none [&_.recharts-surface:focus]:outline-none [&_.recharts-wrapper:focus]:outline-none grid h-55 grid-cols-[minmax(0,1fr)_44px] gap-2 sm:h-72"
       dir="ltr"
     >
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-primary/10 via-primary/5 to-white">
-        <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart data={chartData} margin={margins}>
-            <defs>
-              <linearGradient id="revenue-area-gradient" x1="0" x2="0" y1="0" y2="1">
-                <stop offset="0%" stopColor="#ffce27" stopOpacity="0.28" />
-                <stop offset="100%" stopColor="#ffce27" stopOpacity="0" />
-              </linearGradient>
-            </defs>
+      <div className="relative overflow-hidden rounded-3xl bg-linear-to-b from-primary/10 via-primary/5 to-white">
+        <ScrollArea className="h-full w-full">
+          <div
+            className="h-55 sm:h-72"
+            style={{ minWidth: minWidthPx, width: "100%" }}
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <ComposedChart data={chartData} margin={margins}>
+                <defs>
+                  <linearGradient
+                    id="revenue-area-gradient"
+                    x1="0"
+                    x2="0"
+                    y1="0"
+                    y2="1"
+                  >
+                    <stop offset="0%" stopColor="#ffce27" stopOpacity="0.28" />
+                    <stop offset="100%" stopColor="#ffce27" stopOpacity="0" />
+                  </linearGradient>
+                </defs>
 
-            <CartesianGrid
-              vertical={false}
-              stroke="#e5e7eb"
-              strokeDasharray="4 6"
-            />
+                <CartesianGrid
+                  vertical={false}
+                  stroke="#e5e7eb"
+                  strokeDasharray="4 6"
+                />
 
-            <XAxis
-              dataKey="label"
-              axisLine={false}
-              tickLine={false}
-              interval={isMobile ? 1 : 0}
-              height={margins.bottom}
-              tickMargin={12}
-              tick={<RevenueXAxisTick isMobile={isMobile} />}
-            />
+                <XAxis
+                  dataKey="label"
+                  axisLine={false}
+                  tickLine={false}
+                  interval={isMobile ? 1 : 0}
+                  height={margins.bottom}
+                  tickMargin={12}
+                  tick={<RevenueXAxisTick isMobile={isMobile} />}
+                />
 
-            <YAxis hide domain={[0, yMax]} />
+                <YAxis hide domain={[0, yMax]} />
 
-            <Tooltip
-              content={<RevenueTooltip />}
-              cursor={{ stroke: "#e5e7eb", strokeWidth: 1 }}
-            />
+                <Tooltip
+                  content={<RevenueTooltip />}
+                  cursor={{ stroke: "#e5e7eb", strokeWidth: 1 }}
+                />
 
-            <Area
-              type="monotone"
-              dataKey="current"
-              stroke="none"
-              fill="url(#revenue-area-gradient)"
-              isAnimationActive={false}
-            />
+                <Area
+                  type="monotone"
+                  dataKey="current"
+                  stroke="none"
+                  fill="url(#revenue-area-gradient)"
+                  isAnimationActive={false}
+                />
 
-            <Line
-              type="monotone"
-              dataKey="previous"
-              stroke="#98a2b3"
-              strokeDasharray="6 6"
-              strokeWidth={2}
-              dot={false}
-              isAnimationActive={false}
-            />
+                <Line
+                  type="monotone"
+                  dataKey="previous"
+                  stroke="#98a2b3"
+                  strokeDasharray="6 6"
+                  strokeWidth={2}
+                  dot={false}
+                  isAnimationActive={false}
+                />
 
-            <Line
-              type="monotone"
-              dataKey="current"
-              stroke="#ffce27"
-              strokeWidth={isMobile ? 2 : 3}
-              dot={false}
-              isAnimationActive={false}
-            />
+                <Line
+                  type="monotone"
+                  dataKey="current"
+                  stroke="#ffce27"
+                  strokeWidth={isMobile ? 2 : 3}
+                  dot={false}
+                  isAnimationActive={false}
+                />
 
-            {peakPoint.label ? (
-              <ReferenceDot
-                x={peakPoint.label}
-                y={peakPoint.current}
-                r={isMobile ? 4 : 6}
-                fill="#ffce27"
-                stroke="#ffffff"
-                strokeWidth={2}
-                ifOverflow="extendDomain"
-                label={
-                  <PeakReferenceLabel
-                    isMobile={isMobile}
-                    peakValue={peakValue}
+                {peakPoint.label ? (
+                  <ReferenceDot
+                    x={peakPoint.label}
+                    y={peakPoint.current}
+                    r={isMobile ? 4 : 6}
+                    fill="#ffce27"
+                    stroke="#ffffff"
+                    strokeWidth={2}
+                    ifOverflow="extendDomain"
+                    label={
+                      <PeakReferenceLabel
+                        isMobile={isMobile}
+                        peakValue={peakValue}
+                      />
+                    }
                   />
-                }
-              />
-            ) : null}
-          </ComposedChart>
-        </ResponsiveContainer>
+                ) : null}
+              </ComposedChart>
+            </ResponsiveContainer>
+          </div>
+          <ScrollBar
+            orientation="horizontal"
+            className="[&>div]:bg-primary/40 hover:[&>div]:bg-primary/60"
+          />
+        </ScrollArea>
       </div>
 
       <div className="relative">

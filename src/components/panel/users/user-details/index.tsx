@@ -92,58 +92,106 @@ function UserDetailsContent({ user }: { user: AdminUserDetail }) {
         <SummaryCard
           icon={Banknote}
           label="الاشتراك"
-          value={<BooleanBadge active={user.is_subscribed} activeLabel="مشترك" inactiveLabel="غير مشترك" />}
+          value={
+            <BooleanBadge
+              active={user.is_subscribed}
+              activeLabel="مشترك"
+              inactiveLabel="غير مشترك"
+            />
+          }
         />
         <SummaryCard
           icon={UserRound}
           label="حالة الحساب"
-          value={<BooleanBadge active={user.active} activeLabel="نشط" inactiveLabel="موقوف" />}
+          value={
+            <BooleanBadge
+              active={user.active}
+              activeLabel="نشط"
+              inactiveLabel="موقوف"
+            />
+          }
         />
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Section title="بيانات الحساب">
           <InfoRow label="الاسم" value={user.name || EMPTY_VALUE} />
-          <InfoRow label="البريد الإلكتروني" value={user.email ?? EMPTY_VALUE} dir="ltr" />
+          <InfoRow
+            label="البريد الإلكتروني"
+            value={user.email ?? EMPTY_VALUE}
+            dir="ltr"
+          />
           <InfoRow label="الجوال" value={`+${user.mobile}`} dir="ltr" />
           <InfoRow label="الدور" value={<RoleBadge role={user.role} />} />
-          <InfoRow label="توثيق الجوال" value={<VerifiedBadge verified={user.mobile_verified} />} />
-          <InfoRow label="تاريخ التوثيق" value={formatDateTime(user.mobile_verified_at)} dir="ltr" />
-          <InfoRow label="تاريخ الإنشاء" value={formatDateTime(user.created_at)} dir="ltr" />
+          <InfoRow
+            label="توثيق الجوال"
+            value={<VerifiedBadge verified={user.mobile_verified} />}
+          />
+          <InfoRow
+            label="تاريخ التوثيق"
+            value={formatDateTime(user.mobile_verified_at)}
+            dir="ltr"
+          />
+          <InfoRow
+            label="تاريخ الإنشاء"
+            value={formatDateTime(user.created_at)}
+            dir="ltr"
+          />
         </Section>
 
         <Section title="الموقع">
           <InfoRow label="المدينة" value={user.city?.name ?? EMPTY_VALUE} />
           <InfoRow
             label="خط العرض"
-            value={user.location ? user.location.latitude.toString() : EMPTY_VALUE}
+            value={
+              user.location ? user.location.latitude.toString() : EMPTY_VALUE
+            }
             dir="ltr"
           />
           <InfoRow
             label="خط الطول"
-            value={user.location ? user.location.longitude.toString() : EMPTY_VALUE}
+            value={
+              user.location ? user.location.longitude.toString() : EMPTY_VALUE
+            }
             dir="ltr"
           />
           <div className="flex items-center gap-2 rounded-[10px] bg-neutral-50 px-4 py-3 text-sm text-gray">
             <MapPin className="size-4 shrink-0" />
-            <span>{user.location ? "المستخدم لديه موقع محفوظ" : "لم يتم حفظ موقع بعد"}</span>
+            <span>
+              {user.location
+                ? "المستخدم لديه موقع محفوظ"
+                : "لم يتم حفظ موقع بعد"}
+            </span>
           </div>
         </Section>
 
         <Section title="الحساب البنكي">
-          <InfoRow label="البنك" value={user.bank_account?.bank_name ?? EMPTY_VALUE} />
+          <InfoRow
+            label="البنك"
+            value={user.bank_account?.bank_name ?? EMPTY_VALUE}
+          />
           <InfoRow
             label="رقم الحساب"
             value={user.bank_account?.account_number ?? EMPTY_VALUE}
             dir="ltr"
           />
-          <InfoRow label="IBAN" value={user.bank_account?.iban ?? EMPTY_VALUE} dir="ltr" />
+          <InfoRow
+            label="IBAN"
+            value={user.bank_account?.iban ?? EMPTY_VALUE}
+            dir="ltr"
+          />
         </Section>
 
         <Section title="الإحصائيات">
-          <InfoRow label="العناوين" value={formatNumber(user.addresses_count)} />
+          <InfoRow
+            label="العناوين"
+            value={formatNumber(user.addresses_count)}
+          />
           <InfoRow label="طلبات التحقق" value={formatNumber(user.kycs_count)} />
-          <InfoRow label="الاشتراكات" value={formatNumber(user.subscriptions_count)} />
+          <InfoRow
+            label="الاشتراكات"
+            value={formatNumber(user.subscriptions_count)}
+          />
         </Section>
       </div>
     </div>
@@ -168,7 +216,10 @@ function SummaryCard({
       </div>
       <div className="min-w-0 text-right">
         <p className="text-sm font-normal text-gray">{label}</p>
-        <div dir={dir} className="mt-1 truncate text-base font-semibold text-secondary">
+        <div
+          dir={dir}
+          className="mt-1 truncate text-base font-semibold text-secondary"
+        >
           {value}
         </div>
       </div>
@@ -199,7 +250,7 @@ function InfoRow({
       <span className="shrink-0 text-sm text-gray">{label}</span>
       <span
         dir={dir}
-        className="min-w-0 break-words text-right text-sm font-medium text-secondary"
+        className="min-w-0 wrap-break-word text-right text-sm font-medium text-secondary"
       >
         {value}
       </span>
@@ -219,11 +270,16 @@ function BooleanBadge({
   return (
     <span
       className={cn(
-        "inline-flex h-[34px] w-fit items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 text-sm font-medium",
+        "inline-flex h-8.5 w-fit items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 text-sm font-medium",
         active ? "bg-green-50 text-green-600" : "bg-gray-100 text-dark-gray",
       )}
     >
-      <span className={cn("size-2 rounded-full", active ? "bg-green-500" : "bg-gray-400")} />
+      <span
+        className={cn(
+          "size-2 rounded-full",
+          active ? "bg-green-500" : "bg-gray-400",
+        )}
+      />
       {active ? activeLabel : inactiveLabel}
     </span>
   );

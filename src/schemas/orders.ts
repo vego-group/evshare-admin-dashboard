@@ -26,7 +26,10 @@ export const resolveOrderRefundSchema = z
   .object({
     method: z.enum(["wallet", "contact"], { error: "طريقة الحل مطلوبة" }),
     amount: z.preprocess(
-      (value) => (value === "" || value == null ? undefined : value),
+      (value) =>
+        value === "" || value == null || Number.isNaN(Number(value))
+          ? undefined
+          : value,
       z.coerce.number().min(0, "المبلغ يجب أن يكون 0 أو أكثر").optional(),
     ),
     notes: z.string().trim().optional(),
