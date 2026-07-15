@@ -48,18 +48,6 @@ export function vehicleTitle(vehicle: VehicleListItem) {
   return vehicle.label || `Vehicle ${vehicle.id.slice(0, 8)}`;
 }
 
-export function getVehicleAnalytics(vehicles: VehicleListItem[] = []) {
-  return {
-    total: vehicles.length,
-    new: vehicles.filter((v) => v.status === "new").length,
-    active: vehicles.filter((v) => v.status === "active").length,
-    disabled: vehicles.filter((v) => v.status === "disabled").length,
-    maintenance: vehicles.filter((v) => v.status === "maintenance").length,
-    suspended: vehicles.filter((v) => v.status === "suspended").length,
-    inUse: vehicles.filter((v) => v.status === "in_use").length,
-  };
-}
-
 export function buildChangedPayload(
   values: Record<string, string>,
   original: VehicleListItem,

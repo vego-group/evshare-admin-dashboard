@@ -13,6 +13,7 @@ export type VehicleStatus =
 export type VehiclesQueryParams = Omit<QueryParams, "status"> & {
   status?: VehicleStatus;
   operating_type?: VehicleOperatingType;
+  operation_company_uuid?: string;
 };
 
 export type OperationCompany = {
@@ -82,11 +83,20 @@ export type VehiclesPaginationMeta = {
   total: number;
 };
 
+export type VehiclesAnalysis = {
+  total: number;
+  active: number;
+  in_use: number;
+  maintenance: number;
+  stopped: number;
+};
+
 export type VehiclesListResponse = {
   error: boolean;
   message: string;
   data: VehicleListItem[];
   meta?: VehiclesPaginationMeta;
+  analysis?: VehiclesAnalysis;
 };
 
 export type VehicleDetailsResponse = {

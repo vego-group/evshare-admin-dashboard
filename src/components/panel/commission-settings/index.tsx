@@ -20,7 +20,6 @@ function CommissionSettings() {
   const queryClient = useQueryClient();
   const { data, isLoading } = useCommissionSettings({});
   const [pendingEdit, setPendingEdit] = useState<CommissionSetting | null>(null);
-  const [isAdding, setIsAdding] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<CommissionSetting | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -48,7 +47,7 @@ function CommissionSettings() {
 
   return (
     <div className="flex w-full flex-col gap-6">
-      <CommissionSettingsHeader onAdd={() => setIsAdding(true)} />
+      <CommissionSettingsHeader />
       <CommissionSettingsResults
         commissionSettings={data?.data ?? []}
         onEdit={setPendingEdit}
@@ -56,13 +55,10 @@ function CommissionSettings() {
       />
 
       <CommissionSettingFormModal
-        key={pendingEdit?.id ?? (isAdding ? "add-commission-setting" : "commission-setting-form")}
-        open={isAdding || Boolean(pendingEdit)}
+        key={pendingEdit?.id ?? "commission-setting-form"}
+        open={Boolean(pendingEdit)}
         commissionSetting={pendingEdit}
-        onClose={() => {
-          setIsAdding(false);
-          setPendingEdit(null);
-        }}
+        onClose={() => setPendingEdit(null)}
         onSaved={refresh}
       />
 

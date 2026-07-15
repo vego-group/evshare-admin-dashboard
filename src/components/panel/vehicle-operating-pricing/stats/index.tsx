@@ -6,17 +6,15 @@ import {
   Wrench,
 } from "lucide-react";
 
-import type { VehicleListItem } from "@/types";
-import { getVehicleAnalytics } from "../utils";
+import type { VehiclesAnalysis } from "@/types";
 
-function VehicleStats({ vehicles, total }: { vehicles?: VehicleListItem[]; total?: number }) {
-  const stats = getVehicleAnalytics(vehicles);
+function VehicleStats({ analysis }: { analysis?: VehiclesAnalysis }) {
   const cards = [
-    ["الإجمالي", total ?? stats.total, ListChecks, "bg-primary/15 text-secondary"],
-    ["نشط", stats.active, CheckCircle2, "bg-green-50 text-green-600"],
-    ["قيد الاستخدام", stats.inUse, Route, "bg-indigo-50 text-indigo-600"],
-    ["صيانة", stats.maintenance, Wrench, "bg-yellow-50 text-yellow-700"],
-    ["موقوف", stats.suspended, AlertTriangle, "bg-red-50 text-red-600"],
+    ["الإجمالي", analysis?.total ?? 0, ListChecks, "bg-primary/15 text-secondary"],
+    ["نشط", analysis?.active ?? 0, CheckCircle2, "bg-green-50 text-green-600"],
+    ["قيد الاستخدام", analysis?.in_use ?? 0, Route, "bg-indigo-50 text-indigo-600"],
+    ["صيانة", analysis?.maintenance ?? 0, Wrench, "bg-yellow-50 text-yellow-700"],
+    ["موقوف", analysis?.stopped ?? 0, AlertTriangle, "bg-red-50 text-red-600"],
   ] as const;
 
   return (

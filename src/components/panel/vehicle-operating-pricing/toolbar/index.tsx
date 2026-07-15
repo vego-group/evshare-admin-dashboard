@@ -4,8 +4,8 @@ import { useState } from "react";
 
 import useDebouncedChange from "@/hooks/use-debounced-change";
 import type {
+  OperationCompany,
   OrderBy,
-  VehicleOperatingType,
   VehicleStatus,
 } from "@/types";
 
@@ -16,11 +16,12 @@ type Props = {
   searchQuery: string;
   selectedSort?: OrderBy;
   selectedStatus?: VehicleStatus;
-  selectedOperatingType?: VehicleOperatingType;
+  selectedOperationCompany?: string;
+  companies: OperationCompany[];
   onSearchChange: (value: string) => void;
   onSortChange: (value: OrderBy) => void;
   onStatusChange: (value?: VehicleStatus) => void;
-  onOperatingTypeChange: (value?: VehicleOperatingType) => void;
+  onOperationCompanyChange: (value?: string) => void;
 };
 
 const sortOptions: FilterOption<OrderBy>[] = [
@@ -38,29 +39,28 @@ const statusOptions: FilterOption<VehicleStatus | "all">[] = [
   { label: "قيد الاستخدام", value: "in_use" },
 ];
 
-const operatingTypeOptions: FilterOption<VehicleOperatingType | "all">[] = [
-  { label: "كل أنواع التشغيل", value: "all" },
-  { label: "EvShare", value: "evshare" },
-  { label: "شركة تشغيل", value: "operation_company" },
-];
-
 function VehicleToolbar({
   searchQuery,
   selectedSort = "desc",
   selectedStatus,
-  selectedOperatingType,
+  selectedOperationCompany,
+  companies,
   onSearchChange,
   onSortChange,
   onStatusChange,
-  onOperatingTypeChange,
+  onOperationCompanyChange,
 }: Props) {
   const [internalSearchQuery, setInternalSearchQuery] = useState(searchQuery);
   const [internalSort, setInternalSort] = useState<OrderBy>("desc");
   const [internalStatus, setInternalStatus] = useState<VehicleStatus | "all">("all");
-  const [internalOperatingType, setInternalOperatingType] =
-    useState<VehicleOperatingType | "all">("all");
+  const [internalOperationCompany, setInternalOperationCompany] = useState<string>("all");
 
   useDebouncedChange(internalSearchQuery, onSearchChange, 500);
+
+  const companyOptions: FilterOption<string>[] = [
+    { label: "كل شركات التشغيل", value: "all" },
+    ...companies.map((company) => ({ label: company.name, value: company.id })),
+  ];
 
   return (
     <section className="space-y-3 lg:flex lg:items-center lg:justify-between lg:gap-3 lg:space-y-0 lg:rounded-2xl lg:border lg:border-neutral-100/60 lg:bg-white lg:p-1.5 lg:shadow-[0_2px_6px_rgba(0,0,0,0.04)]">
@@ -79,12 +79,12 @@ function VehicleToolbar({
           }}
         />
         <FilterSelect
-          label="نوع التشغيل"
-          options={operatingTypeOptions}
-          value={selectedOperatingType ?? internalOperatingType}
+          label="شركة التشغيل"
+          options={companyOptions}
+          value={selectedOperationCompany ?? internalOperationCompany}
           onChange={(value) => {
-            setInternalOperatingType(value);
-            onOperatingTypeChange(value === "all" ? undefined : value);
+            setInternalOperationCompany(value);
+            onOperationCompanyChange(value === "all" ? undefined : value);
           }}
         />
         <FilterSelect
