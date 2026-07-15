@@ -43,8 +43,8 @@ export type PaymentMethodsAnalysis = {
   total: number;
   active: number;
   inactive: number;
-  merchant?: number;
-  driver?: number;
+  allowed_merchant?: number;
+  allowed_driver?: number;
 };
 
 export type PaymentMethodDetailsResponse = {

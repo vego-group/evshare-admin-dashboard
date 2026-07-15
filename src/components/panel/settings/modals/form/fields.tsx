@@ -1,5 +1,6 @@
 import type { FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
 
+import RichTextEditor from "@/components/ui/rich-text-editor";
 import {
   preventNegativeNumberInput,
   preventNegativeNumberPaste,
@@ -7,6 +8,7 @@ import {
 import { KYC_DEFAULT_STATUS_KEY } from "@/types";
 import type { SettingFormValues } from "@/schemas/settings";
 
+import { isRichTextSetting } from "../../utils";
 import SettingField from "./field";
 import KycDefaultStatusDropdown from "./kyc-default-status-dropdown";
 
@@ -29,12 +31,21 @@ function SettingFormFields({
   setValue,
 }: Props) {
   const isKycDefaultStatus = settingName === KYC_DEFAULT_STATUS_KEY;
+  const isRichText = isRichTextSetting(settingName);
 
   return (
     <div className="flex flex-col gap-4">
       <SettingField label="القيمة" error={errors.value?.message}>
         {isKycDefaultStatus ? (
           <KycDefaultStatusDropdown value={value} setValue={setValue} />
+        ) : isRichText ? (
+          <RichTextEditor
+            dir="rtl"
+            value={value}
+            onChange={(next) =>
+              setValue("value", next, { shouldDirty: true, shouldValidate: true })
+            }
+          />
         ) : (
           <input
             dir="ltr"

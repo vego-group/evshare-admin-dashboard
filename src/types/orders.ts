@@ -1,4 +1,6 @@
 import type { OrderBy } from ".";
+import type { ProductImage } from "./products";
+import type { VehicleStatus } from "./vehicle-operating-pricing";
 
 export type OrderStatusCategory = "new" | "completed" | "cancelled";
 export type OrderNewStatus =
@@ -32,6 +34,7 @@ export type OrderQueryParams = BaseOrderQueryParams | NewOrderQueryParams;
 export type OrderUser = {
   id: string;
   name: string;
+  bank_account: string | null;
   role: string | null;
 };
 
@@ -62,8 +65,14 @@ export type OrderProduct = {
   quantity: number;
   monthly_subscription_price: string | null;
   open_price: string | null;
-  default_image: string | null;
+  default_image: ProductImage | null;
   is_favorite: boolean;
+};
+
+export type OrderItemVehicle = {
+  id: string;
+  label: string | null;
+  status: VehicleStatus;
 };
 
 export type OrderItem = {
@@ -71,6 +80,7 @@ export type OrderItem = {
   quantity: number;
   unit_price: number;
   total_price: number;
+  vehicles: OrderItemVehicle[];
 };
 
 export type OrderDetail = {
@@ -89,6 +99,7 @@ export type OrderDetail = {
   address: OrderAddress;
   items: OrderItem[];
   receipt?: OrderReceipt | null;
+  products_count: number;
   created_at: string;
 };
 
@@ -123,6 +134,7 @@ export type OrderDetailResponse = {
 };
 
 export type OrderReceiptStatus =
+  | "pending_signature"
   | "pending_admin_approval"
   | "approved"
   | "rejected";
@@ -132,7 +144,7 @@ export type OrderRefundMethod = "wallet" | "contact";
 
 export type OrderReceiptVehicle = {
   id: string;
-  label: string;
+  label: string | null;
 };
 
 export type OrderReceiptItem = {
@@ -147,17 +159,15 @@ export type OrderReceiptItem = {
   refund_resolved_at: string | null;
 };
 
-export type OrderReceiptAttachment = {
-  url: string;
-  type: string;
-};
+export type OrderReceiptAttachment = ProductImage;
 
 export type OrderReceipt = {
   id: string;
   status: OrderReceiptStatus;
   rejection_reason: string | null;
-  items: OrderReceiptItem[];
-  attachments: OrderReceiptAttachment[];
+  items?: OrderReceiptItem[] | null;
+  attachments?: OrderReceiptAttachment[] | null;
+  pdf_link: string;
   created_at: string;
 };
 

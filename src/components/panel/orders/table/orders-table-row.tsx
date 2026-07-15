@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 import { updateOrderStatusAPI } from "@/services/mutations";
 import type { OrderListItem, OrderNewStatus } from "@/types";
 
-import { OrderStatusBadge, StatusCategoryBadge } from "./order-status-badge";
+import { StatusCategoryBadge } from "./order-status-badge";
 import {
   OrderStatusDropdown,
   OrderStatusUpdateConfirmModal,
@@ -75,15 +75,11 @@ function OrdersTableRow({ order }: { order: OrderListItem }) {
           <span className="inline-flex items-center gap-1"><SaudiRiyal className="size-4" /> {order.total}</span>
         </TableCell>
         <TableCell className="max-w-none overflow-visible whitespace-normal">
-          {order.status === "delivered" ? (
-            <OrderStatusBadge status={order.status} />
-          ) : (
-            <OrderStatusDropdown
-              currentStatus={order.status}
-              disabled={isUpdating}
-              onSelect={setPendingStatus}
-            />
-          )}
+          <OrderStatusDropdown
+            currentStatus={order.status}
+            disabled={isUpdating}
+            onSelect={setPendingStatus}
+          />
         </TableCell>
         <TableCell className="max-w-none overflow-visible whitespace-normal">
           <StatusCategoryBadge category={order.status_category} />

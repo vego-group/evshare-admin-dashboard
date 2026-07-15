@@ -3,6 +3,7 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 
 import EmptyState from "@/components/ui/empty-state";
+import StatusBadge from "@/components/panel/vehicle-operating-pricing/status-badge";
 import { cn } from "@/lib/utils";
 import type { OrderItem } from "@/types";
 
@@ -22,6 +23,7 @@ function OrderItemsSection({ items }: { items: OrderItem[] }) {
               <TableHead className="w-30">الكمية</TableHead>
               <TableHead className="w-40">سعر الوحدة</TableHead>
               <TableHead className="w-40">الإجمالي</TableHead>
+              <TableHead className="w-60">المركبات</TableHead>
             </tr>
           </thead>
           <tbody>
@@ -47,10 +49,10 @@ function OrderItemRow({ item }: { item: OrderItem }) {
     <tr className="text-sm font-medium text-dark-gray">
       <TableCell>
         <div className="flex items-center gap-3">
-          {product.default_image ? (
+          {product.default_image?.url ? (
             <span className="relative size-10 shrink-0 overflow-hidden rounded-lg">
               <Image
-                src={product.default_image}
+                src={product.default_image.url}
                 alt={product.title}
                 fill
                 sizes="40px"
@@ -77,6 +79,23 @@ function OrderItemRow({ item }: { item: OrderItem }) {
         <span className="inline-flex items-center gap-1">
           <SaudiRiyal className="size-4" /> {item.total_price}
         </span>
+      </TableCell>
+      <TableCell className="max-w-none overflow-visible whitespace-normal">
+        {item.vehicles.length ? (
+          <div className="flex flex-wrap items-center gap-1.5">
+            {item.vehicles.map((vehicle) => (
+              <span
+                key={vehicle.id}
+                className="inline-flex items-center gap-1.5 rounded-full border border-neutral-100 bg-neutral-50 py-0.5 pl-1 pr-2.5 text-xs font-medium text-secondary"
+              >
+                {vehicle.label ?? "-"}
+                <StatusBadge status={vehicle.status} />
+              </span>
+            ))}
+          </div>
+        ) : (
+          "-"
+        )}
       </TableCell>
     </tr>
   );
