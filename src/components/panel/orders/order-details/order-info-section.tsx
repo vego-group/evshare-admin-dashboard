@@ -10,7 +10,7 @@ import { SaudiRiyal } from "lucide-react";
 import { updateOrderStatusAPI } from "@/services/mutations";
 import type { OrderDetail, OrderNewStatus } from "@/types";
 
-import { OrderStatusBadge, StatusCategoryBadge } from "../table/order-status-badge";
+import { StatusCategoryBadge } from "../table/order-status-badge";
 import {
   OrderStatusDropdown,
   OrderStatusUpdateConfirmModal,
@@ -80,15 +80,11 @@ function OrderInfoSection({ order }: { order: OrderDetail }) {
         <div className="flex flex-wrap gap-3">
           <div className="flex items-center gap-2 rounded-[14px] border border-[#e5e7eb] bg-white px-5 py-3">
             <span className="text-sm text-gray">الحالة</span>
-            {order.status === "delivered" ? (
-              <OrderStatusBadge status={order.status} />
-            ) : (
-              <OrderStatusDropdown
-                currentStatus={order.status}
-                disabled={isUpdating}
-                onSelect={setPendingStatus}
-              />
-            )}
+            <OrderStatusDropdown
+              currentStatus={order.status}
+              disabled={isUpdating}
+              onSelect={setPendingStatus}
+            />
           </div>
           <div className="flex items-center gap-2 rounded-[14px] border border-[#e5e7eb] bg-white px-5 py-3">
             <span className="text-sm text-gray">تصنيف الطلب</span>

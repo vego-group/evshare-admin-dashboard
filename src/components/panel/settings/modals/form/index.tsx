@@ -9,7 +9,7 @@ import type { SettingFormValues } from "@/schemas/settings";
 import { editSetting } from "@/services/mutations";
 import type { Setting } from "@/types";
 
-import { getSettingLabel } from "../../utils";
+import { getSettingLabel, isRichTextSetting } from "../../utils";
 import SettingFormActions from "./actions";
 import SettingFormFields from "./fields";
 import { settingFormResolver } from "./utils";
@@ -64,7 +64,11 @@ function SettingFormModal({ open, setting, onClose, onSaved }: Props) {
     <Modal
       open={open}
       onClose={handleClose}
-      contentClassName="rounded-2xl border-0 md:max-w-[560px]"
+      contentClassName={
+        setting && isRichTextSetting(setting.setting_name)
+          ? "rounded-2xl border-0 md:max-w-[720px]"
+          : "rounded-2xl border-0 md:max-w-[560px]"
+      }
       title="تعديل الإعداد"
       description={
         setting ? `تعديل قيمة "${getSettingLabel(setting.setting_name)}"` : undefined

@@ -97,8 +97,8 @@ function PaymentMethodsAnalysisCards({
 }) {
   if (!analysis) return null;
   const optionalCards = [
-    { label: "متاحة للتجار", value: analysis.merchant },
-    { label: "متاحة للسائقين", value: analysis.driver },
+    { label: "متاحة للتجار", value: analysis.allowed_merchant },
+    { label: "متاحة للسائقين", value: analysis.allowed_driver },
   ].filter(
     (card): card is { label: string; value: number } =>
       typeof card.value === "number",

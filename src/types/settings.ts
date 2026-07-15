@@ -1,4 +1,5 @@
 export const KYC_DEFAULT_STATUS_KEY = "kyc_default_status";
+export const WORK_CONDITIONS_KEY = "work_conditions";
 
 export type KycDefaultStatusValue = "pending" | "approved";
 

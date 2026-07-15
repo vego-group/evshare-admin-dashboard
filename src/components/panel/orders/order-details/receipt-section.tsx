@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { CheckCircle, FileText, SaudiRiyal, XCircle } from "lucide-react";
+import { CheckCircle, FileDown, FileText, SaudiRiyal, XCircle } from "lucide-react";
 import toast from "react-hot-toast";
 
 import PermissionGate from "@/components/permission-gate";
@@ -19,12 +19,14 @@ import type {
 import { ReceiptRejectModal, ResolveRefundModal } from "../modals";
 
 const RECEIPT_STATUS_STYLES: Record<OrderReceipt["status"], string> = {
+  pending_signature: "bg-gray-100 text-dark-gray",
   pending_admin_approval: "bg-amber-50 text-orange-500",
   approved: "bg-green-50 text-green-600",
   rejected: "bg-red-50 text-red-500",
 };
 
 const RECEIPT_STATUS_LABELS: Record<OrderReceipt["status"], string> = {
+  pending_signature: "بانتظار توقيع العميل",
   pending_admin_approval: "بانتظار مراجعة الإدارة",
   approved: "تمت الموافقة",
   rejected: "مرفوض",
@@ -54,8 +56,10 @@ function OrderReceiptSection({
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [refundItem, setRefundItem] = useState<OrderReceiptItem | null>(null);
 
-  const returnedCount = receipt.items.filter((item) => !item.received).length;
-  const resolvedCount = receipt.items.filter(
+  const items = receipt.items ?? [];
+  const attachments = receipt.attachments ?? [];
+  const returnedCount = items.filter((item) => !item.received).length;
+  const resolvedCount = items.filter(
     (item) => item.refund_status === "resolved",
   ).length;
 
@@ -118,100 +122,117 @@ function OrderReceiptSection({
         </div>
       ) : null}
 
+      {receipt.status === "pending_signature" ? (
+        <div className="rounded-[10px] bg-neutral-50 px-4 py-3 text-sm text-gray">
+          لم يقم العميل بتوقيع ورفع سند الاستلام بعد.
+        </div>
+      ) : null}
+
       {returnedCount > 0 ? (
         <div className="rounded-[10px] bg-amber-50 px-4 py-3 text-sm text-orange-600">
           تم حل {resolvedCount} من {returnedCount} من المركبات المرتجعة
         </div>
       ) : null}
 
-      {receipt.attachments.length ? (
-        <div className="flex flex-wrap gap-2">
-          {receipt.attachments.map((attachment, index) => (
-            <a
-              key={index}
-              href={attachment.url}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-[10px] border border-neutral-200 px-3 py-2 text-sm font-medium text-secondary hover:bg-neutral-50"
-            >
-              <FileText className="size-4" />
-              مرفق {index + 1}
-            </a>
-          ))}
+      <div className="flex flex-wrap gap-2">
+        <a
+          href={receipt.pdf_link}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center gap-1.5 rounded-[10px] border border-neutral-200 px-3 py-2 text-sm font-medium text-secondary hover:bg-neutral-50"
+        >
+          <FileDown className="size-4" />
+          عرض السند الأصلي (PDF غير موقع)
+        </a>
+        {receipt.status !== "pending_signature" && attachments.length
+          ? attachments.map((attachment, index) => (
+              <a
+                key={index}
+                href={attachment.url}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-[10px] border border-neutral-200 px-3 py-2 text-sm font-medium text-secondary hover:bg-neutral-50"
+              >
+                <FileText className="size-4" />
+                المستند الموقع من العميل {attachments.length > 1 ? index + 1 : ""}
+              </a>
+            ))
+          : null}
+      </div>
+
+      {receipt.status !== "pending_signature" ? (
+        <div className="overflow-x-auto rounded-[10px] border border-neutral-100">
+          <table className="w-full min-w-150 border-separate border-spacing-0 text-right">
+            <thead>
+              <tr className="bg-primary/8 text-sm font-semibold leading-6 text-dark-gray">
+                <th className="border-b border-primary/15 px-4 py-3">المركبة</th>
+                <th className="border-b border-primary/15 px-4 py-3">الحالة</th>
+                <th className="border-b border-primary/15 px-4 py-3">ملاحظة العميل</th>
+                <th className="border-b border-primary/15 px-4 py-3">حالة الاسترداد</th>
+                <th className="border-b border-primary/15 px-4 py-3" />
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((item) => (
+                <tr key={item.id} className="text-sm font-medium text-dark-gray">
+                  <td className="border-b border-primary/15 px-4 py-3 text-secondary">
+                    {item.vehicle.label ?? "-"}
+                  </td>
+                  <td className="border-b border-primary/15 px-4 py-3">
+                    {item.received ? (
+                      <span className="text-green-600">تم الاستلام</span>
+                    ) : (
+                      <span className="text-red-500">مرتجع</span>
+                    )}
+                  </td>
+                  <td className="border-b border-primary/15 px-4 py-3">
+                    {item.issue_description ?? "-"}
+                  </td>
+                  <td className="border-b border-primary/15 px-4 py-3">
+                    <div className="flex flex-col gap-1">
+                      <span
+                        className={cn(
+                          "inline-flex h-7 w-fit items-center justify-center whitespace-nowrap rounded-full px-3 text-xs font-medium",
+                          REFUND_STATUS_STYLES[item.refund_status],
+                        )}
+                      >
+                        {REFUND_STATUS_LABELS[item.refund_status]}
+                      </span>
+                      {item.refund_status === "resolved" ? (
+                        <span className="text-xs text-gray">
+                          {item.refund_method === "wallet"
+                            ? "محفظة"
+                            : "تواصل مباشر"}
+                          {item.refund_amount != null ? (
+                            <span className="inline-flex items-center gap-1">
+                              {" "}
+                              <SaudiRiyal className="size-3" /> {item.refund_amount}
+                            </span>
+                          ) : null}
+                        </span>
+                      ) : null}
+                    </div>
+                  </td>
+                  <td className="border-b border-primary/15 px-4 py-3">
+                    {receipt.status === "approved" && item.refund_status === "pending" ? (
+                      <PermissionGate slug="Admin Resolve Order Refunds">
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setRefundItem(item)}
+                        >
+                          حل الاسترداد
+                        </Button>
+                      </PermissionGate>
+                    ) : null}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       ) : null}
-
-      <div className="overflow-x-auto rounded-[10px] border border-neutral-100">
-        <table className="w-full min-w-150 border-separate border-spacing-0 text-right">
-          <thead>
-            <tr className="bg-primary/8 text-sm font-semibold leading-6 text-dark-gray">
-              <th className="border-b border-primary/15 px-4 py-3">المركبة</th>
-              <th className="border-b border-primary/15 px-4 py-3">الحالة</th>
-              <th className="border-b border-primary/15 px-4 py-3">ملاحظة العميل</th>
-              <th className="border-b border-primary/15 px-4 py-3">حالة الاسترداد</th>
-              <th className="border-b border-primary/15 px-4 py-3" />
-            </tr>
-          </thead>
-          <tbody>
-            {receipt.items.map((item) => (
-              <tr key={item.id} className="text-sm font-medium text-dark-gray">
-                <td className="border-b border-primary/15 px-4 py-3 text-secondary">
-                  {item.vehicle.label}
-                </td>
-                <td className="border-b border-primary/15 px-4 py-3">
-                  {item.received ? (
-                    <span className="text-green-600">تم الاستلام</span>
-                  ) : (
-                    <span className="text-red-500">مرتجع</span>
-                  )}
-                </td>
-                <td className="border-b border-primary/15 px-4 py-3">
-                  {item.issue_description ?? "-"}
-                </td>
-                <td className="border-b border-primary/15 px-4 py-3">
-                  <div className="flex flex-col gap-1">
-                    <span
-                      className={cn(
-                        "inline-flex h-7 w-fit items-center justify-center whitespace-nowrap rounded-full px-3 text-xs font-medium",
-                        REFUND_STATUS_STYLES[item.refund_status],
-                      )}
-                    >
-                      {REFUND_STATUS_LABELS[item.refund_status]}
-                    </span>
-                    {item.refund_status === "resolved" ? (
-                      <span className="text-xs text-gray">
-                        {item.refund_method === "wallet"
-                          ? "محفظة"
-                          : "تواصل مباشر"}
-                        {item.refund_amount != null ? (
-                          <span className="inline-flex items-center gap-1">
-                            {" "}
-                            <SaudiRiyal className="size-3" /> {item.refund_amount}
-                          </span>
-                        ) : null}
-                      </span>
-                    ) : null}
-                  </div>
-                </td>
-                <td className="border-b border-primary/15 px-4 py-3">
-                  {item.refund_status === "pending" ? (
-                    <PermissionGate slug="Admin Resolve Order Refunds">
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="outline"
-                        onClick={() => setRefundItem(item)}
-                      >
-                        حل الاسترداد
-                      </Button>
-                    </PermissionGate>
-                  ) : null}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
 
       {receipt.status === "pending_admin_approval" ? (
         <div className="grid grid-cols-2 gap-3 pt-2">

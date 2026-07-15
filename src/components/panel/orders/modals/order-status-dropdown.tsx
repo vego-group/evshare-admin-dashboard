@@ -12,6 +12,7 @@ const STATUS_OPTIONS: { label: string; value: OrderNewStatus }[] = [
   { label: "قيد الانتظار", value: "pending" },
   { label: "قيد التحضير", value: "preparing" },
   { label: "جاهز", value: "ready" },
+  { label: "تم التسليم", value: "delivered" },
   { label: "مكتمل", value: "completed" },
   { label: "ملغي", value: "cancelled" },
 ];

@@ -38,6 +38,7 @@ const newStatusOptions: FilterOption<OrderNewStatus | "all">[] = [
   { label: "قيد الانتظار", value: "pending" },
   { label: "قيد التحضير", value: "preparing" },
   { label: "جاهز", value: "ready" },
+  { label: "تم التسليم", value: "delivered" },
 ];
 
 function OrdersToolbar({
