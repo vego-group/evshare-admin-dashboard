@@ -16,10 +16,10 @@ export const productSchema = z.object({
   ),
   monthly_subscription_price: z.string().trim().min(1, "سعر الاشتراك الشهري مطلوب"),
   open_price: z.string().trim().min(1, "السعر المفتوح مطلوب"),
-  price_per_minute: z.string().trim().optional(),
+  price_per_minute: z.string().trim().min(1, "سعر الدقيقة مطلوب"),
   price_per_km: z.string().trim().optional(),
-  price_per_hour: z.string().trim().optional(),
-  price_per_day: z.string().trim().optional(),
+  price_per_hour: z.string().trim().min(1, "سعر الساعة مطلوب"),
+  price_per_day: z.string().trim().min(1, "سعر اليوم مطلوب"),
   active: z.boolean(),
   category_id: z.string().trim().min(1, "التصنيف مطلوب"),
   default_image: z

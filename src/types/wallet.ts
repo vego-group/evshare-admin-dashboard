@@ -52,3 +52,9 @@ export type WalletListResponse = {
   analytics: WalletAnalytics;
   chart_data: WalletChartEntry[];
 };
+
+export type WalletTransactionResponse = {
+  error: boolean;
+  message: string;
+  data: WalletTransaction;
+};

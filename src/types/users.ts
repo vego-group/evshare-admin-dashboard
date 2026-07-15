@@ -1,4 +1,4 @@
-export type UserRole = "user" | "root" | "merchant" | "driver" | "rider";
+export type UserRole = "user" | "root" | "admin" | "merchant" | "driver" | "sales";
 export type UserKycStatus = "not_verified" | "pending" | "approved";
 
 export type UserListItem = {
