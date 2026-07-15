@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import Modal from "@/components/ui/modal";
@@ -34,11 +34,20 @@ export default function PermissionFormModal({ open, permission, onClose, onSaved
   const { data: categories, isLoading: categoriesLoading } = usePermissionCategories({ page: 1, limit: PAGE_SIZE });
   const { isLoading: detailLoading, error: detailError } = usePermission(permission?.id ?? null);
   const categoryItems = Array.isArray(categories?.data) ? categories.data : [];
-  const { register, control, handleSubmit, formState: { errors, isSubmitting, isDirty } } = useForm<PermissionFormInput>({
+  const { register, control, handleSubmit, reset, formState: { errors, isSubmitting, isDirty } } = useForm<PermissionFormInput>({
     resolver: permissionFormResolver,
     defaultValues,
     mode: "onChange",
   });
+
+  // The modal instance is reused across permissions, so useForm's one-time
+  // defaultValues won't reflect a newly selected permission. Force a fresh
+  // reset every time it opens (and clear stale values when it closes).
+  useEffect(() => {
+    if (!open) { reset(empty); return; }
+    reset(defaultValues);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, permission, reset]);
 
   async function submit(values: PermissionFormInput) {
     if (!isDirty) return;

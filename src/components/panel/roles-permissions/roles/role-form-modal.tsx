@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import Modal from "@/components/ui/modal";
@@ -22,11 +22,19 @@ type Props = { open: boolean; role?: Role | null; onClose: () => void; onSaved: 
 export default function RoleFormModal({ open, role, onClose, onSaved }: Props) {
   const [submitError, setSubmitError] = useState<unknown>(null);
   const { isLoading: detailLoading, error: detailError } = useRole(role?.id ?? null);
-  const { register, control, handleSubmit, formState: { errors, isSubmitting, isDirty } } = useForm<RoleEditFormValues>({
+  const { register, control, handleSubmit, reset, formState: { errors, isSubmitting, isDirty } } = useForm<RoleEditFormValues>({
     resolver: roleFormResolver,
     defaultValues: { name: role?.name ?? "", allowed_user: role?.allowed_user ?? false },
     mode: "onChange",
   });
+
+  // The modal instance is reused across roles, so useForm's one-time
+  // defaultValues won't reflect a newly selected role. Force a fresh reset
+  // every time it opens (and clear stale values when it closes).
+  useEffect(() => {
+    if (!open) { reset({ name: "", allowed_user: false }); return; }
+    reset({ name: role?.name ?? "", allowed_user: role?.allowed_user ?? false });
+  }, [open, role, reset]);
 
   async function submit(values: RoleEditFormValues) {
     if (!isDirty) return;

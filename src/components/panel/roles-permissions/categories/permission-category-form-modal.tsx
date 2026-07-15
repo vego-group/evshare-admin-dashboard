@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
@@ -50,11 +50,21 @@ export default function PermissionCategoryFormModal({
   const [submitError, setSubmitError] = useState<unknown>(null);
   const { isLoading: detailLoading, error: detailError } =
     usePermissionCategory(category?.id ?? null);
-  const { register, handleSubmit, formState: { errors, isSubmitting, isDirty } } = useForm<PermissionCategoryFormInput>({
+  const { register, handleSubmit, reset, formState: { errors, isSubmitting, isDirty } } = useForm<PermissionCategoryFormInput>({
     resolver: categoryFormResolver,
     defaultValues,
     mode: "onChange",
   });
+
+  // The modal instance is reused across categories, so useForm's one-time
+  // defaultValues won't reflect a newly selected category. Force a fresh
+  // reset every time it opens (and clear stale values when it closes).
+  useEffect(() => {
+    if (!open) { reset(empty); return; }
+    reset(defaultValues);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, category, reset]);
+
   async function submit(values: PermissionCategoryFormInput) {
     if (!isDirty) return;
     const payload = permissionCategorySchema.parse(values);
