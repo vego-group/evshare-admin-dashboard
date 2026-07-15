@@ -38,7 +38,6 @@ function LoginForm() {
   const onSubmit = async (data: LoginFormValues) => {
     const normalized = normalizeSaudiPhone(data.mobile);
     const result = await loginAPI({ mobile: normalized });
-
     if (result?.ok) {
       toast.success(result.message || "تم إرسال رمز التحقق");
       router.push(`/login/verify-otp?mobile=${encodeURIComponent(normalized)}`);

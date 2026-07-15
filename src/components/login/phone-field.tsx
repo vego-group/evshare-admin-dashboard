@@ -4,6 +4,11 @@ import { forwardRef } from "react";
 import Image from "next/image";
 import InputErrorMessage from "@/components/ui/input-error-message";
 import { cn } from "@/lib/utils";
+import {
+  preventNonDigitInput,
+  preventNonDigitPaste,
+  stripNonDigits,
+} from "@/lib/utils/digits-only-input";
 
 interface PhoneFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
   id: string;
@@ -12,7 +17,7 @@ interface PhoneFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 const PhoneField = forwardRef<HTMLInputElement, PhoneFieldProps>(
-  ({ id, label, error, className, ...props }, ref) => {
+  ({ id, label, error, className, onKeyDown, onPaste, onChange, ...props }, ref) => {
     const hasError = Boolean(error);
 
     return (
@@ -55,6 +60,21 @@ const PhoneField = forwardRef<HTMLInputElement, PhoneFieldProps>(
               className,
             )}
             {...props}
+            onKeyDown={(event) => {
+              preventNonDigitInput(event);
+              onKeyDown?.(event);
+            }}
+            onPaste={(event) => {
+              preventNonDigitPaste(event);
+              onPaste?.(event);
+            }}
+            onChange={(event) => {
+              const normalizedValue = stripNonDigits(event.target.value);
+              if (event.target.value !== normalizedValue) {
+                event.target.value = normalizedValue;
+              }
+              onChange?.(event);
+            }}
           />
         </div>
 

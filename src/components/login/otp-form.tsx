@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/input-otp";
 import { verifyLoginAPI } from "@/services/mutations";
 import { setToken } from "@/lib";
+import { setUserSession } from "@/lib/utils/user-session";
 import Loader from "@/components/ui/loader";
 import InputErrorMessage from "@/components/ui/input-error-message";
 import { useRouter } from "next/navigation";
@@ -55,11 +56,13 @@ function OtpForm({ mobile }: OtpFormProps) {
 
   const onSubmit = async (data: VerifyOtpFormValues) => {
     const result = await verifyLoginAPI(data);
-    console.log(result);
     if (result?.ok) {
       toast.success(result.message || "تم تسجيل الدخول بنجاح");
       const token = result.data?.data?.access_token;
       if (token) await setToken(token);
+      const userData = result.data?.data?.user_data;
+      if (userData) setUserSession(userData);
+
       router.replace("/");
       return;
     }

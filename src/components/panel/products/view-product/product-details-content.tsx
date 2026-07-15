@@ -19,7 +19,7 @@ export function ProductDetailsContent({ product, isLoading }: Props) {
 
   if (!product) {
     return (
-      <div className="flex min-h-[220px] items-center justify-center rounded-[14px] bg-background px-4 text-center text-base text-gray">
+      <div className="flex min-h-55 items-center justify-center rounded-[14px] bg-background px-4 text-center text-base text-gray">
         تعذر تحميل تفاصيل المنتج.
       </div>
     );
@@ -87,7 +87,7 @@ export function ProductDetailsContent({ product, isLoading }: Props) {
           label="السعر"
           value={
             <span className="inline-flex items-center gap-1" dir="ltr">
-              <SaudiRiyal className="size-4" /> {product.price}
+              <SaudiRiyal className="size-4 shrink-0" /> {product.price}
             </span>
           }
         />
@@ -96,7 +96,7 @@ export function ProductDetailsContent({ product, isLoading }: Props) {
           label="سعر الاشتراك الشهري"
           value={
             <span className="inline-flex items-center gap-1" dir="ltr">
-              <SaudiRiyal className="size-4" />{" "}
+              <SaudiRiyal className="size-4 shrink-0" />{" "}
               {product.monthly_subscription_price}
             </span>
           }
@@ -105,7 +105,7 @@ export function ProductDetailsContent({ product, isLoading }: Props) {
           label="سعر فتح القفل"
           value={
             <span className="inline-flex items-center gap-1" dir="ltr">
-              <SaudiRiyal className="size-4" /> {product.open_price}
+              <SaudiRiyal className="size-4 shrink-0" /> {product.open_price}
             </span>
           }
         />
@@ -185,7 +185,7 @@ function MoneyValue({ value }: { value: ReactNode }) {
     "-"
   ) : (
     <span className="inline-flex items-center gap-1" dir="ltr">
-      <SaudiRiyal className="size-4" /> {value}
+      <SaudiRiyal className="size-4 shrink-0" /> {value}
     </span>
   );
 }

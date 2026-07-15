@@ -29,7 +29,7 @@ function RevenueOverviewInfoPanel({
       <div className="space-y-2">
         <p className="text-[2.5rem] font-medium leading-none tracking-[-0.03em] text-dark-gray sm:text-[3rem]">
           <span className="inline-flex items-center gap-2" dir="ltr">
-            <SaudiRiyal className="size-8 text-gray sm:size-9" />
+            <SaudiRiyal className="size-8 shrink-0 text-gray sm:size-9" />
             {formatCompact(total)}
           </span>
         </p>
@@ -58,7 +58,7 @@ function RevenueOverviewInfoPanel({
             {formatCompact(dailyAverage)}
           </p>
           <p className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-gray">
-            <SaudiRiyal className="size-3.5" /> / يوم
+            <SaudiRiyal className="size-3.5 shrink-0" /> / يوم
           </p>
         </div>
       </div>
@@ -69,7 +69,7 @@ function RevenueOverviewInfoPanel({
 function formatCurrency(value: number) {
   return (
     <span className="inline-flex items-center gap-1" dir="ltr">
-      <SaudiRiyal className="size-3.5" />
+      <SaudiRiyal className="size-3.5 shrink-0" />
       {value.toLocaleString("en-US", {
         maximumFractionDigits: 2,
       })}

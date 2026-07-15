@@ -53,7 +53,7 @@ function WalletCard({ transaction }: { transaction: WalletTransaction }) {
             label="إيداع"
             value={
               <span className="inline-flex items-center gap-1 text-green-600">
-                <SaudiRiyal className="size-4" />
+                <SaudiRiyal className="size-4 shrink-0" />
                 {transaction.credit.toLocaleString("en-US")}
               </span>
             }
@@ -64,7 +64,7 @@ function WalletCard({ transaction }: { transaction: WalletTransaction }) {
             label="سحب"
             value={
               <span className="inline-flex items-center gap-1 text-red-500">
-                <SaudiRiyal className="size-4" />
+                <SaudiRiyal className="size-4 shrink-0" />
                 {transaction.debit.toLocaleString("en-US")}
               </span>
             }
@@ -74,7 +74,7 @@ function WalletCard({ transaction }: { transaction: WalletTransaction }) {
           label="الرصيد"
           value={
             <span className="inline-flex items-center gap-1">
-              <SaudiRiyal className="size-4" />
+              <SaudiRiyal className="size-4 shrink-0" />
               {transaction.balance.toLocaleString("en-US")}
             </span>
           }

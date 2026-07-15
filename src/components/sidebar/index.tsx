@@ -4,6 +4,7 @@ import { useState, type MouseEvent } from "react";
 import { usePathname } from "next/navigation";
 
 import { removeToken } from "@/lib";
+import { clearUserSession } from "@/lib/utils/user-session";
 import { logoutAPI } from "@/services/mutations";
 
 import SidebarDesktop from "./sidebar-desktop";
@@ -32,6 +33,7 @@ function Sidebar() {
     closeTabletSidebar();
     await logoutAPI();
     await removeToken();
+    clearUserSession();
     window.location.assign("/login");
   };
 

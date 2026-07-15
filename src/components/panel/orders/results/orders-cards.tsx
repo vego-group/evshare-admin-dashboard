@@ -84,7 +84,7 @@ function OrderCard({ order }: { order: OrderListItem }) {
           <DetailLine label="العنوان" value={order.address?.address ?? "-"} />
           <DetailLine
             label="المبلغ الإجمالي"
-            value={<span className="inline-flex items-center gap-1"><SaudiRiyal className="size-4" /> {order.total}</span>}
+            value={<span className="inline-flex items-center gap-1"><SaudiRiyal className="size-4 shrink-0" /> {order.total}</span>}
           />
           <DetailLine
             label="التاريخ"

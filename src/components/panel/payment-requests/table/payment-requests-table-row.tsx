@@ -36,7 +36,7 @@ function PaymentRequestsTableRow({
       </TableCell>
       <TableCell dir="ltr">
         <span className="inline-flex items-center gap-1">
-          <SaudiRiyal className="size-4" /> {request.amount}
+          <SaudiRiyal className="size-4 shrink-0" /> {request.amount}
         </span>
       </TableCell>
       <TableCell className="max-w-none overflow-visible whitespace-normal">

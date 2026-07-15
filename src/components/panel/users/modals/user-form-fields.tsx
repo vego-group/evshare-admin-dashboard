@@ -3,6 +3,11 @@ import Image from "next/image";
 import type { FieldErrors, UseFormRegister, UseFormSetValue, UseFormWatch } from "react-hook-form";
 
 import InputErrorMessage from "@/components/ui/input-error-message";
+import {
+  preventNonDigitInput,
+  preventNonDigitPaste,
+  stripNonDigits,
+} from "@/lib/utils/digits-only-input";
 import type { AddUserFormValues } from "@/schemas/users";
 
 import UserRoleDropdown from "./user-role-dropdown";
@@ -52,7 +57,16 @@ function UserFormFields({ errors, register, setValue, watch }: UserFormFieldsPro
             maxLength={9}
             placeholder="5x xxx xxxx"
             className="h-full w-full bg-transparent px-4 text-left text-sm font-medium text-dark-gray outline-none placeholder:text-gray-400"
-            {...register("mobile")}
+            {...register("mobile", {
+              onChange: (event) => {
+                const normalizedValue = stripNonDigits(event.target.value);
+                if (event.target.value !== normalizedValue) {
+                  event.target.value = normalizedValue;
+                }
+              },
+            })}
+            onKeyDown={preventNonDigitInput}
+            onPaste={(event) => preventNonDigitPaste(event)}
           />
         </div>
       </Field>

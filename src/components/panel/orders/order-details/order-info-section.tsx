@@ -105,20 +105,20 @@ function OrderInfoSection({ order }: { order: OrderDetail }) {
           </p>
           <FinancialRow
             label="المجموع الفرعي"
-            value={<span className="inline-flex items-center gap-1"><SaudiRiyal className="size-4" /> {order.subtotal}</span>}
+            value={<span className="inline-flex items-center gap-1"><SaudiRiyal className="size-4 shrink-0" /> {order.subtotal}</span>}
           />
           <FinancialRow
             label={`ضريبة القيمة المضافة (${order.vat_percentage}%)`}
-            value={<span className="inline-flex items-center gap-1"><SaudiRiyal className="size-4" /> {order.vat_amount}</span>}
+            value={<span className="inline-flex items-center gap-1"><SaudiRiyal className="size-4 shrink-0" /> {order.vat_amount}</span>}
           />
           <FinancialRow
             label="رسوم التوصيل"
-            value={<span className="inline-flex items-center gap-1"><SaudiRiyal className="size-4" /> {order.delivery_fee}</span>}
+            value={<span className="inline-flex items-center gap-1"><SaudiRiyal className="size-4 shrink-0" /> {order.delivery_fee}</span>}
           />
           <div className="mt-2 border-t border-neutral-100 pt-2">
             <FinancialRow
               label="الإجمالي"
-              value={<span className="inline-flex items-center gap-1"><SaudiRiyal className="size-4" /> {order.total}</span>}
+              value={<span className="inline-flex items-center gap-1"><SaudiRiyal className="size-4 shrink-0" /> {order.total}</span>}
               bold
             />
           </div>
