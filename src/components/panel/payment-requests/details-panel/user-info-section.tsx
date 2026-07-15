@@ -1,5 +1,6 @@
 import { Building2, CreditCard, Phone, User } from "lucide-react";
 
+import { formatSaudiPhoneNumber } from "@/lib/utils/format-phone";
 import type { PaymentRequestDetail } from "@/types";
 import OwnerInfoRow from "./owner-info-row";
 import PanelSectionTitle from "./panel-section-title";
@@ -13,7 +14,7 @@ function UserInfoSection({ request }: { request: PaymentRequestDetail }) {
         <OwnerInfoRow
           icon={Phone}
           label="الهاتف"
-          value={`+${request.user.mobile}`}
+          value={formatSaudiPhoneNumber(request.user.mobile)}
           valueDir="ltr"
         />
         <OwnerInfoRow icon={Building2} label="البنك" value={request.bank_account?.bank_name ?? "-"} />

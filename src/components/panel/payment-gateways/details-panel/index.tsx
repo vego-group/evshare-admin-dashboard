@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import Panel from "@/components/ui/panel";
 import Shimmer from "@/components/ui/shimmer";
 import { usePaymentCheckout, usePaymentTransaction } from "@/hooks/api";
+import { formatSaudiPhoneNumber } from "@/lib/utils/format-phone";
 import type {
   PaymentCheckout,
   PaymentGatewayTab,
@@ -64,7 +65,7 @@ function PaymentGatewayDetailsPanel({
           ) : !isCheckout && transaction ? (
             <TransactionDetails transaction={transaction} />
           ) : (
-            <div className="flex h-full min-h-[320px] items-center justify-center rounded-[14px] bg-background px-4 text-center text-base text-gray">
+            <div className="flex h-full min-h-80 items-center justify-center rounded-[14px] bg-background px-4 text-center text-base text-gray">
               تعذر تحميل التفاصيل.
             </div>
           )}
@@ -109,7 +110,11 @@ function CheckoutDetails({ checkout }: { checkout: PaymentCheckout }) {
         <DetailRow label="الاسم" value={checkout.user?.name ?? "-"} />
         <DetailRow
           label="رقم الجوال"
-          value={checkout.user?.mobile ? `+${checkout.user.mobile}` : "-"}
+          value={
+            checkout.user?.mobile
+              ? formatSaudiPhoneNumber(checkout.user.mobile)
+              : "-"
+          }
           valueDir="ltr"
         />
         <DetailRow

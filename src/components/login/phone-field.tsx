@@ -37,8 +37,8 @@ const PhoneField = forwardRef<HTMLInputElement, PhoneFieldProps>(
             <Image
               src="/images/flag.png"
               alt="SA"
-              width={20}
-              height={14}
+              width={28}
+              height={20}
               className="rounded-sm object-cover"
             />
             <span className="text-sm font-medium text-secondary">+966</span>

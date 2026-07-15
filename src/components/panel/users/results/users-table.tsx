@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 
+import { formatSaudiPhoneNumber } from "@/lib/utils/format-phone";
 import type { UserListItem } from "@/types";
 
 import {
@@ -74,7 +75,7 @@ function UsersTable({ users, onDeleteUser }: UsersTableProps) {
                     </div>
                   </div>
                 </TableCell>
-                <TableCell dir="ltr">+{user.mobile}</TableCell>
+                <TableCell dir="ltr">{formatSaudiPhoneNumber(user.mobile)}</TableCell>
                 <TableCell>
                   <RoleBadge role={user.role} />
                 </TableCell>
