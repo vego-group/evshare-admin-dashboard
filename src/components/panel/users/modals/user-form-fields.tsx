@@ -43,14 +43,14 @@ function UserFormFields({ errors, register, setValue, watch }: UserFormFieldsPro
           className="flex h-14 w-full overflow-hidden rounded-[14px] border border-primary bg-primary/4 transition focus-within:bg-primary/8"
         >
           <div className="flex shrink-0 items-center gap-1.5 border-r border-primary px-4 select-none">
-            <Image src="/images/flag.png" alt="SA" width={20} height={14} className="rounded-sm object-cover" />
+            <Image src="/images/flag.png" alt="SA" width={28} height={20} className="rounded-sm object-cover" />
             <span className="text-sm font-medium text-dark-gray">+966</span>
           </div>
           <input
             type="tel"
             inputMode="numeric"
             maxLength={9}
-            placeholder="5XXXXXXXX"
+            placeholder="5x xxx xxxx"
             className="h-full w-full bg-transparent px-4 text-left text-sm font-medium text-dark-gray outline-none placeholder:text-gray-400"
             {...register("mobile")}
           />

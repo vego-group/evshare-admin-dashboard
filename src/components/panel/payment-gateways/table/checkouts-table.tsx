@@ -1,5 +1,6 @@
 import EmptyState from "@/components/ui/empty-state";
 import { cn } from "@/lib/utils";
+import { formatSaudiPhoneNumber } from "@/lib/utils/format-phone";
 import type { PaymentCheckout } from "@/types";
 
 import {
@@ -87,7 +88,7 @@ function CheckoutTableRow({
       <TableCell className="max-w-47.5">
         <span className="block truncate">{checkout.user?.name ?? "-"}</span>
         <span dir="ltr" className="mt-1 block truncate text-sm text-gray">
-          {checkout.user?.mobile ? `+${checkout.user.mobile}` : "-"}
+          {checkout.user?.mobile ? formatSaudiPhoneNumber(checkout.user.mobile) : "-"}
         </span>
       </TableCell>
       <TableCell>{formatGateway(checkout.payment_gateway)}</TableCell>

@@ -3,6 +3,7 @@
 import type { UserListItem } from "@/types";
 import { useRouter } from "next/navigation";
 
+import { formatSaudiPhoneNumber } from "@/lib/utils/format-phone";
 import {
   DetailLine,
   formatDate,
@@ -54,7 +55,7 @@ function UsersCards({ users, onDeleteUser }: UsersCardsProps) {
           </div>
 
           <div className="mt-5 space-y-3 rounded-[14px] bg-background p-4 text-right">
-            <DetailLine label="الجوال" value={user.mobile} />
+            <DetailLine label="الجوال" value={formatSaudiPhoneNumber(user.mobile)} />
             <DetailLine label="التحقق" value={user.mobile_verified ? "موثّق" : "غير موثّق"} />
             <DetailLine label="تاريخ الإنشاء" value={formatDate(user.created_at)} />
           </div>

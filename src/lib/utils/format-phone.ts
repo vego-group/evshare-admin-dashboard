@@ -11,8 +11,9 @@ export function formatPhoneNumber(phone: string) {
   return `+${trimmedPhone}`;
 }
 
-export function formatSaudiPhoneNumber(phone: string) {
-  const digits = phone.replace(/\D/g, "");
+export function formatSaudiPhoneNumber(phone: number | string | null | undefined) {
+  const raw = String(phone ?? "");
+  const digits = raw.replace(/\D/g, "");
 
   if (digits.length === 9 && digits.startsWith("5")) {
     return `+966 ${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(5)}`;
@@ -22,7 +23,7 @@ export function formatSaudiPhoneNumber(phone: string) {
     return `+966 ${digits.slice(3, 5)} ${digits.slice(5, 8)} ${digits.slice(8)}`;
   }
 
-  return phone;
+  return raw;
 }
 
 export function normalizePhoneForLink(phone: string) {

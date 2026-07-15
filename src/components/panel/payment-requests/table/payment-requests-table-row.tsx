@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { SaudiRiyal } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { formatSaudiPhoneNumber } from "@/lib/utils/format-phone";
 import type { PaymentRequest } from "@/types";
 
 import PaymentRequestStatusBadge from "./payment-request-status-badge";
@@ -27,11 +28,11 @@ function PaymentRequestsTableRow({
       }}
       className="cursor-pointer text-base font-medium leading-6 text-dark-gray transition hover:bg-primary/5 focus-visible:bg-primary/5 focus-visible:outline-none"
     >
-      <TableCell className="max-w-[180px]">
+      <TableCell className="max-w-45">
         <span className="block truncate">{request.user?.name ?? "-"}</span>
       </TableCell>
       <TableCell dir="ltr">
-        {request.user?.mobile ? `+${request.user.mobile}` : "-"}
+        {request.user?.mobile ? formatSaudiPhoneNumber(request.user.mobile) : "-"}
       </TableCell>
       <TableCell dir="ltr">
         <span className="inline-flex items-center gap-1">

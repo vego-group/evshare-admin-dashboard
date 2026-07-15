@@ -56,7 +56,7 @@ function LoginForm() {
       <PhoneField
         id="mobile"
         label="رقم الجوال"
-        placeholder="5XXXXXXXX"
+        placeholder="5x xxx xxxx"
         error={errors.mobile?.message}
         {...register("mobile")}
       />

@@ -1,3 +1,4 @@
+import { formatSaudiPhoneNumber } from "@/lib/utils/format-phone";
 import type { TripListItem } from "@/types";
 import TripStatusBadge from "../results/trip-status-badge";
 import { formatDate, tripDriverName, tripVehicleTitle } from "../utils";
@@ -17,7 +18,10 @@ function TripBasicInfo({ trip }: { trip: TripListItem }) {
         <h3 className="mb-3 font-semibold text-secondary">السائق</h3>
         <div className="grid gap-2 sm:grid-cols-2">
           <DetailRow label="الاسم" value={tripDriverName(trip.driver)} />
-          <DetailRow label="رقم الجوال" value={<span dir="ltr">{trip.driver.mobile ?? "-"}</span>} />
+          <DetailRow
+            label="رقم الجوال"
+            value={<span dir="ltr">{trip.driver.mobile ? formatSaudiPhoneNumber(trip.driver.mobile) : "-"}</span>}
+          />
         </div>
       </section>
 

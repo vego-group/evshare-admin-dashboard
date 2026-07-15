@@ -14,6 +14,7 @@ import {
 import { useParams, useRouter } from "next/navigation";
 
 import { cn } from "@/lib/utils";
+import { formatSaudiPhoneNumber } from "@/lib/utils/format-phone";
 import { useUser } from "@/hooks/api";
 import type { AdminUserDetail } from "@/types";
 
@@ -121,7 +122,7 @@ function UserDetailsContent({ user }: { user: AdminUserDetail }) {
             value={user.email ?? EMPTY_VALUE}
             dir="ltr"
           />
-          <InfoRow label="الجوال" value={`+${user.mobile}`} dir="ltr" />
+          <InfoRow label="الجوال" value={formatSaudiPhoneNumber(user.mobile)} dir="ltr" />
           <InfoRow label="الدور" value={<RoleBadge role={user.role} />} />
           <InfoRow
             label="توثيق الجوال"
