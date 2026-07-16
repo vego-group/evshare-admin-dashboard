@@ -62,7 +62,7 @@ function CommissionSettingFields({ type, isActive, errors, register, setValue }:
             preventNegativeNumberInput(event, { allowDecimal: true })
           }
           onPaste={(event) => preventNegativeNumberPaste(event, { allowDecimal: true })}
-          className={`${inputClass} mt-2 text-left`}
+          className={`${inputClass} mt-2 text-left [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none`}
           {...register("amount")}
         />
         <InputErrorMessage msg={errors.amount?.message} />

@@ -153,11 +153,12 @@ function ProductFormFields({
         <Field label="الكمية" required error={errors.quantity?.message}>
           <input
             type="number"
+            dir="ltr"
             min="0"
             onKeyDown={preventNegativeNumberInput}
             onPaste={(event) => preventNegativeNumberPaste(event)}
             placeholder="0"
-            className={inputClassName}
+            className={`${inputEnClassName} [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none`}
             {...register("quantity")}
           />
         </Field>

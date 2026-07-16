@@ -27,7 +27,7 @@ import {
 } from "./zone-form-utils";
 
 const inputClassName =
-  "h-12 w-full rounded-[12px] border border-primary bg-primary/4 px-3 outline-none";
+  "h-12 w-full rounded-[12px] border border-primary bg-primary/4 px-3 outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none";
 
 type Props = {
   vehicle: VehicleListItem | null;

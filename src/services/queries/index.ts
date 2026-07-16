@@ -19,5 +19,6 @@ export * from "./vehicle-operating-pricing";
 export * from "./trips";
 export * from "./commission-settings";
 export * from "./settings";
+export * from "./promos";
 export * from "./webhook-logs";
 export * from "./pages";

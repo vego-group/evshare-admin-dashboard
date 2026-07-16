@@ -19,6 +19,7 @@ import {
   ShoppingCart,
   Smartphone,
   Tags,
+  Ticket,
   Users,
   Wallet,
   Webhook,
@@ -199,6 +200,13 @@ export const sidebarNavItems: SidebarNavItem[] = [
     ariaLabel: "الشكاوى",
     icon: MessageSquareWarning,
     permission: "Admin Index Complaints",
+  },
+  {
+    href: "/promos",
+    label: "أكواد الخصم",
+    ariaLabel: "أكواد الخصم",
+    icon: Ticket,
+    permission: "Admin Index Promos",
   },
   {
     href: "/settings",
