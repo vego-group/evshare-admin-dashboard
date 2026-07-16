@@ -95,7 +95,7 @@ function DatePicker({
       </button>
 
       {isOpen ? (
-        <div className="absolute right-0 top-[calc(100%+4px)] z-30 w-75 rounded-[14px] border border-primary bg-bg-warm-ivory p-3 shadow-[0_10px_24px_rgba(16,24,40,0.12)]">
+        <div className="absolute right-0 top-[calc(100%+4px)] z-30   rounded-[14px] border border-primary bg-bg-warm-ivory p-3 shadow-[0_10px_24px_rgba(16,24,40,0.12)]">
           <div className="mb-2 flex items-center justify-between">
             <button
               type="button"
