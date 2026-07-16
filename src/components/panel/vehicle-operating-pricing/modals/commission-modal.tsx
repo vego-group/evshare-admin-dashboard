@@ -103,7 +103,7 @@ function CommissionModal({
             onPaste={(event) =>
               preventNegativeNumberPaste(event, { allowDecimal: true })
             }
-            className="h-12 w-full rounded-2xl border border-primary bg-primary/4 px-3 text-left outline-none"
+            className="h-12 w-full rounded-2xl border border-primary bg-primary/4 px-3 text-left outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
             dir="ltr"
             {...register("commission_percentage", { valueAsNumber: true })}
           />

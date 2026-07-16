@@ -76,7 +76,7 @@ function AppVersionFormFields({
           onKeyDown={preventNegativeNumberInput}
           onPaste={(event) => preventNegativeNumberPaste(event)}
           placeholder="10"
-          className="h-14 w-full rounded-[14px] border border-primary bg-primary/4 px-4 text-left text-sm font-medium text-dark-gray outline-none transition focus:bg-primary/8"
+          className="h-14 w-full rounded-[14px] border border-primary bg-primary/4 px-4 text-left text-sm font-medium text-dark-gray outline-none transition focus:bg-primary/8 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           {...register("version_code", { valueAsNumber: true })}
         />
       </Field>

@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  type ReactNode,
+} from "react";
 import { useAuthPermissions } from "@/hooks/api";
 import { removeToken } from "@/lib";
 import { clearUserSession } from "@/lib/utils/user-session";
@@ -26,7 +32,6 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
     () => (data?.data ?? []).map((permission) => permission.slug),
     [data],
   );
-
   const isUnauthorized = isSuccess && permissions.length === 0;
 
   useEffect(() => {

@@ -13,3 +13,4 @@ export * from "./vehicle-operating-pricing";
 export * from "./orders";
 export * from "./commission-settings";
 export * from "./settings";
+export * from "./promos";
