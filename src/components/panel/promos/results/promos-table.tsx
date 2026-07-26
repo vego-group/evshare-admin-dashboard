@@ -14,11 +14,12 @@ import {
 
 type PromosTableProps = {
   promos: PromoListItem[];
+  onViewPromo: (promo: PromoListItem) => void;
   onEditPromo: (promo: PromoListItem) => void;
   onDeletePromo: (promo: PromoListItem) => void;
 };
 
-function PromosTable({ promos, onEditPromo, onDeletePromo }: PromosTableProps) {
+function PromosTable({ promos, onViewPromo, onEditPromo, onDeletePromo }: PromosTableProps) {
   return (
     <section className="overflow-hidden rounded-lg bg-white">
       <div className="overflow-x-auto">
@@ -62,6 +63,7 @@ function PromosTable({ promos, onEditPromo, onDeletePromo }: PromosTableProps) {
                 </TableCell>
                 <TableCell truncate={false}>
                   <PromoActions
+                    onView={() => onViewPromo(promo)}
                     onEdit={() => onEditPromo(promo)}
                     onDelete={() => onDeletePromo(promo)}
                   />

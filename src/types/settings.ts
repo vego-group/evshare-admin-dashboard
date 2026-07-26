@@ -8,14 +8,28 @@ export type Setting = {
   id: string;
   setting_name: string;
   setting_value: string;
+  setting_label: string;
   created_at?: string;
   updated_at?: string;
+};
+
+export type SettingsQueryParams = {
+  page?: number;
+  limit?: number;
+};
+
+export type SettingsPaginationMeta = {
+  currentPage: number;
+  lastPage: number;
+  perPage: number;
+  total: number;
 };
 
 export type SettingsListResponse = {
   error: boolean;
   message: string;
   data: Setting[];
+  meta: SettingsPaginationMeta;
 };
 
 export type SettingDetailResponse = {

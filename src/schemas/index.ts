@@ -14,3 +14,5 @@ export * from "./orders";
 export * from "./commission-settings";
 export * from "./settings";
 export * from "./promos";
+export * from "./test-accounts";
+export * from "./contact-us";

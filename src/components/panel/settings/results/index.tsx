@@ -40,7 +40,7 @@ function SettingsResults({ settings, onEdit }: Props) {
               className="border-b border-primary/15 last:border-0"
             >
               <td className="max-w-0 overflow-hidden text-ellipsis whitespace-nowrap px-5 py-4">
-                {getSettingLabel(setting.setting_name)}
+                {getSettingLabel(setting.setting_name, setting.setting_label)}
               </td>
               <td className="max-w-0 overflow-hidden text-ellipsis whitespace-nowrap px-5 py-4">
                 {getSettingValueLabel(setting.setting_name, setting.setting_value)}
