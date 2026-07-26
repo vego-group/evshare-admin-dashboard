@@ -8,6 +8,7 @@ type PromosMainContentProps = {
   data?: PromoCodesListResponse;
   params: PromoCodesQueryParams;
   onParamsChange: (params: Partial<PromoCodesQueryParams>) => void;
+  onViewPromo: (promo: PromoListItem) => void;
   onEditPromo: (promo: PromoListItem) => void;
   onDeletePromo: (promo: PromoListItem) => void;
 };
@@ -16,6 +17,7 @@ function PromosMainContent({
   data,
   params,
   onParamsChange,
+  onViewPromo,
   onEditPromo,
   onDeletePromo,
 }: PromosMainContentProps) {
@@ -25,7 +27,12 @@ function PromosMainContent({
         searchQuery={params.search ?? ""}
         onSearchChange={(search) => onParamsChange({ search: search || undefined, page: 1 })}
       />
-      <PromosResults promos={data?.data ?? []} onEditPromo={onEditPromo} onDeletePromo={onDeletePromo} />
+      <PromosResults
+        promos={data?.data ?? []}
+        onViewPromo={onViewPromo}
+        onEditPromo={onEditPromo}
+        onDeletePromo={onDeletePromo}
+      />
       <PromosPagination meta={data?.meta} onPageChange={(page) => onParamsChange({ page })} />
     </>
   );

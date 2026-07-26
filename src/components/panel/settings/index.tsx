@@ -4,10 +4,11 @@ import SettingsContentShimmer from "./content-shimmer";
 import SettingsHeader from "./header";
 import { useSettingsPage } from "./hooks/use-settings-page";
 import { SettingFormModal } from "./modals";
+import SettingsPagination from "./pagination";
 import SettingsResults from "./results";
 
 function Settings() {
-  const { data, isLoading, pendingEdit, setPendingEdit, refresh } =
+  const { data, isLoading, setParams, pendingEdit, setPendingEdit, refresh } =
     useSettingsPage();
 
   if (isLoading) {
@@ -18,6 +19,11 @@ function Settings() {
     <div className="flex w-full flex-col gap-6">
       <SettingsHeader />
       <SettingsResults settings={data?.data ?? []} onEdit={setPendingEdit} />
+
+      <SettingsPagination
+        meta={data?.meta}
+        onPageChange={(page) => setParams((current) => ({ ...current, page }))}
+      />
 
       <SettingFormModal
         open={Boolean(pendingEdit)}

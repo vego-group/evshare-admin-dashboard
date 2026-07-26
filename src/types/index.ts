@@ -28,3 +28,5 @@ export * from "./settings";
 export * from "./promos";
 export * from "./webhook-logs";
 export * from "./pages";
+export * from "./test-accounts";
+export * from "./contact-us";

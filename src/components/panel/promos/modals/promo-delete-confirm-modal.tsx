@@ -23,7 +23,7 @@ function PromoDeleteConfirmModal({
       onClose={onClose}
       contentClassName="rounded-[20px] border-0 bg-background shadow-[0_18px_45px_rgba(16,24,40,0.16)]"
     >
-      <div className="mx-auto flex w-full max-w-[481px] flex-col items-center justify-center gap-6 text-center">
+      <div className="mx-auto flex w-full max-w-120.25 flex-col items-center justify-center gap-6 text-center">
         <div className="grid size-24 place-items-center rounded-full bg-red-50 text-red-500">
           <span className="text-5xl leading-none">!</span>
         </div>
@@ -31,14 +31,17 @@ function PromoDeleteConfirmModal({
         <div className="space-y-2">
           <h2 className="text-2xl font-medium leading-8 text-[#344054]">
             هل أنت متأكد أنك تريد حذف كود الخصم{" "}
-            <span className="inline-block max-w-[220px] truncate align-bottom sm:max-w-[320px]" dir="ltr">
+            <span
+              className="inline-block max-w-55 truncate align-bottom sm:max-w-[320px]"
+              dir="ltr"
+            >
               {promoCode ?? ""}
             </span>
             ؟
           </h2>
           <p className="text-base font-medium leading-6 text-[#667085]">
-            سيتم حذف كود الخصم هذا، ولن يتمكن أي مستخدم من استخدامه بعد الآن. الطلبات والاشتراكات التي استخدمته
-            سابقًا لن تتأثر.
+            سيتم حذف كود الخصم هذا، ولن يتمكن أي مستخدم من استخدامه بعد الآن.
+            الطلبات والاشتراكات التي استخدمته سابقًا لن تتأثر.
           </p>
         </div>
 
@@ -48,7 +51,7 @@ function PromoDeleteConfirmModal({
             variant="ghost"
             onClick={onClose}
             disabled={isDeleting}
-            className="h-[54px] rounded-[14px] bg-neutral-100 px-4 py-3 text-base font-medium text-dark-gray hover:bg-neutral-200"
+            className="h-13.5 rounded-[14px] bg-neutral-100 px-4 py-3 text-base font-medium text-dark-gray hover:bg-neutral-200"
           >
             إغلاق
           </Button>
@@ -56,7 +59,7 @@ function PromoDeleteConfirmModal({
             type="button"
             onClick={onConfirm}
             disabled={isDeleting}
-            className="h-[54px] rounded-[14px] bg-[#f04438] px-4 py-3 text-base font-medium text-white shadow-[0_1px_2px_rgba(16,24,40,0.05)] hover:bg-[#d92d20]"
+            className="h-13.5 rounded-[14px] bg-[#f04438] px-4 py-3 text-base font-medium text-white shadow-[0_1px_2px_rgba(16,24,40,0.05)] hover:bg-[#d92d20]"
           >
             {isDeleting ? <Loader /> : "حذف"}
           </Button>

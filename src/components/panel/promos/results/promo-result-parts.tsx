@@ -1,4 +1,5 @@
 import {
+  Eye,
   Pencil,
   SaudiRiyal,
   Ticket,
@@ -74,15 +75,23 @@ export function StatusBadge({ promo }: { promo: PromoListItem }) {
 
 export function PromoActions({
   compact = false,
+  onView,
   onEdit,
   onDelete,
 }: {
   compact?: boolean;
+  onView: () => void;
   onEdit: () => void;
   onDelete: () => void;
 }) {
   return (
     <div className={cn("flex items-center gap-2", compact && "w-full")}>
+      <ActionButton
+        icon={Eye}
+        onClick={onView}
+        label="عرض كود الخصم"
+        className={cn("bg-blue-50 text-blue-600", compact && "flex-1")}
+      />
       <ActionButton
         icon={Pencil}
         onClick={onEdit}

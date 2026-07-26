@@ -71,7 +71,9 @@ function SettingFormModal({ open, setting, onClose, onSaved }: Props) {
       }
       title="تعديل الإعداد"
       description={
-        setting ? `تعديل قيمة "${getSettingLabel(setting.setting_name)}"` : undefined
+        setting
+          ? `تعديل قيمة "${getSettingLabel(setting.setting_name, setting.setting_label)}"`
+          : undefined
       }
     >
       <form

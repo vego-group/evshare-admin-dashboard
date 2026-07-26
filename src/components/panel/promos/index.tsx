@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
@@ -15,6 +16,7 @@ import { PromoDeleteConfirmModal, PromoFormModal } from "./modals";
 import PromosMainContent from "./promos-main-content";
 
 function Promos() {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const [params, setParams] = useState<PromoCodesQueryParams>({ page: 1, limit: PAGE_SIZE });
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -61,6 +63,7 @@ function Promos() {
             data={data}
             params={params}
             onParamsChange={updateParams}
+            onViewPromo={(promo) => router.push(`/promos/${promo.id}`)}
             onEditPromo={(promo) => {
               setPromoPendingEdit(promo);
               setIsFormOpen(true);

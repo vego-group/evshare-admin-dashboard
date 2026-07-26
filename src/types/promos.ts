@@ -41,10 +41,41 @@ export type PromoCodesListResponse = {
   meta: PromoCodesPaginationMeta;
 };
 
+export type PromoRedemptionUser = {
+  id: string;
+  name: string;
+  mobile: string;
+  role: string;
+};
+
+export type PromoRedeemableType = "Order" | "Subscription" | null;
+
+export type PromoRedemption = {
+  id: number;
+  user: PromoRedemptionUser;
+  promo_code_used: string;
+  discount_amount_applied: number;
+  redeemable_type: PromoRedeemableType;
+  created_at: string;
+};
+
+export type PromoAnalytics = {
+  total_redemptions: number;
+  unique_users: number;
+  total_discount_given: number;
+  remaining_uses: number | null;
+};
+
+export type PromoDetailData = {
+  promo: PromoListItem;
+  analytics: PromoAnalytics;
+  recent_redemptions: PromoRedemption[];
+};
+
 export type PromoCodeDetailResponse = {
   error: boolean;
   message: string;
-  data: PromoListItem;
+  data: PromoDetailData;
 };
 
 export type PromoCodePayload = {

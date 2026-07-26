@@ -4,14 +4,8 @@ import {
   WORK_CONDITIONS_EN_KEY,
 } from "@/types";
 
-const SETTING_LABELS: Record<string, string> = {
-  [KYC_DEFAULT_STATUS_KEY]: "الحالة الافتراضية لطلبات التسجيل (KYC)",
-  [WORK_CONDITIONS_AR_KEY]: "شروط العمل (عربي)",
-  [WORK_CONDITIONS_EN_KEY]: "شروط العمل (إنجليزي)",
-};
-
-export function getSettingLabel(settingName: string) {
-  return SETTING_LABELS[settingName] ?? settingName;
+export function getSettingLabel(settingName: string, fallback?: string) {
+  return fallback || settingName;
 }
 
 const KYC_DEFAULT_STATUS_VALUE_LABELS: Record<string, string> = {
