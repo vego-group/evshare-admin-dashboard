@@ -1,4 +1,5 @@
 import {
+  Building2,
   ClipboardList,
   CircleDollarSign,
   CreditCard,
@@ -148,12 +149,20 @@ export const sidebarNavItems: SidebarNavItem[] = [
     permission: "Admin View Payment Requests",
   },
   {
+    href: "/operating-companies",
+    label: "الشركات المشغلة",
+    ariaLabel: "الشركات المشغلة",
+    icon: Building2,
+    permission: "Admin View Operation Companies",
+  },
+  {
     href: "/vehicle-operating-pricing",
     label: "تشغيل وتسعير المركبات",
     ariaLabel: "تشغيل وتسعير المركبات",
     icon: Route,
     permission: "Admin View Vehicles",
   },
+
   {
     href: "/trips",
     label: "سجل الرحلات",

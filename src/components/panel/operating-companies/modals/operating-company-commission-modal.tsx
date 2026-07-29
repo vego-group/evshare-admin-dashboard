@@ -1,0 +1,140 @@
+"use client";
+
+import { useEffect } from "react";
+import { useForm, type FieldErrors, type Resolver } from "react-hook-form";
+import toast from "react-hot-toast";
+
+import { Button } from "@/components/ui/button";
+import InputErrorMessage from "@/components/ui/input-error-message";
+import Loader from "@/components/ui/loader";
+import Modal from "@/components/ui/modal";
+import {
+  preventNegativeNumberInput,
+  preventNegativeNumberPaste,
+} from "@/lib/utils/non-negative-input";
+import {
+  commissionSchema,
+  type CommissionValues,
+} from "@/schemas/vehicle-operating-pricing";
+import { updateOperationCompanyCommissionAPI } from "@/services/mutations";
+import type { OperatingCompanyListItem } from "@/types";
+
+type Props = {
+  company: OperatingCompanyListItem | null;
+  isSaving: boolean;
+  open: boolean;
+  onClose: () => void;
+  onSaved: () => Promise<void>;
+  setIsSaving: (value: boolean) => void;
+};
+
+function OperatingCompanyCommissionModal({
+  company,
+  isSaving,
+  open,
+  onClose,
+  onSaved,
+  setIsSaving,
+}: Props) {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isDirty },
+  } = useForm<CommissionValues>({
+    resolver: commissionResolver,
+    defaultValues: {
+      commission_percentage: Number(company?.commission_percentage || 0),
+    },
+    mode: "onChange",
+  });
+
+  useEffect(() => {
+    if (open) {
+      reset({
+        commission_percentage: Number(company?.commission_percentage || 0),
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, company?.commission_percentage]);
+
+  async function submit(values: CommissionValues) {
+    if (!company || isSaving || !isDirty) return;
+    setIsSaving(true);
+    const result = await updateOperationCompanyCommissionAPI(company.id, values);
+    setIsSaving(false);
+    if (result?.ok) {
+      toast.success(result.message || "تم تحديث العمولة بنجاح");
+      await onSaved();
+      onClose();
+      return;
+    }
+    toast.error(result?.message || "فشل تحديث العمولة");
+  }
+
+  if (!company) return null;
+
+  return (
+    <Modal
+      open={open}
+      onClose={onClose}
+      title={`عمولة ${company.name}`}
+      contentClassName="max-w-md"
+    >
+      <form onSubmit={handleSubmit(submit)} noValidate className="space-y-4 p-1">
+        <label className="block">
+          <span className="mb-2 block text-sm text-dark-gray">نسبة العمولة</span>
+          <input
+            type="number"
+            min="0"
+            step="0.01"
+            onKeyDown={(event) =>
+              preventNegativeNumberInput(event, { allowDecimal: true })
+            }
+            onPaste={(event) =>
+              preventNegativeNumberPaste(event, { allowDecimal: true })
+            }
+            className="h-12 w-full rounded-2xl border border-primary bg-primary/4 px-3 text-left outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            dir="ltr"
+            {...register("commission_percentage", { valueAsNumber: true })}
+          />
+          <InputErrorMessage msg={errors.commission_percentage?.message} />
+        </label>
+        <div className="flex justify-end gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onClose}
+            disabled={isSaving}
+          >
+            إلغاء
+          </Button>
+          <Button
+            type="submit"
+            disabled={isSaving || !isDirty}
+            className="min-w-17 bg-primary text-secondary hover:bg-primary/90"
+          >
+            {isSaving ? <Loader borderColor="#1f2937" /> : "حفظ"}
+          </Button>
+        </div>
+      </form>
+    </Modal>
+  );
+}
+
+const commissionResolver: Resolver<CommissionValues> = async (values) => {
+  const result = commissionSchema.safeParse(values);
+  if (result.success) return { values: result.data, errors: {} };
+
+  const errors: FieldErrors<CommissionValues> = {};
+  for (const issue of result.error.issues) {
+    const field = issue.path[0] as keyof CommissionValues;
+    if (!errors[field]) {
+      errors[field] = { type: issue.code, message: issue.message };
+    }
+  }
+
+  return { values: {}, errors };
+};
+
+export default OperatingCompanyCommissionModal;
