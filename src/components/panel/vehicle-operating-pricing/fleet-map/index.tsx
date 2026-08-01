@@ -3,12 +3,17 @@
 import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 
 import Header from "@/components/ui/header";
 import { useAllVehicles } from "@/hooks/api";
 
-import VehicleFleetMap from "./vehicle-fleet-map";
 import VehicleMapSidebar from "./vehicle-map-sidebar";
+
+const VehicleFleetMap = dynamic(() => import("./vehicle-fleet-map"), {
+  ssr: false,
+  loading: () => <div className="h-full w-full animate-pulse rounded-2xl bg-primary/5" />,
+});
 
 const FLEET_MAP_PAGE_SIZE = 100;
 
