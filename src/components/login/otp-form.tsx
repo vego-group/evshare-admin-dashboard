@@ -18,11 +18,20 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { verifyLoginAPI } from "@/services/mutations";
-import { setToken } from "@/lib";
+import { setToken, removeToken } from "@/lib";
 import { setUserSession } from "@/lib/utils/user-session";
 import Loader from "@/components/ui/loader";
 import InputErrorMessage from "@/components/ui/input-error-message";
 import { useRouter } from "next/navigation";
+import type { UserRole } from "@/types";
+
+const ALLOWED_DASHBOARD_ROLES: UserRole[] = ["root", "admin", "sales"];
+
+const ROLE_ACCESS_DENIED_MESSAGES: Partial<Record<UserRole, string>> = {
+  merchant: "لا يمكن للتاجر الدخول إلى لوحة التحكم",
+  driver: "لا يمكن للسائق الدخول إلى لوحة التحكم",
+  user: "لا يمكن للمستخدم الدخول إلى لوحة التحكم",
+};
 
 const verifyOtpResolver: Resolver<VerifyOtpFormValues> = async (values) => {
   const result = verifyOtpSchema.safeParse(values);
@@ -57,10 +66,20 @@ function OtpForm({ mobile }: OtpFormProps) {
   const onSubmit = async (data: VerifyOtpFormValues) => {
     const result = await verifyLoginAPI(data);
     if (result?.ok) {
+      const userData = result.data?.data?.user_data;
+
+      if (userData && !ALLOWED_DASHBOARD_ROLES.includes(userData.role)) {
+        toast.error(
+          ROLE_ACCESS_DENIED_MESSAGES[userData.role] ||
+            "هذا الحساب غير مصرح له بالدخول إلى لوحة التحكم"
+        );
+        await removeToken();
+        return;
+      }
+
       toast.success(result.message || "تم تسجيل الدخول بنجاح");
       const token = result.data?.data?.access_token;
       if (token) await setToken(token);
-      const userData = result.data?.data?.user_data;
       if (userData) setUserSession(userData);
 
       router.replace("/");
