@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import LoginHeader from "./login-header-compact";
 import LoginCard from "./login-card";
@@ -8,8 +9,13 @@ function Login() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#0f1118] px-4 py-8">
       <div className="pointer-events-none absolute inset-0">
-        <div
-          className="absolute inset-0 bg-[image:url('/images/scooter.jpg')] bg-size-[100%_100%] bg-center bg-no-repeat"
+        <Image
+          src="/images/scooter.jpg"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center"
         />
         <div className="absolute inset-0 bg-[#0f1118]/72" />
         <div className="absolute -left-24 top-10 h-72 w-72 rounded-full bg-primary/15 blur-3xl" />
