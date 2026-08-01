@@ -14,6 +14,7 @@ function Login() {
           alt=""
           fill
           priority
+          quality={50}
           sizes="100vw"
           className="object-cover object-center"
         />
@@ -23,15 +24,18 @@ function Login() {
         <div className="absolute bottom-0 left-1/3 h-56 w-56 rounded-full bg-primary/10 blur-3xl" />
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 22 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.55, ease: "easeOut" }}
-        className="relative mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-md flex-col items-center justify-center gap-5"
-      >
+      <div className="relative mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-md flex-col items-center justify-center gap-5">
         <LoginHeader />
-        <LoginCard />
-      </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 22 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, ease: "easeOut" }}
+          className="w-full"
+        >
+          <LoginCard />
+        </motion.div>
+      </div>
     </main>
   );
 }
