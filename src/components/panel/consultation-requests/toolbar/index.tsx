@@ -70,7 +70,7 @@ function ConsultationRequestsToolbar({
         />
       </div>
 
-      <div className="flex flex-col gap-[13px] sm:flex-row sm:flex-wrap lg:shrink-0">
+      <div className="flex flex-col gap-3.25 sm:flex-row sm:flex-wrap lg:shrink-0">
         <FilterSelect
           label="الحالة"
           options={statusOptions}
@@ -99,7 +99,7 @@ function SearchInput({
 }) {
   return (
     <div className="relative flex min-h-12 flex-1 items-center rounded-[14px] px-3 pr-11 sm:min-h-14 sm:px-5 sm:pr-14 lg:min-h-14">
-      <Search className="pointer-events-none absolute right-3 top-1/2 size-5 shrink-0 -translate-y-1/2 text-gray sm:right-5 sm:size-[22px]" />
+      <Search className="pointer-events-none absolute right-3 top-1/2 size-5 shrink-0 -translate-y-1/2 text-gray sm:right-5 sm:size-5.5" />
       <input
         type="search"
         aria-label="بحث في طلبات الاستشارة"
