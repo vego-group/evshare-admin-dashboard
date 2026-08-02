@@ -47,10 +47,12 @@ function WebhookLogs() {
           <WebhookLogsToolbar
             gateway={params.gateway}
             isProcessed={params.is_processed}
+            search={params.search}
             onGatewayChange={(gateway) => updateParams({ gateway, page: 1 })}
             onProcessedChange={(is_processed) =>
               updateParams({ is_processed, page: 1 })
             }
+            onSearchChange={(search) => updateParams({ search, page: 1 })}
           />
           <WebhookLogsTable
             logs={data?.data ?? []}

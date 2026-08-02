@@ -11,7 +11,7 @@ function SearchInput({ value, onChange }: SearchInputProps) {
   return (
     <label className="relative block">
       <span className="sr-only">بحث في إصدارات التطبيقات</span>
-      <Search className="absolute right-4 top-1/2 size-5 -translate-y-1/2 text-gray" />
+      <Search className="absolute right-4 top-1/2 size-5 shrink-0 -translate-y-1/2 text-gray" />
       <input
         type="search"
         value={value}

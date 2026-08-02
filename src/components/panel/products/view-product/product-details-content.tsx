@@ -40,7 +40,7 @@ export function ProductDetailsContent({ product, isLoading }: Props) {
           </div>
         ) : (
           <div className="flex h-72 w-full items-center justify-center rounded-2xl bg-primary/15 text-secondary">
-            <ImageIcon className="size-16" />
+            <ImageIcon className="size-16 shrink-0" />
           </div>
         )}
         <div className="space-y-2">

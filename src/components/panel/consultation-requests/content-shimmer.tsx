@@ -3,20 +3,17 @@ import Shimmer from "@/components/ui/shimmer";
 function ConsultationRequestsContentShimmer() {
   return (
     <section className="space-y-6" aria-hidden="true">
-      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {Array.from({ length: 4 }).map((_, index) => (
           <div
             key={index}
-            className="flex h-[177px] flex-col justify-between rounded-2xl border border-neutral-100/80 bg-white p-6"
+            className="flex items-center justify-between gap-3 rounded-[14px] border border-[#e5e7eb] bg-white px-5 py-5"
           >
-            <div className="flex items-start justify-between gap-4">
-              <Shimmer className="size-12 rounded-[14px]" />
-              <Shimmer className="h-5 w-12 rounded-md" />
+            <div className="flex flex-col gap-2">
+              <Shimmer className="h-5 w-28 rounded-md" />
+              <Shimmer className="h-8 w-14 rounded-md" />
             </div>
-            <div className="space-y-2 text-right">
-              <Shimmer className="mr-auto h-10 w-16 rounded-md" />
-              <Shimmer className="mr-auto h-5 w-28 rounded-md" />
-            </div>
+            <Shimmer className="size-12 rounded-[10px]" />
           </div>
         ))}
       </div>
@@ -34,17 +31,17 @@ function ConsultationRequestsContentShimmer() {
       <div className="overflow-hidden rounded-lg bg-white">
         <div className="overflow-x-auto">
           <div className="min-w-[1024px]">
-            <div className="grid grid-cols-6 gap-4 border-b border-primary/15 bg-primary/8 px-5 py-5">
-              {Array.from({ length: 6 }).map((_, index) => (
+            <div className="grid grid-cols-5 gap-4 border-b border-primary/15 bg-primary/8 px-5 py-5">
+              {Array.from({ length: 5 }).map((_, index) => (
                 <Shimmer key={index} className="h-5 w-24 rounded-md" />
               ))}
             </div>
             {Array.from({ length: 5 }).map((_, rowIndex) => (
               <div
                 key={rowIndex}
-                className="grid h-16 grid-cols-6 items-center gap-4 border-b border-primary/15 px-5 py-3"
+                className="grid h-16 grid-cols-5 items-center gap-4 border-b border-primary/15 px-5 py-3"
               >
-                {Array.from({ length: 6 }).map((_, cellIndex) => (
+                {Array.from({ length: 5 }).map((_, cellIndex) => (
                   <Shimmer key={cellIndex} className="h-5 w-28 rounded-md" />
                 ))}
               </div>

@@ -29,7 +29,7 @@ export function ProductImage({
         className,
       )}
     >
-      <ImageIcon className="size-5" />
+      <ImageIcon className="size-5 shrink-0" />
     </div>
   );
 }
@@ -105,11 +105,11 @@ function ActionButton({
       aria-label={label}
       onClick={onClick}
       className={cn(
-        "grid size-10 place-items-center rounded-lg transition hover:brightness-95",
+        "grid size-8 place-items-center rounded-lg transition hover:brightness-95",
         className,
       )}
     >
-      <Icon className="size-5" />
+      <Icon className="size-4 shrink-0" />
     </button>
   );
 }

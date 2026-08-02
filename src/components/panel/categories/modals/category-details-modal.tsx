@@ -49,7 +49,7 @@ function CategoryDetailsModal({
                 </div>
               ) : (
                 <div className="grid size-20 place-items-center rounded-2xl bg-primary/15 text-secondary">
-                  <ImageIcon className="size-8" />
+                  <ImageIcon className="size-8 shrink-0" />
                 </div>
               )}
               <div className="min-w-0 space-y-2">

@@ -44,7 +44,7 @@ function UserDetails() {
           className="flex size-10 items-center justify-center rounded-full border border-neutral-200 bg-white text-secondary transition hover:bg-neutral-50"
           aria-label="العودة"
         >
-          <ArrowRight className="size-5" />
+          <ArrowRight className="size-5 shrink-0" />
         </button>
 
         <div className="flex min-w-0 items-center gap-3">
@@ -213,7 +213,7 @@ function SummaryCard({
   return (
     <div className="flex items-center gap-4 rounded-[14px] border border-[#e5e7eb] bg-white px-5 py-4">
       <div className="grid size-12 shrink-0 place-items-center rounded-xl bg-primary/15 text-secondary">
-        <Icon className="size-5" />
+        <Icon className="size-5 shrink-0" />
       </div>
       <div className="min-w-0 text-right">
         <p className="text-sm font-normal text-gray">{label}</p>

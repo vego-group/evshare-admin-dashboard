@@ -15,7 +15,7 @@ export default function EntityPagination({ meta, onChange }: {
       <p className="order-2">عرض {from}-{to} من {meta.total}</p>
       <div className="order-1 flex items-center justify-center gap-2" dir="ltr">
         <Button size="icon-sm" variant="outline" disabled={meta.currentPage <= 1} onClick={() => onChange(meta.currentPage - 1)}>
-          <ChevronLeft className="size-4" />
+          <ChevronLeft className="size-4 shrink-0" />
         </Button>
         {pages.map((page) => (
           <Button key={page} type="button" variant={page === meta.currentPage ? "default" : "outline"} size="sm" onClick={() => onChange(page)} className="min-w-8">
@@ -23,7 +23,7 @@ export default function EntityPagination({ meta, onChange }: {
           </Button>
         ))}
         <Button size="icon-sm" variant="outline" disabled={meta.currentPage >= meta.lastPage} onClick={() => onChange(meta.currentPage + 1)}>
-          <ChevronRight className="size-4" />
+          <ChevronRight className="size-4 shrink-0" />
         </Button>
       </div>
     </section>

@@ -53,6 +53,7 @@ function OperatingCompaniesCards({
             <DetailLine
               label="الجوال"
               value={company.mobile ? formatSaudiPhoneNumber(company.mobile) : "-"}
+              dir="ltr"
             />
             <DetailLine label="البريد الإلكتروني" value={company.email ?? "-"} />
           </div>

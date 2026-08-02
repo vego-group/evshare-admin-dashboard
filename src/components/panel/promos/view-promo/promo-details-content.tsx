@@ -3,6 +3,7 @@
 import { SaudiRiyal, Users } from "lucide-react";
 import type { ReactNode } from "react";
 
+import { formatSaudiPhoneNumber } from "@/lib/utils/format-phone";
 import type { PromoDetailData, PromoRedeemableType } from "@/types";
 
 import PromoDetailsShimmer from "../modals/promo-details-shimmer";
@@ -136,7 +137,9 @@ export function PromoDetailsContent({ detail, isLoading }: Props) {
                         {redemption.user.name}
                       </span>
                     </RedemptionCell>
-                    <RedemptionCell dir="ltr">{redemption.user.mobile}</RedemptionCell>
+                    <RedemptionCell dir="ltr">
+                      {formatSaudiPhoneNumber(redemption.user.mobile)}
+                    </RedemptionCell>
                     <RedemptionCell>
                       {redemption.redeemable_type
                         ? redeemableTypeLabels[redemption.redeemable_type]

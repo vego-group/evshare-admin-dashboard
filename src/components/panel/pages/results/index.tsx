@@ -57,7 +57,7 @@ function PagesResults({ pages, onEdit }: Props) {
                 <div className="flex gap-2">
                   <PermissionGate slug="Admin Edit Pages">
                     <PageActionButton label="تعديل" onClick={() => onEdit(page)}>
-                      <Pencil className="size-4" />
+                      <Pencil className="size-4 shrink-0" />
                     </PageActionButton>
                   </PermissionGate>
                 </div>

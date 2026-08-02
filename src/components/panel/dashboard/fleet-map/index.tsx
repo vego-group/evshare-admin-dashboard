@@ -87,14 +87,14 @@ function FleetMapSection() {
                       : "bg-primary/25 text-secondary",
                   )}
                 >
-                  <BatteryCharging className="size-4 sm:size-5" />
+                  <BatteryCharging className="size-4 shrink-0 sm:size-5" />
                 </div>
               </div>
             </div>
           ))}
 
           <div className="absolute bottom-2 left-5 inline-flex max-w-[calc(100%-1.5rem)] items-center justify-center gap-1.5 rounded-full bg-white/90 px-3 py-1.5 text-[11px] font-medium text-gray shadow-sm sm:bottom-4 sm:left-4 sm:max-w-none sm:gap-2 sm:px-3 sm:py-2 sm:text-xs">
-            <MapPinned className="size-3.5 sm:size-4 text-primary" />
+            <MapPinned className="size-3.5 shrink-0 sm:size-4 text-primary" />
             خريطة توزيع المركبات
           </div>
         </div>

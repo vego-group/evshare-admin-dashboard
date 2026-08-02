@@ -26,7 +26,7 @@ export function SliderThumbnail({
 
   return (
     <div className={cn("grid size-12 shrink-0 place-items-center rounded-xl bg-primary/15 text-secondary", className)}>
-      <Images className="size-5" />
+      <Images className="size-5 shrink-0" />
     </div>
   );
 }
@@ -88,9 +88,9 @@ function ActionButton({
       type="button"
       aria-label={label}
       onClick={onClick}
-      className={cn("grid size-10 place-items-center rounded-lg transition hover:brightness-95", className)}
+      className={cn("grid size-8 place-items-center rounded-lg transition hover:brightness-95", className)}
     >
-      <Icon className="size-5" />
+      <Icon className="size-4 shrink-0" />
     </button>
   );
 }

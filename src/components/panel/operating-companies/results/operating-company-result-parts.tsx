@@ -39,7 +39,7 @@ export function OperatingCompanyLogo({
         className,
       )}
     >
-      <ImageIcon className="size-5" />
+      <ImageIcon className="size-5 shrink-0" />
     </div>
   );
 }
@@ -52,7 +52,7 @@ export function CommissionBadge({
   return (
     <span className="inline-flex h-[34px] w-fit items-center justify-center gap-1 whitespace-nowrap rounded-full bg-primary/10 px-4 text-sm font-medium text-secondary">
       {value ?? 0}
-      <Percent className="size-3.5" />
+      <Percent className="size-3.5 shrink-0" />
     </span>
   );
 }
@@ -71,7 +71,7 @@ export function OperatingCompanyActions({
   onDelete: () => void;
 }) {
   return (
-    <div className={cn("flex items-center gap-2", compact && "w-full")}>
+    <div className={cn("flex flex-nowrap items-center gap-2", compact && "w-full")}>
       <ActionButton
         icon={Eye}
         onClick={onView}
@@ -121,20 +121,28 @@ function ActionButton({
       aria-label={label}
       onClick={onClick}
       className={cn(
-        "grid size-10 place-items-center rounded-lg transition hover:brightness-95",
+        "grid size-8 shrink-0 place-items-center rounded-lg transition hover:brightness-95",
         className,
       )}
     >
-      <Icon className="size-5" />
+      <Icon className="size-4 shrink-0" />
     </button>
   );
 }
 
-export function DetailLine({ label, value }: { label: string; value: ReactNode }) {
+export function DetailLine({
+  label,
+  value,
+  dir,
+}: {
+  label: string;
+  value: ReactNode;
+  dir?: "ltr" | "rtl";
+}) {
   return (
     <div className="flex items-center justify-between gap-4">
       <span className="shrink-0 text-sm text-gray">{label}</span>
-      <span className="min-w-0 truncate text-sm font-medium text-secondary">
+      <span dir={dir} className="min-w-0 truncate text-sm font-medium text-secondary">
         {value}
       </span>
     </div>

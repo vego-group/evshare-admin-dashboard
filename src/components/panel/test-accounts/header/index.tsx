@@ -19,7 +19,7 @@ function TestAccountsHeader({ onAddTestAccount }: TestAccountsHeaderProps) {
           onClick={onAddTestAccount}
           className="h-12 self-start rounded-2xl bg-primary px-6 text-base font-medium text-secondary shadow-[0_4px_12px_rgba(255,213,79,0.25)] hover:bg-primary/90 sm:self-auto"
         >
-          <Plus className="size-5" />
+          <Plus className="size-5 shrink-0" />
           إضافة حساب اختبار
         </Button>
       </PermissionGate>

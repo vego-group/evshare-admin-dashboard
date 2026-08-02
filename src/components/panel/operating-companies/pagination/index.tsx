@@ -35,7 +35,7 @@ function OperatingCompaniesPagination({
           onClick={() => onPageChange(meta.currentPage - 1)}
           aria-label="الصفحة السابقة"
         >
-          <ChevronLeft className="size-4" />
+          <ChevronLeft className="size-4 shrink-0" />
         </Button>
 
         {pages.map((page) => (
@@ -59,7 +59,7 @@ function OperatingCompaniesPagination({
           onClick={() => onPageChange(meta.currentPage + 1)}
           aria-label="الصفحة التالية"
         >
-          <ChevronRight className="size-4" />
+          <ChevronRight className="size-4 shrink-0" />
         </Button>
       </div>
     </section>

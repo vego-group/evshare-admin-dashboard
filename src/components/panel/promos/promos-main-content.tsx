@@ -1,4 +1,10 @@
-import type { PromoCodesListResponse, PromoCodesQueryParams, PromoListItem } from "@/types";
+import type {
+  PromoCodesListResponse,
+  PromoCodesQueryParams,
+  PromoContext,
+  PromoListItem,
+  PromoStatus,
+} from "@/types";
 
 import PromosPagination from "./pagination";
 import PromosResults from "./results";
@@ -25,7 +31,11 @@ function PromosMainContent({
     <>
       <PromosToolbar
         searchQuery={params.search ?? ""}
+        selectedStatus={params.status}
+        selectedType={params.type}
         onSearchChange={(search) => onParamsChange({ search: search || undefined, page: 1 })}
+        onStatusChange={(status?: PromoStatus) => onParamsChange({ status, page: 1 })}
+        onTypeChange={(type?: PromoContext) => onParamsChange({ type, page: 1 })}
       />
       <PromosResults
         promos={data?.data ?? []}

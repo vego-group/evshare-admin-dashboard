@@ -214,10 +214,10 @@ function ProductFormFields({
           <div className="flex flex-col gap-2">
             <label className="flex min-h-14 cursor-pointer items-center gap-3 rounded-[14px] border border-dashed border-primary bg-primary/4 px-4 py-2 text-sm font-medium text-dark-gray transition hover:bg-primary/8">
               <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-primary/15 text-secondary">
-                <ImageIcon className="size-5" />
+                <ImageIcon className="size-5 shrink-0" />
               </span>
               <span className="flex-1">اختر صورة رئيسية</span>
-              <Upload className="size-5 text-primary" />
+              <Upload className="size-5 shrink-0 text-primary" />
               <input
                 type="file"
                 accept="image/*"
@@ -245,10 +245,10 @@ function ProductFormFields({
           <div className="flex flex-col gap-2">
             <label className="flex min-h-14 cursor-pointer items-center gap-3 rounded-[14px] border border-dashed border-primary bg-primary/4 px-4 py-2 text-sm font-medium text-dark-gray transition hover:bg-primary/8">
               <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-primary/15 text-secondary">
-                <ImageIcon className="size-5" />
+                <ImageIcon className="size-5 shrink-0" />
               </span>
               <span className="flex-1">اختر صور إضافية</span>
-              <Upload className="size-5 text-primary" />
+              <Upload className="size-5 shrink-0 text-primary" />
               <input
                 type="file"
                 accept="image/*"
@@ -275,7 +275,7 @@ function ProductFormFields({
                       onClick={() => onImageRemove?.(i)}
                       className="absolute -right-1.5 -top-1.5 grid size-5 place-items-center rounded-full bg-red-500 text-white hover:bg-red-600"
                     >
-                      <X className="size-3" />
+                      <X className="size-3 shrink-0" />
                     </button>
                   </div>
                 ))}
@@ -315,7 +315,7 @@ function ProductFormFields({
             onClick={() => append({ title_ar: "", title_en: "" })}
             className="h-9 rounded-[10px] bg-primary/10 px-3 text-sm font-medium text-secondary hover:bg-primary/20"
           >
-            <Plus className="size-4" />
+            <Plus className="size-4 shrink-0" />
             إضافة ميزة
           </Button>
         </div>
@@ -362,7 +362,7 @@ function ProductFormFields({
               aria-label="حذف الميزة"
               className="size-14 shrink-0 self-end rounded-[14px] bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-500 sm:self-auto"
             >
-              <Trash2 className="size-5" />
+              <Trash2 className="size-5 shrink-0" />
             </Button>
           </div>
         ))}

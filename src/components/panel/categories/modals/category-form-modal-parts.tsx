@@ -28,7 +28,7 @@ export function CategoryFormHeader({
         onClick={onClose}
         className="size-12 rounded-[14px] bg-primary text-secondary hover:bg-primary/90"
       >
-        <X className="size-5" />
+        <X className="size-5 shrink-0" />
       </Button>
     </header>
   );

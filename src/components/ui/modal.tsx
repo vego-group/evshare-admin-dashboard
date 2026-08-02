@@ -82,7 +82,7 @@ export function CloseButtonModal({ closeButtonClassname }: ICloseButtonProps) {
         closeButtonClassname && closeButtonClassname,
       )}
     >
-      <X className="size-4" />
+      <X className="size-4 shrink-0" />
     </DialogClose>
   );
 }

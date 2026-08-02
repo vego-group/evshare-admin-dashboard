@@ -44,9 +44,9 @@ const LoginField = forwardRef<HTMLInputElement, LoginFieldProps>(
           />
 
           {type === "password" ? (
-            <Lock className="size-4 text-gray-400" />
+            <Lock className="size-4 shrink-0 text-gray-400" />
           ) : (
-            <Mail className="size-4 text-gray-400" />
+            <Mail className="size-4 shrink-0 text-gray-400" />
           )}
         </div>
 

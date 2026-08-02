@@ -12,10 +12,12 @@ type PaymentGatewaysToolbarProps = {
   tab: PaymentGatewayTab;
   payableType?: string;
   isProcessed?: boolean;
+  search?: string;
   transactionStatus?: PaymentTransactionStatus;
   transactionId?: string;
   onPayableTypeChange?: (value?: string) => void;
   onProcessedChange?: (value?: boolean) => void;
+  onSearchChange?: (value?: string) => void;
   onTransactionStatusChange?: (value?: PaymentTransactionStatus) => void;
   onTransactionIdChange?: (value?: string) => void;
 };
@@ -43,23 +45,33 @@ function PaymentGatewaysToolbar({
   tab,
   payableType,
   isProcessed,
+  search,
   transactionStatus,
   transactionId,
   onPayableTypeChange,
   onProcessedChange,
+  onSearchChange,
   onTransactionStatusChange,
   onTransactionIdChange,
 }: PaymentGatewaysToolbarProps) {
   const [internalTransactionId, setInternalTransactionId] = useState(
     transactionId ?? "",
   );
+  const [internalSearch, setInternalSearch] = useState(search ?? "");
   const debouncedTransactionId = useDebounce(internalTransactionId, 500);
+  const debouncedSearch = useDebounce(internalSearch, 500);
   const mounted = useRef(false);
+  const searchMounted = useRef(false);
   const onTransactionIdChangeRef = useRef(onTransactionIdChange);
+  const onSearchChangeRef = useRef(onSearchChange);
 
   useEffect(() => {
     onTransactionIdChangeRef.current = onTransactionIdChange;
   }, [onTransactionIdChange]);
+
+  useEffect(() => {
+    onSearchChangeRef.current = onSearchChange;
+  }, [onSearchChange]);
 
   useEffect(() => {
     if (tab !== "transactions") return;
@@ -70,13 +82,35 @@ function PaymentGatewaysToolbar({
     onTransactionIdChangeRef.current?.(debouncedTransactionId || undefined);
   }, [debouncedTransactionId, tab]);
 
+  useEffect(() => {
+    if (tab !== "checkouts") return;
+    if (!searchMounted.current) {
+      searchMounted.current = true;
+      return;
+    }
+    onSearchChangeRef.current?.(debouncedSearch || undefined);
+  }, [debouncedSearch, tab]);
+
   return (
     <section className="space-y-3 lg:flex lg:items-center lg:justify-between lg:gap-3 lg:space-y-0 lg:rounded-2xl lg:border lg:border-neutral-100/60 lg:bg-white lg:p-1.5 lg:shadow-[0_2px_6px_rgba(0,0,0,0.04)]">
       {tab === "transactions" ? (
         <div className="rounded-2xl border border-neutral-100/60 bg-white p-1.5 shadow-[0_2px_6px_rgba(0,0,0,0.04)] lg:flex-1 lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none">
           <SearchInput
+            label="بحث برقم المعاملة"
+            placeholder="ابحث برقم المعاملة..."
             value={internalTransactionId}
             onChange={setInternalTransactionId}
+          />
+        </div>
+      ) : null}
+
+      {tab === "checkouts" ? (
+        <div className="rounded-2xl border border-neutral-100/60 bg-white p-1.5 shadow-[0_2px_6px_rgba(0,0,0,0.04)] lg:flex-1 lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none">
+          <SearchInput
+            label="بحث في عمليات التحقق"
+            placeholder="ابحث بالاسم أو رقم الجوال..."
+            value={internalSearch}
+            onChange={setInternalSearch}
           />
         </div>
       ) : null}
@@ -125,19 +159,23 @@ function PaymentGatewaysToolbar({
 }
 
 function SearchInput({
+  label,
+  placeholder,
   value,
   onChange,
 }: {
+  label: string;
+  placeholder: string;
   value: string;
   onChange: (value: string) => void;
 }) {
   return (
     <div className="relative flex min-h-12 flex-1 items-center rounded-[14px] px-3 pr-11 sm:min-h-14 sm:px-5 sm:pr-14 lg:min-h-14">
-      <Search className="pointer-events-none absolute right-3 top-1/2 size-5 -translate-y-1/2 text-gray sm:right-5 sm:size-[22px]" />
+      <Search className="pointer-events-none absolute right-3 top-1/2 size-5 shrink-0 -translate-y-1/2 text-gray sm:right-5 sm:size-[22px]" />
       <input
         type="search"
-        aria-label="بحث برقم المعاملة"
-        placeholder="ابحث برقم المعاملة..."
+        aria-label={label}
+        placeholder={placeholder}
         value={value}
         onChange={(event) => onChange(event.target.value)}
         className="h-full w-full bg-transparent text-right text-sm font-normal text-secondary placeholder:text-[#99a1af] sm:text-base"

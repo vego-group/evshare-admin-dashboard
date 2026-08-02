@@ -19,22 +19,22 @@ function AppVersionsStats({ appVersions }: AppVersionsStatsProps) {
       <StatCard
         label="إجمالي الإصدارات"
         value={appVersions.length}
-        icon={<Smartphone className="size-5" />}
+        icon={<Smartphone className="size-5 shrink-0" />}
       />
       <StatCard
         label="الإصدارات النشطة"
         value={activeVersions}
-        icon={<CheckCircle2 className="size-5" />}
+        icon={<CheckCircle2 className="size-5 shrink-0" />}
       />
       <StatCard
         label="التحديثات الحرجة"
         value={criticalVersions}
-        icon={<BellRing className="size-5" />}
+        icon={<BellRing className="size-5 shrink-0" />}
       />
       <StatCard
         label="الإصدارات المؤرشفة"
         value={archivedVersions}
-        icon={<Power className="size-5" />}
+        icon={<Power className="size-5 shrink-0" />}
       />
     </section>
   );

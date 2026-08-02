@@ -31,7 +31,7 @@ function UsersHeader({ viewMode, onViewModeChange, onAddUser }: UsersHeaderProps
               viewMode === "card" && "bg-primary text-secondary shadow-sm hover:bg-primary/90",
             )}
           >
-            <LayoutGrid className="size-5" />
+            <LayoutGrid className="size-5 shrink-0" />
           </Button>
 
           <Button
@@ -46,7 +46,7 @@ function UsersHeader({ viewMode, onViewModeChange, onAddUser }: UsersHeaderProps
               viewMode === "table" && "bg-primary text-secondary shadow-sm hover:bg-primary/90",
             )}
           >
-            <List className="size-5" />
+            <List className="size-5 shrink-0" />
           </Button>
         </div>
 
@@ -55,7 +55,7 @@ function UsersHeader({ viewMode, onViewModeChange, onAddUser }: UsersHeaderProps
           onClick={onAddUser}
           className="h-12 rounded-2xl bg-primary px-6 text-base font-medium text-secondary shadow-[0_4px_12px_rgba(255,213,79,0.25)] hover:bg-primary/90"
         >
-          <Plus className="size-5" />
+          <Plus className="size-5 shrink-0" />
           إضافة مستخدم
         </Button>
       </div>

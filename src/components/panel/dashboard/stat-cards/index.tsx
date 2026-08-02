@@ -89,7 +89,7 @@ function StatCardsSection({ data, period }: StatCardsSectionProps) {
           >
             <div>
               <div className="grid size-10 shrink-0 place-items-center rounded-[10px] bg-neutral-100 text-gray">
-                <Icon className="size-4.5" />
+                <Icon className="size-4.5 shrink-0" />
               </div>
             </div>
 

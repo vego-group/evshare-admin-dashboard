@@ -26,7 +26,7 @@ function VehicleStats({ analysis }: { analysis?: VehiclesAnalysis }) {
             <p className="mt-1 text-2xl font-semibold text-secondary">{value}</p>
           </div>
           <span className={`grid size-12 place-items-center rounded-[10px] ${className}`}>
-            <Icon className="size-5" />
+            <Icon className="size-5 shrink-0" />
           </span>
         </div>
       ))}

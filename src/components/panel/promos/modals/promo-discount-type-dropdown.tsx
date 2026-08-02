@@ -45,7 +45,7 @@ function PromoDiscountTypeDropdown({
         )}
       >
         <span>{selectedLabel}</span>
-        <ChevronDown className={cn("size-5 text-primary transition", isOpen && "rotate-180")} />
+        <ChevronDown className={cn("size-5 shrink-0 text-primary transition", isOpen && "rotate-180")} />
       </button>
 
       {isOpen ? (

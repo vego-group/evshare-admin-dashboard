@@ -25,8 +25,8 @@ export const pricingFields = [
 export type PricingField = (typeof pricingFields)[number][0];
 
 export function formatMoney(value: unknown) {
-  if (value === null || value === undefined || value === "") return "-";
-  return `${value} ر.س`;
+  if (value === null || value === undefined || value === "") return null;
+  return value;
 }
 
 export function formatPercentage(value: unknown) {
@@ -45,7 +45,7 @@ export function formatDate(value?: string) {
 }
 
 export function vehicleTitle(vehicle: VehicleListItem) {
-  return vehicle.label || `Vehicle ${vehicle.id.slice(0, 8)}`;
+  return vehicle.label || vehicle.id.slice(0, 8);
 }
 
 export function buildChangedPayload(

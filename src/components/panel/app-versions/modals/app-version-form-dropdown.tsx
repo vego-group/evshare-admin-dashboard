@@ -53,7 +53,7 @@ function AppVersionFormDropdown({
       >
         <span>{selectedLabel}</span>
         <ChevronDown
-          className={cn("size-5 text-primary transition", isOpen && "rotate-180")}
+          className={cn("size-5 shrink-0 text-primary transition", isOpen && "rotate-180")}
         />
       </button>
 

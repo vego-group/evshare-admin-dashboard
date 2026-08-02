@@ -10,6 +10,8 @@ export const promosAPI = async (
     page: params.page.toString(),
     limit: params.limit.toString(),
     search: params.search,
+    status: params.status,
+    type: params.type,
   });
 
   return await baseAPI("GET", `/promos?${query}`);

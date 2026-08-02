@@ -2,7 +2,6 @@
 
 import type { ReactNode } from "react";
 import { SaudiRiyal } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 import type { WalletTransaction } from "@/types";
@@ -10,22 +9,8 @@ import type { WalletTransaction } from "@/types";
 import { WalletStatusBadge } from "./wallet-status-badge";
 
 function WalletTableRow({ transaction }: { transaction: WalletTransaction }) {
-  const router = useRouter();
-  const handleSelect = () => router.push(`/wallet/${transaction.id}`);
-
   return (
-    <tr
-      tabIndex={0}
-      role="button"
-      onClick={handleSelect}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          handleSelect();
-        }
-      }}
-      className="cursor-pointer text-base font-medium leading-6 text-dark-gray transition hover:bg-primary/5 focus-visible:bg-primary/5 focus-visible:outline-none"
-    >
+    <tr className="text-base font-medium leading-6 text-dark-gray transition hover:bg-primary/5">
       <TableCell dir="ltr" className="max-w-0 text-right">
         <span className="block truncate font-semibold text-secondary">
           {transaction.title}

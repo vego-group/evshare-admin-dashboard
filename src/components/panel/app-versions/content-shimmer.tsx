@@ -1,4 +1,5 @@
 import Shimmer from "@/components/ui/shimmer";
+import EntityTableShimmer from "@/components/panel/roles-permissions/shared/entity-table-shimmer";
 
 function AppVersionsContentShimmer() {
   return (
@@ -16,7 +17,7 @@ function AppVersionsContentShimmer() {
         ))}
       </div>
       <Shimmer className="h-16 rounded-2xl" />
-      <Shimmer className="h-[420px] rounded-lg" />
+      <EntityTableShimmer columns={8} />
     </div>
   );
 }

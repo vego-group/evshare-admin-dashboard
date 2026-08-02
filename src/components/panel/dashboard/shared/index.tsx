@@ -62,7 +62,7 @@ function TrendBadge({ value, direction, className }: TrendBadgeProps) {
         className,
       )}
     >
-      <Icon className="size-3.5" />
+      <Icon className="size-3.5 shrink-0" />
       {value}
     </span>
   );
@@ -81,7 +81,7 @@ function SectionHeading({
         className="rounded-xl border border-primary/10 text-gray hover:bg-primary/10 hover:text-secondary"
         aria-label={actionLabel}
       >
-        <EllipsisVertical className="size-4" />
+        <EllipsisVertical className="size-4 shrink-0" />
       </Button>
 
       <div className="space-y-1 text-right">

@@ -21,7 +21,7 @@ function ContactInfoRow({
   return (
     <div className="flex items-center gap-3">
       <div className="grid size-10 shrink-0 place-items-center rounded-[10px] bg-[#f3f4f6] text-[#4a5565]">
-        <Icon className="size-5" />
+        <Icon className="size-5 shrink-0" />
       </div>
       <div className="min-w-0">
         <p className="text-base font-medium leading-6 text-[#6a7282]">

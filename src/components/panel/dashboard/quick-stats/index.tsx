@@ -73,7 +73,7 @@ function QuickStatsSection({ data }: QuickStatsSectionProps) {
               <div className="space-y-2 text-right">
                 <div className="flex flex-row-reverse items-center gap-2">
                   <div className="grid size-8 place-items-center rounded-[10px] bg-neutral-100 text-gray">
-                    <Icon className="size-4" />
+                    <Icon className="size-4 shrink-0" />
                   </div>
                   <p className="text-sm font-medium text-gray">{item.title}</p>
                 </div>

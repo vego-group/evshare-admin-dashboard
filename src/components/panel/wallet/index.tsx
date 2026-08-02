@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 
 import { PAGE_SIZE } from "@/constants";
 import { useWallet } from "@/hooks/api";
@@ -9,10 +10,14 @@ import type { OrderBy, WalletChartDays, WalletQueryParams, WalletTransactionStat
 import WalletContentShimmer from "./content-shimmer";
 import WalletHeader, { type WalletViewMode } from "./header";
 import WalletStats from "./stats";
-import WalletChart from "./chart";
 import WalletToolbar from "./toolbar";
 import WalletResults from "./results";
 import WalletPagination from "./pagination";
+
+const WalletChart = dynamic(() => import("./chart"), {
+  ssr: false,
+  loading: () => <div className="h-64 w-full animate-pulse rounded-2xl bg-primary/5" />,
+});
 
 type FlatParams = {
   page: string;

@@ -92,7 +92,7 @@ function WebhookLogDetailsPanel({
                   isRetrying && "gap-2",
                 )}
               >
-                {isRetrying ? <Loader /> : <RotateCw className="size-5" />}
+                {isRetrying ? <Loader /> : <RotateCw className="size-5 shrink-0" />}
                 إعادة إرسال الويب هوك
               </Button>
             </footer>

@@ -39,7 +39,7 @@ function ProductsHeader({
                 "bg-primary text-secondary shadow-sm hover:bg-primary/90",
             )}
           >
-            <LayoutGrid className="size-5" />
+            <LayoutGrid className="size-5 shrink-0" />
           </Button>
 
           <Button
@@ -55,7 +55,7 @@ function ProductsHeader({
                 "bg-primary text-secondary shadow-sm hover:bg-primary/90",
             )}
           >
-            <List className="size-5" />
+            <List className="size-5 shrink-0" />
           </Button>
         </div>
 
@@ -64,7 +64,7 @@ function ProductsHeader({
           onClick={onAddProduct}
           className="h-12 rounded-2xl bg-primary px-6 text-base font-medium text-secondary shadow-[0_4px_12px_rgba(255,213,79,0.25)] hover:bg-primary/90"
         >
-          <Plus className="size-5" />
+          <Plus className="size-5 shrink-0" />
           إضافة منتج
         </Button>
       </div>

@@ -35,7 +35,7 @@ function EditOperatingCompany() {
           className="flex size-10 shrink-0 items-center justify-center rounded-full border border-neutral-200 bg-white text-secondary transition hover:bg-neutral-50"
           aria-label="العودة إلى الشركات المشغلة"
         >
-          <ArrowRight className="size-5" />
+          <ArrowRight className="size-5 shrink-0" />
         </button>
         <Header title="تعديل الشركة المشغلة" subtitle="قم بتعديل بيانات الشركة" />
       </div>

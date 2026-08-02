@@ -1,14 +1,17 @@
 "use client";
 
-import { ChevronDown, ListFilter } from "lucide-react";
-import { useState } from "react";
+import { ChevronDown, ListFilter, Search } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
+import useDebounce from "@/hooks/use-debounce";
 import { cn } from "@/lib/utils";
 import type { ComplaintStatus, OrderBy } from "@/types";
 
 type ComplaintsToolbarProps = {
+  searchQuery?: string;
   selectedSort?: OrderBy;
   selectedStatus?: ComplaintStatus;
+  onSearchChange?: (value: string) => void;
   onSortChange?: (value: OrderBy) => void;
   onStatusChange?: (value?: ComplaintStatus) => void;
 };
@@ -31,8 +34,10 @@ const statusOptions: FilterOption<ComplaintStatus | "all">[] = [
 ];
 
 function ComplaintsToolbar({
+  searchQuery = "",
   selectedSort,
   selectedStatus,
+  onSearchChange,
   onSortChange,
   onStatusChange,
 }: ComplaintsToolbarProps) {
@@ -40,9 +45,31 @@ function ComplaintsToolbar({
   const [internalStatus, setInternalStatus] = useState<ComplaintStatus | "all">(
     "all",
   );
+  const [internalSearchQuery, setInternalSearchQuery] = useState(searchQuery);
 
   const sortValue = selectedSort ?? internalSort;
   const statusValue = selectedStatus ?? internalStatus;
+
+  const debouncedSearch = useDebounce(internalSearchQuery, 500);
+  const mounted = useRef(false);
+  const onSearchChangeRef = useRef(onSearchChange);
+
+  useEffect(() => {
+    setInternalSearchQuery(searchQuery);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    onSearchChangeRef.current = onSearchChange;
+  }, [onSearchChange]);
+
+  useEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true;
+      return;
+    }
+
+    onSearchChangeRef.current?.(debouncedSearch);
+  }, [debouncedSearch]);
 
   const handleSortChange = (value: OrderBy) => {
     setInternalSort(value);
@@ -55,20 +82,51 @@ function ComplaintsToolbar({
   };
 
   return (
-    <section className="flex flex-col gap-3.25 sm:flex-row sm:flex-wrap rounded-2xl border border-neutral-100/60 bg-white p-1.5 shadow-[0_2px_6px_rgba(0,0,0,0.04)]">
-      <FilterSelect
-        label="الحالة"
-        options={statusOptions}
-        value={statusValue}
-        onChange={handleStatusChange}
-      />
-      <FilterSelect
-        label="الترتيب"
-        options={sortOptions}
-        value={sortValue}
-        onChange={handleSortChange}
-      />
+    <section className="space-y-3 lg:flex lg:items-center lg:justify-between lg:gap-3 lg:space-y-0 lg:rounded-2xl lg:border lg:border-neutral-100/60 lg:bg-white lg:p-1.5 lg:shadow-[0_2px_6px_rgba(0,0,0,0.04)]">
+      <div className="rounded-2xl border border-neutral-100/60 bg-white p-1.5 shadow-[0_2px_6px_rgba(0,0,0,0.04)] lg:flex-1 lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none">
+        <SearchInput
+          value={internalSearchQuery}
+          onChange={setInternalSearchQuery}
+        />
+      </div>
+
+      <div className="flex flex-col gap-3.25 sm:flex-row sm:flex-wrap lg:shrink-0">
+        <FilterSelect
+          label="الحالة"
+          options={statusOptions}
+          value={statusValue}
+          onChange={handleStatusChange}
+        />
+        <FilterSelect
+          label="الترتيب"
+          options={sortOptions}
+          value={sortValue}
+          onChange={handleSortChange}
+        />
+      </div>
     </section>
+  );
+}
+
+function SearchInput({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <div className="relative flex min-h-12 flex-1 items-center rounded-[14px] px-3 pr-11 sm:min-h-14 sm:px-5 sm:pr-14 lg:min-h-14">
+      <Search className="pointer-events-none absolute right-3 top-1/2 size-5 shrink-0 -translate-y-1/2 text-gray sm:right-5 sm:size-[22px]" />
+      <input
+        type="search"
+        aria-label="بحث في الشكاوى"
+        placeholder="ابحث برقم الشكوى أو اسم المستخدم أو نص الشكوى..."
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="h-full w-full bg-transparent text-right text-sm font-normal text-secondary placeholder:text-[#99a1af] sm:text-base"
+      />
+    </div>
   );
 }
 
@@ -102,12 +160,12 @@ function FilterSelect<T extends string>({
       >
         <span className="flex items-center gap-1">
           <span>{selectedLabel}</span>
-          <ListFilter className="size-3.5 text-primary" />
+          <ListFilter className="size-3.5 shrink-0 text-primary" />
         </span>
 
         <ChevronDown
           className={cn(
-            "size-5 text-primary transition",
+            "size-5 shrink-0 text-primary transition",
             isOpen && "rotate-180",
           )}
         />

@@ -149,7 +149,7 @@ function OrderReceiptSection({
           rel="noreferrer"
           className="inline-flex items-center gap-1.5 rounded-[10px] border border-neutral-200 px-3 py-2 text-sm font-medium text-secondary hover:bg-neutral-50"
         >
-          <FileDown className="size-4" />
+          <FileDown className="size-4 shrink-0" />
           عرض السند الأصلي (PDF غير موقع)
         </a>
         {receipt.status !== "pending_signature" && attachments.length
@@ -161,7 +161,7 @@ function OrderReceiptSection({
                 rel="noreferrer"
                 className="inline-flex items-center gap-1.5 rounded-[10px] border border-neutral-200 px-3 py-2 text-sm font-medium text-secondary hover:bg-neutral-50"
               >
-                <FileText className="size-4" />
+                <FileText className="size-4 shrink-0" />
                 المستند الموقع من العميل{" "}
                 {attachments.length > 1 ? index + 1 : ""}
               </a>
@@ -222,7 +222,7 @@ function OrderReceiptSection({
                             ? "محفظة"
                             : "تواصل مباشر"}
                           {item.refund_amount != null ? (
-                            <span className="inline-flex items-center gap-1">
+                            <span className="inline-flex items-center gap-1" dir="ltr">
                               {" "}
                               <SaudiRiyal className="size-3 shrink-0" />{" "}
                               {item.refund_amount}
@@ -265,7 +265,7 @@ function OrderReceiptSection({
               {reviewLoading === "approved" ? (
                 <Loader />
               ) : (
-                <CheckCircle className="size-5" />
+                <CheckCircle className="size-5 shrink-0" />
               )}
               موافقة
             </Button>
@@ -277,7 +277,7 @@ function OrderReceiptSection({
               disabled={Boolean(reviewLoading)}
               className="h-12 rounded-[14px] bg-danger text-base font-medium text-white hover:bg-danger/90"
             >
-              <XCircle className="size-5" />
+              <XCircle className="size-5 shrink-0" />
               رفض
             </Button>
           </PermissionGate>

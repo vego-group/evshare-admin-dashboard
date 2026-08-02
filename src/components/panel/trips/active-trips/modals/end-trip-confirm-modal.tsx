@@ -16,7 +16,7 @@ function EndTripConfirmModal({ open, isSubmitting, onClose, onConfirm }: Props) 
     <Modal open={open} onClose={onClose} title="إنهاء الرحلة" contentClassName="max-w-md" closeButtonClassname="hidden">
       <div className="space-y-5 p-1 text-center">
         <span className="mx-auto grid size-14 place-items-center rounded-full bg-green-50 text-green-600">
-          <CheckCircle2 className="size-7" />
+          <CheckCircle2 className="size-7 shrink-0" />
         </span>
         <p className="text-sm leading-6 text-dark-gray">
           هل تريد إنهاء هذه الرحلة كما لو أتمها المستخدم؟ سيتم احتساب التكلفة النهائية وقفل المركبة.

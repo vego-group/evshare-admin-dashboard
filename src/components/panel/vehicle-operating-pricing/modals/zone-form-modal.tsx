@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { Controller, useForm, type FieldErrors } from "react-hook-form";
 import toast from "react-hot-toast";
+import dynamic from "next/dynamic";
 
 import { Button } from "@/components/ui/button";
 import InputErrorMessage from "@/components/ui/input-error-message";
@@ -17,7 +18,6 @@ import {
 import type { VehicleZoneValues } from "@/schemas/vehicle-operating-pricing";
 import { addVehicleZoneAPI, editVehicleZoneAPI } from "@/services/mutations";
 import type { VehicleListItem, VehicleZone } from "@/types";
-import ZoneMapPicker from "./zone-map-picker";
 import ZoneTypeDropdown from "./zone-type-dropdown";
 import {
   buildChangedZonePayload,
@@ -25,6 +25,11 @@ import {
   zoneFormResolver,
   zoneValuesFromExisting,
 } from "./zone-form-utils";
+
+const ZoneMapPicker = dynamic(() => import("./zone-map-picker"), {
+  ssr: false,
+  loading: () => <div className="h-64 w-full animate-pulse rounded-2xl bg-primary/5" />,
+});
 
 const inputClassName =
   "h-12 w-full rounded-[12px] border border-primary bg-primary/4 px-3 outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none";

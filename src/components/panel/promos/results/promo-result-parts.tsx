@@ -10,7 +10,7 @@ import {
 import { cn } from "@/lib/utils";
 import type { PromoContext, PromoListItem } from "@/types";
 
-const typeLabels: Record<PromoContext, string> = {
+export const typeLabels: Record<PromoContext, string> = {
   order: "طلبات",
   subscription: "اشتراكات",
   both: "طلبات واشتراكات",
@@ -24,7 +24,7 @@ export function PromoIcon({ className }: { className?: string }) {
         className,
       )}
     >
-      <Ticket className="size-5" />
+      <Ticket className="size-5 shrink-0" />
     </div>
   );
 }
@@ -125,11 +125,11 @@ function ActionButton({
       aria-label={label}
       onClick={onClick}
       className={cn(
-        "grid size-10 place-items-center rounded-lg transition hover:brightness-95",
+        "grid size-8 place-items-center rounded-lg transition hover:brightness-95",
         className,
       )}
     >
-      <Icon className="size-5" />
+      <Icon className="size-4 shrink-0" />
     </button>
   );
 }

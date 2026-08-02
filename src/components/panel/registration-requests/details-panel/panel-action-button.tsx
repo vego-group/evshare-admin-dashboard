@@ -29,7 +29,7 @@ function PanelActionButton({
         className,
       )}
     >
-      {isLoading ? <Loader /> : <Icon className="size-5" />}
+      {isLoading ? <Loader /> : <Icon className="size-5 shrink-0" />}
       {children}
     </button>
   );

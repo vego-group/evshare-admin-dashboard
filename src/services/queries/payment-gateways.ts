@@ -23,6 +23,7 @@ export const paymentCheckoutsAPI = async (
       typeof params.is_processed === "boolean"
         ? Number(params.is_processed)
         : undefined,
+    search: params.search,
   });
 
   return await baseAPI("GET", `/payment/checkouts?${query}`);

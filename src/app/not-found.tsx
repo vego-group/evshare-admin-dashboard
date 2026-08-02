@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 function NotFound() {
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-6 py-16">
+    <main className="relative flex min-h-svh items-center justify-center overflow-hidden bg-background px-6 py-16">
       <div className="absolute inset-0 -z-10">
         <div className="absolute left-1/2 -top-32 h-72 w-72 -translate-x-1/2 rounded-full bg-secondary/20 blur-3xl" />
         <div className="absolute -bottom-24 -right-8 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />

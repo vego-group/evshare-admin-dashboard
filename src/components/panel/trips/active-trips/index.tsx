@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import dynamic from "next/dynamic";
 
 import Header from "@/components/ui/header";
 import { useActiveTrips } from "@/hooks/api";
@@ -10,8 +11,12 @@ import { cancelTripAPI, endTripAPI } from "@/services/mutations";
 import type { TripListItem } from "@/types";
 
 import { CancelTripConfirmModal, EndTripConfirmModal } from "./modals";
-import TripMap from "./trip-map";
 import TripSidebar from "./trip-sidebar";
+
+const TripMap = dynamic(() => import("./trip-map"), {
+  ssr: false,
+  loading: () => <div className="h-full w-full animate-pulse rounded-2xl bg-primary/5" />,
+});
 
 function ActiveTrips() {
   const queryClient = useQueryClient();

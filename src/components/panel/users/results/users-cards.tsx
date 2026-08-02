@@ -55,7 +55,7 @@ function UsersCards({ users, onDeleteUser }: UsersCardsProps) {
           </div>
 
           <div className="mt-5 space-y-3 rounded-[14px] bg-background p-4 text-right">
-            <DetailLine label="الجوال" value={formatSaudiPhoneNumber(user.mobile)} />
+            <DetailLine label="الجوال" value={formatSaudiPhoneNumber(user.mobile)} dir="ltr" />
             <DetailLine label="التحقق" value={user.mobile_verified ? "موثّق" : "غير موثّق"} />
             <DetailLine label="تاريخ الإنشاء" value={formatDate(user.created_at)} />
           </div>

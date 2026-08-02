@@ -25,7 +25,7 @@ function TripSidebar({
     return (
       <div className="flex h-full w-full flex-col items-center justify-center gap-3 rounded-2xl border border-primary/15 bg-white p-6 text-center">
         <span className="grid size-14 place-items-center rounded-full bg-primary/8 text-primary">
-          <Radar className="size-7" />
+          <Radar className="size-7 shrink-0" />
         </span>
         <div className="space-y-1">
           <p className="text-sm font-semibold text-secondary">
@@ -96,7 +96,7 @@ function TripSidebar({
                 }}
                 className="flex items-center gap-1 rounded-lg bg-green-50 px-2 py-1 text-xs font-medium text-green-600 transition hover:brightness-95"
               >
-                <CheckCircle2 className="size-3.5" /> إنهاء
+                <CheckCircle2 className="size-3.5 shrink-0" /> إنهاء
               </button>
               <button
                 type="button"
@@ -106,7 +106,7 @@ function TripSidebar({
                 }}
                 className="flex items-center gap-1 rounded-lg bg-red-50 px-2 py-1 text-xs font-medium text-red-600 transition hover:brightness-95"
               >
-                <Ban className="size-3.5" /> إلغاء
+                <Ban className="size-3.5 shrink-0" /> إلغاء
               </button>
             </div>
           </article>

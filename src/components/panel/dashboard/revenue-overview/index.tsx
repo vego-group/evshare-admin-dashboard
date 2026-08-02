@@ -5,15 +5,21 @@ import type {
   DashboardPeriod,
   DashboardRevenueChart,
 } from "@/types";
+import dynamic from "next/dynamic";
+
 import { useIsMobile } from "@/hooks";
 import { DashboardSectionCard } from "../shared";
-import RevenueOverviewChart from "./revenue-overview-chart";
 import {
   revenueChartMargins,
   revenueChartMarginsMobile,
 } from "./revenue-overview.constants";
 import RevenueOverviewControls from "./revenue-overview-controls";
 import RevenueOverviewInfoPanel from "./revenue-overview-info-panel";
+
+const RevenueOverviewChart = dynamic(() => import("./revenue-overview-chart"), {
+  ssr: false,
+  loading: () => <div className="h-64 w-full animate-pulse rounded-2xl bg-primary/5" />,
+});
 
 type RevenueOverviewSectionProps = {
   data?: DashboardRevenueChart;

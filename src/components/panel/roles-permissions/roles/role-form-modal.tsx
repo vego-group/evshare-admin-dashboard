@@ -17,14 +17,30 @@ import FormShimmer from "../shared/form-shimmer";
 import { roleFormResolver } from "../shared/form-resolvers";
 import ToggleField from "../shared/toggle-field";
 
-type Props = { open: boolean; role?: Role | null; onClose: () => void; onSaved: () => void };
+type Props = {
+  open: boolean;
+  role?: Role | null;
+  onClose: () => void;
+  onSaved: () => void;
+};
 
 export default function RoleFormModal({ open, role, onClose, onSaved }: Props) {
   const [submitError, setSubmitError] = useState<unknown>(null);
-  const { isLoading: detailLoading, error: detailError } = useRole(role?.id ?? null);
-  const { register, control, handleSubmit, reset, formState: { errors, isSubmitting, isDirty } } = useForm<RoleEditFormValues>({
+  const { isLoading: detailLoading, error: detailError } = useRole(
+    role?.id ?? null,
+  );
+  const {
+    register,
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting, isDirty },
+  } = useForm<RoleEditFormValues>({
     resolver: roleFormResolver,
-    defaultValues: { name: role?.name ?? "", allowed_user: role?.allowed_user ?? false },
+    defaultValues: {
+      name: role?.name ?? "",
+      allowed_user: role?.allowed_user ?? false,
+    },
     mode: "onChange",
   });
 
@@ -32,8 +48,14 @@ export default function RoleFormModal({ open, role, onClose, onSaved }: Props) {
   // defaultValues won't reflect a newly selected role. Force a fresh reset
   // every time it opens (and clear stale values when it closes).
   useEffect(() => {
-    if (!open) { reset({ name: "", allowed_user: false }); return; }
-    reset({ name: role?.name ?? "", allowed_user: role?.allowed_user ?? false });
+    if (!open) {
+      reset({ name: "", allowed_user: false });
+      return;
+    }
+    reset({
+      name: role?.name ?? "",
+      allowed_user: role?.allowed_user ?? false,
+    });
   }, [open, role, reset]);
 
   async function submit(values: RoleEditFormValues) {
@@ -51,21 +73,57 @@ export default function RoleFormModal({ open, role, onClose, onSaved }: Props) {
   }
 
   return (
-    <Modal open={open} onClose={onClose} title={role ? "تعديل الدور" : "إضافة دور"} contentClassName="max-w-lg rounded-2xl">
-      {role && detailLoading ? <FormShimmer fields={2} /> : detailError || submitError ? (
-        <div className="p-4"><EntityError error={detailError ?? submitError} /></div>
-      ) : <form onSubmit={handleSubmit(submit)} className="space-y-5 p-5">
-        <FormField label="اسم الدور" error={errors.name?.message}>
-          <input className={inputClass} {...register("name")} />
-        </FormField>
-        <Controller control={control} name="allowed_user" render={({ field }) => (
-          <ToggleField label="السماح للمستخدم" checked={field.value} onChange={field.onChange} />
-        )} />
-        <div className="grid grid-cols-2 gap-3 pt-2">
-          <Button type="button" variant="ghost" onClick={onClose} disabled={isSubmitting} className="h-12 rounded-[14px] bg-neutral-100 text-dark-gray">إلغاء</Button>
-          <Button disabled={isSubmitting || !isDirty} className="h-12 rounded-[14px] text-secondary">{isSubmitting ? <Loader /> : "حفظ"}</Button>
+    <Modal
+      open={open}
+      onClose={onClose}
+      title={role ? "تعديل الدور" : "إضافة دور"}
+      contentClassName="max-w-lg rounded-2xl"
+    >
+      {role && detailLoading ? (
+        <FormShimmer fields={2} />
+      ) : detailError || submitError ? (
+        <div className="p-4">
+          <EntityError error={detailError ?? submitError} />
         </div>
-      </form>}
+      ) : (
+        <form onSubmit={handleSubmit(submit)} className="space-y-5 p-5">
+          <FormField
+            label="اسم الدور"
+            error={errors.name?.message}
+            gapClassName="space-y-2"
+          >
+            <input className={inputClass} {...register("name")} />
+          </FormField>
+          <Controller
+            control={control}
+            name="allowed_user"
+            render={({ field }) => (
+              <ToggleField
+                label="السماح للمستخدم"
+                checked={field.value}
+                onChange={field.onChange}
+              />
+            )}
+          />
+          <div className="grid grid-cols-2 gap-3 pt-2">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={onClose}
+              disabled={isSubmitting}
+              className="h-12 rounded-[14px] bg-neutral-100 text-dark-gray"
+            >
+              إلغاء
+            </Button>
+            <Button
+              disabled={isSubmitting || !isDirty}
+              className="h-12 rounded-[14px] text-secondary"
+            >
+              {isSubmitting ? <Loader /> : "حفظ"}
+            </Button>
+          </div>
+        </form>
+      )}
     </Modal>
   );
 }
