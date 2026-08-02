@@ -72,18 +72,18 @@ function ConsultationRequestsToolbar({
 
       <div className="flex flex-col gap-[13px] sm:flex-row sm:flex-wrap lg:shrink-0">
         <FilterSelect
-          label="الترتيب"
-          options={sortOptions}
-          value={selectedSort}
-          onChange={onSortChange}
-        />
-        <FilterSelect
           label="الحالة"
           options={statusOptions}
           value={selectedStatus ?? "all"}
           onChange={(value) =>
             onStatusChange(value === "all" ? undefined : value)
           }
+        />
+        <FilterSelect
+          label="الترتيب"
+          options={sortOptions}
+          value={selectedSort}
+          onChange={onSortChange}
         />
       </div>
     </section>

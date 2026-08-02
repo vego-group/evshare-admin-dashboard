@@ -44,7 +44,10 @@ export function isPromoExpired(promo: PromoListItem) {
 }
 
 export function StatusBadge({ promo }: { promo: PromoListItem }) {
-  if (isPromoExpired(promo)) {
+  const status = promo.status ?? (isPromoExpired(promo) ? "expired" : promo.is_active ? "active" : "inactive");
+  const isActive = status === "active";
+
+  if (status === "expired") {
     return (
       <span className="inline-flex h-8.5 w-fit items-center justify-center gap-2 whitespace-nowrap rounded-full bg-gray-100 px-4 text-sm font-medium text-dark-gray">
         <span className="size-2 rounded-full bg-gray-400" />
@@ -57,7 +60,7 @@ export function StatusBadge({ promo }: { promo: PromoListItem }) {
     <span
       className={cn(
         "inline-flex h-8.5 w-fit items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 text-sm font-medium",
-        promo.is_active
+        isActive
           ? "bg-green-50 text-green-600"
           : "bg-gray-100 text-dark-gray",
       )}
@@ -65,10 +68,10 @@ export function StatusBadge({ promo }: { promo: PromoListItem }) {
       <span
         className={cn(
           "size-2 rounded-full",
-          promo.is_active ? "bg-green-500" : "bg-gray-400",
+          isActive ? "bg-green-500" : "bg-gray-400",
         )}
       />
-      {promo.is_active ? "نشط" : "غير نشط"}
+      {isActive ? "نشط" : "غير نشط"}
     </span>
   );
 }
