@@ -11,8 +11,8 @@ export const complaintsAPI = async (
   params: ComplaintsQueryParams,
 ): Promise<ComplaintsListResponse> => {
   const query = buildQuery({
-    page: params.page.toString(),
-    limit: PAGE_SIZE.toString(),
+    page: params.page,
+    limit: params.limit ?? PAGE_SIZE,
     status: params.status,
     order_by: params.order_by,
     search: params.search,
