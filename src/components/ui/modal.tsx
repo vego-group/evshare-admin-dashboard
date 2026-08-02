@@ -1,3 +1,5 @@
+"use client";
+
 import { X } from "lucide-react";
 import {
   Dialog,
@@ -8,9 +10,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { cn } from "@/lib";
 import { ScrollArea } from "./scroll-area";
+import { TOAST_SUCCESS_EVENT } from "@/lib/toast-events";
 
 interface IProps {
   open: boolean;
@@ -37,6 +40,15 @@ function Modal({
   descriptionClassName,
   closeButtonClassname,
 }: IProps) {
+  useEffect(() => {
+    if (!open) return;
+
+    const closeModal = () => onClose();
+
+    window.addEventListener(TOAST_SUCCESS_EVENT, closeModal);
+    return () => window.removeEventListener(TOAST_SUCCESS_EVENT, closeModal);
+  }, [onClose, open]);
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent

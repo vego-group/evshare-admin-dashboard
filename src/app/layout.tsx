@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import QueryProvider from "@/provider";
+import ToastSuccessListener from "@/provider/toast-success-listener";
 
 export const metadata: Metadata = {
   title: "Admin EV Share - Electric Mobility Platform",
@@ -18,6 +19,7 @@ export default function RootLayout({
     <html lang="ar" dir="rtl">
       <body className="antialiased">
         <QueryProvider>
+          <ToastSuccessListener />
           {children}
           <Toaster />
         </QueryProvider>
