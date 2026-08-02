@@ -1,23 +1,39 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { SaudiRiyal } from "lucide-react";
+import { Eye, SaudiRiyal } from "lucide-react";
 
 import type { WalletTransaction } from "@/types";
 
 import { WalletStatusBadge } from "../table/wallet-status-badge";
 
-function WalletCards({ transactions }: { transactions: WalletTransaction[] }) {
+function WalletCards({
+  transactions,
+  onViewTransaction,
+}: {
+  transactions: WalletTransaction[];
+  onViewTransaction: (transaction: WalletTransaction) => void;
+}) {
   return (
     <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
       {transactions.map((transaction) => (
-        <WalletCard key={transaction.id} transaction={transaction} />
+        <WalletCard
+          key={transaction.id}
+          transaction={transaction}
+          onView={() => onViewTransaction(transaction)}
+        />
       ))}
     </section>
   );
 }
 
-function WalletCard({ transaction }: { transaction: WalletTransaction }) {
+function WalletCard({
+  transaction,
+  onView,
+}: {
+  transaction: WalletTransaction;
+  onView: () => void;
+}) {
   return (
     <article className="overflow-hidden rounded-2xl border border-neutral-100 bg-white p-4 transition hover:shadow-md">
       <div className="flex items-start justify-between gap-2">
@@ -64,8 +80,21 @@ function WalletCard({ transaction }: { transaction: WalletTransaction }) {
             </span>
           }
         />
-        <DetailLine label="التاريخ" value={formatDate(transaction.created_at)} dir="ltr" />
+        <DetailLine
+          label="التاريخ"
+          value={formatDate(transaction.created_at)}
+          dir="ltr"
+        />
       </div>
+
+      <button
+        type="button"
+        onClick={onView}
+        className="mt-4 inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-blue-50 text-sm font-semibold text-blue-600 transition hover:brightness-95"
+      >
+        <Eye className="size-4 shrink-0" />
+        عرض التفاصيل
+      </button>
     </article>
   );
 }

@@ -3,15 +3,25 @@ import type { WalletTransaction } from "@/types";
 import WalletTableHeader from "./wallet-table-header";
 import WalletTableRow from "./wallet-table-row";
 
-function WalletTable({ transactions }: { transactions: WalletTransaction[] }) {
+function WalletTable({
+  transactions,
+  onViewTransaction,
+}: {
+  transactions: WalletTransaction[];
+  onViewTransaction: (transaction: WalletTransaction) => void;
+}) {
   return (
     <section className="overflow-hidden rounded-lg bg-white">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-277.5 border-separate border-spacing-0 text-right">
+        <table className="w-full min-w-300 border-separate border-spacing-0 text-right">
           <WalletTableHeader />
           <tbody>
             {transactions.map((transaction) => (
-              <WalletTableRow key={transaction.id} transaction={transaction} />
+              <WalletTableRow
+                key={transaction.id}
+                transaction={transaction}
+                onView={() => onViewTransaction(transaction)}
+              />
             ))}
           </tbody>
         </table>

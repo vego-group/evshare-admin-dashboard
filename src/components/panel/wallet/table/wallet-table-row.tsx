@@ -1,14 +1,20 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { SaudiRiyal } from "lucide-react";
+import { Eye, SaudiRiyal } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import type { WalletTransaction } from "@/types";
 
 import { WalletStatusBadge } from "./wallet-status-badge";
 
-function WalletTableRow({ transaction }: { transaction: WalletTransaction }) {
+function WalletTableRow({
+  transaction,
+  onView,
+}: {
+  transaction: WalletTransaction;
+  onView: () => void;
+}) {
   return (
     <tr className="text-base font-medium leading-6 text-dark-gray transition hover:bg-primary/5">
       <TableCell dir="ltr" className="max-w-0 text-right">
@@ -30,6 +36,16 @@ function WalletTableRow({ transaction }: { transaction: WalletTransaction }) {
       </TableCell>
       <TableCell>{transaction.user_id}</TableCell>
       <TableCell dir="ltr">{formatDate(transaction.created_at)}</TableCell>
+      <TableCell className="max-w-none overflow-visible">
+        <button
+          type="button"
+          aria-label="عرض تفاصيل المعاملة"
+          onClick={onView}
+          className="grid size-8 place-items-center rounded-lg bg-blue-50 text-blue-600 transition hover:brightness-95"
+        >
+          <Eye className="size-4 shrink-0" />
+        </button>
+      </TableCell>
     </tr>
   );
 }

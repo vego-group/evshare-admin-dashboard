@@ -2,10 +2,16 @@
 
 import { useState } from "react";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
 
 import { PAGE_SIZE } from "@/constants";
 import { useWallet } from "@/hooks/api";
-import type { OrderBy, WalletChartDays, WalletQueryParams, WalletTransactionStatus } from "@/types";
+import type {
+  OrderBy,
+  WalletChartDays,
+  WalletQueryParams,
+  WalletTransactionStatus,
+} from "@/types";
 
 import WalletContentShimmer from "./content-shimmer";
 import WalletHeader, { type WalletViewMode } from "./header";
@@ -28,6 +34,7 @@ type FlatParams = {
 };
 
 function Wallet() {
+  const router = useRouter();
   const [viewMode, setViewMode] = useState<WalletViewMode>("table");
   const [params, setParams] = useState<FlatParams>({
     page: "1",
@@ -61,7 +68,13 @@ function Wallet() {
               updateParams({ status, page: "1" })
             }
           />
-          <WalletResults transactions={data?.data ?? []} viewMode={viewMode} />
+          <WalletResults
+            transactions={data?.data ?? []}
+            viewMode={viewMode}
+            onViewTransaction={(transaction) =>
+              router.push(`/wallet/${transaction.id}`)
+            }
+          />
           <WalletPagination
             meta={data?.meta}
             onPageChange={(page) => updateParams({ page: String(page) })}
