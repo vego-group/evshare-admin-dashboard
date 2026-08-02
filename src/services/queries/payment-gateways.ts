@@ -42,6 +42,7 @@ export const paymentTransactionsAPI = async (
     limit: PAGE_SIZE,
     gateway: params.gateway,
     status: params.status,
+    search: params.search,
     transaction_id: params.transaction_id,
   });
 

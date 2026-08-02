@@ -14,12 +14,10 @@ type PaymentGatewaysToolbarProps = {
   isProcessed?: boolean;
   search?: string;
   transactionStatus?: PaymentTransactionStatus;
-  transactionId?: string;
   onPayableTypeChange?: (value?: string) => void;
   onProcessedChange?: (value?: boolean) => void;
   onSearchChange?: (value?: string) => void;
   onTransactionStatusChange?: (value?: PaymentTransactionStatus) => void;
-  onTransactionIdChange?: (value?: string) => void;
 };
 
 const payableTypeOptions = [
@@ -47,27 +45,20 @@ function PaymentGatewaysToolbar({
   isProcessed,
   search,
   transactionStatus,
-  transactionId,
   onPayableTypeChange,
   onProcessedChange,
   onSearchChange,
   onTransactionStatusChange,
-  onTransactionIdChange,
 }: PaymentGatewaysToolbarProps) {
-  const [internalTransactionId, setInternalTransactionId] = useState(
-    transactionId ?? "",
+  const [internalTransactionSearch, setInternalTransactionSearch] = useState(
+    search ?? "",
   );
   const [internalSearch, setInternalSearch] = useState(search ?? "");
-  const debouncedTransactionId = useDebounce(internalTransactionId, 500);
+  const debouncedTransactionSearch = useDebounce(internalTransactionSearch, 500);
   const debouncedSearch = useDebounce(internalSearch, 500);
   const mounted = useRef(false);
   const searchMounted = useRef(false);
-  const onTransactionIdChangeRef = useRef(onTransactionIdChange);
   const onSearchChangeRef = useRef(onSearchChange);
-
-  useEffect(() => {
-    onTransactionIdChangeRef.current = onTransactionIdChange;
-  }, [onTransactionIdChange]);
 
   useEffect(() => {
     onSearchChangeRef.current = onSearchChange;
@@ -79,8 +70,8 @@ function PaymentGatewaysToolbar({
       mounted.current = true;
       return;
     }
-    onTransactionIdChangeRef.current?.(debouncedTransactionId || undefined);
-  }, [debouncedTransactionId, tab]);
+    onSearchChangeRef.current?.(debouncedTransactionSearch || undefined);
+  }, [debouncedTransactionSearch, tab]);
 
   useEffect(() => {
     if (tab !== "checkouts") return;
@@ -98,8 +89,8 @@ function PaymentGatewaysToolbar({
           <SearchInput
             label="بحث برقم المعاملة"
             placeholder="ابحث برقم المعاملة..."
-            value={internalTransactionId}
-            onChange={setInternalTransactionId}
+            value={internalTransactionSearch}
+            onChange={setInternalTransactionSearch}
           />
         </div>
       ) : null}
