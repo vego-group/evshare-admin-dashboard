@@ -52,7 +52,9 @@ function WebhookLogs() {
             onProcessedChange={(is_processed) =>
               updateParams({ is_processed, page: 1 })
             }
-            onSearchChange={(search) => updateParams({ search, page: 1 })}
+            onSearchChange={(search) =>
+              updateParams({ search: search?.trim() || undefined, page: 1 })
+            }
           />
           <WebhookLogsTable
             logs={data?.data ?? []}

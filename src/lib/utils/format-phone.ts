@@ -13,7 +13,15 @@ export function formatPhoneNumber(phone: string) {
 
 export function formatSaudiPhoneNumber(phone: number | string | null | undefined) {
   const raw = String(phone ?? "");
-  const digits = raw.replace(/\D/g, "");
+  let digits = raw.replace(/\D/g, "");
+
+  if (digits.startsWith("00")) {
+    digits = digits.slice(2);
+  }
+
+  if (digits.length === 10 && digits.startsWith("05")) {
+    digits = digits.slice(1);
+  }
 
   if (digits.length === 9 && digits.startsWith("5")) {
     return `+966 ${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(5)}`;
