@@ -53,7 +53,7 @@ function CategoryDetailsModal({
                 </div>
               )}
               <div className="min-w-0 space-y-2">
-                <h3 className="max-w-full break-all text-lg font-semibold leading-7 text-secondary sm:break-words">
+                <h3 className="max-w-full break-all text-lg font-semibold leading-7 text-secondary sm:wrap-break-word">
                   {category.name}
                 </h3>
                 <StatusBadge active={category.active} />
@@ -74,7 +74,7 @@ function CategoryDetailsModal({
             </section>
           </>
         ) : (
-          <div className="flex min-h-[220px] items-center justify-center rounded-[14px] bg-background px-4 text-center text-base text-gray">
+          <div className="flex min-h-55 items-center justify-center rounded-[14px] bg-background px-4 text-center text-base text-gray">
             تعذر تحميل تفاصيل التصنيف.
           </div>
         )}
@@ -87,7 +87,7 @@ function StatusBadge({ active }: { active: boolean }) {
   return (
     <span
       className={cn(
-        "mt-2 inline-flex h-[34px] w-fit items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 text-sm font-medium",
+        "mt-2 inline-flex h-8.5 w-fit items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 text-sm font-medium",
         active ? "bg-green-50 text-green-600" : "bg-gray-100 text-dark-gray",
       )}
     >
@@ -106,7 +106,7 @@ function DetailRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-col items-start gap-1 rounded-[10px] bg-white px-4 py-3 text-right">
       <span className="text-sm text-gray">{label}</span>
-      <span className="min-w-0 max-w-full break-all text-base font-medium text-secondary sm:break-words">
+      <span className="min-w-0 max-w-full break-all text-base font-medium text-secondary sm:wrap-break-word">
         {value}
       </span>
     </div>
