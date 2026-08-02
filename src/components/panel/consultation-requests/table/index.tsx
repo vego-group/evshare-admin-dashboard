@@ -29,14 +29,14 @@ function ConsultationRequestsTable({
   return (
     <section className="overflow-hidden rounded-lg bg-white">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[1024px] border-separate border-spacing-0 text-right">
+        <table className="w-full min-w-[1024px] table-fixed border-separate border-spacing-0 text-right">
           <thead>
             <tr className="bg-primary/8 text-base font-semibold leading-6 text-dark-gray">
               <TableHead className="w-[211px]">الاسم</TableHead>
-              <TableHead>الهاتف</TableHead>
+              <TableHead className="w-47.5">الهاتف</TableHead>
               <TableHead className="w-[250px]">البريد الإلكتروني</TableHead>
-              <TableHead>الحالة</TableHead>
-              <TableHead>التاريخ</TableHead>
+              <TableHead className="w-45">الحالة</TableHead>
+              <TableHead className="w-48.25">التاريخ</TableHead>
             </tr>
           </thead>
           <tbody>
@@ -114,7 +114,7 @@ function ConsultationRequestTableRow({
           {formatSaudiPhoneNumber(request.phone)}
         </TableCell>
         <TableCell className="max-w-0">
-          <span className="block truncate text-left" dir="ltr">
+          <span className="block truncate text-right" dir="ltr">
             {request.email}
           </span>
         </TableCell>

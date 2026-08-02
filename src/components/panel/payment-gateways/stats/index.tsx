@@ -37,25 +37,25 @@ export function CheckoutStatsCards({
         {
           label: "المعروض",
           value: checkouts.length,
-          icon: <CreditCard className="size-5 text-primary" />,
+          icon: <CreditCard className="size-5 shrink-0 text-primary" />,
           iconBg: "bg-primary/10",
         },
         {
           label: "معالج",
           value: processed,
-          icon: <CheckCircle2 className="size-5 text-green" />,
+          icon: <CheckCircle2 className="size-5 shrink-0 text-green" />,
           iconBg: "bg-green-50",
         },
         {
           label: "غير معالج",
           value: unprocessed,
-          icon: <Clock3 className="size-5 text-orange-500" />,
+          icon: <Clock3 className="size-5 shrink-0 text-orange-500" />,
           iconBg: "bg-amber-50",
         },
         {
           label: "إجمالي المبالغ",
           value: <MoneyValue amount={totalAmount} />,
-          icon: <CircleDollarSign className="size-5 text-blue" />,
+          icon: <CircleDollarSign className="size-5 shrink-0 text-blue" />,
           iconBg: "bg-blue/10",
         },
       ]}
@@ -74,25 +74,25 @@ export function TransactionStatsCards({
         {
           label: "الإجمالي",
           value: analytics?.total ?? 0,
-          icon: <ReceiptText className="size-5 text-primary" />,
+          icon: <ReceiptText className="size-5 shrink-0 text-primary" />,
           iconBg: "bg-primary/10",
         },
         {
           label: "مدفوع",
           value: analytics?.paid ?? 0,
-          icon: <CheckCircle2 className="size-5 text-green" />,
+          icon: <CheckCircle2 className="size-5 shrink-0 text-green" />,
           iconBg: "bg-green-50",
         },
         {
           label: "قيد البدء",
           value: analytics?.initiated ?? 0,
-          icon: <Clock3 className="size-5 text-orange-500" />,
+          icon: <Clock3 className="size-5 shrink-0 text-orange-500" />,
           iconBg: "bg-amber-50",
         },
         {
           label: "فشل",
           value: analytics?.failed ?? 0,
-          icon: <XCircle className="size-5 text-red" />,
+          icon: <XCircle className="size-5 shrink-0 text-red" />,
           iconBg: "bg-red-50",
         },
       ]}

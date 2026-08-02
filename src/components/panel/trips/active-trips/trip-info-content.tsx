@@ -107,14 +107,14 @@ function TripInfoContent({
           onClick={() => onEndTrip(trip)}
           className="flex items-center justify-center gap-1 rounded-[10px] bg-green-50 px-2 py-2 text-xs font-medium text-green-600 transition hover:brightness-95"
         >
-          <CheckCircle2 className="size-3.5" /> إنهاء
+          <CheckCircle2 className="size-3.5 shrink-0" /> إنهاء
         </button>
         <button
           type="button"
           onClick={() => onCancelTrip(trip)}
           className="flex items-center justify-center gap-1 rounded-[10px] bg-red-50 px-2 py-2 text-xs font-medium text-red-600 transition hover:brightness-95"
         >
-          <Ban className="size-3.5" /> إلغاء
+          <Ban className="size-3.5 shrink-0" /> إلغاء
         </button>
       </div>
     </div>

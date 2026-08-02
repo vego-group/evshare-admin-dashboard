@@ -181,7 +181,7 @@ function MethodButton({
           : "border-neutral-200 text-gray hover:bg-neutral-50",
       )}
     >
-      <Icon className="size-4" />
+      <Icon className="size-4 shrink-0" />
       {label}
     </button>
   );

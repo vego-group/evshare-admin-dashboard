@@ -58,7 +58,7 @@ function VehicleActions({
             aria-label="المزيد من الإجراءات"
             className="grid size-8 place-items-center rounded-lg bg-primary/8 text-dark-gray transition hover:brightness-95"
           >
-            <MoreVertical className="size-4" />
+            <MoreVertical className="size-4 shrink-0" />
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
@@ -89,7 +89,7 @@ function VehicleActions({
 function Action({ icon: Icon, label, onClick, className }: { icon: LucideIcon; label: string; onClick: () => void; className: string }) {
   return (
     <button type="button" aria-label={label} onClick={onClick} className={cn("grid size-8 place-items-center rounded-lg transition hover:brightness-95", className)}>
-      <Icon className="size-4" />
+      <Icon className="size-4 shrink-0" />
     </button>
   );
 }

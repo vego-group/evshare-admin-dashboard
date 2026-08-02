@@ -17,13 +17,11 @@ import {
   CommandPanelModal,
   CommissionModal,
   VehicleDeleteConfirmModal,
-  VehicleDetailsModal,
   VehicleEditModal,
   ZonesModal,
 } from "./modals";
 
 type ModalKey =
-  | "details"
   | "edit"
   | "commission"
   | "zones"
@@ -46,10 +44,7 @@ function VehicleOperatingPricing() {
     }
     return Array.from(byId.values());
   }, [allVehicles]);
-  const shouldFetchVehicle =
-    activeVehicle &&
-    modal !== null &&
-    modal !== "delete";
+  const shouldFetchVehicle = activeVehicle && modal !== null && modal !== "delete";
   const { data: vehicleData } = useVehicle(shouldFetchVehicle ? activeVehicle.id : null);
   const selectedVehicle = vehicleData?.data ?? activeVehicle;
 
@@ -88,7 +83,7 @@ function VehicleOperatingPricing() {
             companies={companies}
             params={params}
             onParamsChange={(next) => setParams((current) => ({ ...current, ...next }))}
-            onView={openModal("details")}
+            onView={(vehicle) => router.push(`/vehicle-operating-pricing/${vehicle.id}`)}
             onEdit={openModal("edit")}
             onCommission={openModal("commission")}
             onManageZone={openModal("zones")}
@@ -97,7 +92,6 @@ function VehicleOperatingPricing() {
           />
         </>
       )}
-      <VehicleDetailsModal open={modal === "details"} vehicle={selectedVehicle} onClose={() => setModal(null)} />
       <VehicleEditModal key={`edit-${selectedVehicle?.id ?? "none"}`} open={modal === "edit"} vehicle={selectedVehicle} isSaving={isSaving} setIsSaving={setIsSaving} onSaved={refresh} onClose={() => setModal(null)} />
       <CommissionModal key={`commission-${modal === "commission" ? "open" : "closed"}-${selectedVehicle?.operation_company?.id ?? selectedVehicle?.id ?? "none"}`} open={modal === "commission"} vehicle={selectedVehicle} isSaving={isSaving} setIsSaving={setIsSaving} onSaved={refresh} onClose={() => setModal(null)} />
       <ZonesModal key={`zones-${selectedVehicle?.id ?? "none"}`} open={modal === "zones"} vehicle={selectedVehicle} isSaving={isSaving} setIsSaving={setIsSaving} onSaved={refresh} onClose={() => setModal(null)} />

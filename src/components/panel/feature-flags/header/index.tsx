@@ -17,7 +17,7 @@ function FeatureFlagsHeader({ onAdd }: { onAdd: () => void }) {
           onClick={onAdd}
           className="h-12 w-fit rounded-2xl bg-primary px-6 text-secondary"
         >
-          <Plus className="size-5" />
+          <Plus className="size-5 shrink-0" />
           إضافة ميزة
         </Button>
       </PermissionGate>

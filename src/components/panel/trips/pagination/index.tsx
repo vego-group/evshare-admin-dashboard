@@ -12,9 +12,9 @@ function TripsPagination({ meta, onPageChange }: { meta?: TripsPaginationMeta; o
     <section className="flex flex-col items-center justify-center gap-3 rounded-lg bg-white px-4 py-3 text-sm text-dark-gray">
       <p className="order-2 text-center">عرض {from}-{to} من {meta.total}</p>
       <div className="order-1 flex items-center justify-center gap-2" dir="ltr">
-        <Button type="button" variant="outline" size="icon-sm" disabled={meta.currentPage <= 1} onClick={() => onPageChange(meta.currentPage - 1)}><ChevronLeft className="size-4" /></Button>
+        <Button type="button" variant="outline" size="icon-sm" disabled={meta.currentPage <= 1} onClick={() => onPageChange(meta.currentPage - 1)}><ChevronLeft className="size-4 shrink-0" /></Button>
         {pages.map((page) => <Button key={page} type="button" variant={page === meta.currentPage ? "default" : "outline"} size="sm" onClick={() => onPageChange(page)} className="min-w-8">{page}</Button>)}
-        <Button type="button" variant="outline" size="icon-sm" disabled={meta.currentPage >= meta.lastPage} onClick={() => onPageChange(meta.currentPage + 1)}><ChevronRight className="size-4" /></Button>
+        <Button type="button" variant="outline" size="icon-sm" disabled={meta.currentPage >= meta.lastPage} onClick={() => onPageChange(meta.currentPage + 1)}><ChevronRight className="size-4 shrink-0" /></Button>
       </div>
     </section>
   );

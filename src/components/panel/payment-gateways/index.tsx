@@ -150,11 +150,15 @@ function PaymentGateways() {
                 tab="checkouts"
                 payableType={checkoutParams.payable_type}
                 isProcessed={checkoutParams.is_processed}
+                search={checkoutParams.search}
                 onPayableTypeChange={(payable_type) =>
                   updateCheckoutParams({ payable_type, page: 1 })
                 }
                 onProcessedChange={(is_processed) =>
                   updateCheckoutParams({ is_processed, page: 1 })
+                }
+                onSearchChange={(search) =>
+                  updateCheckoutParams({ search, page: 1 })
                 }
               />
               <PaymentCheckoutsTable

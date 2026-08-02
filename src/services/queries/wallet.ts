@@ -1,10 +1,6 @@
 import { baseAPI } from "..";
 import { buildQuery } from "@/lib/utils/build-query";
-import type {
-  WalletListResponse,
-  WalletQueryParams,
-  WalletTransactionResponse,
-} from "@/types";
+import type { WalletListResponse, WalletQueryParams } from "@/types";
 
 export const walletAPI = async (
   params: WalletQueryParams,
@@ -19,8 +15,3 @@ export const walletAPI = async (
 
   return await baseAPI("GET", `/wallet?${query}`);
 };
-
-export const singleWalletTransactionAPI = async (
-  transactionId: string,
-): Promise<WalletTransactionResponse> =>
-  await baseAPI("GET", `/wallet/${transactionId}`);

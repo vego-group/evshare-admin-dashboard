@@ -95,7 +95,7 @@ function OrdersToolbar({
 function SearchInput({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   return (
     <div className="relative flex min-h-12 flex-1 items-center rounded-[14px] px-3 pr-11 sm:min-h-14 sm:px-5 sm:pr-14 lg:min-h-14">
-      <Search className="pointer-events-none absolute right-3 top-1/2 size-5 -translate-y-1/2 text-gray sm:right-5 sm:size-5.5" />
+      <Search className="pointer-events-none absolute right-3 top-1/2 size-5 shrink-0 -translate-y-1/2 text-gray sm:right-5 sm:size-5.5" />
       <input
         type="search"
         aria-label="بحث في الطلبات"
@@ -134,9 +134,9 @@ function FilterSelect<T extends string>({
       >
         <span className="flex items-center gap-1">
           <span>{selectedLabel}</span>
-          <ListFilter className="size-3.5 text-primary" />
+          <ListFilter className="size-3.5 shrink-0 text-primary" />
         </span>
-        <ChevronDown className={cn("size-5 text-primary transition", isOpen && "rotate-180")} />
+        <ChevronDown className={cn("size-5 shrink-0 text-primary transition", isOpen && "rotate-180")} />
       </button>
       {isOpen && <div className="fixed inset-0 z-20" onClick={() => setIsOpen(false)} />}
       {isOpen ? (

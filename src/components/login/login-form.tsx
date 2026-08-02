@@ -70,7 +70,7 @@ function LoginForm() {
             <Loader />
           ) : (
             <>
-              <LogIn className="size-4" />
+              <LogIn className="size-4 shrink-0" />
               إرسال رمز التحقق
             </>
           )}

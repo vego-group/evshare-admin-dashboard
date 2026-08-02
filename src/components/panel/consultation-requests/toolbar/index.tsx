@@ -99,7 +99,7 @@ function SearchInput({
 }) {
   return (
     <div className="relative flex min-h-12 flex-1 items-center rounded-[14px] px-3 pr-11 sm:min-h-14 sm:px-5 sm:pr-14 lg:min-h-14">
-      <Search className="pointer-events-none absolute right-3 top-1/2 size-5 -translate-y-1/2 text-gray sm:right-5 sm:size-[22px]" />
+      <Search className="pointer-events-none absolute right-3 top-1/2 size-5 shrink-0 -translate-y-1/2 text-gray sm:right-5 sm:size-[22px]" />
       <input
         type="search"
         aria-label="بحث في طلبات الاستشارة"
@@ -141,12 +141,12 @@ function FilterSelect<T extends string>({
       >
         <span className="flex items-center gap-1">
           <span>{selectedOption?.label ?? value}</span>
-          <ListFilter className="size-3.5 text-primary" />
+          <ListFilter className="size-3.5 shrink-0 text-primary" />
         </span>
 
         <ChevronDown
           className={cn(
-            "size-5 text-primary transition",
+            "size-5 shrink-0 text-primary transition",
             isOpen && "rotate-180",
           )}
         />

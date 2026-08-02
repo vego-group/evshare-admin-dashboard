@@ -97,7 +97,7 @@ function ConsultationStatusDropdown({
       >
         <span>{currentLabel}</span>
         <ChevronDown
-          className={cn("size-3.5 transition", open && "rotate-180")}
+          className={cn("size-3.5 shrink-0 transition", open && "rotate-180")}
         />
       </button>
 

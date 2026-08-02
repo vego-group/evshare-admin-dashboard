@@ -23,7 +23,7 @@ function VehicleDeleteConfirmModal({ open, vehicleName, isDeleting, onClose, onC
     >
       <div className="space-y-5 p-1 text-center">
         <span className="mx-auto grid size-14 place-items-center rounded-full bg-red-50 text-red-500">
-          <AlertTriangle className="size-7" />
+          <AlertTriangle className="size-7 shrink-0" />
         </span>
         <p className="text-sm leading-6 text-dark-gray">
           هل تريد حذف {vehicleName ?? "هذه المركبة"}؟ لا يمكن التراجع عن هذا الإجراء.

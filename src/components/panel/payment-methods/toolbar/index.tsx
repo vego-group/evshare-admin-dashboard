@@ -71,7 +71,7 @@ function PaymentMethodsToolbar({
   return (
     <section className="space-y-3 rounded-2xl border border-neutral-100/60 bg-white p-1.5 shadow-[0_2px_6px_rgba(0,0,0,0.04)] lg:flex lg:items-center lg:justify-between lg:gap-3 lg:space-y-0">
       <label className="relative block flex-1 rounded-[14px] bg-white">
-        <Search className="absolute right-4 top-1/2 size-5 -translate-y-1/2 text-gray" />
+        <Search className="absolute right-4 top-1/2 size-5 shrink-0 -translate-y-1/2 text-gray" />
         <input
           type="search"
           value={searchValue}
@@ -136,7 +136,7 @@ function PaymentMethodsToolbar({
                     isSelected && "bg-primary/15 text-secondary",
                   )}
                 >
-                  <Icon className="size-4 text-primary" />
+                  <Icon className="size-4 shrink-0 text-primary" />
                   <span>{option.label}</span>
                 </button>
               );
@@ -200,7 +200,7 @@ function PaymentMethodsToolbar({
                     isSelected && "bg-primary/15 text-secondary",
                   )}
                 >
-                  <Icon className="size-4 text-primary" />
+                  <Icon className="size-4 shrink-0 text-primary" />
                   <span>{option.label}</span>
                 </button>
               );

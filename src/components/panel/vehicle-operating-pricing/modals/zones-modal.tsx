@@ -57,7 +57,7 @@ function ZonesModal({ vehicle, open, isSaving, setIsSaving, onClose, onSaved }: 
               }}
               className="gap-1.5 bg-primary text-secondary hover:bg-primary/90"
             >
-              <Plus className="size-4" /> إضافة منطقة
+              <Plus className="size-4 shrink-0" /> إضافة منطقة
             </Button>
           </div>
 
@@ -85,7 +85,7 @@ function ZonesModal({ vehicle, open, isSaving, setIsSaving, onClose, onSaved }: 
                       }}
                       className="grid size-8 place-items-center rounded-lg bg-amber-50 text-orange-500 transition hover:brightness-95"
                     >
-                      <Pencil className="size-4" />
+                      <Pencil className="size-4 shrink-0" />
                     </button>
                     <button
                       type="button"
@@ -93,7 +93,7 @@ function ZonesModal({ vehicle, open, isSaving, setIsSaving, onClose, onSaved }: 
                       onClick={() => setDeleteTarget(zone)}
                       className="grid size-8 place-items-center rounded-lg bg-red-50 text-red-500 transition hover:brightness-95"
                     >
-                      <Trash2 className="size-4" />
+                      <Trash2 className="size-4 shrink-0" />
                     </button>
                   </div>
                 </li>

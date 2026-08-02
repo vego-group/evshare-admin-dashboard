@@ -26,7 +26,7 @@ export default function RolesPermissions() {
             "flex h-11 items-center justify-center gap-2 rounded-[14px] px-5 text-sm font-medium transition",
             section === value ? "bg-primary text-secondary shadow-sm" : "text-dark-gray hover:bg-primary/8",
           )}>
-            <Icon className="size-4" /> {label}
+            <Icon className="size-4 shrink-0" /> {label}
           </button>
         ))}
       </nav>

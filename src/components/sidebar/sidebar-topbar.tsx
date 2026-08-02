@@ -26,7 +26,7 @@ function SidebarTopbar({ onOpenMobileSidebar }: SidebarTopbarProps) {
             className="shrink-0 rounded-md border border-neutral-300 p-2 text-secondary transition hover:bg-neutral-100 md:hidden"
             aria-label="فتح القائمة"
           >
-            <Menu size={20} />
+            <Menu size={20} className="shrink-0" />
           </button>
 
           <div className="flex min-w-0 items-center gap-2">

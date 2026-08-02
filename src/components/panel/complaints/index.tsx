@@ -42,8 +42,12 @@ function Complaints() {
           />
           <ComplaintsStatsCards data={data?.analytics} />
           <ComplaintsToolbar
+            searchQuery={params.search ?? ""}
             selectedSort={params.order_by ?? "desc"}
             selectedStatus={params.status}
+            onSearchChange={(search: string) =>
+              updateParams({ search: search || undefined, page: 1 })
+            }
             onSortChange={(order_by: OrderBy) =>
               updateParams({ order_by, page: 1 })
             }

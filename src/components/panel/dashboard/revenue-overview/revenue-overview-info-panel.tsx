@@ -22,7 +22,7 @@ function RevenueOverviewInfoPanel({
   return (
     <div className="space-y-4 text-right sm:space-y-6">
       <div className="inline-flex items-center gap-2 self-end text-sm font-medium text-secondary">
-        <Bolt className="size-4 text-secondary" />
+        <Bolt className="size-4 shrink-0 text-secondary" />
         إيرادات المنصة
       </div>
 

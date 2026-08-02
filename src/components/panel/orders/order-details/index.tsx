@@ -36,7 +36,7 @@ function OrderDetails() {
           className="flex size-10 items-center justify-center rounded-full border border-neutral-200 bg-white text-secondary transition hover:bg-neutral-50"
           aria-label="العودة"
         >
-          <ArrowRight className="size-5" />
+          <ArrowRight className="size-5 shrink-0" />
         </button>
         <div>
           <h1 className="text-2xl font-semibold leading-8 text-secondary">تفاصيل الطلب</h1>

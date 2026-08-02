@@ -37,7 +37,7 @@ function OperatingCompaniesHeader({
                 "bg-primary text-secondary shadow-sm hover:bg-primary/90",
             )}
           >
-            <LayoutGrid className="size-5" />
+            <LayoutGrid className="size-5 shrink-0" />
           </Button>
 
           <Button
@@ -53,7 +53,7 @@ function OperatingCompaniesHeader({
                 "bg-primary text-secondary shadow-sm hover:bg-primary/90",
             )}
           >
-            <List className="size-5" />
+            <List className="size-5 shrink-0" />
           </Button>
         </div>
       </div>

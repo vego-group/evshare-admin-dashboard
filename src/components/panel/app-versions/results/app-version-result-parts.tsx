@@ -1,7 +1,6 @@
-import { Eye, Pencil, Trash2 } from "lucide-react";
+import { Eye, Pencil, Trash2, type LucideIcon } from "lucide-react";
 
 import PermissionGate from "@/components/permission-gate";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { AppVersionStatus } from "@/types";
 
@@ -40,60 +39,66 @@ export function CriticalBadge({ isCritical }: { isCritical: boolean }) {
 }
 
 export function AppVersionActions({
+  compact = false,
   onView,
   onEdit,
   onDelete,
 }: {
+  compact?: boolean;
   onView: () => void;
   onEdit: () => void;
   onDelete: () => void;
 }) {
   return (
-    <div className="flex items-center gap-2">
+    <div className={cn("flex items-center gap-2", compact && "w-full")}>
       <PermissionGate slug="Admin View App Releases">
-        <ActionButton label="عرض الإصدار" onClick={onView}>
-          <Eye className="size-4" />
-        </ActionButton>
+        <ActionButton
+          icon={Eye}
+          onClick={onView}
+          label="عرض الإصدار"
+          className={cn("bg-blue-50 text-blue-600", compact && "flex-1")}
+        />
       </PermissionGate>
       <PermissionGate slug="Admin Edit App Releases">
-        <ActionButton label="تعديل الإصدار" onClick={onEdit}>
-          <Pencil className="size-4" />
-        </ActionButton>
+        <ActionButton
+          icon={Pencil}
+          onClick={onEdit}
+          label="تعديل الإصدار"
+          className={cn("bg-amber-50 text-orange-500", compact && "flex-1")}
+        />
       </PermissionGate>
       <PermissionGate slug="Admin Delete App Releases">
-        <ActionButton label="حذف الإصدار" onClick={onDelete} danger>
-          <Trash2 className="size-4" />
-        </ActionButton>
+        <ActionButton
+          icon={Trash2}
+          onClick={onDelete}
+          label="حذف الإصدار"
+          className={cn("bg-red-50 text-red-500", compact && "flex-1")}
+        />
       </PermissionGate>
     </div>
   );
 }
 
 function ActionButton({
+  icon: Icon,
+  className,
   label,
-  children,
-  danger,
   onClick,
 }: {
+  icon: LucideIcon;
+  className: string;
   label: string;
-  children: React.ReactNode;
-  danger?: boolean;
   onClick: () => void;
 }) {
   return (
-    <Button
+    <button
       type="button"
-      variant="ghost"
-      size="icon-sm"
       aria-label={label}
       onClick={onClick}
-      className={cn(
-        "rounded-xl bg-neutral-50 text-dark-gray hover:bg-primary/15",
-        danger && "text-red-600 hover:bg-red-50",
-      )}
+      className={cn("grid size-8 place-items-center rounded-lg transition hover:brightness-95", className)}
     >
-      {children}
-    </Button>
+      <Icon className="size-4 shrink-0" />
+    </button>
   );
 }
 

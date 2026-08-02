@@ -109,7 +109,7 @@ function Toolbar({ editor }: { editor: Editor }) {
             isActive && "bg-primary/30 text-secondary",
           )}
         >
-          <Icon className="size-4" />
+          <Icon className="size-4 shrink-0" />
         </button>
       ))}
     </div>

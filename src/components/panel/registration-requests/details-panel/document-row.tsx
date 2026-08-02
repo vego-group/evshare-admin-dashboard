@@ -20,7 +20,9 @@ function DocumentRow({
       <div className="flex items-center gap-2">
         <StatusIcon
           className={
-            complete ? "size-[18px] text-green" : "size-[18px] text-red"
+            complete
+              ? "size-[18px] shrink-0 text-green"
+              : "size-[18px] shrink-0 text-red"
           }
         />
         <button
@@ -28,7 +30,7 @@ function DocumentRow({
           aria-label={`تحميل ${label}`}
           className="grid size-5 place-items-center text-blue transition hover:brightness-90"
         >
-          <Download className="size-4" />
+          <Download className="size-4 shrink-0" />
         </button>
       </div>
     </div>

@@ -34,7 +34,7 @@ function TopModelsSection() {
                 {/* الموديل */}
                 <div className="flex min-w-0 items-center gap-2 sm:gap-3">
                   <div className="grid size-8 sm:size-10 shrink-0 place-items-center rounded-full bg-primary/20 text-secondary">
-                    <Icon className="size-4 sm:size-5" />
+                    <Icon className="size-4 shrink-0 sm:size-5" />
                   </div>
 
                   <div className="text-right min-w-0">

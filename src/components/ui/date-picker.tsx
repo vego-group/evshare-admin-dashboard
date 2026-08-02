@@ -87,10 +87,10 @@ function DatePicker({
               }}
               className="grid size-5 place-items-center rounded-full text-gray transition hover:bg-neutral-200 hover:text-dark-gray"
             >
-              <X className="size-3.5" />
+              <X className="size-3.5 shrink-0" />
             </span>
           ) : null}
-          <Calendar className="size-5 text-primary" />
+          <Calendar className="size-5 shrink-0 text-primary" />
         </span>
       </button>
 
@@ -103,7 +103,7 @@ function DatePicker({
               onClick={() => setViewDate((current) => addMonths(current, -1))}
               className="grid size-8 place-items-center rounded-lg text-dark-gray transition hover:bg-primary/10"
             >
-              <ChevronLeft className="size-4" />
+              <ChevronLeft className="size-4 shrink-0" />
             </button>
             <span className="text-sm font-semibold text-secondary">
               {new Intl.DateTimeFormat("ar-EG", {
@@ -117,7 +117,7 @@ function DatePicker({
               onClick={() => setViewDate((current) => addMonths(current, 1))}
               className="grid size-8 place-items-center rounded-lg text-dark-gray transition hover:bg-primary/10"
             >
-              <ChevronRight className="size-4" />
+              <ChevronRight className="size-4 shrink-0" />
             </button>
           </div>
 

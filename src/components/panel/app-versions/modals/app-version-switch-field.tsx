@@ -35,7 +35,7 @@ function AppVersionSwitchField({
             : "border-neutral-300 bg-white",
         )}
       >
-        {checked ? <Check className="size-4" /> : null}
+        {checked ? <Check className="size-4 shrink-0" /> : null}
       </span>
     </Button>
   );

@@ -42,7 +42,7 @@ export function UserIcon({ className }: { className?: string }) {
         className,
       )}
     >
-      <User className="size-5" />
+      <User className="size-5 shrink-0" />
     </div>
   );
 }
@@ -141,20 +141,28 @@ function ActionButton({
       aria-label={label}
       onClick={handleClick}
       className={cn(
-        "grid size-10 place-items-center rounded-lg transition hover:brightness-95",
+        "grid size-8 place-items-center rounded-lg transition hover:brightness-95",
         className,
       )}
     >
-      <Icon className="size-5" />
+      <Icon className="size-4 shrink-0" />
     </button>
   );
 }
 
-export function DetailLine({ label, value }: { label: string; value: string }) {
+export function DetailLine({
+  label,
+  value,
+  dir,
+}: {
+  label: string;
+  value: string;
+  dir?: "ltr" | "rtl";
+}) {
   return (
     <div className="flex items-center justify-between gap-4">
       <span className="shrink-0 text-sm text-gray">{label}</span>
-      <span className="min-w-0 truncate text-sm font-medium text-secondary">
+      <span dir={dir} className="min-w-0 truncate text-sm font-medium text-secondary">
         {value}
       </span>
     </div>

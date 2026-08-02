@@ -28,7 +28,7 @@ function WalletHeader({ viewMode, onViewModeChange }: WalletHeaderProps) {
             viewMode === "card" && "bg-primary text-secondary shadow-sm hover:bg-primary/90",
           )}
         >
-          <LayoutGrid className="size-5" />
+          <LayoutGrid className="size-5 shrink-0" />
         </Button>
         <Button
           type="button"
@@ -42,7 +42,7 @@ function WalletHeader({ viewMode, onViewModeChange }: WalletHeaderProps) {
             viewMode === "table" && "bg-primary text-secondary shadow-sm hover:bg-primary/90",
           )}
         >
-          <List className="size-5" />
+          <List className="size-5 shrink-0" />
         </Button>
       </div>
     </section>

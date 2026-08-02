@@ -16,7 +16,7 @@ function CancelTripConfirmModal({ open, isSubmitting, onClose, onConfirm }: Prop
     <Modal open={open} onClose={onClose} title="إلغاء الرحلة" contentClassName="max-w-md" closeButtonClassname="hidden">
       <div className="space-y-5 p-1 text-center">
         <span className="mx-auto grid size-14 place-items-center rounded-full bg-red-50 text-red-500">
-          <Ban className="size-7" />
+          <Ban className="size-7 shrink-0" />
         </span>
         <p className="text-sm leading-6 text-dark-gray">
           هل تريد إلغاء هذه الرحلة؟ سيتم عكس أي مبالغ محصلة وإيقاف تشغيل المركبة.

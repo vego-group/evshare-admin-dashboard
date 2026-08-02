@@ -38,7 +38,7 @@ function TripsTable({ trips, onView }: Props) {
                     onClick={() => onView(trip)}
                     className="grid size-8 place-items-center rounded-lg bg-blue-50 text-blue-600 transition hover:brightness-95"
                   >
-                    <Eye className="size-4" />
+                    <Eye className="size-4 shrink-0" />
                   </button>
                 </TableCell>
               </tr>

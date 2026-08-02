@@ -152,10 +152,10 @@ function OperatingCompanyFormFields({
           <div className="flex flex-col gap-2">
             <label className="flex min-h-14 cursor-pointer items-center gap-3 rounded-[14px] border border-dashed border-primary bg-primary/4 px-4 py-2 text-sm font-medium text-dark-gray transition hover:bg-primary/8">
               <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-primary/15 text-secondary">
-                <ImageIcon className="size-5" />
+                <ImageIcon className="size-5 shrink-0" />
               </span>
               <span className="flex-1">اختر شعار الشركة</span>
-              <Upload className="size-5 text-primary" />
+              <Upload className="size-5 shrink-0 text-primary" />
               <input
                 type="file"
                 accept="image/*"

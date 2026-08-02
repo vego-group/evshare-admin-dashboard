@@ -1,13 +1,10 @@
 import Image from "next/image";
-import { TrendingDown, TrendingUp } from "lucide-react";
 
 import type { ConsultationAnalytics } from "@/types";
 
 type ConsultationStat = {
   label: string;
   value: string;
-  change: string;
-  trend: "up" | "down";
   iconSrc: string;
   iconClassName: string;
 };
@@ -21,87 +18,62 @@ function ConsultationRequestsStats({
     {
       label: "إجمالي الطلبات",
       value: String(analytics?.total ?? 0),
-      change: "12%",
-      trend: "up",
       iconSrc: "/images/total-consultation-requests.svg",
       iconClassName: "bg-[#eff6ff]",
     },
     {
       label: "قيد المراجعة",
       value: String(analytics?.pending ?? 0),
-      change: "2%",
-      trend: "down",
       iconSrc: "/images/new-consultation-requests.svg",
       iconClassName: "bg-primary/10",
     },
     {
       label: "الطلبات المغلقة",
       value: String(analytics?.closed ?? 0),
-      change: "8%",
-      trend: "up",
       iconSrc: "/images/closed-consultation-requests.svg",
       iconClassName: "bg-[#f9f5fa]",
     },
     {
       label: "تم التواصل",
       value: String(analytics?.reviewed ?? 0),
-      change: "3%",
-      trend: "down",
       iconSrc: "/images/completed-consultation-requests.svg",
       iconClassName: "bg-green/10",
     },
   ];
 
   return (
-    <section className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
       {consultationStats.map((stat) => (
         <ConsultationStatCard key={stat.label} stat={stat} />
       ))}
-    </section>
+    </div>
   );
 }
 
 function ConsultationStatCard({ stat }: { stat: ConsultationStat }) {
-  const TrendIcon = stat.trend === "up" ? TrendingUp : TrendingDown;
-  const trendClassName = stat.trend === "up" ? "text-green" : "text-red";
-
   return (
-    <article className="relative h-[177px] overflow-hidden rounded-2xl border border-neutral-100/80 bg-white p-6">
-      <div className="pointer-events-none absolute -right-16 -top-16 size-32 rounded-full bg-primary/8 opacity-50" />
-
-      <div className="relative flex h-full flex-col justify-between">
-        <div className="flex items-start justify-between gap-4">
-          <div
-            className={`grid size-12 shrink-0 place-items-center rounded-[14px] ${stat.iconClassName}`}
-          >
-            <Image
-              src={stat.iconSrc}
-              alt=""
-              width={24}
-              height={24}
-              className="size-6"
-              unoptimized
-            />
-          </div>
-
-          <span
-            className={`inline-flex items-center gap-1 text-sm leading-5 ${trendClassName}`}
-          >
-            <TrendIcon className="size-4" strokeWidth={2} />
-            {stat.change}
-          </span>
-        </div>
-
-        <div className="text-right">
-          <p className="text-[36px] font-normal leading-10 text-secondary">
-            {stat.value}
-          </p>
-          <p className="mt-2 text-sm font-normal leading-5 text-dark-gray">
-            {stat.label}
-          </p>
-        </div>
+    <div className="flex flex-row items-center justify-between gap-3 rounded-[14px] border border-[#e5e7eb] bg-white px-5 py-5">
+      <div className="flex min-w-0 flex-col gap-1">
+        <p className="whitespace-nowrap text-sm font-normal leading-5 text-gray">
+          {stat.label}
+        </p>
+        <p className="truncate text-2xl font-semibold leading-8 text-secondary">
+          {stat.value}
+        </p>
       </div>
-    </article>
+      <div
+        className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-[10px] ${stat.iconClassName}`}
+      >
+        <Image
+          src={stat.iconSrc}
+          alt=""
+          width={24}
+          height={24}
+          className="size-6"
+          unoptimized
+        />
+      </div>
+    </div>
   );
 }
 

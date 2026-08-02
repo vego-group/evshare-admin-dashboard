@@ -31,7 +31,7 @@ function RequestDetailsFooter({
               approveLoading && "gap-2",
             )}
           >
-            {approveLoading ? <Loader /> : <CheckCircle className="size-5" />}
+            {approveLoading ? <Loader /> : <CheckCircle className="size-5 shrink-0" />}
             موافقة
           </Button>
         </PermissionGate>
@@ -45,7 +45,7 @@ function RequestDetailsFooter({
               rejectLoading && "gap-2",
             )}
           >
-            {rejectLoading ? <Loader /> : <XCircle className="size-5" />}
+            {rejectLoading ? <Loader /> : <XCircle className="size-5 shrink-0" />}
             رفض
           </Button>
         </PermissionGate>

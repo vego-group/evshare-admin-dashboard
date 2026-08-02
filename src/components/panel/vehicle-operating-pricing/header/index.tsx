@@ -15,7 +15,7 @@ function VehicleOperatingPricingHeader({ onOpenMap }: { onOpenMap: () => void })
         onClick={onOpenMap}
         className="h-12 self-start rounded-2xl bg-primary px-6 text-base font-medium text-secondary shadow-[0_4px_12px_rgba(255,213,79,0.25)] hover:bg-primary/90 sm:self-auto"
       >
-        <MapPin className="size-5" />
+        <MapPin className="size-5 shrink-0" />
         خريطة الأسطول
       </Button>
     </section>

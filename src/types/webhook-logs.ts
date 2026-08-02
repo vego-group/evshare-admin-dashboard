@@ -11,6 +11,7 @@ export type WebhookLogsQueryParams = {
   page: number;
   gateway?: WebhookGateway;
   is_processed?: boolean;
+  search?: string;
 };
 
 export type WebhookLog = {

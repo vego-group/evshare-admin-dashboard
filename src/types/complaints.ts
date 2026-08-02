@@ -9,6 +9,7 @@ export type ComplaintsQueryParams = {
   limit: number;
   status?: ComplaintStatus;
   order_by?: OrderBy;
+  search?: string;
 };
 
 export type ComplaintUser = {

@@ -1,17 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import { ChevronDown, ListFilter } from "lucide-react";
+import { ChevronDown, ListFilter, Search } from "lucide-react";
 
+import useDebounce from "@/hooks/use-debounce";
 import { cn } from "@/lib/utils";
 import type { WebhookGateway } from "@/types";
 
 type WebhookLogsToolbarProps = {
   gateway?: WebhookGateway;
   isProcessed?: boolean;
+  search?: string;
   onGatewayChange: (value?: WebhookGateway) => void;
   onProcessedChange: (value?: boolean) => void;
+  onSearchChange: (value?: string) => void;
 };
 
 const gatewayOptions = [
@@ -30,11 +33,39 @@ const processedOptions = [
 function WebhookLogsToolbar({
   gateway,
   isProcessed,
+  search,
   onGatewayChange,
   onProcessedChange,
+  onSearchChange,
 }: WebhookLogsToolbarProps) {
+  const [internalSearch, setInternalSearch] = useState(search ?? "");
+  const debouncedSearch = useDebounce(internalSearch, 500);
+  const mounted = useRef(false);
+  const onSearchChangeRef = useRef(onSearchChange);
+
+  useEffect(() => {
+    onSearchChangeRef.current = onSearchChange;
+  }, [onSearchChange]);
+
+  useEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true;
+      return;
+    }
+    onSearchChangeRef.current?.(debouncedSearch || undefined);
+  }, [debouncedSearch]);
+
   return (
-    <section className="space-y-3 lg:flex lg:items-center lg:justify-start lg:gap-3 lg:space-y-0 lg:rounded-2xl lg:border lg:border-neutral-100/60 lg:bg-white lg:p-1.5 lg:shadow-[0_2px_6px_rgba(0,0,0,0.04)]">
+    <section className="space-y-3 lg:flex lg:items-center lg:justify-between lg:gap-3 lg:space-y-0 lg:rounded-2xl lg:border lg:border-neutral-100/60 lg:bg-white lg:p-1.5 lg:shadow-[0_2px_6px_rgba(0,0,0,0.04)]">
+      <div className="rounded-2xl border border-neutral-100/60 bg-white p-1.5 shadow-[0_2px_6px_rgba(0,0,0,0.04)] lg:flex-1 lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none">
+        <SearchInput
+          label="بحث في سجلات الويب هوك"
+          placeholder="ابحث بمعرف السجل..."
+          value={internalSearch}
+          onChange={setInternalSearch}
+        />
+      </div>
+
       <div className="flex flex-col gap-3.25 sm:flex-row sm:flex-wrap lg:shrink-0">
         <FilterSelect
           label="بوابة الدفع"
@@ -62,6 +93,32 @@ function WebhookLogsToolbar({
         />
       </div>
     </section>
+  );
+}
+
+function SearchInput({
+  label,
+  placeholder,
+  value,
+  onChange,
+}: {
+  label: string;
+  placeholder: string;
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <div className="relative flex min-h-12 flex-1 items-center rounded-[14px] px-3 pr-11 sm:min-h-14 sm:px-5 sm:pr-14 lg:min-h-14">
+      <Search className="pointer-events-none absolute right-3 top-1/2 size-5 shrink-0 -translate-y-1/2 text-gray sm:right-5 sm:size-[22px]" />
+      <input
+        type="search"
+        aria-label={label}
+        placeholder={placeholder}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="h-full w-full bg-transparent text-right text-sm font-normal text-secondary placeholder:text-[#99a1af] sm:text-base"
+      />
+    </div>
   );
 }
 

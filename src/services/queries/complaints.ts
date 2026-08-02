@@ -15,6 +15,7 @@ export const complaintsAPI = async (
     limit: PAGE_SIZE.toString(),
     status: params.status,
     order_by: params.order_by,
+    search: params.search,
   });
 
   return await baseAPI("GET", `/complaints?${query}`);

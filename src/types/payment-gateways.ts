@@ -24,6 +24,7 @@ export type PaymentCheckoutQueryParams = {
   gateway?: string;
   payable_type?: string;
   is_processed?: boolean;
+  search?: string;
 };
 
 export type PaymentTransactionQueryParams = {

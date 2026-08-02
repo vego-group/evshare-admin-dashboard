@@ -98,7 +98,7 @@ function CommandPanelModal({
                 {pendingCommand === command ? (
                   <Loader />
                 ) : (
-                  <Icon className="size-6" />
+                  <Icon className="size-6 shrink-0" />
                 )}
                 {label}
               </button>

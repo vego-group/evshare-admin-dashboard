@@ -6,7 +6,6 @@ import type { OperatingCompanyListItem } from "@/types";
 import {
   CommissionBadge,
   OperatingCompanyActions,
-  OperatingCompanyLogo,
 } from "./operating-company-result-parts";
 
 type OperatingCompaniesTableProps = {
@@ -27,10 +26,17 @@ function OperatingCompaniesTable({
   return (
     <section className="overflow-hidden rounded-lg bg-white">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-225 border-separate border-spacing-0 text-right">
+        <table className="w-full min-w-270 table-fixed border-separate border-spacing-0 text-right">
+          <colgroup>
+            <col className="w-[22%]" />
+            <col className="w-[16%]" />
+            <col className="w-27.5" />
+            <col className="w-[15%]" />
+            <col className="w-[19%]" />
+            <col className="w-57.5" />
+          </colgroup>
           <thead>
             <tr className="bg-primary/8 text-base font-semibold text-dark-gray">
-              <HeaderCell>الشعار</HeaderCell>
               <HeaderCell>الاسم</HeaderCell>
               <HeaderCell>المعرف</HeaderCell>
               <HeaderCell>العمولة</HeaderCell>
@@ -42,9 +48,6 @@ function OperatingCompaniesTable({
           <tbody>
             {companies.map((company) => (
               <tr key={company.id} className="text-dark-gray">
-                <TableCell truncate={false}>
-                  <OperatingCompanyLogo company={company} />
-                </TableCell>
                 <TableCell>
                   <p className="truncate text-base font-medium" title={company.name}>
                     {company.name}

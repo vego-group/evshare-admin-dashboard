@@ -41,10 +41,10 @@ function FilterSelect<T extends string>({
       >
         <span className="flex items-center gap-1">
           <span>{selectedLabel}</span>
-          <ListFilter className="size-3.5 text-primary" />
+          <ListFilter className="size-3.5 shrink-0 text-primary" />
         </span>
         <ChevronDown
-          className={cn("size-5 text-primary transition", isOpen && "rotate-180")}
+          className={cn("size-5 shrink-0 text-primary transition", isOpen && "rotate-180")}
         />
       </button>
 

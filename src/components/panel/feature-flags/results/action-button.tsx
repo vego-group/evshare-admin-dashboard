@@ -1,35 +1,27 @@
-import type { ReactNode } from "react";
+import type { LucideIcon } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 type Props = {
+  icon: LucideIcon;
   label: string;
-  danger?: boolean;
+  className: string;
   onClick: () => void;
-  children: ReactNode;
 };
 
-function FeatureFlagActionButton({
-  label,
-  danger,
-  onClick,
-  children,
-}: Props) {
+function FeatureFlagActionButton({ icon: Icon, label, className, onClick }: Props) {
   return (
-    <Button
+    <button
       type="button"
-      variant="ghost"
-      size="icon-sm"
       aria-label={label}
       onClick={onClick}
       className={cn(
-        "rounded-xl bg-neutral-50",
-        danger && "text-red-600 hover:bg-red-50",
+        "grid size-8 place-items-center rounded-lg transition hover:brightness-95",
+        className,
       )}
     >
-      {children}
-    </Button>
+      <Icon className="size-4 shrink-0" />
+    </button>
   );
 }
 

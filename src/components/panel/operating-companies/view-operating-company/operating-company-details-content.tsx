@@ -36,7 +36,7 @@ export function OperatingCompanyDetailsContent({ company, isLoading }: Props) {
           </div>
         ) : (
           <div className="flex h-72 w-full items-center justify-center rounded-2xl bg-primary/15 text-secondary">
-            <ImageIcon className="size-16" />
+            <ImageIcon className="size-16 shrink-0" />
           </div>
         )}
         <div className="space-y-2">
@@ -45,7 +45,7 @@ export function OperatingCompanyDetailsContent({ company, isLoading }: Props) {
           </h3>
           <span className="inline-flex h-8.5 w-fit items-center gap-1 whitespace-nowrap rounded-full bg-primary/10 px-4 text-sm font-medium text-secondary">
             {company.commission_percentage ?? 0}
-            <Percent className="size-3.5" />
+            <Percent className="size-3.5 shrink-0" />
           </span>
         </div>
       </div>

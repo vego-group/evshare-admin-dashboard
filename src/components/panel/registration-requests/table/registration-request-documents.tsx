@@ -14,13 +14,13 @@ function RegistrationRequestDocuments({
 
   return (
     <span className="inline-flex items-center justify-center gap-1.5 text-base font-semibold leading-6 text-secondary">
-      <FileText className="size-4 text-gray" />
+      <FileText className="size-4 shrink-0 text-gray" />
 
       <span dir="ltr">
         {completed}/{total}
       </span>
       <StatusIcon
-        className={cn("size-4", isComplete ? "text-green" : "text-orange-500")}
+        className={cn("size-4 shrink-0", isComplete ? "text-green" : "text-orange-500")}
       />
     </span>
   );

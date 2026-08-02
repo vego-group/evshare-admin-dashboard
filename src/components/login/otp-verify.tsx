@@ -11,7 +11,7 @@ interface OtpVerifyProps {
 
 function OtpVerify({ mobile }: OtpVerifyProps) {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#0f1118] px-4 py-8">
+    <main className="relative min-h-svh overflow-hidden bg-[#0f1118] px-4 py-8">
       <div className="pointer-events-none absolute inset-0">
         <Image
           src="/images/scooter.jpg"

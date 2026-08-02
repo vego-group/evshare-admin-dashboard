@@ -16,12 +16,12 @@ function PaymentGatewayTabs({ activeTab, availableTabs, onChange }: PaymentGatew
     {
       label: "عمليات التحقق",
       value: "checkouts",
-      icon: <CreditCard className="size-4" />,
+      icon: <CreditCard className="size-4 shrink-0" />,
     },
     {
       label: "المعاملات",
       value: "transactions",
-      icon: <ReceiptText className="size-4" />,
+      icon: <ReceiptText className="size-4 shrink-0" />,
     },
   ];
   const tabs = allTabs.filter((tab) => availableTabs.includes(tab.value));

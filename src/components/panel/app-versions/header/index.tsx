@@ -22,7 +22,7 @@ function AppVersionsHeader({ onAddAppVersion }: AppVersionsHeaderProps) {
           onClick={onAddAppVersion}
           className="h-12 w-fit rounded-2xl bg-primary px-6 text-base font-medium text-secondary shadow-[0_4px_12px_rgba(255,213,79,0.25)] hover:bg-primary/90"
         >
-          <Plus className="size-5" />
+          <Plus className="size-5 shrink-0" />
           إضافة إصدار
         </Button>
       </PermissionGate>

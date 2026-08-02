@@ -144,7 +144,7 @@ function OtpForm({ mobile }: OtpFormProps) {
             <Loader />
           ) : (
             <>
-              <ShieldCheck className="size-4" />
+              <ShieldCheck className="size-4 shrink-0" />
               تحقق من الرمز
             </>
           )}

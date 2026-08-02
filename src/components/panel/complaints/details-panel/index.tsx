@@ -117,7 +117,7 @@ function ComplaintsDetailsPanel({
                       answerLoading && "gap-2",
                     )}
                   >
-                    {answerLoading ? <Loader /> : <Send className="size-5" />}
+                    {answerLoading ? <Loader /> : <Send className="size-5 shrink-0" />}
                     إرسال الرد
                   </Button>
                   <Button
@@ -140,7 +140,7 @@ function ComplaintsDetailsPanel({
                 onClick={() => setShowAnswerForm(true)}
                 className="h-12 w-full rounded-[14px] bg-primary text-base font-medium leading-6 text-white hover:bg-primary/90"
               >
-                <MessageSquare className="size-5" />
+                <MessageSquare className="size-5 shrink-0" />
                 الرد على الشكوى
               </Button>
             )}

@@ -55,7 +55,7 @@ function ContactUsResults({ settings, onEdit }: Props) {
                       label="تعديل"
                       onClick={() => onEdit(setting)}
                     >
-                      <Pencil className="size-4" />
+                      <Pencil className="size-4 shrink-0" />
                     </ContactUsActionButton>
                   </PermissionGate>
                 </div>

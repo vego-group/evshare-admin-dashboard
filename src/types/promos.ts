@@ -2,10 +2,14 @@ export type PromoContext = "order" | "subscription" | "both";
 
 export type PromoDiscountType = "percentage" | "fixed";
 
+export type PromoStatus = "active" | "inactive" | "expired";
+
 export type PromoCodesQueryParams = {
   page: number;
   limit: number;
   search?: string;
+  status?: PromoStatus;
+  type?: PromoContext;
 };
 
 export type PromoListItem = {

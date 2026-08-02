@@ -68,31 +68,30 @@ function FeatureFlagsResults({
                 <FeatureFlagStatusBadge isEnabled={flag.is_enabled} />
               </td>
               <td className="px-5 py-4">
-                <div className="flex gap-2">
+                <div className="flex items-center gap-2">
                   <PermissionGate slug="Admin Show Feature Flags">
                     <FeatureFlagActionButton
+                      icon={Eye}
                       label="عرض"
                       onClick={() => onView(flag)}
-                    >
-                      <Eye className="size-4" />
-                    </FeatureFlagActionButton>
+                      className="bg-blue-50 text-blue-600"
+                    />
                   </PermissionGate>
                   <PermissionGate slug="Admin Edit Feature Flags">
                     <FeatureFlagActionButton
+                      icon={Pencil}
                       label="تعديل"
                       onClick={() => onEdit(flag)}
-                    >
-                      <Pencil className="size-4" />
-                    </FeatureFlagActionButton>
+                      className="bg-amber-50 text-orange-500"
+                    />
                   </PermissionGate>
                   <PermissionGate slug="Admin Delete Feature Flags">
                     <FeatureFlagActionButton
+                      icon={Trash2}
                       label="حذف"
-                      danger
                       onClick={() => onDelete(flag)}
-                    >
-                      <Trash2 className="size-4" />
-                    </FeatureFlagActionButton>
+                      className="bg-red-50 text-red-500"
+                    />
                   </PermissionGate>
                 </div>
               </td>

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import useDebouncedChange from "@/hooks/use-debounced-change";
-import Dropdown from "./dropdown";
+import FilterSelect from "./filter-select";
 
 type Props = {
   title: string;
@@ -29,13 +29,13 @@ export default function EntityToolbar(props: Props) {
         </div>
         {props.onAdd && (
           <Button onClick={props.onAdd} type="button" className="h-12 rounded-2xl px-6 text-base font-medium text-secondary shadow-[0_4px_12px_rgba(255,213,79,0.25)]">
-            <Plus className="size-5" /> {props.addLabel}
+            <Plus className="size-5 shrink-0" /> {props.addLabel}
           </Button>
         )}
       </div>
       <div className="flex flex-col gap-3 rounded-2xl border border-neutral-100/60 bg-white p-1.5 shadow-[0_2px_6px_rgba(0,0,0,0.04)] sm:flex-row">
         <label className="relative flex min-h-14 flex-1 items-center rounded-[14px] px-5 pr-14">
-          <Search className="pointer-events-none absolute right-5 size-5 text-gray" />
+          <Search className="pointer-events-none absolute right-5 size-5 shrink-0 text-gray" />
           <input
             type="search"
             value={search}
@@ -44,10 +44,10 @@ export default function EntityToolbar(props: Props) {
             className="h-full w-full bg-transparent text-sm text-secondary outline-none placeholder:text-[#99a1af] sm:text-base"
           />
         </label>
-        {props.onSort && <Dropdown className="sm:w-48" value={props.orderBy ?? "desc"} placeholder="الترتيب" options={[
+        {props.onSort && <FilterSelect className="sm:w-48" label="الترتيب" value={props.orderBy ?? "desc"} options={[
           { label: "الأحدث", value: "desc" },
           { label: "الأقدم", value: "asc" },
-        ]} onChange={(value) => props.onSort?.(value as "asc" | "desc")} />}
+        ]} onChange={(value) => props.onSort?.(value)} />}
       </div>
     </header>
   );

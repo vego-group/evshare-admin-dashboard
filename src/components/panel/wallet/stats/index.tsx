@@ -66,7 +66,7 @@ function WalletStats({ data }: { data?: WalletAnalytics }) {
             <div
               className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-[10px] ${stat.iconClassName}`}
             >
-              <Icon className="size-6" />
+              <Icon className="size-6 shrink-0" />
             </div>
           </div>
         );
