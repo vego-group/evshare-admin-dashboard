@@ -22,6 +22,20 @@ export type WalletTransaction = {
   created_at: string;
 };
 
+export type WalletTransactionDetails = WalletTransaction & {
+  user?: {
+    id: string;
+    name: string;
+    mobile: string;
+    bank_account: string | null;
+    role: string;
+  } | null;
+  reference?: {
+    type: string;
+    id: string;
+  } | null;
+};
+
 export type WalletPaginationMeta = {
   currentPage: number;
   lastPage: number;
@@ -51,4 +65,10 @@ export type WalletListResponse = {
   meta: WalletPaginationMeta;
   analytics: WalletAnalytics;
   chart_data: WalletChartEntry[];
+};
+
+export type WalletTransactionDetailsResponse = {
+  error: boolean;
+  message: string;
+  data: WalletTransactionDetails;
 };

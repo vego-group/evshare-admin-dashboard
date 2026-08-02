@@ -52,6 +52,7 @@ function ZoneFormModal({ vehicle, zone, isSaving, open, onClose, onSaved, setIsS
     handleSubmit,
     watch,
     setValue,
+    setError,
     reset,
     formState: { errors, isDirty, dirtyFields },
   } = useForm<VehicleZoneValues>({
@@ -61,6 +62,7 @@ function ZoneFormModal({ vehicle, zone, isSaving, open, onClose, onSaved, setIsS
   });
 
   const mapSectionRef = useRef<HTMLDivElement>(null);
+  const invalidZoneLocationMessage = "يجب أن تقع المنطقة المحددة ضمن نطاق بري صالح";
 
   // The form stays mounted across close/reopen of the same zone (same key), so
   // useForm's one-time defaultValues won't reflect the saved data on a second open —
@@ -82,6 +84,13 @@ function ZoneFormModal({ vehicle, zone, isSaving, open, onClose, onSaved, setIsS
       toast.success(result.message || "تم حفظ المنطقة");
       await onSaved();
       onClose();
+      return;
+    }
+    if (result?.error?.error_code === "INVALID_ZONE_LOCATION") {
+      const message = result.message || invalidZoneLocationMessage;
+      setError("coordinates", { type: "server", message });
+      mapSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      toast.error(message);
       return;
     }
     toast.error(result?.message || "فشل حفظ المنطقة");

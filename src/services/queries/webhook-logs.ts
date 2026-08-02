@@ -21,10 +21,10 @@ export const webhookLogsAPI = async (
     search: params.search,
   });
 
-  return await baseAPI("GET", `/payment/webhooks?${query}`);
+  return await baseAPI("GET", `/payment/webhook-logs?${query}`);
 };
 
 export const singleWebhookLogAPI = async (
   webhookLogId: string,
 ): Promise<WebhookLogDetailResponse> =>
-  await baseAPI("GET", `/payment/webhooks/${webhookLogId}`);
+  await baseAPI("GET", `/payment/webhook-logs/${webhookLogId}`);

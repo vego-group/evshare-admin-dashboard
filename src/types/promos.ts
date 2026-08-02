@@ -26,6 +26,7 @@ export type PromoListItem = {
   start_date: string | null;
   end_date: string | null;
   is_active: boolean;
+  status: PromoStatus;
   description_ar: string | null;
   description_en: string | null;
   created_at: string;

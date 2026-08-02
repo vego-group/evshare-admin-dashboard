@@ -102,7 +102,8 @@ function SearchInput({
       <input
         type="search"
         aria-label="بحث في طلبات الدفع"
-        placeholder="ابحث بالاسم..."
+        placeholder="ابحث باسم العميل أو رقم الجوال..."
+        maxLength={255}
         value={value}
         onChange={(event) => onChange(event.target.value)}
         className="h-full w-full bg-transparent text-right text-sm font-normal text-secondary placeholder:text-[#99a1af] sm:text-base"

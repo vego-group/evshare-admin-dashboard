@@ -13,6 +13,7 @@ function WalletTableHeader() {
         <TableHead className="w-37.5">الحالة</TableHead>
         <TableHead className="w-32">معرف المستخدم</TableHead>
         <TableHead className="w-45">التاريخ</TableHead>
+        <TableHead className="w-24">إجراءات</TableHead>
       </tr>
     </thead>
   );

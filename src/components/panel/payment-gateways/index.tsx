@@ -179,12 +179,12 @@ function PaymentGateways() {
               <PaymentGatewaysToolbar
                 tab="transactions"
                 transactionStatus={transactionParams.status}
-                transactionId={transactionParams.transaction_id}
+                search={transactionParams.search}
                 onTransactionStatusChange={(status) =>
                   updateTransactionParams({ status, page: 1 })
                 }
-                onTransactionIdChange={(transaction_id) =>
-                  updateTransactionParams({ transaction_id, page: 1 })
+                onSearchChange={(search) =>
+                  updateTransactionParams({ search, page: 1 })
                 }
               />
 

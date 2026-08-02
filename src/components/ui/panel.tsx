@@ -10,8 +10,9 @@ import {
   SheetFooter,
   SheetClose,
 } from "./sheet";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { cn } from "@/lib";
+import { TOAST_SUCCESS_EVENT } from "@/lib/toast-events";
 
 interface IProps {
   open: boolean;
@@ -46,6 +47,15 @@ function Panel({
   side = "right",
   hideDefaultCloseButton = true,
 }: IProps) {
+  useEffect(() => {
+    if (!open) return;
+
+    const closePanel = () => onClose();
+
+    window.addEventListener(TOAST_SUCCESS_EVENT, closePanel);
+    return () => window.removeEventListener(TOAST_SUCCESS_EVENT, closePanel);
+  }, [onClose, open]);
+
   return (
     <Sheet open={open} onOpenChange={onClose}>
       <SheetContent

@@ -6,5 +6,5 @@ import type { WebhookLogDetailResponse } from "@/types";
 export const retryWebhookLogAPI = async (webhookLogId: string) =>
   await safeApi<WebhookLogDetailResponse>(
     "POST",
-    `/payment/webhooks/${webhookLogId}/retry`,
+    `/payment/webhook-logs/${webhookLogId}/retry`,
   );

@@ -132,6 +132,9 @@
   input {
     @apply outline-none;
   }
+  input[data-phone-search-input="true"] {
+    unicode-bidi: plaintext;
+  }
   button,
   [role="button"] {
     cursor: pointer;

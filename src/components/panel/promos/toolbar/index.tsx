@@ -41,8 +41,6 @@ function PromosToolbar({
   onTypeChange,
 }: PromosToolbarProps) {
   const [internalSearchQuery, setInternalSearchQuery] = useState(searchQuery ?? "");
-  const [internalStatus, setInternalStatus] = useState<PromoStatus | "all">("all");
-  const [internalType, setInternalType] = useState<PromoContext | "all">("all");
 
   useDebouncedChange(internalSearchQuery, onSearchChange, 500);
 
@@ -56,18 +54,16 @@ function PromosToolbar({
         <FilterSelect
           label="النوع"
           options={typeOptions}
-          value={selectedType ?? internalType}
+          value={selectedType ?? "all"}
           onChange={(value) => {
-            setInternalType(value);
             onTypeChange?.(value === "all" ? undefined : value);
           }}
         />
         <FilterSelect
           label="الحالة"
           options={statusOptions}
-          value={selectedStatus ?? internalStatus}
+          value={selectedStatus ?? "all"}
           onChange={(value) => {
-            setInternalStatus(value);
             onStatusChange?.(value === "all" ? undefined : value);
           }}
         />

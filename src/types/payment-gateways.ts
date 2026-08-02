@@ -31,6 +31,7 @@ export type PaymentTransactionQueryParams = {
   page: number;
   gateway?: string;
   status?: PaymentTransactionStatus;
+  search?: string;
   transaction_id?: string;
 };
 

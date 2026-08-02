@@ -60,6 +60,7 @@ function PolygonDrawer({
       google.maps.event.addListener(path, "insert_at", emitChange);
       google.maps.event.addListener(path, "set_at", emitChange);
       google.maps.event.addListener(path, "remove_at", emitChange);
+      google.maps.event.addListener(polygon, "dragend", emitChange);
     },
     [emitChange],
   );
