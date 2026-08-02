@@ -1,6 +1,5 @@
 import { buildQuery } from "@/lib/utils/build-query";
 import { baseAPI } from "..";
-import { PAGE_SIZE } from "@/constants";
 import {
   PaymentRequestDetailResponse,
   PaymentRequestsListResponse,
@@ -12,7 +11,7 @@ export const paymentRequestsAPI = async (
 ): Promise<PaymentRequestsListResponse> => {
   const query = buildQuery({
     page: params.page.toString(),
-    limit: PAGE_SIZE.toString(),
+    limit: params.limit.toString(),
     status: params.status,
     order_by: params.order_by,
     search: params.search,

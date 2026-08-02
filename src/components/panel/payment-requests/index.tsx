@@ -47,9 +47,14 @@ function PaymentRequests() {
             searchQuery={params.search ?? ""}
             selectedSort={params.order_by ?? "desc"}
             selectedStatus={params.status}
-            onSearchChange={(search) =>
-              updateParams({ search: search || undefined, page: 1 })
-            }
+            onSearchChange={(search) => {
+              const trimmedSearch = search.trim();
+
+              updateParams({
+                search: trimmedSearch || undefined,
+                page: 1,
+              });
+            }}
             onSortChange={(order_by: OrderBy) =>
               updateParams({ order_by, page: 1 })
             }
