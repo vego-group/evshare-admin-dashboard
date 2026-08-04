@@ -8,6 +8,7 @@ type TestAccountsMainContentProps = {
   data?: TestAccountsListResponse;
   params: TestAccountsQueryParams;
   onParamsChange: (params: Partial<TestAccountsQueryParams>) => void;
+  onViewTestAccount: (testAccount: TestAccountListItem) => void;
   onEditTestAccount: (testAccount: TestAccountListItem) => void;
   onToggleActive: (testAccount: TestAccountListItem) => void;
   onDeleteTestAccount: (testAccount: TestAccountListItem) => void;
@@ -17,6 +18,7 @@ function TestAccountsMainContent({
   data,
   params,
   onParamsChange,
+  onViewTestAccount,
   onEditTestAccount,
   onToggleActive,
   onDeleteTestAccount,
@@ -29,6 +31,7 @@ function TestAccountsMainContent({
       />
       <TestAccountsResults
         testAccounts={data?.data ?? []}
+        onViewTestAccount={onViewTestAccount}
         onEditTestAccount={onEditTestAccount}
         onToggleActive={onToggleActive}
         onDeleteTestAccount={onDeleteTestAccount}

@@ -3,8 +3,10 @@ import type { TestAccountsQueryParams } from "@/types";
 
 import { useCustomQuery } from "..";
 
-export function useTestAccounts(params: TestAccountsQueryParams) {
-  return useCustomQuery(["test-accounts", params], async () => testAccountsAPI(params));
+export function useTestAccounts(params: TestAccountsQueryParams, enabled = true) {
+  return useCustomQuery(["test-accounts", params], async () => testAccountsAPI(params), {
+    enabled,
+  });
 }
 
 export function useTestAccount(testAccountId: string | null) {
