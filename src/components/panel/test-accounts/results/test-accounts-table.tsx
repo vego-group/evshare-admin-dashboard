@@ -6,6 +6,7 @@ import { Amount, StatusBadge, TestAccountActions, TestAccountIcon } from "./test
 
 type TestAccountsTableProps = {
   testAccounts: TestAccountListItem[];
+  onViewTestAccount: (testAccount: TestAccountListItem) => void;
   onEditTestAccount: (testAccount: TestAccountListItem) => void;
   onToggleActive: (testAccount: TestAccountListItem) => void;
   onDeleteTestAccount: (testAccount: TestAccountListItem) => void;
@@ -13,6 +14,7 @@ type TestAccountsTableProps = {
 
 function TestAccountsTable({
   testAccounts,
+  onViewTestAccount,
   onEditTestAccount,
   onToggleActive,
   onDeleteTestAccount,
@@ -64,6 +66,7 @@ function TestAccountsTable({
                 <TableCell truncate={false}>
                   <TestAccountActions
                     isActive={testAccount.is_active}
+                    onView={() => onViewTestAccount(testAccount)}
                     onEdit={() => onEditTestAccount(testAccount)}
                     onToggleActive={() => onToggleActive(testAccount)}
                     onDelete={() => onDeleteTestAccount(testAccount)}

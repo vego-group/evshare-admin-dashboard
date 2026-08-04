@@ -1,4 +1,5 @@
 import {
+  Eye,
   FlaskConical,
   Pencil,
   Power,
@@ -49,18 +50,28 @@ export function Amount({ value }: { value: number }) {
 export function TestAccountActions({
   compact = false,
   isActive,
+  onView,
   onEdit,
   onToggleActive,
   onDelete,
 }: {
   compact?: boolean;
   isActive: boolean;
+  onView: () => void;
   onEdit: () => void;
   onToggleActive: () => void;
   onDelete: () => void;
 }) {
   return (
     <div className={cn("flex items-center gap-2", compact && "w-full")}>
+      <PermissionGate slug="Admin View Test Accounts">
+        <ActionButton
+          icon={Eye}
+          onClick={onView}
+          label="View test account"
+          className={cn("bg-blue-50 text-blue-600", compact && "flex-1")}
+        />
+      </PermissionGate>
       <PermissionGate slug="Admin Edit Test Accounts">
         <ActionButton
           icon={Pencil}

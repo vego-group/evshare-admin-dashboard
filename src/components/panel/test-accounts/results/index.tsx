@@ -5,6 +5,7 @@ import TestAccountsTable from "./test-accounts-table";
 
 type TestAccountsResultsProps = {
   testAccounts: TestAccountListItem[];
+  onViewTestAccount: (testAccount: TestAccountListItem) => void;
   onEditTestAccount: (testAccount: TestAccountListItem) => void;
   onToggleActive: (testAccount: TestAccountListItem) => void;
   onDeleteTestAccount: (testAccount: TestAccountListItem) => void;
@@ -12,6 +13,7 @@ type TestAccountsResultsProps = {
 
 function TestAccountsResults({
   testAccounts,
+  onViewTestAccount,
   onEditTestAccount,
   onToggleActive,
   onDeleteTestAccount,
@@ -23,6 +25,7 @@ function TestAccountsResults({
   return (
     <TestAccountsTable
       testAccounts={testAccounts}
+      onViewTestAccount={onViewTestAccount}
       onEditTestAccount={onEditTestAccount}
       onToggleActive={onToggleActive}
       onDeleteTestAccount={onDeleteTestAccount}
