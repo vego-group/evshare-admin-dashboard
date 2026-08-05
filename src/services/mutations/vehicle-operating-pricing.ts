@@ -1,6 +1,12 @@
 "use server";
 
 import type {
+  AssignVehicleLockPayload,
+  CreateVehicleLockPayload,
+  UpdateVehicleLockPayload,
+  VehicleLockDetailsResponse,
+} from "@/types";
+import type {
   CommissionValues,
   VehicleCommandValues,
   VehiclePricingSchemaValues,
@@ -45,3 +51,41 @@ export const sendVehicleCommandAPI = async (
   vehicleId: string,
   payload: VehicleCommandValues,
 ) => await safeApi("POST", `/vehicles/${vehicleId}/command`, payload);
+
+export const addVehicleLockAPI = async (payload: CreateVehicleLockPayload) =>
+  await safeApi<VehicleLockDetailsResponse>("POST", "/locks/add", payload);
+
+export const editVehicleLockAPI = async (
+  lockId: string,
+  payload: UpdateVehicleLockPayload,
+) =>
+  await safeApi<VehicleLockDetailsResponse>(
+    "POST",
+    `/locks/${lockId}/edit`,
+    payload,
+  );
+
+export const deleteVehicleLockAPI = async (lockId: string) =>
+  await safeApi("DELETE", `/locks/${lockId}/delete`);
+
+export const assignVehicleLockAPI = async (
+  lockId: string,
+  payload: AssignVehicleLockPayload,
+) =>
+  await safeApi<VehicleLockDetailsResponse>(
+    "POST",
+    `/locks/${lockId}/assign`,
+    payload,
+  );
+
+export const unassignVehicleLockAPI = async (lockId: string) =>
+  await safeApi<VehicleLockDetailsResponse>(
+    "POST",
+    `/locks/${lockId}/unassign`,
+  );
+
+export const lockVehicleLockAPI = async (lockId: string) =>
+  await safeApi<VehicleLockDetailsResponse>("POST", `/locks/${lockId}/lock`);
+
+export const unlockVehicleLockAPI = async (lockId: string) =>
+  await safeApi<VehicleLockDetailsResponse>("POST", `/locks/${lockId}/unlock`);

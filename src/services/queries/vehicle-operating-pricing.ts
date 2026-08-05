@@ -3,6 +3,9 @@ import { buildQuery } from "@/lib/utils/build-query";
 import type {
   VehicleDetailsResponse,
   VehicleListItem,
+  VehicleLockDetailsResponse,
+  VehicleLocksListResponse,
+  VehicleLocksQueryParams,
   VehiclesListResponse,
   VehiclesQueryParams,
 } from "@/types";
@@ -44,3 +47,38 @@ export const singleVehicleAPI = async (
   vehicleId: string,
 ): Promise<VehicleDetailsResponse> =>
   await baseAPI("GET", `/vehicles/${vehicleId}`);
+
+export const vehicleLocksAPI = async (
+  params: VehicleLocksQueryParams = {},
+): Promise<VehicleLocksListResponse> => {
+  const query = buildQuery({
+    page: params.page?.toString(),
+    limit: params.limit?.toString(),
+    search: params.search,
+    status: params.status,
+    assigned:
+      typeof params.assigned === "boolean" ? String(params.assigned) : undefined,
+    vehicle_uuid: params.vehicle_uuid,
+  });
+
+  return await baseAPI("GET", `/locks${query ? `?${query}` : ""}`);
+};
+
+export const vehicleLockAPI = async (
+  lockId: string,
+): Promise<VehicleLockDetailsResponse> =>
+  await baseAPI("GET", `/locks/${lockId}`);
+
+export const vehicleLockByVehicleAPI = async (
+  vehicleId: string,
+): Promise<VehicleLockDetailsResponse | null> => {
+  const response = await vehicleLocksAPI({
+    vehicle_uuid: vehicleId,
+    assigned: true,
+    limit: 1,
+  });
+
+  return response.data[0]
+    ? { error: response.error, message: response.message, data: response.data[0] }
+    : null;
+};
