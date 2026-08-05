@@ -10,6 +10,8 @@ export type VehicleStatus =
   | "suspended"
   | "in_use";
 
+export type VehicleLockStatus = "locked" | "unlocked";
+
 export type VehiclesQueryParams = Omit<QueryParams, "status"> & {
   status?: VehicleStatus;
   operating_type?: VehicleOperatingType;
@@ -72,6 +74,7 @@ export type VehicleListItem = VehiclePricing & {
   iot_device_id: string | null;
   battery_percentage: number | null;
   product: ProductListItem | null;
+  lock?: VehicleLock | null;
   updated_at: string;
   created_at: string;
 };
@@ -103,4 +106,61 @@ export type VehicleDetailsResponse = {
   error: boolean;
   message: string;
   data: VehicleListItem;
+};
+
+export type VehicleLock = {
+  id: string;
+  device_id: string;
+  status: VehicleLockStatus;
+  notes: string | null;
+  last_lock_date: string | null;
+  last_unlock_date: string | null;
+  vehicle: VehicleListItem | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type VehicleLocksQueryParams = {
+  page?: number;
+  limit?: number;
+  search?: string;
+  status?: VehicleLockStatus;
+  assigned?: boolean;
+  vehicle_uuid?: string;
+};
+
+export type VehicleLocksPaginationMeta = {
+  currentPage: number;
+  lastPage: number;
+  perPage: number;
+  total: number;
+};
+
+export type VehicleLocksListResponse = {
+  error: boolean;
+  message: string;
+  data: VehicleLock[];
+  meta?: VehicleLocksPaginationMeta;
+};
+
+export type VehicleLockDetailsResponse = {
+  error: boolean;
+  message: string;
+  data: VehicleLock;
+};
+
+export type CreateVehicleLockPayload = {
+  device_id: string;
+  vehicle_uuid?: string;
+  notes?: string;
+};
+
+export type UpdateVehicleLockPayload = Partial<{
+  device_id: string;
+  vehicle_uuid: string | null;
+  notes: string | null;
+}>;
+
+export type AssignVehicleLockPayload = {
+  vehicle_uuid: string;
 };

@@ -4,9 +4,15 @@ import { useCustomQuery } from "..";
 import {
   allVehiclesAPI,
   singleVehicleAPI,
+  vehicleLockAPI,
+  vehicleLockByVehicleAPI,
+  vehicleLocksAPI,
   vehiclesAPI,
 } from "@/services/queries";
-import type { VehiclesQueryParams } from "@/types";
+import type {
+  VehicleLocksQueryParams,
+  VehiclesQueryParams,
+} from "@/types";
 
 export function useVehicles(params: VehiclesQueryParams) {
   return useCustomQuery(["vehicles", params], async () => vehiclesAPI(params), {
@@ -27,5 +33,31 @@ export function useAllVehicles(
 ) {
   return useCustomQuery(["vehicles-all", params], async () =>
     allVehiclesAPI(params),
+  );
+}
+
+export function useVehicleLocks(
+  params: VehicleLocksQueryParams = {},
+  options?: { enabled?: boolean },
+) {
+  return useCustomQuery(["locks", params], async () => vehicleLocksAPI(params), {
+    placeholderData: keepPreviousData,
+    ...options,
+  });
+}
+
+export function useVehicleLock(lockId: string | null) {
+  return useCustomQuery(
+    ["lock", lockId],
+    async () => vehicleLockAPI(lockId!),
+    { enabled: Boolean(lockId) },
+  );
+}
+
+export function useVehicleAssignedLock(vehicleId: string | null) {
+  return useCustomQuery(
+    ["vehicle-lock", vehicleId],
+    async () => vehicleLockByVehicleAPI(vehicleId!),
+    { enabled: Boolean(vehicleId) },
   );
 }
