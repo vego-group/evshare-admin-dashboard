@@ -10,3 +10,6 @@ export * from "./payment-requests";
 export * from "./sliders";
 export * from "./complaints";
 export * from "./trips";
+export * from "./shipments";
+export * from "./shipping-companies";
+export * from "./shipping-cities";
