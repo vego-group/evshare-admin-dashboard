@@ -17,3 +17,6 @@ export * from "./settings";
 export * from "./promos";
 export * from "./test-accounts";
 export * from "./contact-us";
+export * from "./shipments";
+export * from "./shipping-companies";
+export * from "./shipping-cities";
