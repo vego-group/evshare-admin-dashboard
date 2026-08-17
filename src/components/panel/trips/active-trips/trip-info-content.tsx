@@ -96,7 +96,10 @@ function TripInfoContent({
         )}
       </div>
 
-      <div className="grid grid-cols-2 gap-2 border-t border-primary/10 bg-primary/4 px-3 py-2.5">
+      <div className="border-t border-primary/10 bg-primary/4 px-3 pt-2.5">
+        <PriceStat label="السعر حتى الآن" value={trip.price} />
+      </div>
+      <div className="grid grid-cols-2 gap-2 bg-primary/4 px-3 pb-2.5 pt-2">
         <PriceStat label="سعر فتح القفل" value={product?.open_price} />
         <PriceStat label="سعر الدقيقة" value={product?.price_per_minute} />
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
+import dynamic from "next/dynamic";
 
 import Header from "@/components/ui/header";
 import { useTrip } from "@/hooks/api";
@@ -8,6 +9,11 @@ import { useTrip } from "@/hooks/api";
 import TripBasicInfo from "./trip-basic-info";
 import TripLocations from "./trip-locations";
 import TripTimeline from "./trip-timeline";
+
+const TripRouteMap = dynamic(() => import("./trip-route-map"), {
+  ssr: false,
+  loading: () => <div className="h-full w-full animate-pulse rounded-2xl bg-primary/5" />,
+});
 
 function ViewTrip() {
   const { id } = useParams<{ id: string }>();
@@ -27,6 +33,12 @@ function ViewTrip() {
           <div className="space-y-5">
             <TripBasicInfo trip={trip} />
             <TripLocations trip={trip} />
+            <section>
+              <h3 className="mb-3 font-semibold text-secondary">مسار الرحلة</h3>
+              <div className="h-80 w-full">
+                <TripRouteMap trip={trip} />
+              </div>
+            </section>
             <TripTimeline timeline={trip.timeline} />
           </div>
         )}

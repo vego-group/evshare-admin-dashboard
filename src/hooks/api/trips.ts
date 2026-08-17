@@ -20,11 +20,20 @@ export function useTrip(tripId: string | null) {
   );
 }
 
-const activeTripsParams: TripsQueryParams = { page: 1, limit: PAGE_SIZE, status: "started" };
+const activeTripStatuses: TripsQueryParams["status"][] = ["started", "in_progress"];
 
 export function useActiveTrips() {
-  return useCustomQuery(["trips", activeTripsParams], async () => tripsAPI(activeTripsParams), {
-    placeholderData: keepPreviousData,
-    refetchInterval: 5000,
-  });
+  return useCustomQuery(
+    ["trips", "active", activeTripStatuses],
+    async () => {
+      const responses = await Promise.all(
+        activeTripStatuses.map((status) => tripsAPI({ page: 1, limit: PAGE_SIZE, status })),
+      );
+      return { ...responses[0], data: responses.flatMap((response) => response.data) };
+    },
+    {
+      placeholderData: keepPreviousData,
+      refetchInterval: 5000,
+    },
+  );
 }

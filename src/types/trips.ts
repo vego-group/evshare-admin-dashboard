@@ -39,6 +39,7 @@ export type TripVehicle = Pick<
 export type TripListItem = {
   id: string;
   status: TripStatus;
+  price: number | string | null;
   pickup_location: Coordinate;
   drop_off_location: Coordinate | null;
   live_location: Coordinate | null;
