@@ -5,6 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import {
   Link2,
   Lock,
+  MapPin,
   Plus,
   Unlink,
   Unlock,
@@ -23,6 +24,7 @@ import type { VehicleCommandValues } from "@/schemas/vehicle-operating-pricing";
 import {
   addVehicleLockAPI,
   assignVehicleLockAPI,
+  locateVehicleLockAPI,
   lockVehicleLockAPI,
   sendVehicleCommandAPI,
   unassignVehicleLockAPI,
@@ -34,6 +36,7 @@ import { formatDate, vehicleTitle } from "../utils";
 type PendingAction =
   | "lock"
   | "unlock"
+  | "locate"
   | "sound_alarm"
   | "assign_existing"
   | "create_lock"
@@ -192,6 +195,21 @@ function CommandPanelModal({
     );
   }
 
+  async function dispatchLocate() {
+    if (pendingAction || !assignedLock) return;
+    setPendingAction("locate");
+    const result = await locateVehicleLockAPI(assignedLock.id);
+    setPendingAction(null);
+
+    if (result?.ok) {
+      toast.success(result.message || "تم تحديد موقع المركبة بنجاح");
+      await refreshLockState();
+      return;
+    }
+
+    toast.error(result?.message || "فشل تحديد موقع المركبة");
+  }
+
   async function dispatchVehicleCommand(
     command: VehicleCommandValues["command"],
   ) {
@@ -247,7 +265,37 @@ function CommandPanelModal({
                   label="آخر فتح"
                   value={formatDate(assignedLock.last_unlock_date ?? undefined)}
                 />
+                <InfoRow
+                  label="آخر موقع GPS"
+                  value={
+                    assignedLock.location
+                      ? `${assignedLock.location.latitude}, ${assignedLock.location.longitude}${
+                          assignedLock.location_is_stale ? " (غير محدث)" : ""
+                        }`
+                      : "لم يتم تحديد الموقع بعد"
+                  }
+                />
+                <InfoRow
+                  label="تاريخ آخر تحديث للموقع"
+                  value={formatDate(assignedLock.last_location_date ?? undefined)}
+                />
               </div>
+
+              <PermissionGate slug="Admin Locate Vehicles">
+                <button
+                  type="button"
+                  disabled={Boolean(pendingAction)}
+                  onClick={dispatchLocate}
+                  className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-blue-50 px-4 py-3 text-sm font-medium text-blue-600 transition hover:brightness-95 disabled:opacity-60"
+                >
+                  {pendingAction === "locate" ? (
+                    <Loader />
+                  ) : (
+                    <MapPin className="size-5 shrink-0" />
+                  )}
+                  تحديد موقع المركبة
+                </button>
+              </PermissionGate>
 
               <div className="grid gap-3 sm:grid-cols-2">
                 {lockActions.map(

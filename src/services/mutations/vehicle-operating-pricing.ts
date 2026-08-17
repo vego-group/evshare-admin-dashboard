@@ -89,3 +89,6 @@ export const lockVehicleLockAPI = async (lockId: string) =>
 
 export const unlockVehicleLockAPI = async (lockId: string) =>
   await safeApi<VehicleLockDetailsResponse>("POST", `/locks/${lockId}/unlock`);
+
+export const locateVehicleLockAPI = async (lockId: string) =>
+  await safeApi<VehicleLockDetailsResponse>("POST", `/locks/${lockId}/locate`);
