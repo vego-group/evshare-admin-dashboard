@@ -36,6 +36,8 @@ export function VehicleDetailsContent({ vehicle, isLoading }: Props) {
   }
 
   const location = vehicle.location;
+  const merchant = vehicle.user;
+  const lock = vehicle.lock;
 
   return (
     <div className="flex min-w-0 flex-col gap-6 text-right">
@@ -47,10 +49,25 @@ export function VehicleDetailsContent({ vehicle, isLoading }: Props) {
           <DetailRow label="نوع التشغيل" value={vehicle.operating_type === "evshare" ? "EvShare" : "شركة تشغيل"} />
           <DetailRow label="شركة التشغيل" value={vehicle.operation_company?.name} />
           <DetailRow label="العمولة" value={formatPercentage(vehicle.operation_company?.pricing_percentage ?? vehicle.operation_company?.commission_percentage)} />
-          <DetailRow label="رقم المستخدم" value={vehicle.user_id} />
           <DetailRow label="رقم عنصر الطلب" value={vehicle.order_item_id} />
           <DetailRow label="تاريخ الإنشاء" value={<span dir="ltr">{formatDate(vehicle.created_at)}</span>} />
         </div>
+      </section>
+
+      <section className="space-y-3 rounded-[14px] bg-background p-4">
+        <h4 className="text-sm font-semibold text-secondary">التاجر المالك</h4>
+        {merchant ? (
+          <div className="grid gap-2 sm:grid-cols-2">
+            <DetailRow label="الاسم" value={merchant.name} />
+            <DetailRow label="رقم الجوال" value={<span dir="ltr">{merchant.mobile}</span>} />
+            <DetailRow label="الدور" value={merchant.role} />
+            <DetailRow label="رقم المستخدم" value={vehicle.user_id} />
+          </div>
+        ) : (
+          <p className="rounded-xl bg-red-50 p-4 text-center text-sm text-red-600">
+            {vehicle.user_id ? "تم حذف حساب التاجر" : "لا يوجد تاجر مالك لهذه المركبة"}
+          </p>
+        )}
       </section>
 
       <section className="space-y-3 rounded-[14px] bg-background p-4">
@@ -62,6 +79,30 @@ export function VehicleDetailsContent({ vehicle, isLoading }: Props) {
           <DetailRow label="خط الطول" value={<span dir="ltr">{location?.longitude ?? "-"}</span>} />
         </div>
       </section>
+
+      {lock && (
+        <section className="space-y-3 rounded-[14px] bg-background p-4">
+          <div className="flex items-center justify-between gap-3">
+            <h4 className="text-sm font-semibold text-secondary">موقع القفل (GPS)</h4>
+            {lock.location && (
+              <span
+                className={
+                  lock.location_is_stale
+                    ? "rounded-full bg-amber-50 px-3 py-1 text-xs font-medium text-orange-500"
+                    : "rounded-full bg-green-50 px-3 py-1 text-xs font-medium text-green-600"
+                }
+              >
+                {lock.location_is_stale ? "موقع غير محدث" : "موقع محدث"}
+              </span>
+            )}
+          </div>
+          <div className="grid gap-2 sm:grid-cols-2">
+            <DetailRow label="خط العرض" value={<span dir="ltr">{lock.location?.latitude ?? "-"}</span>} />
+            <DetailRow label="خط الطول" value={<span dir="ltr">{lock.location?.longitude ?? "-"}</span>} />
+            <DetailRow label="آخر تحديث للموقع" value={<span dir="ltr">{formatDate(lock.last_location_date ?? undefined)}</span>} />
+          </div>
+        </section>
+      )}
 
       <section className="space-y-3 rounded-[14px] bg-background p-4">
         <h4 className="text-sm font-semibold text-secondary">التسعير الحالي</h4>

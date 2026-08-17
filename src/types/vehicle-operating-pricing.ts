@@ -49,6 +49,13 @@ export type VehiclePricing = {
   price_per_day: number | string | null;
 };
 
+export type VehicleMerchant = {
+  id: string;
+  name: string;
+  mobile: string;
+  role: string;
+};
+
 export type VehicleZoneType = "normal" | "slow" | "restricted";
 
 export type VehicleZone = {
@@ -67,6 +74,7 @@ export type VehicleListItem = VehiclePricing & {
   status: VehicleStatus;
   operating_type: VehicleOperatingType;
   user_id?: number | null;
+  user?: VehicleMerchant | null;
   order_item_id?: number | null;
   operation_company: OperationCompany | null;
   location?: VehicleLocation | null;
@@ -108,6 +116,11 @@ export type VehicleDetailsResponse = {
   data: VehicleListItem;
 };
 
+export type LockCoordinates = {
+  latitude: number;
+  longitude: number;
+};
+
 export type VehicleLock = {
   id: string;
   device_id: string;
@@ -115,6 +128,9 @@ export type VehicleLock = {
   notes: string | null;
   last_lock_date: string | null;
   last_unlock_date: string | null;
+  location: LockCoordinates | null;
+  last_location_date: string | null;
+  location_is_stale: boolean;
   vehicle: VehicleListItem | null;
   created_at: string;
   updated_at: string;

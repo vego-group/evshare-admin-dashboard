@@ -18,6 +18,7 @@ function VehicleCard(props: Props) {
   const rows = [
     ["نوع التشغيل", vehicle.operating_type === "evshare" ? "EvShare" : "شركة تشغيل"],
     ["شركة التشغيل", vehicle.operation_company?.name ?? "-"],
+    ["التاجر", vehicle.user?.name ?? (vehicle.user_id ? "تاجر محذوف" : "-")],
     ["البطارية", vehicle.battery_percentage != null ? `${vehicle.battery_percentage}%` : "-"],
   ] as const;
 

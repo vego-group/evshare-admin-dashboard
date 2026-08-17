@@ -18,6 +18,7 @@ type Props = {
 const headers = [
   "المركبة",
   "الحالة",
+  "التاجر",
   "نوع التشغيل",
   "شركة التشغيل",
   "العمولة",
@@ -44,6 +45,9 @@ function VehiclesTable(props: Props) {
                 </TableCell>
                 <TableCell truncate={false}>
                   <StatusBadge status={vehicle.status} />
+                </TableCell>
+                <TableCell>
+                  <MerchantCell vehicle={vehicle} />
                 </TableCell>
                 <TableCell>
                   {vehicle.operating_type === "evshare"
@@ -82,6 +86,23 @@ function VehicleName({ vehicle }: { vehicle: VehicleListItem }) {
     <p className="truncate font-medium text-secondary">
       {vehicleTitle(vehicle)}
     </p>
+  );
+}
+
+function MerchantCell({ vehicle }: { vehicle: VehicleListItem }) {
+  if (vehicle.user) {
+    return (
+      <div className="min-w-0">
+        <p className="truncate font-medium text-secondary">{vehicle.user.name}</p>
+        <p className="truncate text-xs text-gray" dir="ltr">
+          {vehicle.user.mobile}
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <span className="text-gray">{vehicle.user_id ? "تاجر محذوف" : "-"}</span>
   );
 }
 
