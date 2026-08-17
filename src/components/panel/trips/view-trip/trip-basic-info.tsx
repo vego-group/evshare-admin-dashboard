@@ -1,4 +1,5 @@
 import { formatSaudiPhoneNumber } from "@/lib/utils/format-phone";
+import { hasMoneyValue } from "@/lib/utils/money";
 import type { TripListItem } from "@/types";
 import TripStatusBadge from "../results/trip-status-badge";
 import { formatDate, tripDriverName, tripVehicleTitle } from "../utils";
@@ -12,6 +13,10 @@ function TripBasicInfo({ trip }: { trip: TripListItem }) {
         <DetailRow label="الحالة" value={<TripStatusBadge status={trip.status} />} />
         <DetailRow label="وقت البدء" value={<span dir="ltr">{formatDate(trip.date_time.start)}</span>} />
         <DetailRow label="وقت الانتهاء" value={<span dir="ltr">{formatDate(trip.date_time.end)}</span>} />
+        <DetailRow
+          label="السعر"
+          value={<span dir="ltr">{hasMoneyValue(trip.price) ? `${trip.price} ر.س` : "-"}</span>}
+        />
       </section>
 
       <section>
