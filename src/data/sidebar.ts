@@ -17,6 +17,7 @@ import {
   Percent,
   Phone,
   Radar,
+  Receipt,
   Route,
   ScrollText,
   Settings,
@@ -228,6 +229,13 @@ export const sidebarNavItems: SidebarNavItem[] = [
     ariaLabel: "إعدادات العمولة",
     icon: Percent,
     permission: "Index Commission Settings",
+  },
+  {
+    href: "/finance/vat",
+    label: "ضريبة القيمة المضافة",
+    ariaLabel: "ضريبة القيمة المضافة",
+    icon: Receipt,
+    permission: "Admin View VAT",
   },
   {
     href: "/complaints",
