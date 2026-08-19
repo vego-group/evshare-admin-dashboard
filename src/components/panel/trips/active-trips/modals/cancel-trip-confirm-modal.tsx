@@ -19,7 +19,7 @@ function CancelTripConfirmModal({ open, isSubmitting, onClose, onConfirm }: Prop
           <Ban className="size-7 shrink-0" />
         </span>
         <p className="text-sm leading-6 text-dark-gray">
-          هل تريد إلغاء هذه الرحلة؟ سيتم عكس أي مبالغ محصلة وإيقاف تشغيل المركبة.
+          هل تريد إلغاء هذه الرحلة؟ يعتمد رد رسوم الفتح على نافذة الإلغاء المجاني، وسيعرض الخادم قرار الاسترداد النهائي.
         </p>
         <div className="flex justify-center gap-2">
           <Button type="button" variant="outline" onClick={onClose} disabled={isSubmitting}>تراجع</Button>

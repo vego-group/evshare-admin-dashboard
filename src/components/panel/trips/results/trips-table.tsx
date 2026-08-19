@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Eye } from "lucide-react";
 
 import type { TripListItem } from "@/types";
+import MoneyValue from "../money-value";
 import { formatDate, tripDriverName, tripVehicleTitle } from "../utils";
 import TripStatusBadge from "./trip-status-badge";
 
@@ -10,7 +11,7 @@ type Props = {
   onView: (trip: TripListItem) => void;
 };
 
-const headers = ["رقم الرحلة", "الحالة", "السائق", "المركبة", "وقت البدء", "وقت الانتهاء", "الإجراءات"];
+const headers = ["رقم الرحلة", "الحالة", "السائق", "المركبة", "السعر", "وقت البدء", "وقت الانتهاء", "الإجراءات"];
 
 function TripsTable({ trips, onView }: Props) {
   return (
@@ -29,6 +30,7 @@ function TripsTable({ trips, onView }: Props) {
                 <TableCell truncate={false}><TripStatusBadge status={trip.status} /></TableCell>
                 <TableCell>{tripDriverName(trip.driver)}</TableCell>
                 <TableCell>{tripVehicleTitle(trip.vehicle)}</TableCell>
+                <TableCell truncate={false}><MoneyValue value={trip.price} currency={trip.currency} /></TableCell>
                 <TableCell dir="ltr">{formatDate(trip.date_time.start)}</TableCell>
                 <TableCell dir="ltr">{formatDate(trip.date_time.end)}</TableCell>
                 <TableCell truncate={false}>

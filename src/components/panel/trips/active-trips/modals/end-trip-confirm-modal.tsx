@@ -19,7 +19,7 @@ function EndTripConfirmModal({ open, isSubmitting, onClose, onConfirm }: Props) 
           <CheckCircle2 className="size-7 shrink-0" />
         </span>
         <p className="text-sm leading-6 text-dark-gray">
-          هل تريد إنهاء هذه الرحلة كما لو أتمها المستخدم؟ سيتم احتساب التكلفة النهائية وقفل المركبة.
+          هل تريد إنهاء هذه الرحلة؟ سيحسب الخادم السعر النهائي ويسوي المحفظة مرة واحدة. يمكن إعادة المحاولة بأمان.
         </p>
         <div className="flex justify-center gap-2">
           <Button type="button" variant="outline" onClick={onClose} disabled={isSubmitting}>تراجع</Button>
