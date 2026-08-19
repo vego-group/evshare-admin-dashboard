@@ -7,6 +7,7 @@ import Header from "@/components/ui/header";
 import { useTrip } from "@/hooks/api";
 
 import TripBasicInfo from "./trip-basic-info";
+import TripBillingDetails from "./trip-billing-details";
 import TripLocations from "./trip-locations";
 import TripTimeline from "./trip-timeline";
 
@@ -32,6 +33,7 @@ function ViewTrip() {
         ) : (
           <div className="space-y-5">
             <TripBasicInfo trip={trip} />
+            <TripBillingDetails trip={trip} />
             <TripLocations trip={trip} />
             <section>
               <h3 className="mb-3 font-semibold text-secondary">مسار الرحلة</h3>

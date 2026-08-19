@@ -1,6 +1,6 @@
 import { formatSaudiPhoneNumber } from "@/lib/utils/format-phone";
-import { hasMoneyValue } from "@/lib/utils/money";
 import type { TripListItem } from "@/types";
+import MoneyValue from "../money-value";
 import TripStatusBadge from "../results/trip-status-badge";
 import { formatDate, tripDriverName, tripVehicleTitle } from "../utils";
 import DetailRow from "./detail-row";
@@ -15,7 +15,7 @@ function TripBasicInfo({ trip }: { trip: TripListItem }) {
         <DetailRow label="وقت الانتهاء" value={<span dir="ltr">{formatDate(trip.date_time.end)}</span>} />
         <DetailRow
           label="السعر"
-          value={<span dir="ltr">{hasMoneyValue(trip.price) ? `${trip.price} ر.س` : "-"}</span>}
+          value={<MoneyValue value={trip.price} currency={trip.currency} />}
         />
       </section>
 

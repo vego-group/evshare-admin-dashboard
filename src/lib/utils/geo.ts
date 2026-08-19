@@ -20,6 +20,6 @@ function toRadians(degrees: number) {
 }
 
 export function formatDistanceParts(km: number): { value: string; unit: string } {
-  if (km < 1) return { value: String(Math.round(km * 1000)), unit: "م" };
-  return { value: km.toFixed(1), unit: "كم" };
+  if (km < 1) return { value: String(Math.round(km * 1000)), unit: "m" };
+  return { value: km.toFixed(1), unit: "km" };
 }

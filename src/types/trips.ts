@@ -23,6 +23,30 @@ export type TripTimelineEvent = {
   timestamp: string;
 };
 
+export type TripPricingSnapshot = {
+  currency: string;
+  unlock_fee: number | string | null;
+  price_per_minute: number | string | null;
+  billing_increment_seconds: number | null;
+  minimum_charge: number | string | null;
+  balance_before: number | string | null;
+  pricing_locked_at: string | null;
+};
+
+export type TripCostBreakdown = {
+  unlock_fee: number | string | null;
+  time_cost: number | string | null;
+  other_charges: number | string | null;
+  vat_amount: number | string | null;
+  total: number | string | null;
+};
+
+export type TripCancellation = {
+  unlock_fee_refunded: boolean;
+  refund_amount?: number | string | null;
+  reason?: string | null;
+};
+
 export type TripDriver = {
   id: string;
   name?: string;
@@ -46,6 +70,16 @@ export type TripListItem = {
   route: RoutePoint[];
   date_time: TripDateTime;
   timeline: TripTimelineEvent[];
+  currency?: string;
+  open_price?: number | string | null;
+  price_per_minute?: number | string | null;
+  billing_increment_seconds?: number | null;
+  minimum_charge?: number | string | null;
+  balance_before?: number | string | null;
+  pricing_locked_at?: string | null;
+  pricing?: Partial<TripPricingSnapshot> | null;
+  cost_breakdown?: Partial<TripCostBreakdown> | null;
+  cancellation?: TripCancellation | null;
   driver: TripDriver;
   vehicle: TripVehicle;
   created_at?: string;
@@ -76,3 +110,5 @@ export type TripDetailsResponse = {
   message: string;
   data: TripDetail;
 };
+
+export type TripMutationResponse = TripDetailsResponse;

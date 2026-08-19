@@ -266,6 +266,13 @@ export const sidebarNavItems: SidebarNavItem[] = [
     permission: "Admin Index Settings",
   },
   {
+    href: "/driver-pricing-settings",
+    label: "تسعير السائق والمحفظة",
+    ariaLabel: "تسعير السائق والمحفظة",
+    icon: Wallet,
+    permission: "Admin Index Settings",
+  },
+  {
     href: "/contact-us",
     label: "بيانات التواصل",
     ariaLabel: "بيانات التواصل",

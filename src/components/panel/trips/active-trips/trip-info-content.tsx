@@ -3,20 +3,20 @@ import {
   BatteryMedium,
   CheckCircle2,
   Navigation,
-  SaudiRiyal,
   User,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { batteryBarClass, batteryTextClass } from "@/lib/utils/battery";
 import { formatDistanceParts, haversineDistanceKm } from "@/lib/utils/geo";
-import { hasMoneyValue } from "@/lib/utils/money";
 import type { TripListItem } from "@/types";
+import MoneyValue from "../money-value";
 import TripStatusBadge from "../results/trip-status-badge";
 import {
   formatDate,
   tripDriverName,
   tripMapLatLng,
+  tripPricing,
   tripVehicleTitle,
 } from "../utils";
 
@@ -38,7 +38,7 @@ function TripInfoContent({
       ? haversineDistanceKm(userLocation, tripPosition)
       : null;
   const distance = distanceKm != null ? formatDistanceParts(distanceKm) : null;
-  const product = trip.vehicle.product;
+  const pricing = tripPricing(trip);
 
   return (
     <div dir="rtl" className="w-64 overflow-hidden text-right">
@@ -97,11 +97,11 @@ function TripInfoContent({
       </div>
 
       <div className="border-t border-primary/10 bg-primary/4 px-3 pt-2.5">
-        <PriceStat label="السعر حتى الآن" value={trip.price} />
+        <PriceStat label="السعر حتى آخر تحديث" value={trip.price} currency={pricing.currency} />
       </div>
       <div className="grid grid-cols-2 gap-2 bg-primary/4 px-3 pb-2.5 pt-2">
-        <PriceStat label="سعر فتح القفل" value={product?.open_price} />
-        <PriceStat label="سعر الدقيقة" value={product?.price_per_minute} />
+        <PriceStat label="رسوم فتح الرحلة" value={pricing.unlock_fee} currency={pricing.currency} />
+        <PriceStat label="سعر الدقيقة المثبت" value={pricing.price_per_minute} currency={pricing.currency} />
       </div>
 
       <div className="grid grid-cols-2 gap-2 px-3 pb-3 pt-1">
@@ -124,7 +124,7 @@ function TripInfoContent({
   );
 }
 
-function PriceStat({ label, value }: { label: string; value: unknown }) {
+function PriceStat({ label, value, currency }: { label: string; value: unknown; currency: string }) {
   return (
     <div className="rounded-[10px] bg-white px-2.5 py-2">
       <p className="text-[11px] text-gray">{label}</p>
@@ -132,14 +132,7 @@ function PriceStat({ label, value }: { label: string; value: unknown }) {
         dir="ltr"
         className="mt-0.5 flex items-center justify-end gap-1 font-semibold text-secondary"
       >
-        {hasMoneyValue(value) ? (
-          <>
-            <SaudiRiyal className="size-3.5 shrink-0" />
-            {String(value)}
-          </>
-        ) : (
-          "-"
-        )}
+        <MoneyValue value={value} currency={currency} />
       </p>
     </div>
   );

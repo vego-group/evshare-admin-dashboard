@@ -2,6 +2,7 @@ import type { FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-f
 
 import type { ShippingCompanyFormValues } from "@/schemas/shipping-companies";
 import type { ShippingDeliveryType, ShippingServiceType } from "@/types";
+import { preventNegativeNumberInput, preventNegativeNumberPaste } from "@/lib/utils/non-negative-input";
 
 import { Field, inputClassLtr } from "./form-field";
 import FormSelect from "./form-select";
@@ -86,6 +87,8 @@ function ShippingCompanyFormFields({
           placeholder="1"
           className={inputClassLtr}
           {...register("sort_order")}
+          onKeyDown={preventNegativeNumberInput}
+          onPaste={preventNegativeNumberPaste}
         />
       </Field>
     </div>

@@ -1,6 +1,7 @@
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
 
 import type { ShipmentFormValues } from "@/schemas/shipments";
+import { preventNegativeNumberInput, preventNegativeNumberPaste } from "@/lib/utils/non-negative-input";
 
 import { Field, inputClassLtr } from "./form-field";
 
@@ -54,6 +55,8 @@ function ShipmentPackageFields({
             placeholder={field.placeholder}
             className={numberInputClass}
             {...register(field.name)}
+            onKeyDown={(event) => preventNegativeNumberInput(event, { allowDecimal: field.step !== "1" })}
+            onPaste={(event) => preventNegativeNumberPaste(event, { allowDecimal: field.step !== "1" })}
           />
         </Field>
       ))}
