@@ -1,6 +1,7 @@
 import { formatSaudiPhoneNumber } from "@/lib/utils/format-phone";
 import { hasMoneyValue } from "@/lib/utils/money";
 import type { TripListItem } from "@/types";
+import { SaudiRiyal } from "lucide-react";
 import TripStatusBadge from "../results/trip-status-badge";
 import { formatDate, tripDriverName, tripVehicleTitle } from "../utils";
 import DetailRow from "./detail-row";
@@ -15,7 +16,7 @@ function TripBasicInfo({ trip }: { trip: TripListItem }) {
         <DetailRow label="وقت الانتهاء" value={<span dir="ltr">{formatDate(trip.date_time.end)}</span>} />
         <DetailRow
           label="السعر"
-          value={<span dir="ltr">{hasMoneyValue(trip.price) ? `${trip.price} ر.س` : "-"}</span>}
+          value={hasMoneyValue(trip.price) ? <span className="inline-flex items-center gap-1" dir="ltr"><SaudiRiyal className="size-4" />{trip.price}</span> : "-"}
         />
       </section>
 

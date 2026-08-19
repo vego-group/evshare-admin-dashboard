@@ -1,6 +1,7 @@
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
 
 import type { ShippingCompanyFormValues } from "@/schemas/shipping-companies";
+import { preventNegativeNumberInput, preventNegativeNumberPaste } from "@/lib/utils/non-negative-input";
 
 import { Field, inputClassLtr } from "./form-field";
 
@@ -43,6 +44,8 @@ function ShippingCompanyPricingFields({
             placeholder={field.placeholder}
             className={`${inputClassLtr} [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none`}
             {...register(field.name)}
+            onKeyDown={(event) => preventNegativeNumberInput(event, { allowDecimal: true })}
+            onPaste={(event) => preventNegativeNumberPaste(event, { allowDecimal: true })}
           />
         </Field>
       ))}

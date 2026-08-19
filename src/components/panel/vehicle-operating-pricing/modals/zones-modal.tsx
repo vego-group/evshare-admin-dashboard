@@ -71,7 +71,7 @@ function ZonesModal({ vehicle, open, isSaving, setIsSaving, onClose, onSaved }: 
                     <p className="truncate font-medium text-secondary">{zone.name_ar}</p>
                     <p className="mt-1 text-xs text-gray">
                       {zoneTypeLabel(zone.type)}
-                      {zone.type === "slow" && zone.speed_limit != null ? ` - ${zone.speed_limit} كم/س` : ""}
+                      {zone.type === "slow" && zone.speed_limit != null ? ` - ${zone.speed_limit} km/h` : ""}
                     </p>
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
