@@ -37,7 +37,11 @@ export const initApi = async () => {
   if (typeof window !== "undefined") return;
 
   const { getToken } = await import("@/lib/utils/auth");
+  const { getTenant } = await import("@/lib/utils/tenant");
   const token = await getToken();
+  const tenant = await getTenant();
+  adminApi.defaults.headers.common["X-Tenant-Id"] = tenant;
+  authApi.defaults.headers.common["X-Tenant-Id"] = tenant;
   if (token) {
     adminApi.defaults.headers.common.Authorization = `Bearer ${token}`;
     authApi.defaults.headers.common.Authorization = `Bearer ${token}`;

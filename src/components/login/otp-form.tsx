@@ -23,35 +23,30 @@ import { setUserSession } from "@/lib/utils/user-session";
 import Loader from "@/components/ui/loader";
 import InputErrorMessage from "@/components/ui/input-error-message";
 import { useRouter } from "next/navigation";
-import type { UserRole } from "@/types";
-
+import type { CountryCode, UserRole } from "@/types";
+import { setTenant } from "@/lib/utils/tenant";
 const ALLOWED_DASHBOARD_ROLES: UserRole[] = ["root", "admin", "sales"];
-
 const ROLE_ACCESS_DENIED_MESSAGES: Partial<Record<UserRole, string>> = {
   merchant: "لا يمكن للتاجر الدخول إلى لوحة التحكم",
   driver: "لا يمكن للسائق الدخول إلى لوحة التحكم",
   user: "لا يمكن للمستخدم الدخول إلى لوحة التحكم",
 };
-
 const verifyOtpResolver: Resolver<VerifyOtpFormValues> = async (values) => {
   const result = verifyOtpSchema.safeParse(values);
   if (result.success) return { values: result.data, errors: {} };
-
   const errors: FieldErrors<VerifyOtpFormValues> = {};
   for (const issue of result.error.issues) {
     const field = issue.path[0] as keyof VerifyOtpFormValues;
     if (!errors[field])
       errors[field] = { type: issue.code, message: issue.message };
   }
-
   return { values: {}, errors };
 };
-
 interface OtpFormProps {
   mobile: string;
+  country: CountryCode;
 }
-
-function OtpForm({ mobile }: OtpFormProps) {
+function OtpForm({ mobile, country }: OtpFormProps) {
   const router = useRouter();
   const {
     handleSubmit,
@@ -62,12 +57,10 @@ function OtpForm({ mobile }: OtpFormProps) {
     resolver: verifyOtpResolver,
     mode: "onChange",
   });
-
   const onSubmit = async (data: VerifyOtpFormValues) => {
-    const result = await verifyLoginAPI(data);
+    const result = await verifyLoginAPI(data, country);
     if (result?.ok) {
       const userData = result.data?.data?.user_data;
-
       if (userData && !ALLOWED_DASHBOARD_ROLES.includes(userData.role)) {
         toast.error(
           ROLE_ACCESS_DENIED_MESSAGES[userData.role] ||
@@ -80,6 +73,7 @@ function OtpForm({ mobile }: OtpFormProps) {
       toast.success(result.message || "تم تسجيل الدخول بنجاح");
       const token = result.data?.data?.access_token;
       if (token) await setToken(token);
+      await setTenant(country);
       if (userData) setUserSession(userData);
 
       router.replace("/");
@@ -92,7 +86,6 @@ function OtpForm({ mobile }: OtpFormProps) {
   const displayPhone = mobile
     ? `+${mobile.slice(0, 3)} ${mobile.slice(3)}`
     : "";
-
   return (
     <form
       className="space-y-5 px-3 py-5 md:px-4 md:py-6"

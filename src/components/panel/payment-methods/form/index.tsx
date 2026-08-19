@@ -5,6 +5,7 @@ import PaymentMethodActions from "./actions";
 import PaymentMethodFields from "./fields";
 import PaymentMethodFormShimmer from "./form-shimmer";
 import { usePaymentMethodForm } from "./use-payment-method-form";
+import GatewayFields from "./gateway-fields";
 
 type Props = {
   open: boolean;
@@ -16,7 +17,7 @@ type Props = {
 
 function PaymentMethodFormModal(props: Props) {
   const { open, paymentMethod, isLoading = false, onClose, onSaved } = props;
-  const { form, isActive, allowedTypes, close, onSubmit } =
+  const { form, isActive, isDefault, allowedTypes, close, onSubmit } =
     usePaymentMethodForm({
       open,
       paymentMethod,
@@ -47,6 +48,7 @@ function PaymentMethodFormModal(props: Props) {
               register={form.register}
               setValue={form.setValue}
             />
+            <GatewayFields isDefault={isDefault} errors={form.formState.errors} register={form.register} setValue={form.setValue} />
             <PaymentMethodActions
               isDirty={form.formState.isDirty}
               isSubmitting={form.formState.isSubmitting}

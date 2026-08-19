@@ -2,6 +2,7 @@ export * from "./dashboard";
 export * from "./consultation-requests";
 export * from "./registration-requests";
 export * from "./sidebar";
+export * from "./countries";
 export * from "./products";
 export * from "./categories";
 export * from "./cities";

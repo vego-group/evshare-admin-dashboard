@@ -20,6 +20,10 @@ export type PaymentMethod = {
   is_active: boolean;
   allowed_user_types: PaymentMethodAllowedType[];
   publishable_key?: string | null;
+  is_default?: boolean;
+  supported_currencies?: string[] | null;
+  credentials?: Record<string, string | null>;
+  config?: Record<string, unknown>;
   created_at: string;
   updated_at?: string;
 };
@@ -58,6 +62,10 @@ export type PaymentMethodPayload = {
   name_en: string;
   is_active: boolean;
   allowed_user_types: PaymentMethodAllowedType[];
+  is_default: boolean;
+  supported_currencies: string[];
+  credentials: Record<string, string>;
+  config: Record<string, unknown>;
 };
 
 export type UpdatePaymentMethodPayload = Partial<PaymentMethodPayload>;
