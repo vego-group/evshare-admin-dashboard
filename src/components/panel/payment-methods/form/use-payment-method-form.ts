@@ -30,7 +30,6 @@ export function usePaymentMethodForm(options: Options) {
     mode: "onChange",
   });
   const isActive = useWatch({ control: form.control, name: "is_active" });
-  const isDefault = useWatch({ control: form.control, name: "is_default" });
   const allowedTypes = useWatch({
     control: form.control,
     name: "allowed_user_types",
@@ -47,13 +46,6 @@ export function usePaymentMethodForm(options: Options) {
         name_en: paymentMethod.name_en,
         is_active: paymentMethod.is_active,
         allowed_user_types: paymentMethod.allowed_user_types ?? [],
-        is_default: paymentMethod.is_default ?? false,
-        supported_currencies: paymentMethod.supported_currencies?.join(", ") ?? "",
-        secret_key: "",
-        publishable_key: "",
-        webhook_secret: "",
-        base_url: "",
-        config: paymentMethod.config ? JSON.stringify(paymentMethod.config, null, 2) : "",
       });
     }
   }, [form, open, paymentMethod]);
@@ -84,5 +76,5 @@ export function usePaymentMethodForm(options: Options) {
     await onSaved(paymentMethod.id);
   };
 
-  return { form, isActive, isDefault, allowedTypes, close, onSubmit };
+  return { form, isActive, allowedTypes, close, onSubmit };
 }

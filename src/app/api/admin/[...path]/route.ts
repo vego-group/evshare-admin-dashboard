@@ -18,7 +18,6 @@ export async function GET(request: NextRequest, context: RouteContext) {
   }
 
   const token = (await cookies()).get("token")?.value;
-  const tenant = (await cookies()).get("tenant_id")?.value ?? "sa";
 
   if (!token) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
@@ -37,7 +36,6 @@ export async function GET(request: NextRequest, context: RouteContext) {
       Accept: "application/json",
       "Accept-Language": "ar",
       Authorization: `Bearer ${token}`,
-      "X-Tenant-Id": tenant,
     },
     cache: "no-store",
   });
@@ -45,12 +43,8 @@ export async function GET(request: NextRequest, context: RouteContext) {
   const body = await upstreamResponse.text();
   const contentType = upstreamResponse.headers.get("content-type");
 
-  const echoedTenant = upstreamResponse.headers.get("x-tenant-id") ?? tenant;
   return new NextResponse(body, {
     status: upstreamResponse.status,
-    headers: {
-      ...(contentType ? { "content-type": contentType } : {}),
-      "X-Tenant-Id": echoedTenant,
-    },
+    headers: contentType ? { "content-type": contentType } : undefined,
   });
 }

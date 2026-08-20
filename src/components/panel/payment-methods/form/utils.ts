@@ -14,13 +14,6 @@ export const paymentMethodDefaults: PaymentMethodFormValues = {
   name_en: "",
   is_active: true,
   allowed_user_types: [],
-  is_default: false,
-  supported_currencies: "",
-  secret_key: "",
-  publishable_key: "",
-  webhook_secret: "",
-  base_url: "",
-  config: "",
 };
 
 export const paymentMethodResolver: Resolver<PaymentMethodFormValues> = async (values) => {
@@ -45,13 +38,6 @@ export function buildChangedPaymentMethodPayload(
   if (isDirty(dirty.allowed_user_types)) {
     payload.allowed_user_types = values.allowed_user_types;
   }
-  if (dirty.is_default) payload.is_default = values.is_default;
-  if (dirty.supported_currencies) payload.supported_currencies = values.supported_currencies.split(",").map((item) => item.trim().toUpperCase()).filter(Boolean);
-  const credentialKeys = ["secret_key", "publishable_key", "webhook_secret", "base_url"] as const;
-  const credentials: Record<string, string> = {};
-  for (const key of credentialKeys) if (dirty[key]) credentials[key] = values[key].trim();
-  if (Object.keys(credentials).length) payload.credentials = credentials;
-  if (dirty.config) payload.config = values.config.trim() ? JSON.parse(values.config) : {};
   return payload;
 }
 

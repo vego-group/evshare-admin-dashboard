@@ -8,13 +8,9 @@ import { loginSchema, type LoginFormValues } from "@/schemas";
 import { Button } from "@/components/ui/button";
 import PhoneField from "./phone-field";
 import { loginAPI } from "@/services/mutations";
-import { normalizePhone } from "@/lib";
+import { normalizeSaudiPhone } from "@/lib";
 import Loader from "../ui/loader";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { useCountries } from "@/hooks/api";
-import type { CountryCode } from "@/types";
-import { phoneCountries } from "@/data";
 
 const loginFormResolver: Resolver<LoginFormValues> = async (values) => {
   const result = loginSchema.safeParse(values);
@@ -29,8 +25,6 @@ const loginFormResolver: Resolver<LoginFormValues> = async (values) => {
 
 function LoginForm() {
   const router = useRouter();
-  const [country, setCountry] = useState<CountryCode>("sa");
-  const { data: countries } = useCountries();
   const {
     handleSubmit,
     register,
@@ -42,15 +36,11 @@ function LoginForm() {
   });
 
   const onSubmit = async (data: LoginFormValues) => {
-    if (!phoneCountries[country].localPattern.test(data.mobile)) {
-      toast.error("رقم الجوال غير صحيح للدولة المحددة");
-      return;
-    }
-    const normalized = normalizePhone(data.mobile, country);
-    const result = await loginAPI({ mobile: normalized }, country);
+    const normalized = normalizeSaudiPhone(data.mobile);
+    const result = await loginAPI({ mobile: normalized });
     if (result?.ok) {
       toast.success(result.message || "تم إرسال رمز التحقق");
-      router.push(`/login/verify-otp?mobile=${encodeURIComponent(normalized)}&country=${country}`);
+      router.push(`/login/verify-otp?mobile=${encodeURIComponent(normalized)}`);
       return;
     }
 
@@ -65,10 +55,7 @@ function LoginForm() {
       <PhoneField
         id="mobile"
         label="رقم الجوال"
-        placeholder={phoneCountries[country].placeholder}
-        countries={(countries?.data ?? []).filter((item) => item.active)}
-        country={country}
-        onCountryChange={setCountry}
+        placeholder="5x xxx xxxx"
         error={errors.mobile?.message}
         {...register("mobile")}
       />
