@@ -1,12 +1,13 @@
-import { phoneCountries } from "@/data/countries";
-import type { CountryCode } from "@/types";
-
-export function normalizePhone(value: unknown, country: CountryCode) {
+export function normalizeSaudiPhone(value: unknown) {
   let digits = String(value ?? "").replace(/\D/g, "");
-  const { dialCode } = phoneCountries[country];
-  if (digits.startsWith("0")) digits = digits.slice(1);
-  if (digits.startsWith(dialCode)) digits = digits.slice(dialCode.length);
-  return `${dialCode}${digits}`;
-}
 
-export const normalizeSaudiPhone = (value: unknown) => normalizePhone(value, "sa");
+  if (digits.startsWith("0")) {
+    digits = digits.slice(1);
+  }
+
+  if (digits.startsWith("966")) {
+    digits = digits.slice(3);
+  }
+
+  return `966${digits}`;
+}
