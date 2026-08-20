@@ -12,9 +12,8 @@ import SidebarMobile from "./sidebar-mobile";
 import SidebarOverlay from "./sidebar-overlay";
 import SidebarTablet from "./sidebar-tablet";
 import SidebarTopbar from "./sidebar-topbar";
-import type { CountryCode } from "@/types";
 
-function Sidebar({ country }: { country: CountryCode }) {
+function Sidebar() {
   const pathname = usePathname();
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isTabletSidebarExpanded, setIsTabletSidebarExpanded] = useState(false);
@@ -41,7 +40,6 @@ function Sidebar({ country }: { country: CountryCode }) {
   return (
     <>
       <SidebarTopbar
-        country={country}
         onOpenMobileSidebar={() => setIsMobileSidebarOpen(true)}
       />
 

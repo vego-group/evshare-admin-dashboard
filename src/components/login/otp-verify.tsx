@@ -4,14 +4,12 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import LoginHeaderCompact from "./login-header-compact";
 import OtpForm from "./otp-form";
-import type { CountryCode } from "@/types";
 
 interface OtpVerifyProps {
   mobile: string;
-  country: CountryCode;
 }
 
-function OtpVerify({ mobile, country }: OtpVerifyProps) {
+function OtpVerify({ mobile }: OtpVerifyProps) {
   return (
     <main className="relative min-h-svh overflow-hidden bg-[#0f1118] px-4 py-8">
       <div className="pointer-events-none absolute inset-0">
@@ -47,7 +45,7 @@ function OtpVerify({ mobile, country }: OtpVerifyProps) {
             </p>
           </div>
 
-          <OtpForm mobile={mobile} country={country} />
+          <OtpForm mobile={mobile} />
         </motion.section>
       </div>
     </main>

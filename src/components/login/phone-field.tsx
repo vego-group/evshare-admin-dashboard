@@ -1,6 +1,7 @@
 "use client";
 
 import { forwardRef } from "react";
+import Image from "next/image";
 import InputErrorMessage from "@/components/ui/input-error-message";
 import { cn } from "@/lib/utils";
 import {
@@ -8,23 +9,16 @@ import {
   preventNonDigitPaste,
   stripNonDigits,
 } from "@/lib/utils/digits-only-input";
-import { mergePhoneCountries } from "@/data";
-import type { Country, CountryCode } from "@/types";
-import CountryPhoneSelect from "./country-phone-select";
 
 interface PhoneFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
   id: string;
   label?: string;
   error?: string;
-  countries: Country[];
-  country: CountryCode;
-  onCountryChange: (country: CountryCode) => void;
 }
 
 const PhoneField = forwardRef<HTMLInputElement, PhoneFieldProps>(
-  ({ id, label, error, countries, country, onCountryChange, className, onKeyDown, onPaste, onChange, ...props }, ref) => {
+  ({ id, label, error, className, onKeyDown, onPaste, onChange, ...props }, ref) => {
     const hasError = Boolean(error);
-    const options = mergePhoneCountries(countries);
 
     return (
       <div>
@@ -40,18 +34,27 @@ const PhoneField = forwardRef<HTMLInputElement, PhoneFieldProps>(
         <div
           dir="ltr"
           className={cn(
-            "flex h-10 items-center rounded-lg border border-[#dbe4ef] bg-white transition",
+            "flex h-10 items-center overflow-hidden rounded-lg border border-[#dbe4ef] bg-white transition",
             hasError && "border-red-400",
           )}
         >
-          <CountryPhoneSelect options={options.filter((option) => option.active)} value={country} onChange={onCountryChange} />
+          <div className="flex shrink-0 items-center gap-1.5 border-r border-[#dbe4ef] px-3 select-none">
+            <Image
+              src="/images/flag.png"
+              alt="SA"
+              width={28}
+              height={20}
+              className="rounded-sm object-cover"
+            />
+            <span className="text-sm font-medium text-secondary">+966</span>
+          </div>
 
           <input
             id={id}
             ref={ref}
             type="tel"
             inputMode="numeric"
-            maxLength={10}
+            maxLength={9}
             className={cn(
               "h-full w-full border-none bg-transparent px-3 text-left text-sm text-secondary placeholder:text-gray-400 focus:outline-none",
               className,
