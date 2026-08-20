@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useHasPermission } from "@/hooks";
+import { useUserPermissions } from "@/hooks";
 
 type PermissionGateProps = {
   slug: string | string[];
@@ -10,7 +10,9 @@ type PermissionGateProps = {
 };
 
 function PermissionGate({ slug, children, fallback = null }: PermissionGateProps) {
-  const allowed = useHasPermission(slug);
+  const { isLoading, hasAnyPermission } = useUserPermissions();
+  if (isLoading) return null;
+  const allowed = hasAnyPermission(slug);
   return allowed ? <>{children}</> : <>{fallback}</>;
 }
 

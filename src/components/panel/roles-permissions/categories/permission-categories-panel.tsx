@@ -8,6 +8,7 @@ import DetailsModal from "../shared/details-modal";
 import EntityPagination from "../shared/entity-pagination";
 import EntityTable, { type TableColumn } from "../shared/entity-table";
 import EntityToolbar from "../shared/entity-toolbar";
+import { useHasPermission } from "@/hooks";
 
 const columns: TableColumn<PermissionCategory>[] = [
   { key: "name", label: "الاسم", render: (item) => item.name },
@@ -19,6 +20,7 @@ const columns: TableColumn<PermissionCategory>[] = [
 ];
 
 export default function PermissionCategoriesPanel() {
+  const canView = useHasPermission("Admin Details Permission Categories");
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [orderBy, setOrderBy] = useState<"asc" | "desc">("desc");
@@ -55,7 +57,7 @@ export default function PermissionCategoriesPanel() {
         rows={Array.isArray(data?.data) ? data.data : []}
         columns={columns}
         isLoading={isLoading}
-        onView={setView}
+        onView={canView ? setView : undefined}
       />
       <EntityPagination meta={data?.meta} onChange={setPage} />
       <DetailsModal

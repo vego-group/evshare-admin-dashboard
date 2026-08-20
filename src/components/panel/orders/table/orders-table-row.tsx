@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import { cn } from "@/lib/utils";
 import { updateOrderStatusAPI } from "@/services/mutations";
 import type { OrderListItem, OrderNewStatus } from "@/types";
+import { useHasPermission } from "@/hooks";
 
 import { StatusCategoryBadge } from "./order-status-badge";
 import {
@@ -18,13 +19,15 @@ import {
 } from "../modals";
 
 function OrdersTableRow({ order }: { order: OrderListItem }) {
+  const canShow = useHasPermission("Admin Show Orders");
+  const canEdit = useHasPermission("Admin Edit Orders");
   const router = useRouter();
   const queryClient = useQueryClient();
 
   const [pendingStatus, setPendingStatus] = useState<OrderNewStatus | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const handleSelect = () => router.push(`/orders/${order.id}`);
+  const handleSelect = () => { if (canShow) router.push(`/orders/${order.id}`); };
 
   async function handleConfirm() {
     if (!pendingStatus || isUpdating) return;
@@ -75,11 +78,11 @@ function OrdersTableRow({ order }: { order: OrderListItem }) {
           <span className="inline-flex items-center gap-1"><SaudiRiyal className="size-4 shrink-0" /> {order.total}</span>
         </TableCell>
         <TableCell className="max-w-none overflow-visible whitespace-normal">
-          <OrderStatusDropdown
+          {canEdit ? <OrderStatusDropdown
             currentStatus={order.status}
             disabled={isUpdating}
             onSelect={setPendingStatus}
-          />
+          /> : <span>{order.status}</span>}
         </TableCell>
         <TableCell className="max-w-none overflow-visible whitespace-normal">
           <StatusCategoryBadge category={order.status_category} />

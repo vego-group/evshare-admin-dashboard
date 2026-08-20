@@ -5,6 +5,7 @@ import { useState } from "react";
 import Header from "@/components/ui/header";
 import { PAGE_SIZE } from "@/constants";
 import { useConsultationRequests } from "@/hooks/api";
+import { useHasPermission } from "@/hooks";
 import type { ConsultationStatus, ConsultationsQueryParams, OrderBy } from "@/types";
 
 import ConsultationRequestsContentShimmer from "./content-shimmer";
@@ -15,6 +16,7 @@ import ConsultationRequestsTable from "./table";
 import ConsultationRequestsToolbar from "./toolbar";
 
 function ConsultationRequests() {
+  const canShow = useHasPermission("Admin Show Consultations");
   const [params, setParams] = useState<ConsultationsQueryParams>({
     page: 1,
     limit: PAGE_SIZE,
@@ -59,7 +61,7 @@ function ConsultationRequests() {
           />
           <ConsultationRequestsTable
             requests={data?.data ?? []}
-            onRequestSelect={setSelectedConsultationId}
+            onRequestSelect={canShow ? setSelectedConsultationId : undefined}
           />
           <ConsultationRequestsPagination
             meta={data?.meta}

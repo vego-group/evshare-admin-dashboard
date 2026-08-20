@@ -3,6 +3,7 @@ import { Plus, SaudiRiyal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import EmptyState from "@/components/ui/empty-state";
 import type { VatSettlement } from "@/types";
+import PermissionGate from "@/components/permission-gate";
 
 type Props = {
   settlements: VatSettlement[];
@@ -17,10 +18,10 @@ function VatSettlements({ settlements, onAdd }: Props) {
           <h2 className="text-lg font-semibold text-secondary">تسويات الضريبة</h2>
           <p className="text-sm text-gray">سجل بمبالغ ضريبة القيمة المضافة التي تم سدادها</p>
         </div>
-        <Button type="button" onClick={onAdd} className="gap-2">
+        <PermissionGate slug="Admin Add VAT Settlements"><Button type="button" onClick={onAdd} className="gap-2">
           <Plus className="size-4 shrink-0" />
           تسجيل تسوية
-        </Button>
+        </Button></PermissionGate>
       </div>
 
       {!settlements.length ? (

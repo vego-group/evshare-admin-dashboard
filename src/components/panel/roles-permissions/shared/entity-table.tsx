@@ -17,7 +17,7 @@ type Props<T extends { id: string }> = {
   rows: T[];
   columns: TableColumn<T>[];
   isLoading: boolean;
-  onView: (item: T) => void;
+  onView?: (item: T) => void;
   onEdit?: (item: T) => void;
   onDelete?: (item: T) => void;
   onPermissions?: (item: T) => void;
@@ -101,11 +101,11 @@ export default function EntityTable<T extends { id: string }>(props: Props<T>) {
                 )}
               >
                 <div className="flex gap-1">
-                  {props.canView?.(row) !== false && (
+                  {props.onView && props.canView?.(row) !== false && (
                     <TableAction
                       icon={<Eye />}
                       label="عرض"
-                      onClick={() => props.onView(row)}
+                      onClick={() => props.onView?.(row)}
                     />
                   )}
                   {props.onPermissions && (

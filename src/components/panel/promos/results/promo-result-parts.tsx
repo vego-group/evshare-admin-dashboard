@@ -9,6 +9,7 @@ import {
 
 import { cn } from "@/lib/utils";
 import type { PromoContext, PromoListItem } from "@/types";
+import PermissionGate from "@/components/permission-gate";
 
 export const typeLabels: Record<PromoContext, string> = {
   order: "طلبات",
@@ -89,24 +90,24 @@ export function PromoActions({
 }) {
   return (
     <div className={cn("flex items-center gap-2", compact && "w-full")}>
-      <ActionButton
+      <PermissionGate slug="Admin View Promos"><ActionButton
         icon={Eye}
         onClick={onView}
         label="عرض كود الخصم"
         className={cn("bg-blue-50 text-blue-600", compact && "flex-1")}
-      />
-      <ActionButton
+      /></PermissionGate>
+      <PermissionGate slug="Admin Edit Promos"><ActionButton
         icon={Pencil}
         onClick={onEdit}
         label="تعديل كود الخصم"
         className={cn("bg-amber-50 text-orange-500", compact && "flex-1")}
-      />
-      <ActionButton
+      /></PermissionGate>
+      <PermissionGate slug="Admin Delete Promos"><ActionButton
         icon={Trash2}
         onClick={onDelete}
         label="حذف كود الخصم"
         className={cn("bg-red-50 text-red-500", compact && "flex-1")}
-      />
+      /></PermissionGate>
     </div>
   );
 }

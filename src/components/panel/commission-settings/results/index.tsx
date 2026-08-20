@@ -68,8 +68,8 @@ function CommissionSettingsResults({
                 <div className="flex gap-2">
                   <PermissionGate
                     slug={[
-                      "View Commission Settings",
-                      "Edit Commission Settings",
+                      "Admin View Commission Settings",
+                      "Admin Edit Commission Settings",
                     ]}
                   >
                     <Button
@@ -81,7 +81,7 @@ function CommissionSettingsResults({
                       <Pencil />
                     </Button>
                   </PermissionGate>
-                  <PermissionGate slug="Delete Commission Settings">
+                  <PermissionGate slug="Admin Delete Commission Settings">
                     <Button
                       size="icon-sm"
                       variant="ghost"
