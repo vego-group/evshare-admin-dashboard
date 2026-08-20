@@ -12,11 +12,15 @@ import SidebarMobile from "./sidebar-mobile";
 import SidebarOverlay from "./sidebar-overlay";
 import SidebarTablet from "./sidebar-tablet";
 import SidebarTopbar from "./sidebar-topbar";
+import { useCountries } from "@/hooks";
+import { selectCountryAPI } from "@/services/mutations";
 
-function Sidebar() {
+function Sidebar({ countryCode }: { countryCode: string }) {
   const pathname = usePathname();
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isTabletSidebarExpanded, setIsTabletSidebarExpanded] = useState(false);
+  const { data: countriesResponse } = useCountries();
+  const selectedCountry = countriesResponse?.data.find((item) => item.code === countryCode) ?? null;
 
   const closeMobileSidebar = () => setIsMobileSidebarOpen(false);
   const closeTabletSidebar = () => setIsTabletSidebarExpanded(false);
@@ -37,10 +41,19 @@ function Sidebar() {
     window.location.assign("/login");
   };
 
+  const handleSwitchCountry = async () => {
+    await logoutAPI();
+    await selectCountryAPI(countryCode);
+    clearUserSession();
+    window.location.assign("/login");
+  };
+
   return (
     <>
       <SidebarTopbar
         onOpenMobileSidebar={() => setIsMobileSidebarOpen(true)}
+        country={selectedCountry}
+        onSwitchCountry={handleSwitchCountry}
       />
 
       <SidebarDesktop

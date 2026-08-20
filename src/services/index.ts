@@ -34,14 +34,14 @@ attach401Interceptor(adminApi);
 attach401Interceptor(authApi);
 
 export const initApi = async () => {
-  if (typeof window !== "undefined") return;
+  if (typeof window !== "undefined") return {};
 
-  const { getToken } = await import("@/lib/utils/auth");
-  const token = await getToken();
-  if (token) {
-    adminApi.defaults.headers.common.Authorization = `Bearer ${token}`;
-    authApi.defaults.headers.common.Authorization = `Bearer ${token}`;
-  }
+  const { getCountry, getToken } = await import("@/lib/utils/auth");
+  const [token, country] = await Promise.all([getToken(), getCountry()]);
+  return {
+    "X-Tenant-Id": country,
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
 };
 
 const safe = async <T = unknown, E extends { message: string } = ErrorBody>(
@@ -51,7 +51,7 @@ const safe = async <T = unknown, E extends { message: string } = ErrorBody>(
   data?: unknown,
   config: ExtraConfig = {},
 ): Promise<ApiResult<T, E>> => {
-  await initApi();
+  const requestHeaders = await initApi();
   const { isForm, headers, ...rest } = config;
   try {
     const res = await instance.request<T>({
@@ -61,6 +61,7 @@ const safe = async <T = unknown, E extends { message: string } = ErrorBody>(
       ...rest,
       headers: {
         "Content-Type": isForm ? "multipart/form-data" : "application/json",
+        ...requestHeaders,
         ...headers,
       },
     });
@@ -131,11 +132,11 @@ export const baseAPI = async (method: Method, url: string) => {
     return data;
   }
 
-  await initApi();
+  const requestHeaders = await initApi();
   const response = await adminApi.request({
     method,
     url,
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...requestHeaders },
   });
   return response.data;
 };

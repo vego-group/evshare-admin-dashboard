@@ -1,22 +1,13 @@
 "use client";
 
-import {
-  useForm,
-  Controller,
-  type Resolver,
-  type FieldErrors,
-} from "react-hook-form";
+import { useForm, Controller, type Resolver, type FieldErrors } from "react-hook-form";
 import { ShieldCheck } from "lucide-react";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { verifyOtpSchema, type VerifyOtpFormValues } from "@/schemas";
 import { Button } from "@/components/ui/button";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { verifyLoginAPI } from "@/services/mutations";
 import { setToken, removeToken } from "@/lib";
 import { setUserSession } from "@/lib/utils/user-session";
@@ -49,9 +40,10 @@ const verifyOtpResolver: Resolver<VerifyOtpFormValues> = async (values) => {
 
 interface OtpFormProps {
   mobile: string;
+  country: string;
 }
 
-function OtpForm({ mobile }: OtpFormProps) {
+function OtpForm({ mobile, country }: OtpFormProps) {
   const router = useRouter();
   const {
     handleSubmit,
@@ -64,7 +56,7 @@ function OtpForm({ mobile }: OtpFormProps) {
   });
 
   const onSubmit = async (data: VerifyOtpFormValues) => {
-    const result = await verifyLoginAPI(data);
+    const result = await verifyLoginAPI(data, country);
     if (result?.ok) {
       const userData = result.data?.data?.user_data;
 

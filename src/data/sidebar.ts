@@ -193,7 +193,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
     label: "سجل الرحلات",
     ariaLabel: "سجل الرحلات",
     icon: Navigation,
-    permission: "Admin Index Trips",
+    permission: "Admin View Trips",
   },
   {
     href: "/trips/active",

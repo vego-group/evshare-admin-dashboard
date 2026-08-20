@@ -2,6 +2,7 @@ import { MapPin, Pencil, Trash2, type LucideIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import type { ShippingCityListItem } from "@/types";
+import PermissionGate from "@/components/permission-gate";
 
 export function CityIcon() {
   return (
@@ -86,18 +87,18 @@ export function ShippingCityActions({
 }) {
   return (
     <div className="flex items-center gap-2">
-      <ActionButton
+      <PermissionGate slug="Admin Edit Shipping Cities"><ActionButton
         icon={Pencil}
         onClick={onEdit}
         label="تعديل مدينة الشحن"
         className="bg-amber-50 text-orange-500"
-      />
-      <ActionButton
+      /></PermissionGate>
+      <PermissionGate slug="Admin Delete Shipping Cities"><ActionButton
         icon={Trash2}
         onClick={onDelete}
         label="حذف مدينة الشحن"
         className="bg-red-50 text-red-500"
-      />
+      /></PermissionGate>
     </div>
   );
 }
