@@ -70,11 +70,13 @@ function VehicleActions({
               </DropdownMenuItem>
             </PermissionGate>
           )}
-          <PermissionGate slug="Admin Edit Vehicles">
+          <PermissionGate slug="Admin View Zones">
             <DropdownMenuItem onSelect={onManageZone}>
               <MapPin className="size-4 shrink-0 text-indigo-600" />
               <span className="flex-1 truncate text-right">مناطق التشغيل</span>
             </DropdownMenuItem>
+          </PermissionGate>
+          <PermissionGate slug={["Admin Locate Vehicles", "Admin View Locks", "Admin Lock Vehicles", "Admin Unlock Vehicles"]}>
             <DropdownMenuItem onSelect={onControlPanel}>
               <Radio className="size-4 shrink-0 text-teal-600" />
               <span className="flex-1 truncate text-right">لوحة التحكم</span>

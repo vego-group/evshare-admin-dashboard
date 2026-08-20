@@ -11,6 +11,7 @@ import EntityError from "../shared/entity-error";
 import EntityPagination from "../shared/entity-pagination";
 import RolePermissionsShimmer from "./role-permissions-shimmer";
 import Dropdown from "../shared/dropdown";
+import PermissionGate from "@/components/permission-gate";
 
 type Props = { role: Role | null; onClose: () => void; onSaved: () => void };
 const categoriesParams = { page: 1, limit: 200 };
@@ -61,10 +62,10 @@ export default function RolePermissionsModal({ role, onClose, onSaved }: Props) 
         {isLoading || permissionsLoading || categoriesLoading ? <RolePermissionsShimmer /> : roleError ? (
           <EntityError error={roleError} />
         ) : <>
-        <div className="flex flex-col gap-3 rounded-[14px] bg-background p-3 sm:flex-row">
+        <PermissionGate slug="Admin Assign Roles Permissions By Category"><div className="flex flex-col gap-3 rounded-[14px] bg-background p-3 sm:flex-row">
           <Dropdown value={categoryId} placeholder="اختر تصنيف صلاحيات" onChange={setCategoryId} options={categoryItems.map((item) => ({ label: item.name, value: item.id }))} />
           <Button type="button" disabled={!categoryId || saving} onClick={assignCategory} className="h-12 rounded-[14px] bg-primary px-5 text-secondary shadow-[0_4px_12px_rgba(255,213,79,0.25)] hover:bg-primary/90">{assignMutation.isPending ? <Loader /> : "إسناد التصنيف"}</Button>
-        </div>
+        </div></PermissionGate>
           <div className="grid max-h-96 gap-3 overflow-y-auto sm:grid-cols-2">
             {permissionItems.map((permission) => (
               <label key={permission.id} className="flex cursor-pointer items-center gap-3 rounded-[14px] border border-neutral-100 bg-white p-4 text-sm text-secondary transition hover:border-primary/70 hover:bg-primary/5">
@@ -76,7 +77,7 @@ export default function RolePermissionsModal({ role, onClose, onSaved }: Props) 
           <EntityPagination meta={permissions?.meta} onChange={setPermissionsPage} />
         <div className="grid grid-cols-2 gap-3 pt-2">
           <Button variant="ghost" type="button" disabled={saving} onClick={onClose} className="h-12 rounded-[14px] bg-neutral-100 text-dark-gray">إغلاق</Button>
-          <Button type="button" disabled={saving || !hasChanges} onClick={sync} className="h-12 rounded-[14px] text-secondary">{syncMutation.isPending ? <Loader /> : "حفظ الصلاحيات"}</Button>
+          <PermissionGate slug="Admin Sync Roles Permissions"><Button type="button" disabled={saving || !hasChanges} onClick={sync} className="h-12 rounded-[14px] text-secondary">{syncMutation.isPending ? <Loader /> : "حفظ الصلاحيات"}</Button></PermissionGate>
         </div>
         </>}
       </div>

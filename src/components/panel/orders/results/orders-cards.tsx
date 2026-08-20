@@ -10,6 +10,7 @@ import type { ReactNode } from "react";
 
 import { updateOrderStatusAPI } from "@/services/mutations";
 import type { OrderListItem, OrderNewStatus } from "@/types";
+import { useHasPermission } from "@/hooks";
 
 import { StatusCategoryBadge } from "../table/order-status-badge";
 import {
@@ -28,6 +29,8 @@ function OrdersCards({ orders }: { orders: OrderListItem[] }) {
 }
 
 function OrderCard({ order }: { order: OrderListItem }) {
+  const canShow = useHasPermission("Admin Show Orders");
+  const canEdit = useHasPermission("Admin Edit Orders");
   const router = useRouter();
   const queryClient = useQueryClient();
 
@@ -59,11 +62,11 @@ function OrderCard({ order }: { order: OrderListItem }) {
       <article
         role="button"
         tabIndex={0}
-        onClick={() => router.push(`/orders/${order.id}`)}
+        onClick={() => { if (canShow) router.push(`/orders/${order.id}`); }}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
-            router.push(`/orders/${order.id}`);
+            if (canShow) router.push(`/orders/${order.id}`);
           }
         }}
         className="cursor-pointer overflow-hidden rounded-2xl border border-neutral-100 bg-white p-4 transition hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
@@ -94,11 +97,11 @@ function OrderCard({ order }: { order: OrderListItem }) {
         </div>
 
         <div className="mt-4 flex items-center justify-end border-t border-neutral-100 pt-4">
-          <OrderStatusDropdown
+          {canEdit ? <OrderStatusDropdown
             currentStatus={order.status}
             disabled={isUpdating}
             onSelect={setPendingStatus}
-          />
+          /> : <span>{order.status}</span>}
         </div>
       </article>
 

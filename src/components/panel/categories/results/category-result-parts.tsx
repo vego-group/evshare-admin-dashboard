@@ -3,6 +3,7 @@ import Image from "next/image";
 
 import { cn } from "@/lib/utils";
 import type { CategoryListItem } from "@/types";
+import PermissionGate from "@/components/permission-gate";
 
 export function CategoryImage({
   category,
@@ -65,24 +66,24 @@ export function CategoryActions({
 }) {
   return (
     <div className={cn("flex items-center gap-2", compact && "w-full")}>
-      <ActionButton
+      <PermissionGate slug="Admin Show Categories"><ActionButton
         icon={Eye}
         onClick={onView}
         label="عرض التصنيف"
         className={cn("bg-blue-50 text-blue-600", compact && "flex-1")}
-      />
-      <ActionButton
+      /></PermissionGate>
+      <PermissionGate slug="Admin Edit Categories"><ActionButton
         icon={Pencil}
         onClick={onEdit}
         label="تعديل التصنيف"
         className={cn("bg-amber-50 text-orange-500", compact && "flex-1")}
-      />
-      <ActionButton
+      /></PermissionGate>
+      <PermissionGate slug="Admin Delete Categories"><ActionButton
         icon={Trash2}
         onClick={onDelete}
         label="حذف التصنيف"
         className={cn("bg-red-50 text-red-500", compact && "flex-1")}
-      />
+      /></PermissionGate>
     </div>
   );
 }

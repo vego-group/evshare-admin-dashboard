@@ -8,6 +8,7 @@ import DetailsModal from "../shared/details-modal";
 import EntityPagination from "../shared/entity-pagination";
 import EntityTable, { type TableColumn } from "../shared/entity-table";
 import EntityToolbar from "../shared/entity-toolbar";
+import { useHasPermission } from "@/hooks";
 
 const columns: TableColumn<Permission>[] = [
   {
@@ -39,6 +40,7 @@ const columns: TableColumn<Permission>[] = [
 ];
 
 export default function PermissionsPanel() {
+  const canView = useHasPermission("Admin Details Permissions");
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [orderBy, setOrderBy] = useState<"asc" | "desc">("desc");
@@ -75,8 +77,8 @@ export default function PermissionsPanel() {
         rows={Array.isArray(data?.data) ? data.data : []}
         columns={columns}
         isLoading={isLoading}
-        onView={setView}
-        canView={(item) => item.dashboard_permissions}
+        onView={canView ? setView : undefined}
+        canView={(item) => canView && item.dashboard_permissions}
         tableClassName="min-w-[680px]"
       />
       <EntityPagination meta={data?.meta} onChange={setPage} />

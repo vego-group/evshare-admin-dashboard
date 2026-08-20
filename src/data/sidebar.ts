@@ -94,7 +94,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
     label: "المحفظة",
     ariaLabel: "المحفظة",
     icon: Wallet,
-    permission: "View Wallet",
+    permission: "Admin Index Wallet Transactions",
   },
   {
     href: "/cities",
@@ -228,7 +228,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
     label: "إعدادات العمولة",
     ariaLabel: "إعدادات العمولة",
     icon: Percent,
-    permission: "Index Commission Settings",
+    permission: "Admin Index Commission Settings",
   },
   {
     href: "/finance/vat",

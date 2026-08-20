@@ -5,6 +5,7 @@ import { useState } from "react";
 import Header from "@/components/ui/header";
 import { PAGE_SIZE } from "@/constants";
 import { useComplaints } from "@/hooks/api";
+import { useHasPermission } from "@/hooks";
 import type { ComplaintsQueryParams, ComplaintStatus, OrderBy } from "@/types";
 
 import ComplaintsContentShimmer from "./content-shimmer";
@@ -15,6 +16,7 @@ import ComplaintsTable from "./table";
 import ComplaintsToolbar from "./toolbar";
 
 function Complaints() {
+  const canShow = useHasPermission("Admin Show Complaints");
   const [params, setParams] = useState<ComplaintsQueryParams>({
     page: 1,
     limit: PAGE_SIZE,
@@ -63,7 +65,7 @@ function Complaints() {
           />
           <ComplaintsTable
             complaints={data?.data ?? []}
-            onComplaintSelect={setSelectedComplaintId}
+            onComplaintSelect={canShow ? setSelectedComplaintId : undefined}
           />
           <ComplaintsPagination
             meta={data?.meta}

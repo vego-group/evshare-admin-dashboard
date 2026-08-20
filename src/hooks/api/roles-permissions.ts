@@ -102,12 +102,28 @@ export const useRemovePermissionFromRole = () => {
   return useMutation({ mutationFn: ({ roleId, permissionId }: { roleId: string; permissionId: string }) => removePermissionFromRole(roleId, permissionId), onSuccess: invalidate });
 };
 export const useSyncRolePermissions = () => {
-  const invalidate = useInvalidate(rolesPermissionsKeys.roles, rolesPermissionsKeys.role);
-  return useMutation({ mutationFn: ({ id, payload }: { id: string; payload: SyncRolePermissionsValues }) => syncRolePermissions(id, payload), onSuccess: invalidate });
+  const invalidate = useInvalidate(
+    rolesPermissionsKeys.roles,
+    rolesPermissionsKeys.role,
+    rolesPermissionsKeys.authPermissions,
+  );
+  return useMutation({
+    mutationFn: ({ id, payload }: { id: string; payload: SyncRolePermissionsValues }) =>
+      syncRolePermissions(id, payload),
+    onSuccess: (result) => result.ok ? invalidate() : undefined,
+  });
 };
 export const useAssignRolePermissionsByCategory = () => {
-  const invalidate = useInvalidate(rolesPermissionsKeys.roles, rolesPermissionsKeys.role);
-  return useMutation({ mutationFn: ({ id, payload }: { id: string; payload: AssignPermissionCategoryValues }) => assignRolePermissionsByCategory(id, payload), onSuccess: invalidate });
+  const invalidate = useInvalidate(
+    rolesPermissionsKeys.roles,
+    rolesPermissionsKeys.role,
+    rolesPermissionsKeys.authPermissions,
+  );
+  return useMutation({
+    mutationFn: ({ id, payload }: { id: string; payload: AssignPermissionCategoryValues }) =>
+      assignRolePermissionsByCategory(id, payload),
+    onSuccess: (result) => result.ok ? invalidate() : undefined,
+  });
 };
 
 export const useAddPermission = () => {

@@ -9,6 +9,7 @@ import Modal from "@/components/ui/modal";
 import { deleteVehicleZoneAPI } from "@/services/mutations";
 import type { VehicleListItem, VehicleZone } from "@/types";
 import StatusBadge from "../status-badge";
+import PermissionGate from "@/components/permission-gate";
 import { zoneTypeLabel } from "../utils";
 import ZoneDeleteConfirmModal from "./zone-delete-confirm-modal";
 import ZoneFormModal from "./zone-form-modal";
@@ -49,7 +50,7 @@ function ZonesModal({ vehicle, open, isSaving, setIsSaving, onClose, onSaved }: 
       <Modal open={open && !isFormOpen} onClose={onClose} title="مناطق التشغيل" contentClassName="max-w-2xl">
         <div className="space-y-4 p-1">
           <div className="flex justify-end">
-            <Button
+            <PermissionGate slug="Admin Add Zones"><Button
               type="button"
               onClick={() => {
                 setFormZone(null);
@@ -58,7 +59,7 @@ function ZonesModal({ vehicle, open, isSaving, setIsSaving, onClose, onSaved }: 
               className="gap-1.5 bg-primary text-secondary hover:bg-primary/90"
             >
               <Plus className="size-4 shrink-0" /> إضافة منطقة
-            </Button>
+            </Button></PermissionGate>
           </div>
 
           {zones.length === 0 ? (
@@ -76,7 +77,7 @@ function ZonesModal({ vehicle, open, isSaving, setIsSaving, onClose, onSaved }: 
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
                     <StatusBadge status={zone.is_active ? "active" : "disabled"} />
-                    <button
+                    <PermissionGate slug="Admin Edit Zones"><button
                       type="button"
                       aria-label="تعديل المنطقة"
                       onClick={() => {
@@ -86,15 +87,15 @@ function ZonesModal({ vehicle, open, isSaving, setIsSaving, onClose, onSaved }: 
                       className="grid size-8 place-items-center rounded-lg bg-amber-50 text-orange-500 transition hover:brightness-95"
                     >
                       <Pencil className="size-4 shrink-0" />
-                    </button>
-                    <button
+                    </button></PermissionGate>
+                    <PermissionGate slug="Admin Delete Zones"><button
                       type="button"
                       aria-label="حذف المنطقة"
                       onClick={() => setDeleteTarget(zone)}
                       className="grid size-8 place-items-center rounded-lg bg-red-50 text-red-500 transition hover:brightness-95"
                     >
                       <Trash2 className="size-4 shrink-0" />
-                    </button>
+                    </button></PermissionGate>
                   </div>
                 </li>
               ))}

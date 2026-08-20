@@ -2,6 +2,7 @@ import { Images, Pencil, Trash2, type LucideIcon } from "lucide-react";
 import Image from "next/image";
 
 import { cn } from "@/lib/utils";
+import PermissionGate from "@/components/permission-gate";
 
 export function SliderThumbnail({
   url,
@@ -56,18 +57,18 @@ export function SliderActions({
 }) {
   return (
     <div className={cn("flex items-center gap-2", compact && "w-full")}>
-      <ActionButton
+      <PermissionGate slug="Admin Edit Slides"><ActionButton
         icon={Pencil}
         onClick={onEdit}
         label="تعديل السلايدر"
         className={cn("bg-amber-50 text-orange-500", compact && "flex-1")}
-      />
-      <ActionButton
+      /></PermissionGate>
+      <PermissionGate slug="Admin Delete Slides"><ActionButton
         icon={Trash2}
         onClick={onDelete}
         label="حذف السلايدر"
         className={cn("bg-red-50 text-red-500", compact && "flex-1")}
-      />
+      /></PermissionGate>
     </div>
   );
 }

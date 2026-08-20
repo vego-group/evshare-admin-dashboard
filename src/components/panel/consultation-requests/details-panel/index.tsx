@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import Panel from "@/components/ui/panel";
 import Shimmer from "@/components/ui/shimmer";
 import { useConsultationRequest } from "@/hooks";
+import { useHasPermission } from "@/hooks";
 import { updateConsultationStatusAPI } from "@/services/mutations";
 import type { ConsultationListItem, ConsultationStatus } from "@/types";
 
@@ -27,6 +28,7 @@ function ConsultationRequestDetailsPanel({
   open,
   onClose,
 }: ConsultationRequestDetailsPanelProps) {
+  const canUpdateStatus = useHasPermission("Admin Update Consultation Status");
   const queryClient = useQueryClient();
   const { data, isLoading } = useConsultationRequest(consultationRequestId);
   const [pendingStatus, setPendingStatus] = useState<ConsultationStatus | null>(
@@ -78,7 +80,7 @@ function ConsultationRequestDetailsPanel({
             ) : request ? (
               <ConsultationDetails
                 request={request}
-                onStatusChange={setPendingStatus}
+                onStatusChange={canUpdateStatus ? setPendingStatus : () => undefined}
               />
             ) : (
               <div className="flex h-full min-h-[320px] items-center justify-center rounded-[14px] bg-background px-4 text-center text-base text-gray">

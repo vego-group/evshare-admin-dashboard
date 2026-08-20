@@ -3,6 +3,7 @@ import { LayoutGrid, List, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/ui/header";
 import { cn } from "@/lib/utils";
+import PermissionGate from "@/components/permission-gate";
 
 export type CategoriesViewMode = "table" | "card";
 
@@ -56,14 +57,14 @@ function CategoriesHeader({
           </Button>
         </div>
 
-        <Button
+        <PermissionGate slug="Admin Store Categories"><Button
           type="button"
           onClick={onAddCategory}
           className="h-12 rounded-2xl bg-primary px-6 text-base font-medium text-secondary shadow-[0_4px_12px_rgba(255,213,79,0.25)] hover:bg-primary/90"
         >
           <Plus className="size-5 shrink-0" />
           إضافة تصنيف
-        </Button>
+        </Button></PermissionGate>
       </div>
     </section>
   );

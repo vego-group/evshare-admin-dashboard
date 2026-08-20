@@ -4,6 +4,7 @@ import SearchDirectionController from "@/components/panel/search-direction-contr
 import { PermissionsProvider } from "@/provider/permissions";
 import type { ReactNode } from "react";
 import { getCountry } from "@/lib";
+import PanelPermissionGuard from "@/components/panel-permission-guard";
 
 type AdminLayoutProps = {
   children: ReactNode;
@@ -17,7 +18,7 @@ async function AdminLayout({ children }: AdminLayoutProps) {
       <div className="min-h-svh">
         <Sidebar countryCode={country} />
         <main className="md:pr-16 lg:pr-64">
-          <PageShell>{children}</PageShell>
+          <PageShell><PanelPermissionGuard>{children}</PanelPermissionGuard></PageShell>
         </main>
       </div>
     </PermissionsProvider>

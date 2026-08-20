@@ -13,6 +13,7 @@ import { useComplaint } from "@/hooks/api";
 import { cn } from "@/lib/utils";
 import { answerComplaintAPI } from "@/services/mutations";
 import type { Complaint, ComplaintStatus } from "@/types";
+import PermissionGate from "@/components/permission-gate";
 
 const STATUS_STYLES: Record<ComplaintStatus, string> = {
   new: "bg-blue-50 text-blue-600",
@@ -96,7 +97,7 @@ function ComplaintsDetailsPanel({
           )}
         </div>
 
-        {complaint && complaint.status !== "answered" ? (
+        {complaint && complaint.status !== "answered" ? <PermissionGate slug="Admin Answer Complaints">
           <footer className="shrink-0 border-t border-gray/20 px-6 pb-5 pt-6">
             {showAnswerForm ? (
               <div className="space-y-3">
@@ -145,7 +146,7 @@ function ComplaintsDetailsPanel({
               </Button>
             )}
           </footer>
-        ) : null}
+        </PermissionGate> : null}
       </div>
     </Panel>
   );

@@ -15,6 +15,7 @@ import {
   rejectPaymentRequestAPI,
 } from "@/services/mutations";
 import type { PaymentRequestDetail, RequestStatus } from "@/types";
+import PermissionGate from "@/components/permission-gate";
 
 import UserInfoSection from "./user-info-section";
 import RequestDetailsFooter from "./request-details-footer";
@@ -117,14 +118,14 @@ function PaymentRequestsDetailsPanel({
           )}
         </div>
 
-        {request?.status === "pending" ? (
+        {request?.status === "pending" ? <PermissionGate slug="Admin Approve Payment Requests">
           <RequestDetailsFooter
             onApprove={handleApprove}
             onReject={handleReject}
             approveLoading={actionLoading === "approve"}
             rejectLoading={actionLoading === "reject"}
           />
-        ) : null}
+        </PermissionGate> : null}
       </div>
     </Panel>
   );

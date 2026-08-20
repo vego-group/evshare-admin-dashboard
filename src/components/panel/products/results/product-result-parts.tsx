@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 import type { ProductListItem } from "@/types";
+import PermissionGate from "@/components/permission-gate";
 
 export function ProductImage({
   product,
@@ -66,24 +67,24 @@ export function ProductActions({
 }) {
   return (
     <div className={cn("flex items-center gap-2", compact && "w-full")}>
-      <ActionButton
+      <PermissionGate slug="Admin Show Products"><ActionButton
         icon={Eye}
         onClick={onView}
         label="عرض المنتج"
         className={cn("bg-blue-50 text-blue-600", compact && "flex-1")}
-      />
-      <ActionButton
+      /></PermissionGate>
+      <PermissionGate slug="Admin Edit Products"><ActionButton
         icon={Pencil}
         onClick={onEdit}
         label="تعديل المنتج"
         className={cn("bg-amber-50 text-orange-500", compact && "flex-1")}
-      />
-      <ActionButton
+      /></PermissionGate>
+      <PermissionGate slug="Admin Delete Products"><ActionButton
         icon={Trash2}
         onClick={onDelete}
         label="حذف المنتج"
         className={cn("bg-red-50 text-red-500", compact && "flex-1")}
-      />
+      /></PermissionGate>
     </div>
   );
 }
