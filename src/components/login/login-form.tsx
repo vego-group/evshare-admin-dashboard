@@ -11,6 +11,10 @@ import { loginAPI } from "@/services/mutations";
 import { normalizeSaudiPhone } from "@/lib";
 import Loader from "../ui/loader";
 import { useRouter } from "next/navigation";
+import { useCountries } from "@/hooks";
+import { countryCodeSchema } from "@/schemas";
+import CountrySelect from "./country-select";
+import { useState } from "react";
 
 const loginFormResolver: Resolver<LoginFormValues> = async (values) => {
   const result = loginSchema.safeParse(values);
@@ -25,6 +29,9 @@ const loginFormResolver: Resolver<LoginFormValues> = async (values) => {
 
 function LoginForm() {
   const router = useRouter();
+  const { data: countriesResponse, isLoading: countriesLoading } = useCountries();
+  const [country, setCountry] = useState("");
+  const [countryError, setCountryError] = useState<string>();
   const {
     handleSubmit,
     register,
@@ -36,11 +43,16 @@ function LoginForm() {
   });
 
   const onSubmit = async (data: LoginFormValues) => {
+    const selectedCountry = countryCodeSchema.safeParse(country);
+    if (!selectedCountry.success) {
+      setCountryError(selectedCountry.error.issues[0]?.message);
+      return;
+    }
     const normalized = normalizeSaudiPhone(data.mobile);
-    const result = await loginAPI({ mobile: normalized });
+    const result = await loginAPI({ mobile: normalized }, selectedCountry.data);
     if (result?.ok) {
       toast.success(result.message || "تم إرسال رمز التحقق");
-      router.push(`/login/verify-otp?mobile=${encodeURIComponent(normalized)}`);
+      router.push(`/login/verify-otp?mobile=${encodeURIComponent(normalized)}&country=${selectedCountry.data}`);
       return;
     }
 
@@ -52,6 +64,13 @@ function LoginForm() {
       className="space-y-3 px-3 py-5 md:px-4 md:py-6"
       onSubmit={handleSubmit(onSubmit)}
     >
+      <CountrySelect
+        countries={countriesResponse?.data ?? []}
+        value={country}
+        error={countryError}
+        disabled={countriesLoading}
+        onChange={(value) => { setCountry(value); setCountryError(undefined); }}
+      />
       <PhoneField
         id="mobile"
         label="رقم الجوال"

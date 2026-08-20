@@ -30,7 +30,7 @@ function TripsTable({ trips, onView }: Props) {
                 <TableCell truncate={false}><TripStatusBadge status={trip.status} /></TableCell>
                 <TableCell>{tripDriverName(trip.driver)}</TableCell>
                 <TableCell>{tripVehicleTitle(trip.vehicle)}</TableCell>
-                <TableCell truncate={false}><MoneyValue value={trip.price} currency={trip.currency} /></TableCell>
+                <TableCell truncate={false}><MoneyValue value={trip.price} currency={trip.currency} truncate /></TableCell>
                 <TableCell dir="ltr">{formatDate(trip.date_time.start)}</TableCell>
                 <TableCell dir="ltr">{formatDate(trip.date_time.end)}</TableCell>
                 <TableCell truncate={false}>

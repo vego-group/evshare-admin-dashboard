@@ -2,6 +2,7 @@ import { Ban, Eye, Pencil, RefreshCw, Trash2, type LucideIcon } from "lucide-rea
 
 import { cn } from "@/lib/utils";
 import type { ShipmentListItem } from "@/types";
+import PermissionGate from "@/components/permission-gate";
 
 import { isShipmentDeletable, isShipmentFinal } from "./shipment-status-rules";
 
@@ -24,40 +25,40 @@ export function ShipmentActions({
 
   return (
     <div className="flex items-center gap-2">
-      <ActionButton
+      <PermissionGate slug="Admin Details Shipments"><ActionButton
         icon={Eye}
         onClick={onView}
         label="عرض الشحنة"
         className="bg-blue-50 text-blue-600"
-      />
-      <ActionButton
+      /></PermissionGate>
+      <PermissionGate slug="Admin Update Shipment Status"><ActionButton
         icon={RefreshCw}
         onClick={onUpdateStatus}
         disabled={isFinal}
         label="تحديث حالة الشحنة"
         className="bg-indigo-50 text-indigo-600"
-      />
-      <ActionButton
+      /></PermissionGate>
+      <PermissionGate slug="Admin Edit Shipments"><ActionButton
         icon={Pencil}
         onClick={onEdit}
         disabled={isFinal}
         label="تعديل الشحنة"
         className="bg-amber-50 text-orange-500"
-      />
-      <ActionButton
+      /></PermissionGate>
+      <PermissionGate slug="Admin Cancel Shipments"><ActionButton
         icon={Ban}
         onClick={onCancel}
         disabled={!shipment.is_cancellable}
         label="إلغاء الشحنة"
         className="bg-gray-100 text-dark-gray"
-      />
-      <ActionButton
+      /></PermissionGate>
+      <PermissionGate slug="Admin Delete Shipments"><ActionButton
         icon={Trash2}
         onClick={onDelete}
         disabled={!isShipmentDeletable(shipment.status)}
         label="حذف الشحنة"
         className="bg-red-50 text-red-500"
-      />
+      /></PermissionGate>
     </div>
   );
 }

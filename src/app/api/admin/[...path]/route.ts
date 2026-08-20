@@ -17,7 +17,9 @@ export async function GET(request: NextRequest, context: RouteContext) {
     );
   }
 
-  const token = (await cookies()).get("token")?.value;
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token")?.value;
+  const country = cookieStore.get("tenant-country")?.value || "sa";
 
   if (!token) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
@@ -36,6 +38,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
       Accept: "application/json",
       "Accept-Language": "ar",
       Authorization: `Bearer ${token}`,
+      "X-Tenant-Id": country,
     },
     cache: "no-store",
   });
@@ -43,8 +46,13 @@ export async function GET(request: NextRequest, context: RouteContext) {
   const body = await upstreamResponse.text();
   const contentType = upstreamResponse.headers.get("content-type");
 
-  return new NextResponse(body, {
+  const response = new NextResponse(body, {
     status: upstreamResponse.status,
     headers: contentType ? { "content-type": contentType } : undefined,
   });
+  response.headers.set(
+    "X-Tenant-Id",
+    upstreamResponse.headers.get("X-Tenant-Id") || country,
+  );
+  return response;
 }

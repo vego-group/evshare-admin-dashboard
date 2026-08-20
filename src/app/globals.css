@@ -54,6 +54,14 @@
   --radius-4xl: calc(var(--radius) + 16px);
 }
 
+.country-dropdown-scroll {
+  scrollbar-width: none;
+}
+
+.country-dropdown-scroll::-webkit-scrollbar {
+  display: none;
+}
+
 :root {
   --font-geist-sans: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   --font-geist-mono: "Cascadia Code", "Consolas", "Courier New", monospace;

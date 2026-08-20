@@ -3,6 +3,7 @@ import type { FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-f
 import InputErrorMessage from "@/components/ui/input-error-message";
 import type { PaymentMethodFormValues } from "@/schemas/payment-methods";
 import type { PaymentMethodAllowedType } from "@/types";
+import GatewayFields from "./gateway-fields";
 
 type Props = {
   isActive: boolean;
@@ -10,6 +11,7 @@ type Props = {
   errors: FieldErrors<PaymentMethodFormValues>;
   register: UseFormRegister<PaymentMethodFormValues>;
   setValue: UseFormSetValue<PaymentMethodFormValues>;
+  isDefault: boolean;
 };
 
 const inputClass = "h-12 w-full rounded-xl border border-primary/20 px-4 text-sm outline-none focus:border-primary";
@@ -28,6 +30,7 @@ function PaymentMethodFields({
   errors,
   register,
   setValue,
+  isDefault,
 }: Props) {
   const toggleAllowedType = (type: PaymentMethodAllowedType) => {
     const nextAllowedTypes = allowedTypes.includes(type)
@@ -79,6 +82,7 @@ function PaymentMethodFields({
         </div>
         <InputErrorMessage msg={errors.allowed_user_types?.message} />
       </div>
+      <GatewayFields isDefault={isDefault} errors={errors} register={register} setValue={setValue} />
     </div>
   );
 }

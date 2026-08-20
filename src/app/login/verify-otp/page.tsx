@@ -1,10 +1,10 @@
 import OtpVerify from "@/components/login/otp-verify";
 
 type Props = {
-  searchParams: Promise<{ mobile?: string }>;
+  searchParams: Promise<{ mobile?: string; country?: string }>;
 };
 
 export default async function VerifyOtpPage({ searchParams }: Props) {
-  const { mobile = "" } = await searchParams;
-  return <OtpVerify mobile={mobile} />;
+  const { mobile = "", country = "sa" } = await searchParams;
+  return <OtpVerify mobile={mobile} country={country} />;
 }

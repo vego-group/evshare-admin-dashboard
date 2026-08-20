@@ -4,12 +4,16 @@ import { Menu, User } from "lucide-react";
 
 import { useUserSession } from "@/lib/utils/user-session";
 import { roleLabels } from "@/components/panel/users/results/user-result-parts";
+import type { Country } from "@/types";
+import CountryBadge from "./country-badge";
 
 type SidebarTopbarProps = {
   onOpenMobileSidebar: () => void;
+  country: Country | null;
+  onSwitchCountry: () => void;
 };
 
-function SidebarTopbar({ onOpenMobileSidebar }: SidebarTopbarProps) {
+function SidebarTopbar({ onOpenMobileSidebar, country, onSwitchCountry }: SidebarTopbarProps) {
   const user = useUserSession();
 
   return (
@@ -20,6 +24,7 @@ function SidebarTopbar({ onOpenMobileSidebar }: SidebarTopbarProps) {
         </h1>
 
         <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+          <CountryBadge country={country} onSwitch={onSwitchCountry} />
           <button
             type="button"
             onClick={onOpenMobileSidebar}

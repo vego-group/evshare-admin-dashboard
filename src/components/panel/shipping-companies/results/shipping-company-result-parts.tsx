@@ -4,6 +4,7 @@ import Image from "next/image";
 import { shippingServiceTypeLabels } from "@/data";
 import { cn } from "@/lib/utils";
 import type { ShippingCompanyListItem } from "@/types";
+import PermissionGate from "@/components/permission-gate";
 
 export function CompanyLogo({ company }: { company: ShippingCompanyListItem }) {
   return company.logo_url ? (
@@ -76,18 +77,18 @@ export function CompanyActions({
 }) {
   return (
     <div className="flex items-center gap-2">
-      <ActionButton
+      <PermissionGate slug="Admin Edit Shipping Companies"><ActionButton
         icon={Pencil}
         onClick={onEdit}
         label="تعديل شركة الشحن"
         className="bg-amber-50 text-orange-500"
-      />
-      <ActionButton
+      /></PermissionGate>
+      <PermissionGate slug="Admin Delete Shipping Companies"><ActionButton
         icon={Trash2}
         onClick={onDelete}
         label="حذف شركة الشحن"
         className="bg-red-50 text-red-500"
-      />
+      /></PermissionGate>
     </div>
   );
 }
