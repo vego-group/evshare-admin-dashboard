@@ -64,6 +64,12 @@ export type TripListItem = {
   id: string;
   status: TripStatus;
   price: number | string | null;
+  vehicle_type: "bike" | "scooter";
+  remaining_balance?: number | string | null;
+  auto_stopped_at: string | null;
+  auto_stop_attempts: number;
+  auto_stop_last_attempt_at: string | null;
+  auto_stop_last_error: string | null;
   pickup_location: Coordinate;
   drop_off_location: Coordinate | null;
   live_location: Coordinate | null;

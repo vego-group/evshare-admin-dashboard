@@ -3,7 +3,7 @@
 import { safeApi } from "..";
 
 export const addCategory = async (payload: FormData) =>
-  await safeApi("POST", "/categories", payload, {
+  await safeApi("POST", "/categories/add", payload, {
     isForm: true,
   });
 

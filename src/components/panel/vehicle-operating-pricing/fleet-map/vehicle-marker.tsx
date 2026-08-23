@@ -4,15 +4,7 @@ import { Marker, useMap } from "@vis.gl/react-google-maps";
 
 import { buildVehiclePinIcon } from "@/lib/maps/vehicle-pin-icon";
 import type { VehicleListItem } from "@/types";
-
-const statusColors: Record<string, string> = {
-  active: "#16a34a",
-  in_use: "#2563eb",
-  maintenance: "#d97706",
-  disabled: "#6b7280",
-  suspended: "#dc2626",
-  new: "#7c3aed",
-};
+import { vehicleMapLocation } from "../utils";
 
 function VehicleMarker({
   vehicle,
@@ -24,11 +16,12 @@ function VehicleMarker({
   onSelect: () => void;
 }) {
   const map = useMap();
-  if (!map || !vehicle.location) return null;
+  const location = vehicleMapLocation(vehicle);
+  if (!map || !location) return null;
 
   const position = {
-    lat: Number(vehicle.location.latitude),
-    lng: Number(vehicle.location.longitude),
+    lat: Number(location.latitude),
+    lng: Number(location.longitude),
   };
   if (!Number.isFinite(position.lat) || !Number.isFinite(position.lng)) return null;
 
@@ -36,9 +29,9 @@ function VehicleMarker({
     <Marker
       position={position}
       onClick={onSelect}
-      title={vehicle.label ?? vehicle.id}
+      title={vehicle.rental_availability?.message || vehicle.label || vehicle.id}
       zIndex={isSelected ? 999 : undefined}
-      icon={buildVehiclePinIcon(statusColors[vehicle.status] ?? "#2563eb", isSelected, vehicle.battery_percentage)}
+      icon={buildVehiclePinIcon(vehicle.rental_availability?.available ? "#16a34a" : "#dc2626", isSelected, vehicle.battery_percentage)}
     />
   );
 }

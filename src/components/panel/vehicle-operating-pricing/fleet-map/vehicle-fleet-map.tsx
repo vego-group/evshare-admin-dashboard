@@ -12,6 +12,7 @@ import { useUserLocation } from "@/hooks";
 import type { VehicleListItem } from "@/types";
 import VehicleInfoContent from "./vehicle-info-content";
 import VehicleMarker from "./vehicle-marker";
+import { vehicleMapLocation } from "../utils";
 
 const DEFAULT_CENTER = { lat: 30.0444, lng: 31.2357 };
 const FOCUS_ZOOM = 15;
@@ -24,16 +25,19 @@ function FocusSelectedVehicle({
   const map = useMap();
 
   useEffect(() => {
-    if (!map || !vehicle?.location) return;
+    const location = vehicle ? vehicleMapLocation(vehicle) : null;
+    if (!map || !location) return;
     map.panTo({
-      lat: Number(vehicle.location.latitude),
-      lng: Number(vehicle.location.longitude),
+      lat: Number(location.latitude),
+      lng: Number(location.longitude),
     });
     if ((map.getZoom() ?? 0) < FOCUS_ZOOM) map.setZoom(FOCUS_ZOOM);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     map,
     vehicle?.id,
+    vehicle?.current_location?.latitude,
+    vehicle?.current_location?.longitude,
     vehicle?.location?.latitude,
     vehicle?.location?.longitude,
   ]);
@@ -54,7 +58,7 @@ function VehicleFleetMap({
   const userLocation = useUserLocation();
   const selected =
     vehicles.find((vehicle) => vehicle.id === selectedVehicleId) ?? null;
-  const firstLocation = vehicles[0]?.location;
+  const firstLocation = vehicles[0] ? vehicleMapLocation(vehicles[0]) : null;
   const initialCenter = firstLocation
     ? {
         lat: Number(firstLocation.latitude),
@@ -89,11 +93,11 @@ function VehicleFleetMap({
             />
           ))}
           <FocusSelectedVehicle vehicle={selected} />
-          {selected?.location && (
+          {selected && vehicleMapLocation(selected) && (
             <InfoWindow
               position={{
-                lat: Number(selected.location.latitude),
-                lng: Number(selected.location.longitude),
+                lat: Number(vehicleMapLocation(selected)!.latitude),
+                lng: Number(vehicleMapLocation(selected)!.longitude),
               }}
               onCloseClick={() => onSelectVehicle(null)}
               pixelOffset={[0, -38]}

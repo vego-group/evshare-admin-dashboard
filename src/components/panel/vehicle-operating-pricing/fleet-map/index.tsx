@@ -20,7 +20,9 @@ const FLEET_MAP_PAGE_SIZE = 100;
 function VehicleFleetMapPage() {
   const router = useRouter();
   const { data, isLoading } = useAllVehicles({ limit: FLEET_MAP_PAGE_SIZE });
-  const vehicles = (data ?? []).filter((vehicle) => vehicle.location);
+  const vehicles = (data ?? []).filter(
+    (vehicle) => vehicle.current_location || vehicle.location,
+  );
   const [selectedVehicleId, setSelectedVehicleId] = useState<string | null>(
     null,
   );

@@ -1,6 +1,7 @@
 import { OrderBy } from ".";
 
 export type CategoryStatus = "active" | "inactive";
+export type VehicleType = "bike" | "scooter";
 
 export type CategoriesQueryParams = {
   page: number;
@@ -24,6 +25,7 @@ export type CategoryListItem = {
   name_en: string;
   name: string;
   active: boolean;
+  vehicle_type: VehicleType | null;
   products_count?: number;
   image: CategoryImage | null;
   created_at: string;
