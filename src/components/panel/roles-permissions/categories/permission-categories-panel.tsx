@@ -85,7 +85,7 @@ export default function PermissionCategoriesPanel() {
                       key={permission.id}
                       className="inline-flex h-7.5 items-center rounded-full bg-primary/10 px-3 text-xs font-medium text-secondary"
                     >
-                      {permission.name}
+                      {permission.slug}
                     </span>
                   ))}
                 </div>

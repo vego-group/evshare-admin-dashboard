@@ -66,11 +66,11 @@ export default function RolePermissionsModal({ role, onClose, onSaved }: Props) 
           <Dropdown value={categoryId} placeholder="اختر تصنيف صلاحيات" onChange={setCategoryId} options={categoryItems.map((item) => ({ label: item.name, value: item.id }))} />
           <Button type="button" disabled={!categoryId || saving} onClick={assignCategory} className="h-12 rounded-[14px] bg-primary px-5 text-secondary shadow-[0_4px_12px_rgba(255,213,79,0.25)] hover:bg-primary/90">{assignMutation.isPending ? <Loader /> : "إسناد التصنيف"}</Button>
         </div></PermissionGate>
-          <div className="grid max-h-96 gap-3 overflow-y-auto sm:grid-cols-2">
+          <div className="grid max-h-96 gap-3 overflow-y-auto rounded-[16px] bg-neutral-50/70 p-2 [scrollbar-color:color-mix(in_srgb,var(--color-primary)_70%,transparent)_transparent] [scrollbar-gutter:stable] [scrollbar-width:thin] sm:grid-cols-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-button]:hidden [&::-webkit-scrollbar-thumb]:min-h-12 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:border-2 [&::-webkit-scrollbar-thumb]:border-solid [&::-webkit-scrollbar-thumb]:border-transparent [&::-webkit-scrollbar-thumb]:bg-primary/60 [&::-webkit-scrollbar-thumb]:bg-clip-padding hover:[&::-webkit-scrollbar-thumb]:bg-primary [&::-webkit-scrollbar-track]:my-2 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-neutral-200/60">
             {permissionItems.map((permission) => (
               <label key={permission.id} className="flex cursor-pointer items-center gap-3 rounded-[14px] border border-neutral-100 bg-white p-4 text-sm text-secondary transition hover:border-primary/70 hover:bg-primary/5">
                 <input type="checkbox" checked={selectedSet.has(permission.name)} onChange={() => toggle(permission.name)} className="size-5 accent-primary" />
-                <span className="font-medium">{permission.name_en || permission.name}</span>
+                <span className="font-medium" dir="ltr">{permission.slug}</span>
               </label>
             ))}
           </div>
