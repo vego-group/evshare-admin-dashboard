@@ -41,7 +41,7 @@ function DropdownMenuContent({
         sideOffset={sideOffset}
         align={align}
         className={cn(
-          "z-50 min-w-44 max-w-[min(16rem,90vw)] overflow-hidden rounded-2xl border border-primary/15 bg-background p-1 shadow-[0_10px_24px_rgba(16,24,40,0.12)]",
+          "dashboard-dropdown-scroll z-50 min-w-44 max-w-[min(16rem,90vw)] rounded-2xl border border-primary/15 bg-background p-1 shadow-[0_10px_24px_rgba(16,24,40,0.12)]",
           "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
           className,
         )}

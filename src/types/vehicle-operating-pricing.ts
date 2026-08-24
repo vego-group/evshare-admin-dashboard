@@ -1,5 +1,6 @@
 import type { ProductListItem } from "./products";
 import type { QueryParams } from ".";
+import type { VehicleType } from "./categories";
 
 export type VehicleOperatingType = "evshare" | "operation_company";
 export type VehicleStatus =
@@ -11,6 +12,7 @@ export type VehicleStatus =
   | "in_use";
 
 export type VehicleLockStatus = "locked" | "unlocked";
+export type VehicleLockConnectivity = "online" | "offline" | "unknown";
 
 export type VehiclesQueryParams = Omit<QueryParams, "status"> & {
   status?: VehicleStatus;
@@ -39,6 +41,21 @@ export type VehicleLocation = {
   address?: string;
   label?: string;
   created_at?: string;
+};
+
+export type VehicleCurrentLocation = {
+  latitude: number | string;
+  longitude: number | string;
+  source: "lock" | "vehicle";
+  recorded_at: string;
+  is_stale: boolean;
+};
+
+export type RentalAvailability = {
+  status: "available" | "unavailable";
+  available: boolean;
+  reason: string | null;
+  message: string;
 };
 
 export type VehiclePricing = {
@@ -81,6 +98,12 @@ export type VehicleListItem = VehiclePricing & {
   zones: VehicleZone[];
   iot_device_id: string | null;
   battery_percentage: number | null;
+  commission_percentage?: number | string | null;
+  vehicle_type: VehicleType;
+  vehicle_type_override: VehicleType | null;
+  lock_id: string | null;
+  current_location: VehicleCurrentLocation | null;
+  rental_availability: RentalAvailability;
   product: ProductListItem | null;
   lock?: VehicleLock | null;
   updated_at: string;
@@ -125,6 +148,10 @@ export type VehicleLock = {
   id: string;
   device_id: string;
   status: VehicleLockStatus;
+  connectivity: VehicleLockConnectivity;
+  is_online: boolean;
+  battery_percentage: number | null;
+  last_seen_at: string | null;
   notes: string | null;
   last_lock_date: string | null;
   last_unlock_date: string | null;

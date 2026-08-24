@@ -38,6 +38,7 @@ export function VehicleDetailsContent({ vehicle, isLoading }: Props) {
   const location = vehicle.location;
   const merchant = vehicle.user;
   const lock = vehicle.lock;
+  const currentLocation = vehicle.current_location;
 
   return (
     <div className="flex min-w-0 flex-col gap-6 text-right">
@@ -46,6 +47,15 @@ export function VehicleDetailsContent({ vehicle, isLoading }: Props) {
         <div className="grid gap-2 sm:grid-cols-2">
           <DetailRow label="معرف المركبة" value={<span dir="ltr">{vehicle.id}</span>} />
           <DetailRow label="الحالة" value={<StatusBadge status={vehicle.status} />} />
+          <DetailRow label="نوع المركبة" value={vehicle.vehicle_type === "bike" ? "دراجة" : "سكوتر"} />
+          <DetailRow
+            label="توفر الإيجار"
+            value={
+              <span className={vehicle.rental_availability?.available ? "text-green-600" : "text-red-600"}>
+                {vehicle.rental_availability?.message ?? "-"}
+              </span>
+            }
+          />
           <DetailRow label="نوع التشغيل" value={vehicle.operating_type === "evshare" ? "EvShare" : "شركة تشغيل"} />
           <DetailRow label="شركة التشغيل" value={vehicle.operation_company?.name} />
           <DetailRow label="العمولة" value={formatPercentage(vehicle.operation_company?.pricing_percentage ?? vehicle.operation_company?.commission_percentage)} />
@@ -73,6 +83,8 @@ export function VehicleDetailsContent({ vehicle, isLoading }: Props) {
       <section className="space-y-3 rounded-[14px] bg-background p-4">
         <h4 className="text-sm font-semibold text-secondary">الموقع</h4>
         <div className="grid gap-2 sm:grid-cols-2">
+          <DetailRow label="مصدر الموقع الحالي" value={currentLocation?.source === "lock" ? "القفل" : currentLocation ? "المركبة" : undefined} />
+          <DetailRow label="حالة الموقع" value={currentLocation ? (currentLocation.is_stale ? "قديم" : "محدث") : undefined} />
           <DetailRow label="اسم الموقع" value={location?.label} />
           <DetailRow label="العنوان" value={location?.address} />
           <DetailRow label="خط العرض" value={<span dir="ltr">{location?.latitude ?? "-"}</span>} />
@@ -97,6 +109,10 @@ export function VehicleDetailsContent({ vehicle, isLoading }: Props) {
             )}
           </div>
           <div className="grid gap-2 sm:grid-cols-2">
+            <DetailRow label="حالة القفل" value={lock.status === "locked" ? "مقفل" : "مفتوح"} />
+            <DetailRow label="الاتصال" value={lock.connectivity === "online" ? "متصل" : lock.connectivity === "offline" ? "غير متصل" : "غير معروف"} />
+            <DetailRow label="بطارية القفل" value={lock.battery_percentage != null ? `${lock.battery_percentage}%` : undefined} />
+            <DetailRow label="آخر اتصال" value={<span dir="ltr">{formatDate(lock.last_seen_at ?? undefined)}</span>} />
             <DetailRow label="خط العرض" value={<span dir="ltr">{lock.location?.latitude ?? "-"}</span>} />
             <DetailRow label="خط الطول" value={<span dir="ltr">{lock.location?.longitude ?? "-"}</span>} />
             <DetailRow label="آخر تحديث للموقع" value={<span dir="ltr">{formatDate(lock.last_location_date ?? undefined)}</span>} />

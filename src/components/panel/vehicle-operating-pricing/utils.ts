@@ -52,13 +52,21 @@ export function buildChangedPayload(
   values: Record<string, string>,
   original: VehicleListItem,
 ) {
-  const payload: Record<string, number | string> = {};
+  const payload: Record<string, number | string | null> = {};
   for (const [key] of pricingFields) {
     const value = values[key];
     if (normalize(value) !== normalize(original[key])) payload[key] = Number(value);
   }
   if (values.status && values.status !== original.status) payload.status = values.status;
+  const originalType = original.vehicle_type_override ?? "";
+  if ((values.vehicle_type ?? "") !== originalType) {
+    payload.vehicle_type = values.vehicle_type || null;
+  }
   return payload;
+}
+
+export function vehicleMapLocation(vehicle: VehicleListItem) {
+  return vehicle.current_location ?? vehicle.location ?? null;
 }
 
 function normalize(value: unknown) {

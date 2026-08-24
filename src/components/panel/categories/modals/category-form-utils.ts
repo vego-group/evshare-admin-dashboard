@@ -6,6 +6,7 @@ export const categoryDefaultValues: CategoryFormValues = {
   name_ar: "",
   name_en: "",
   active: true,
+  vehicle_type: null,
   image: undefined,
 };
 
@@ -37,6 +38,7 @@ export function buildCategoryPayload(values: CategoryFormValues) {
   formData.append("name_ar", values.name_ar);
   formData.append("name_en", values.name_en);
   formData.append("active", formatActiveValue(values.active));
+  formData.append("vehicle_type", values.vehicle_type ?? "");
 
   if (values.image?.[0]) {
     formData.append("image", values.image[0]);
@@ -58,6 +60,9 @@ export function buildChangedCategoryPayload(
   }
   if (dirtyFields.image && values.image?.[0]) {
     formData.append("image", values.image[0]);
+  }
+  if (dirtyFields.vehicle_type) {
+    formData.append("vehicle_type", values.vehicle_type ?? "");
   }
 
   return formData;

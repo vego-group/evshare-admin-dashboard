@@ -100,6 +100,22 @@ function VehicleEditModal({
         </section>
 
         <section className="rounded-[18px] border border-primary/25 bg-white p-4 shadow-sm">
+          <p className="mb-1 text-sm font-semibold text-secondary">نوع المركبة</p>
+          <p className="mb-3 text-xs text-gray">اتركه تلقائياً لاستخدام نوع تصنيف المنتج</p>
+          <select
+            value={values.vehicle_type ?? ""}
+            onChange={(event) =>
+              setValues((current) => ({ ...current, vehicle_type: event.target.value }))
+            }
+            className="h-12 w-full rounded-[14px] border border-primary bg-white px-4 text-right text-sm font-semibold text-secondary outline-none"
+          >
+            <option value="">تلقائي (من التصنيف)</option>
+            <option value="bike">دراجة</option>
+            <option value="scooter">سكوتر</option>
+          </select>
+        </section>
+
+        <section className="rounded-[18px] border border-primary/25 bg-white p-4 shadow-sm">
           <div className="mb-4">
             <p className="text-sm font-semibold text-secondary">
               تسعير المركبة
@@ -169,6 +185,7 @@ function VehicleEditModal({
 function getInitialValues(vehicle: VehicleListItem) {
   return {
     status: vehicle.status ?? "",
+    vehicle_type: vehicle.vehicle_type_override ?? "",
     open_price: String(vehicle.open_price ?? ""),
     price_per_minute: String(vehicle.price_per_minute ?? ""),
     price_per_km: String(vehicle.price_per_km ?? ""),

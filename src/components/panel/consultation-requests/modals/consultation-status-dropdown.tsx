@@ -114,7 +114,7 @@ function ConsultationStatusDropdown({
               }}
               className="overflow-hidden rounded-[14px] border border-neutral-200 bg-white shadow-[0_10px_24px_rgba(16,24,40,0.12)]"
             >
-              <div className="max-h-36 overflow-y-auto">
+              <div className="dashboard-dropdown-scroll">
                 {STATUS_OPTIONS.map((option) => (
                   <button
                     key={option.value}

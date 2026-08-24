@@ -4,13 +4,18 @@ import type { QueryParams } from ".";
 export type TripStatus = "started" | "in_progress" | "completed" | "cancelled";
 
 export type Coordinate = {
-  latitude: number;
-  longitude: number;
+  latitude: number | string;
+  longitude: number | string;
+  address?: string | null;
+  label?: string;
 };
 
 export type RoutePoint = Coordinate & {
+  id?: string;
+  address?: string | null;
   label?: string;
   timestamp?: string;
+  created_at?: string;
 };
 
 export type TripDateTime = {
@@ -53,17 +58,45 @@ export type TripDriver = {
   mobile?: string;
   email?: string;
   avatar?: string | null;
+  role?: string;
+  active?: boolean;
+  mobile_verified?: boolean;
+  mobile_verified_at?: string | null;
+  created_at?: string;
 };
 
 export type TripVehicle = Pick<
   VehicleListItem,
   "id" | "label" | "status" | "product" | "iot_device_id" | "battery_percentage"
->;
+> & Partial<Pick<
+  VehicleListItem,
+  | "vehicle_type"
+  | "operating_type"
+  | "open_price"
+  | "price_per_minute"
+  | "price_per_km"
+  | "price_per_hour"
+  | "price_per_day"
+  | "commission_percentage"
+  | "current_location"
+  | "location"
+  | "rental_availability"
+  | "created_at"
+  | "updated_at"
+>>;
 
 export type TripListItem = {
   id: string;
   status: TripStatus;
   price: number | string | null;
+  commission?: number | string | null;
+  distance?: number | string | null;
+  vehicle_type: "bike" | "scooter";
+  remaining_balance?: number | string | null;
+  auto_stopped_at?: string | null;
+  auto_stop_attempts?: number;
+  auto_stop_last_attempt_at?: string | null;
+  auto_stop_last_error?: string | null;
   pickup_location: Coordinate;
   drop_off_location: Coordinate | null;
   live_location: Coordinate | null;
@@ -83,6 +116,8 @@ export type TripListItem = {
   driver: TripDriver;
   vehicle: TripVehicle;
   created_at?: string;
+  start_at?: string | null;
+  end_at?: string | null;
 };
 
 export type TripDetail = TripListItem;

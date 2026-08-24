@@ -55,6 +55,17 @@ function CategoryFormFields({
         <CategoryStatusDropdown active={active} setValue={setValue} />
       </Field>
 
+      <Field label="نوع المركبة" error={errors.vehicle_type?.message}>
+        <select
+          {...register("vehicle_type", { setValueAs: (value) => value || null })}
+          className="h-14 w-full rounded-[14px] border border-primary bg-primary/4 px-4 text-right text-sm font-medium text-dark-gray outline-none transition focus:bg-primary/8"
+        >
+          <option value="">تلقائي (حسب المركبة)</option>
+          <option value="bike">دراجة</option>
+          <option value="scooter">سكوتر</option>
+        </select>
+      </Field>
+
       <Field label="الصورة" error={errors.image?.message}>
         <label className="flex min-h-14 cursor-pointer items-center gap-3 rounded-[14px] border border-dashed border-primary bg-primary/4 px-4 py-2 text-sm font-medium text-dark-gray transition hover:bg-primary/8">
           <ImagePreview previewUrl={imagePreviewUrl} />

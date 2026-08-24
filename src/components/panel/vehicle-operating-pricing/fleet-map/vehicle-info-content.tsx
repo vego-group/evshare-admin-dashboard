@@ -9,6 +9,7 @@ import {
   formatDistanceParts,
   hasMoneyValue,
   haversineDistanceKm,
+  vehicleMapLocation,
   vehicleTitle,
 } from "../utils";
 
@@ -19,7 +20,7 @@ function VehicleInfoContent({
   vehicle: VehicleListItem;
   userLocation: { lat: number; lng: number } | null;
 }) {
-  const location = vehicle.location;
+  const location = vehicleMapLocation(vehicle);
   const distanceKm =
     userLocation && location
       ? haversineDistanceKm(userLocation, {
@@ -41,18 +42,22 @@ function VehicleInfoContent({
       </div>
 
       <div className="space-y-2 px-3 py-2.5 text-xs">
-        {location?.address && (
+        {vehicle.location?.address && (
           <p className="flex items-start gap-1.5 text-gray">
             <MapPin className="mt-0.5 size-3.5 shrink-0 text-primary" />
-            <span className="min-w-0">{location.address}</span>
+            <span className="min-w-0">{vehicle.location.address}</span>
           </p>
         )}
         <p className="flex items-center gap-1.5 text-gray">
           <Navigation className="size-3.5 shrink-0 text-primary" />
           المسافة:{" "}
           {distance ? (
-            <span className="font-medium text-secondary">
-              <span dir="ltr">{distance.value}</span> {distance.unit}
+            <span
+              dir="ltr"
+              className="inline-flex items-center gap-1 font-medium text-secondary"
+            >
+              <span>{distance.value}</span>
+              <span>{distance.unit}</span>
             </span>
           ) : (
             <span className="font-medium text-secondary">غير متاح</span>

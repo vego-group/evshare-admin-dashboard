@@ -62,6 +62,7 @@ function CategoryEditModal({
         name_ar: category.name_ar,
         name_en: category.name_en,
         active: category.active,
+        vehicle_type: category.vehicle_type,
         image: undefined,
       });
     }

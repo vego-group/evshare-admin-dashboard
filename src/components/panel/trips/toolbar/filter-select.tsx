@@ -43,7 +43,7 @@ function FilterSelect<T extends string>({ label, options, value, onChange }: Pro
       {isOpen && <div className="fixed inset-0 z-20" onClick={() => setIsOpen(false)} />}
       {isOpen ? (
         <div className="absolute right-0 top-[calc(100%+6px)] z-30 w-full overflow-hidden rounded-[14px] border border-primary bg-bg-warm-ivory shadow-[0_10px_24px_rgba(16,24,40,0.12)]">
-          <div className="max-h-52 overflow-y-auto overscroll-contain">
+          <div className="dashboard-dropdown-scroll">
             {options.map((option) => (
               <button
                 key={option.value}
