@@ -15,6 +15,7 @@ import Loader from "@/components/ui/loader";
 import InputErrorMessage from "@/components/ui/input-error-message";
 import { useRouter } from "next/navigation";
 import type { UserRole } from "@/types";
+import { formatPhoneNumberIntl } from "react-phone-number-input";
 
 const ALLOWED_DASHBOARD_ROLES: UserRole[] = ["root", "admin", "sales"];
 
@@ -82,7 +83,7 @@ function OtpForm({ mobile, country }: OtpFormProps) {
   };
 
   const displayPhone = mobile
-    ? `+${mobile.slice(0, 3)} ${mobile.slice(3)}`
+    ? formatPhoneNumberIntl(`+${mobile}`) || `+${mobile}`
     : "";
 
   return (

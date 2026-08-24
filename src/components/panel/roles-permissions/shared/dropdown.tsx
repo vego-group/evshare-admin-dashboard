@@ -26,7 +26,7 @@ export default function Dropdown(props: {
       </button>
       {open && <button type="button" aria-label="إغلاق القائمة" className="fixed inset-0 z-40 cursor-default" onClick={() => setOpen(false)} />}
       {open && (
-        <div className="absolute right-0 top-[calc(100%+6px)] z-50 max-h-56 w-full overflow-y-auto rounded-[14px] border border-primary/70 bg-white p-1.5 shadow-[0_12px_30px_rgba(16,24,40,0.16)]">
+        <div className="dashboard-dropdown-scroll absolute right-0 top-[calc(100%+6px)] z-50 w-full rounded-[14px] border border-primary/70 bg-white p-1.5 shadow-[0_12px_30px_rgba(16,24,40,0.16)]">
           {props.options.map((option) => (
             <button key={option.value} type="button" onClick={() => { props.onChange(option.value); setOpen(false); }} className={cn(
               "flex min-h-10 w-full items-center justify-between gap-2 rounded-[10px] px-3 py-2 text-right font-medium text-dark-gray transition hover:bg-primary/10",

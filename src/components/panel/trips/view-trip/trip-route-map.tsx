@@ -5,7 +5,7 @@ import { APIProvider, Map, Marker } from "@vis.gl/react-google-maps";
 import type { TripListItem } from "@/types";
 import TripRoutePolyline from "../active-trips/trip-route-polyline";
 
-function toLatLng(coordinate: { latitude: number; longitude: number } | null) {
+function toLatLng(coordinate: { latitude: number | string; longitude: number | string } | null) {
   if (!coordinate) return null;
   const lat = Number(coordinate.latitude);
   const lng = Number(coordinate.longitude);

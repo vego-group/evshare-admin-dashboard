@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm, type Resolver, type FieldErrors } from "react-hook-form";
+import { Controller, useForm, type Resolver, type FieldErrors } from "react-hook-form";
 import { LogIn } from "lucide-react";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
@@ -8,7 +8,6 @@ import { loginSchema, type LoginFormValues } from "@/schemas";
 import { Button } from "@/components/ui/button";
 import PhoneField from "./phone-field";
 import { loginAPI } from "@/services/mutations";
-import { normalizeSaudiPhone } from "@/lib";
 import Loader from "../ui/loader";
 import { useRouter } from "next/navigation";
 import { useCountries } from "@/hooks";
@@ -34,7 +33,7 @@ function LoginForm() {
   const [countryError, setCountryError] = useState<string>();
   const {
     handleSubmit,
-    register,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormValues>({
     defaultValues: { mobile: "" },
@@ -48,7 +47,7 @@ function LoginForm() {
       setCountryError(selectedCountry.error.issues[0]?.message);
       return;
     }
-    const normalized = normalizeSaudiPhone(data.mobile);
+    const normalized = data.mobile.replace(/^\+/, "");
     const result = await loginAPI({ mobile: normalized }, selectedCountry.data);
     if (result?.ok) {
       toast.success(result.message || "تم إرسال رمز التحقق");
@@ -71,12 +70,17 @@ function LoginForm() {
         disabled={countriesLoading}
         onChange={(value) => { setCountry(value); setCountryError(undefined); }}
       />
-      <PhoneField
-        id="mobile"
-        label="رقم الجوال"
-        placeholder="5x xxx xxxx"
-        error={errors.mobile?.message}
-        {...register("mobile")}
+      <Controller
+        name="mobile"
+        control={control}
+        render={({ field }) => (
+          <PhoneField
+            id="mobile"
+            label="رقم الجوال"
+            error={errors.mobile?.message}
+            {...field}
+          />
+        )}
       />
 
       <motion.div whileTap={{ scale: 0.99 }} className="pt-1">

@@ -64,7 +64,7 @@ function FilterSelect<T extends string>({
             menuClassName,
           )}
         >
-          <div className="max-h-52 overflow-y-auto overscroll-contain [scrollbar-color:rgba(255,213,79,0.9)_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-button]:hidden [&::-webkit-scrollbar-button]:h-0 [&::-webkit-scrollbar-button]:w-0 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-primary/80">
+          <div className="dashboard-dropdown-scroll">
             {options.map((option) => (
               <button
                 key={option.value}

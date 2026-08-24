@@ -98,6 +98,7 @@ export type VehicleListItem = VehiclePricing & {
   zones: VehicleZone[];
   iot_device_id: string | null;
   battery_percentage: number | null;
+  commission_percentage?: number | string | null;
   vehicle_type: VehicleType;
   vehicle_type_override: VehicleType | null;
   lock_id: string | null;

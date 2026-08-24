@@ -1,6 +1,13 @@
 import type { TripListItem } from "@/types";
 import { formatDate } from "../utils";
 
+const eventLabels: Record<string, string> = {
+  "Trip Created": "تم إنشاء الرحلة",
+  "Trip Started": "بدأت الرحلة",
+  "Trip Ended": "انتهت الرحلة",
+  "Trip Cancelled": "أُلغيت الرحلة",
+};
+
 function TripTimeline({ timeline }: { timeline: TripListItem["timeline"] }) {
   if (!timeline.length) {
     return (
@@ -18,7 +25,7 @@ function TripTimeline({ timeline }: { timeline: TripListItem["timeline"] }) {
         {timeline.map((item, index) => (
           <li key={`${item.event}-${index}`} className="relative">
             <span className="absolute right-[-1.35rem] top-1.5 size-2.5 rounded-full bg-primary" />
-            <p className="text-sm font-medium text-secondary">{item.event}</p>
+            <p className="text-sm font-medium text-secondary">{eventLabels[item.event] ?? item.event}</p>
             <p className="text-xs text-gray" dir="ltr">{formatDate(item.timestamp)}</p>
           </li>
         ))}
