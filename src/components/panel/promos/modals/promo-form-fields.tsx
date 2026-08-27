@@ -1,5 +1,6 @@
-import { SaudiRiyal } from "lucide-react";
 import type { ReactNode } from "react";
+import CurrencyAdornment from "@/components/ui/currency-adornment";
+import { useCurrencyInputPadding } from "@/provider/currency";
 import type { FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
 
 import DatePicker from "@/components/ui/date-picker";
@@ -146,10 +147,11 @@ function NumberInput({
   icon?: boolean;
   suffix?: ReactNode;
 }) {
+  const currencyInputPadding = useCurrencyInputPadding();
   return (
     <div className="relative">
       {icon ? (
-        <SaudiRiyal className="pointer-events-none absolute left-4 top-1/2 size-4 shrink-0 -translate-y-1/2 text-primary" />
+        <CurrencyAdornment absolute className="text-xs text-primary" />
       ) : null}
       <input
         type="number"
@@ -162,7 +164,7 @@ function NumberInput({
         className={cn(
           inputClassLtr,
           "[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",
-          icon && "pl-10",
+          icon && currencyInputPadding,
           suffix && "pr-9",
         )}
         {...register}

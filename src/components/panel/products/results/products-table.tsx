@@ -1,5 +1,5 @@
-import { SaudiRiyal } from "lucide-react";
 import type { ReactNode } from "react";
+import MoneyValue from "@/components/ui/money-value";
 
 import type { ProductListItem } from "@/types";
 
@@ -53,9 +53,7 @@ function ProductsTable({
                 </TableCell>
                 <TableCell>{product.category?.name ?? "-"}</TableCell>
                 <TableCell>
-                  <span className="inline-flex items-center gap-1" dir="ltr">
-                    <SaudiRiyal className="size-4 shrink-0" /> {product.price}
-                  </span>
+                  <MoneyValue value={product.price} />
                 </TableCell>
                 <TableCell>{product.quantity}</TableCell>
                 <TableCell truncate={false}>

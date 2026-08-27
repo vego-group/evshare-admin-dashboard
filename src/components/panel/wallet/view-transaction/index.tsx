@@ -1,7 +1,8 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { ArrowRight, SaudiRiyal } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import CurrencyMoneyValue from "@/components/ui/money-value";
 import { useParams, useRouter } from "next/navigation";
 
 import Header from "@/components/ui/header";
@@ -148,14 +149,7 @@ function DetailRow({
 }
 
 function MoneyValue({ value, color }: { value: number; color?: string }) {
-  return (
-    <span className={color}>
-      <span className="inline-flex items-center gap-1">
-        <SaudiRiyal className="size-4 shrink-0" />
-        {value.toLocaleString("en-US")}
-      </span>
-    </span>
-  );
+  return <CurrencyMoneyValue value={value} className={color} />;
 }
 
 function SectionTitle({ children }: { children: ReactNode }) {

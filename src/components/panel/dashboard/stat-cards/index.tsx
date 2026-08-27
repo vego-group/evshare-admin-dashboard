@@ -1,11 +1,10 @@
 import {
   Boxes,
   DollarSign,
-  SaudiRiyal,
   ShoppingCart,
   TrendingUp,
 } from "lucide-react";
-import type { ReactNode } from "react";
+import MoneyValue from "@/components/ui/money-value";
 
 import type {
   DashboardAnalyticsData,
@@ -24,41 +23,30 @@ const statConfig = [
     key: "average_order_value",
     title: "متوسط قيمة الطلب",
     icon: TrendingUp,
-    format: (value: number) => formatCurrency(value),
+    money: true,
   },
   {
     key: "products",
     title: "المنتجات",
     icon: Boxes,
-    format: (value: number) => formatNumber(value),
+    money: false,
   },
   {
     key: "revenues",
     title: "الإيرادات",
     icon: DollarSign,
-    format: (value: number) => formatCurrency(value),
+    money: true,
   },
   {
     key: "orders",
     title: "الطلبات",
     icon: ShoppingCart,
-    format: (value: number) => formatNumber(value),
+    money: false,
   },
 ] as const;
 
 function formatNumber(value: number) {
   return value.toLocaleString("en-US");
-}
-
-function formatCurrency(value: number): ReactNode {
-  return (
-    <span className="inline-flex items-center gap-1" dir="ltr">
-      <SaudiRiyal className="size-5 shrink-0" />
-      {value.toLocaleString("en-US", {
-        maximumFractionDigits: 2,
-      })}
-    </span>
-  );
 }
 
 function formatTrend(value: number) {
@@ -100,7 +88,9 @@ function StatCardsSection({ data, period }: StatCardsSectionProps) {
 
               <div className="flex justify-between gap-3">
                 <p className="text-[30px] leading-9.5 font-semibold tracking-[-0.03em] text-dark-gray">
-                  {stat.format(card.value)}
+                  {stat.money ? (
+                    <MoneyValue value={card.value} options={{ maximumFractionDigits: 2 }} />
+                  ) : formatNumber(card.value)}
                 </p>
                 <TrendBadge
                   value={formatTrend(card.trend)}

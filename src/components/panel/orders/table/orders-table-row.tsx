@@ -1,6 +1,6 @@
 "use client";
 
-import { SaudiRiyal } from "lucide-react";
+import MoneyValue from "@/components/ui/money-value";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -75,7 +75,7 @@ function OrdersTableRow({ order }: { order: OrderListItem }) {
           </span>
         </TableCell>
         <TableCell dir="ltr" className="text-right">
-          <span className="inline-flex items-center gap-1"><SaudiRiyal className="size-4 shrink-0" /> {order.total}</span>
+          <MoneyValue value={order.total} />
         </TableCell>
         <TableCell className="max-w-none overflow-visible whitespace-normal">
           {canEdit ? <OrderStatusDropdown

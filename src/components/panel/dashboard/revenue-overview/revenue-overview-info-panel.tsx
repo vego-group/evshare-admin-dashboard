@@ -1,4 +1,5 @@
-import { Bolt, SaudiRiyal } from "lucide-react";
+import { Bolt } from "lucide-react";
+import MoneyValue from "@/components/ui/money-value";
 
 import type { DashboardPeriod, DashboardRevenueChart } from "@/types";
 import { TrendBadge } from "../shared";
@@ -28,10 +29,7 @@ function RevenueOverviewInfoPanel({
 
       <div className="space-y-2">
         <p className="text-[2.5rem] font-medium leading-none tracking-[-0.03em] text-dark-gray sm:text-[3rem]">
-          <span className="inline-flex items-center gap-2" dir="ltr">
-            <SaudiRiyal className="size-8 shrink-0 text-gray sm:size-9" />
-            {formatCompact(total)}
-          </span>
+          <MoneyValue value={total} options={{ notation: "compact", maximumFractionDigits: 1 }} />
         </p>
         <p className="text-sm font-medium text-gray">
           إجمالي إيرادات آخر {period} أيام
@@ -39,7 +37,7 @@ function RevenueOverviewInfoPanel({
       </div>
 
       <div className="flex items-center gap-3">
-        <TrendBadge value={formatCurrency(dailyAverage)} direction="up" />
+        <TrendBadge value={<MoneyValue value={dailyAverage} options={{ maximumFractionDigits: 2 }} />} direction="up" />
         <p className="text-xs font-medium text-gray">متوسط الإيراد اليومي</p>
       </div>
 
@@ -47,7 +45,7 @@ function RevenueOverviewInfoPanel({
         <div className="rounded-[18px] border border-primary/10 bg-neutral-50 px-4 py-3">
           <p className="text-xs font-medium text-gray">ذروة الفترة</p>
           <p className="mt-1 text-2xl font-semibold text-dark-gray sm:text-3xl">
-            {formatCompact(peakValue)}
+            <MoneyValue value={peakValue} options={{ notation: "compact", maximumFractionDigits: 1 }} />
           </p>
           <p className="mt-1 text-xs font-medium text-gray">{peakDay}</p>
         </div>
@@ -55,25 +53,14 @@ function RevenueOverviewInfoPanel({
         <div className="rounded-[18px] border border-primary/10 bg-neutral-50 px-4 py-3">
           <p className="text-xs font-medium text-gray">متوسط يومي</p>
           <p className="mt-1 text-2xl font-semibold text-dark-gray sm:text-3xl">
-            {formatCompact(dailyAverage)}
+            <MoneyValue value={dailyAverage} options={{ notation: "compact", maximumFractionDigits: 1 }} />
           </p>
           <p className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-gray">
-            <SaudiRiyal className="size-3.5 shrink-0" /> / يوم
+            / يوم
           </p>
         </div>
       </div>
     </div>
-  );
-}
-
-function formatCurrency(value: number) {
-  return (
-    <span className="inline-flex items-center gap-1" dir="ltr">
-      <SaudiRiyal className="size-3.5 shrink-0" />
-      {value.toLocaleString("en-US", {
-        maximumFractionDigits: 2,
-      })}
-    </span>
   );
 }
 

@@ -1,4 +1,4 @@
-import { SaudiRiyal } from "lucide-react";
+import MoneyValue from "@/components/ui/money-value";
 
 import EmptyState from "@/components/ui/empty-state";
 import type { VatPeriod } from "@/types";
@@ -65,12 +65,7 @@ function VatPeriods({ periods }: { periods: VatPeriod[] }) {
 }
 
 function AmountCell({ value }: { value: number }) {
-  return (
-    <span className="inline-flex items-center gap-1" dir="ltr">
-      <SaudiRiyal className="size-4 shrink-0" />
-      {value.toLocaleString("en-US")}
-    </span>
-  );
+  return <MoneyValue value={value} />;
 }
 
 export default VatPeriods;

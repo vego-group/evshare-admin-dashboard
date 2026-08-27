@@ -5,6 +5,7 @@ import { PermissionsProvider } from "@/provider/permissions";
 import type { ReactNode } from "react";
 import { getCountry } from "@/lib";
 import PanelPermissionGuard from "@/components/panel-permission-guard";
+import { CurrencyProvider } from "@/provider/currency";
 
 type AdminLayoutProps = {
   children: ReactNode;
@@ -13,6 +14,7 @@ type AdminLayoutProps = {
 async function AdminLayout({ children }: AdminLayoutProps) {
   const country = await getCountry();
   return (
+    <CurrencyProvider countryCode={country}>
     <PermissionsProvider>
       <SearchDirectionController />
       <div className="min-h-svh">
@@ -22,6 +24,7 @@ async function AdminLayout({ children }: AdminLayoutProps) {
         </main>
       </div>
     </PermissionsProvider>
+    </CurrencyProvider>
   );
 }
 

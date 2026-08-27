@@ -1,6 +1,8 @@
 import type { FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
 
 import InputErrorMessage from "@/components/ui/input-error-message";
+import CurrencyAdornment from "@/components/ui/currency-adornment";
+import { useCurrencyInputPadding } from "@/provider/currency";
 import {
   preventNegativeNumberInput,
   preventNegativeNumberPaste,
@@ -22,6 +24,7 @@ const inputClass =
   "h-12 w-full rounded-xl border border-primary/20 px-4 text-sm outline-none focus:border-primary";
 
 function CommissionSettingFields({ type, isActive, errors, register, setValue }: Props) {
+  const currencyInputPadding = useCurrencyInputPadding();
   return (
     <div className="grid gap-5 sm:grid-cols-2">
       <label className="text-sm font-medium text-dark-gray">
@@ -52,6 +55,7 @@ function CommissionSettingFields({ type, isActive, errors, register, setValue }:
 
       <label className="text-sm font-medium text-dark-gray">
         القيمة
+        <div className="relative mt-2">
         <input
           type="number"
           step="0.01"
@@ -62,9 +66,11 @@ function CommissionSettingFields({ type, isActive, errors, register, setValue }:
             preventNegativeNumberInput(event, { allowDecimal: true })
           }
           onPaste={(event) => preventNegativeNumberPaste(event, { allowDecimal: true })}
-          className={`${inputClass} mt-2 text-left [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none`}
+          className={`${inputClass} ${type === "fixed" ? currencyInputPadding : "pr-10"} text-left [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none`}
           {...register("amount")}
         />
+        {type === "fixed" ? <CurrencyAdornment absolute className="text-xs text-primary" /> : <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-sm text-gray">%</span>}
+        </div>
         <InputErrorMessage msg={errors.amount?.message} />
       </label>
 

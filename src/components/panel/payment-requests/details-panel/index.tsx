@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 
-import { SaudiRiyal } from "lucide-react";
+import MoneyValue from "@/components/ui/money-value";
 
 import Panel from "@/components/ui/panel";
 import Shimmer from "@/components/ui/shimmer";
@@ -147,9 +147,7 @@ function PaymentRequestDetails({ request }: { request: PaymentRequestDetail }) {
           label="المبلغ"
           valueDir="ltr"
           value={
-            <span className="inline-flex items-center gap-1">
-              <SaudiRiyal className="size-4 shrink-0" /> {request.amount}
-            </span>
+            <MoneyValue value={request.amount} />
           }
         />
         <DetailRow label="الملاحظات" value={request.notes || "-"} />

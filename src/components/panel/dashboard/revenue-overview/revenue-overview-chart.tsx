@@ -9,7 +9,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { SaudiRiyal } from "lucide-react";
+import MoneyValue from "@/components/ui/money-value";
 
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import type { ChartPoint } from "@/types";
@@ -61,7 +61,7 @@ function RevenueTooltip({ active, payload, label }: RevenueTooltipProps) {
           className={entry.dataKey === "current" ? "text-primary" : "text-gray"}
         >
           {entry.dataKey === "current" ? "الحالي" : "السابق"}:{" "}
-          <span className="font-semibold">{formatCurrency(entry.value)}</span>
+          <span className="font-semibold"><MoneyValue value={entry.value} options={{ maximumFractionDigits: 2 }} /></span>
         </p>
       ))}
     </div>
@@ -251,17 +251,6 @@ function buildTicks(maxValue: number) {
 
   return Array.from({ length: 5 }, (_, index) =>
     Math.max(0, Math.round(maxValue - step * index)),
-  );
-}
-
-function formatCurrency(value: number) {
-  return (
-    <span className="inline-flex items-center gap-1" dir="ltr">
-      <SaudiRiyal className="size-3.5 shrink-0" />
-      {value.toLocaleString("en-US", {
-        maximumFractionDigits: 2,
-      })}
-    </span>
   );
 }
 

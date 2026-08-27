@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
-import { SaudiRiyal } from "lucide-react";
+import MoneyValue from "@/components/ui/money-value";
 import type { ReactNode } from "react";
 
 import { updateOrderStatusAPI } from "@/services/mutations";
@@ -87,7 +87,7 @@ function OrderCard({ order }: { order: OrderListItem }) {
           <DetailLine label="العنوان" value={order.address?.address ?? "-"} />
           <DetailLine
             label="المبلغ الإجمالي"
-            value={<span className="inline-flex items-center gap-1" dir="ltr"><SaudiRiyal className="size-4 shrink-0" /> {order.total}</span>}
+            value={<MoneyValue value={order.total} />}
           />
           <DetailLine
             label="التاريخ"

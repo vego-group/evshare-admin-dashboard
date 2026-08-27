@@ -1,4 +1,5 @@
-import { Plus, SaudiRiyal } from "lucide-react";
+import { Plus } from "lucide-react";
+import MoneyValue from "@/components/ui/money-value";
 
 import { Button } from "@/components/ui/button";
 import EmptyState from "@/components/ui/empty-state";
@@ -49,10 +50,7 @@ function VatSettlements({ settlements, onAdd }: Props) {
                     {settlement.period}
                   </td>
                   <td className="px-5 py-4" dir="ltr">
-                    <span className="inline-flex items-center gap-1">
-                      <SaudiRiyal className="size-4 shrink-0" />
-                      {settlement.amount.toLocaleString("en-US")}
-                    </span>
+                    <MoneyValue value={settlement.amount} />
                   </td>
                   <td className="px-5 py-4" dir="ltr">
                     {settlement.paid_at}
