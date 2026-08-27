@@ -41,7 +41,36 @@ export type SidebarNavItem = {
   isDashboard?: boolean;
   /** Permission slug(s) required to see this item (any one matches); omit to show it to everyone. */
   permission?: string | string[];
+  group?: SidebarNavGroupId;
 };
+
+export type SidebarNavGroupId =
+  | "catalog"
+  | "access"
+  | "requests"
+  | "shipping"
+  | "fleet"
+  | "finance"
+  | "content"
+  | "system";
+
+export type SidebarNavGroup = {
+  id: SidebarNavGroupId;
+  label: string;
+  ariaLabel: string;
+  icon: LucideIcon;
+};
+
+export const sidebarNavGroups: SidebarNavGroup[] = [
+  { id: "catalog", label: "المتجر", ariaLabel: "المتجر", icon: Package },
+  { id: "access", label: "المستخدمون والصلاحيات", ariaLabel: "المستخدمون والصلاحيات", icon: Users },
+  { id: "requests", label: "الطلبات", ariaLabel: "الطلبات", icon: ClipboardList },
+  { id: "shipping", label: "الشحن", ariaLabel: "الشحن", icon: Truck },
+  { id: "fleet", label: "التشغيل والرحلات", ariaLabel: "التشغيل والرحلات", icon: Route },
+  { id: "finance", label: "المالية والمدفوعات", ariaLabel: "المالية والمدفوعات", icon: CircleDollarSign },
+  { id: "content", label: "المحتوى والتسويق", ariaLabel: "المحتوى والتسويق", icon: FileText },
+  { id: "system", label: "إعدادات النظام", ariaLabel: "إعدادات النظام", icon: Settings },
+];
 
 export const sidebarNavItems: SidebarNavItem[] = [
   {
@@ -54,6 +83,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
   },
   {
     href: "/categories",
+    group: "catalog",
     label: "التصنيفات",
     ariaLabel: "التصنيفات",
     icon: Tags,
@@ -61,6 +91,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
   },
   {
     href: "/products",
+    group: "catalog",
     label: "المنتجات",
     ariaLabel: "المنتجات",
     icon: Package,
@@ -68,6 +99,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
   },
   {
     href: "/users",
+    group: "access",
     label: "المستخدمون",
     ariaLabel: "المستخدمون",
     icon: Users,
@@ -80,6 +112,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
   },
   {
     href: "/roles-permissions",
+    group: "access",
     label: "الأدوار والصلاحيات",
     ariaLabel: "الأدوار والصلاحيات",
     icon: ShieldCheck,
@@ -91,6 +124,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
   },
   {
     href: "/wallet",
+    group: "finance",
     label: "المحفظة",
     ariaLabel: "المحفظة",
     icon: Wallet,
@@ -98,6 +132,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
   },
   {
     href: "/cities",
+    group: "system",
     label: "المدن",
     ariaLabel: "المدن",
     icon: MapPin,
@@ -105,6 +140,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
   },
   {
     href: "/sliders",
+    group: "content",
     label: "السلايدرات",
     ariaLabel: "السلايدرات",
     icon: Images,
@@ -112,6 +148,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
   },
   {
     href: "/app-versions",
+    group: "system",
     label: "إصدارات التطبيقات",
     ariaLabel: "إصدارات التطبيقات",
     icon: Smartphone,
@@ -119,6 +156,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
   },
   {
     href: "/feature-flags",
+    group: "system",
     label: "إدارة الميزات",
     ariaLabel: "إدارة الميزات",
     icon: Flag,
@@ -126,6 +164,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
   },
   {
     href: "/consultation-requests",
+    group: "requests",
     label: "طلبات الاستشارة",
     ariaLabel: "طلبات الاستشارة",
     icon: ClipboardList,
@@ -133,6 +172,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
   },
   {
     href: "/registration-requests",
+    group: "requests",
     label: "طلبات التسجيل",
     ariaLabel: "طلبات التسجيل",
     icon: ScrollText,
@@ -140,6 +180,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
   },
   {
     href: "/orders",
+    group: "catalog",
     label: "طلبات المنتجات",
     ariaLabel: "طلبات المنتجات",
     icon: ShoppingCart,
@@ -147,6 +188,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
   },
   {
     href: "/shipments",
+    group: "shipping",
     label: "الشحنات",
     ariaLabel: "الشحنات",
     icon: Truck,
@@ -154,6 +196,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
   },
   {
     href: "/shipping-companies",
+    group: "shipping",
     label: "شركات الشحن",
     ariaLabel: "شركات الشحن",
     icon: PackageCheck,
@@ -161,6 +204,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
   },
   {
     href: "/shipping-cities",
+    group: "shipping",
     label: "مدن الشحن",
     ariaLabel: "مدن الشحن",
     icon: MapPinned,
@@ -168,6 +212,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
   },
   {
     href: "/payment-requests",
+    group: "requests",
     label: "طلبات الدفع",
     ariaLabel: "طلبات الدفع",
     icon: CreditCard,
@@ -175,6 +220,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
   },
   {
     href: "/operating-companies",
+    group: "fleet",
     label: "الشركات المشغلة",
     ariaLabel: "الشركات المشغلة",
     icon: Building2,
@@ -182,6 +228,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
   },
   {
     href: "/vehicle-operating-pricing",
+    group: "fleet",
     label: "تشغيل وتسعير المركبات",
     ariaLabel: "تشغيل وتسعير المركبات",
     icon: Route,
@@ -190,6 +237,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
 
   {
     href: "/trips",
+    group: "fleet",
     label: "سجل الرحلات",
     ariaLabel: "سجل الرحلات",
     icon: Navigation,
@@ -197,6 +245,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
   },
   {
     href: "/trips/active",
+    group: "fleet",
     label: "الرحلات النشطة",
     ariaLabel: "الرحلات النشطة",
     icon: Radar,
@@ -204,6 +253,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
   },
   {
     href: "/payment-gateways",
+    group: "finance",
     label: "بوابات الدفع",
     ariaLabel: "بوابات الدفع",
     icon: CircleDollarSign,
@@ -211,6 +261,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
   },
   {
     href: "/payment-methods",
+    group: "finance",
     label: "طرق الدفع",
     ariaLabel: "طرق الدفع",
     icon: CreditCard,
@@ -218,6 +269,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
   },
   {
     href: "/webhook-logs",
+    group: "finance",
     label: "سجلات الويب هوك",
     ariaLabel: "سجلات الويب هوك",
     icon: Webhook,
@@ -225,6 +277,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
   },
   {
     href: "/commission-settings",
+    group: "finance",
     label: "إعدادات العمولة",
     ariaLabel: "إعدادات العمولة",
     icon: Percent,
@@ -232,6 +285,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
   },
   {
     href: "/finance/vat",
+    group: "finance",
     label: "ضريبة القيمة المضافة",
     ariaLabel: "ضريبة القيمة المضافة",
     icon: Receipt,
@@ -239,6 +293,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
   },
   {
     href: "/complaints",
+    group: "requests",
     label: "الشكاوى",
     ariaLabel: "الشكاوى",
     icon: MessageSquareWarning,
@@ -246,6 +301,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
   },
   {
     href: "/promos",
+    group: "content",
     label: "أكواد الخصم",
     ariaLabel: "أكواد الخصم",
     icon: Ticket,
@@ -253,6 +309,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
   },
   {
     href: "/test-accounts",
+    group: "system",
     label: "حسابات الاختبار",
     ariaLabel: "حسابات الاختبار",
     icon: FlaskConical,
@@ -260,6 +317,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
   },
   {
     href: "/settings",
+    group: "system",
     label: "الإعدادات",
     ariaLabel: "الإعدادات",
     icon: Settings,
@@ -267,6 +325,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
   },
   {
     href: "/driver-pricing-settings",
+    group: "finance",
     label: "تسعير السائق والمحفظة",
     ariaLabel: "تسعير السائق والمحفظة",
     icon: Wallet,
@@ -274,6 +333,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
   },
   {
     href: "/contact-us",
+    group: "content",
     label: "بيانات التواصل",
     ariaLabel: "بيانات التواصل",
     icon: Phone,
@@ -281,6 +341,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
   },
   {
     href: "/pages",
+    group: "content",
     label: "الصفحات الثابتة",
     ariaLabel: "الصفحات الثابتة",
     icon: FileText,
