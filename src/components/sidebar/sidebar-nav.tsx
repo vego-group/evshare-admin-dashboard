@@ -1,9 +1,10 @@
 import type { MouseEvent } from "react";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { sidebarNavItems } from "@/data";
+import { sidebarNavGroups, sidebarNavItems } from "@/data";
 import { useUserPermissions } from "@/hooks";
 import SidebarLogoutButton from "./sidebar-logout-button";
+import SidebarNavGroup from "./sidebar-nav-group";
 import SidebarNavLink from "./sidebar-nav-link";
 
 type SidebarNavProps = {
@@ -29,6 +30,20 @@ function SidebarNav({
   const visibleNavItems = sidebarNavItems.filter(
     (item) => !item.permission || hasAnyPermission(item.permission),
   );
+  const activeHref = visibleNavItems
+    .filter(
+      (item) =>
+        pathname === item.href ||
+        (item.href !== "/" && pathname.startsWith(`${item.href}/`)),
+    )
+    .sort((first, second) => second.href.length - first.href.length)[0]?.href;
+  const standaloneItems = visibleNavItems.filter((item) => !item.group);
+  const visibleGroups = sidebarNavGroups
+    .map((group) => ({
+      group,
+      items: visibleNavItems.filter((item) => item.group === group.id),
+    }))
+    .filter(({ items }) => items.length > 0);
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
@@ -46,11 +61,11 @@ function SidebarNav({
             collapsed ? "items-center" : "items-stretch px-3"
           }`}
         >
-          {visibleNavItems.map((item, index) => (
+          {standaloneItems.map((item, index) => (
             <SidebarNavLink
               key={item.href}
               item={item}
-              active={pathname === item.href}
+              active={item.href === activeHref}
               collapsed={collapsed}
               className={
                 index === 0 || collapsed ? undefined : linkSpacingClassName
@@ -59,6 +74,31 @@ function SidebarNav({
               onNavigate={onNavigate}
             />
           ))}
+          {collapsed
+            ? visibleGroups.flatMap(({ items }) =>
+                items.map((item) => (
+                  <SidebarNavLink
+                    key={item.href}
+                    item={item}
+                    active={item.href === activeHref}
+                    collapsed
+                    className="mt-2"
+                    onDashboardClick={onDashboardClick}
+                    onNavigate={onNavigate}
+                  />
+                )),
+              )
+            : visibleGroups.map(({ group, items }) => (
+                <SidebarNavGroup
+                  key={group.id}
+                  group={group}
+                  items={items}
+                  activeHref={activeHref}
+                  className={linkSpacingClassName}
+                  onDashboardClick={onDashboardClick}
+                  onNavigate={onNavigate}
+                />
+              ))}
         </div>
       </ScrollArea>
 
