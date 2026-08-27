@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { SaudiRiyal } from "lucide-react";
+import MoneyValue from "@/components/ui/money-value";
 
 import { cn } from "@/lib/utils";
 import { formatSaudiPhoneNumber } from "@/lib/utils/format-phone";
@@ -35,9 +35,7 @@ function PaymentRequestsTableRow({
         {request.user?.mobile ? formatSaudiPhoneNumber(request.user.mobile) : "-"}
       </TableCell>
       <TableCell dir="ltr">
-        <span className="inline-flex items-center gap-1">
-          <SaudiRiyal className="size-4 shrink-0" /> {request.amount}
-        </span>
+        <MoneyValue value={request.amount} />
       </TableCell>
       <TableCell className="max-w-none overflow-visible whitespace-normal">
         <PaymentRequestStatusBadge status={request.status} />

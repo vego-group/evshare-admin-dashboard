@@ -6,9 +6,9 @@ import {
   CheckCircle,
   FileDown,
   FileText,
-  SaudiRiyal,
   XCircle,
 } from "lucide-react";
+import MoneyValue from "@/components/ui/money-value";
 import toast from "react-hot-toast";
 
 import PermissionGate from "@/components/permission-gate";
@@ -222,11 +222,7 @@ function OrderReceiptSection({
                             ? "محفظة"
                             : "تواصل مباشر"}
                           {item.refund_amount != null ? (
-                            <span className="inline-flex items-center gap-1" dir="ltr">
-                              {" "}
-                              <SaudiRiyal className="size-3 shrink-0" />{" "}
-                              {item.refund_amount}
-                            </span>
+                            <MoneyValue value={item.refund_amount} />
                           ) : null}
                         </span>
                       ) : null}

@@ -1,4 +1,4 @@
-import { SaudiRiyal } from "lucide-react";
+import MoneyValue from "@/components/ui/money-value";
 import Image from "next/image";
 import type { ReactNode } from "react";
 
@@ -71,14 +71,10 @@ function OrderItemRow({ item }: { item: OrderItem }) {
       </TableCell>
       <TableCell>{item.quantity}</TableCell>
       <TableCell dir="ltr" className="text-right">
-        <span className="inline-flex items-center gap-1">
-          <SaudiRiyal className="size-4 shrink-0" /> {item.unit_price}
-        </span>
+        <MoneyValue value={item.unit_price} />
       </TableCell>
       <TableCell dir="ltr" className="text-right font-semibold text-secondary">
-        <span className="inline-flex items-center gap-1">
-          <SaudiRiyal className="size-4 shrink-0" /> {item.total_price}
-        </span>
+        <MoneyValue value={item.total_price} />
       </TableCell>
       <TableCell className="max-w-none overflow-visible whitespace-normal">
         {item.vehicles.length ? (

@@ -6,6 +6,8 @@ import { useForm, type FieldErrors, type Resolver } from "react-hook-form";
 import toast from "react-hot-toast";
 
 import { Button } from "@/components/ui/button";
+import CurrencyAdornment from "@/components/ui/currency-adornment";
+import { useCurrencyInputPadding } from "@/provider/currency";
 import InputErrorMessage from "@/components/ui/input-error-message";
 import Loader from "@/components/ui/loader";
 import Modal from "@/components/ui/modal";
@@ -30,6 +32,7 @@ type Props = {
 };
 
 function ResolveRefundModal({ orderId, item, open, onClose, onSaved }: Props) {
+  const currencyInputPadding = useCurrencyInputPadding();
   const {
     register,
     handleSubmit,
@@ -105,6 +108,7 @@ function ResolveRefundModal({ orderId, item, open, onClose, onSaved }: Props) {
         {method === "wallet" ? (
           <label className="block">
             <span className="mb-2 block text-sm text-dark-gray">المبلغ</span>
+            <div className="relative">
             <input
               type="text"
               inputMode="decimal"
@@ -125,9 +129,11 @@ function ResolveRefundModal({ orderId, item, open, onClose, onSaved }: Props) {
               onPaste={(event) =>
                 preventNegativeNumberPaste(event, { allowDecimal: true })
               }
-              className="h-12 w-full rounded-[14px] border border-primary bg-primary/4 px-3 text-left outline-none"
+              className={`h-12 w-full rounded-[14px] border border-primary bg-primary/4 text-left outline-none ${currencyInputPadding}`}
               dir="ltr"
             />
+            <CurrencyAdornment absolute className="text-xs text-primary" />
+            </div>
             <InputErrorMessage msg={errors.amount?.message} />
           </label>
         ) : null}

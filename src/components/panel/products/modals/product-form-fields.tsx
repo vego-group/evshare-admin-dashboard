@@ -1,8 +1,11 @@
 "use client";
 
-import { ImageIcon, Plus, SaudiRiyal, Trash2, Upload, X } from "lucide-react";
+import { ImageIcon, Plus, Trash2, Upload, X } from "lucide-react";
 import Image from "next/image";
 import type { ReactNode } from "react";
+import CurrencyAdornment from "@/components/ui/currency-adornment";
+import { useCurrencyInputPadding } from "@/provider/currency";
+import { cn } from "@/lib/utils";
 import type {
   Control,
   FieldErrors,
@@ -401,14 +404,19 @@ function PriceInput({
   onPaste,
   ...props
 }: React.InputHTMLAttributes<HTMLInputElement>) {
+  const currencyInputPadding = useCurrencyInputPadding();
+
   return (
-    <div className="flex h-14 items-center gap-1 rounded-[14px] border border-primary bg-primary/4 px-4 transition focus-within:bg-primary/8">
+    <div className="relative flex h-14 items-center rounded-[14px] border border-primary bg-primary/4 transition focus-within:bg-primary/8">
       <input
         type="text"
         dir="ltr"
         placeholder={placeholder}
         inputMode="decimal"
-        className="min-w-0 flex-1 bg-transparent text-sm font-medium text-dark-gray outline-none"
+        className={cn(
+          "min-w-0 flex-1 bg-transparent text-sm font-medium text-dark-gray outline-none",
+          currencyInputPadding,
+        )}
         {...props}
         onKeyDown={(event) => {
           preventNegativeNumberInput(event, { allowDecimal: true });
@@ -429,7 +437,7 @@ function PriceInput({
           onChange?.(event);
         }}
       />
-      <SaudiRiyal className="size-4 shrink-0 text-gray" />
+      <CurrencyAdornment absolute className="text-sm text-gray" />
     </div>
   );
 }

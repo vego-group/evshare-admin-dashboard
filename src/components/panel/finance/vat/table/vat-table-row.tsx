@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { SaudiRiyal } from "lucide-react";
+import MoneyValue from "@/components/ui/money-value";
 
 import { cn } from "@/lib/utils";
 import type { VatRecord } from "@/types";
@@ -35,12 +35,7 @@ function VatTableRow({ record }: { record: VatRecord }) {
 }
 
 function AmountCell({ value }: { value: number }) {
-  return (
-    <span className="inline-flex items-center gap-1">
-      <SaudiRiyal className="size-4 shrink-0" />
-      {value.toLocaleString("en-US")}
-    </span>
-  );
+  return <MoneyValue value={value} />;
 }
 
 function TableCell({

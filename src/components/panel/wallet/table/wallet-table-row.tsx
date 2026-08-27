@@ -1,7 +1,8 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { Eye, SaudiRiyal } from "lucide-react";
+import { Eye } from "lucide-react";
+import MoneyValue from "@/components/ui/money-value";
 
 import { cn } from "@/lib/utils";
 import type { WalletTransaction } from "@/types";
@@ -58,12 +59,7 @@ function AmountCell({
   color?: string;
 }) {
   if (!value) return <span className="text-gray">—</span>;
-  return (
-    <span className={cn("inline-flex items-center gap-1", color)}>
-      <SaudiRiyal className="size-4 shrink-0" />
-      {value.toLocaleString("en-US")}
-    </span>
-  );
+  return <MoneyValue value={value} className={color} />;
 }
 
 function TableCell({

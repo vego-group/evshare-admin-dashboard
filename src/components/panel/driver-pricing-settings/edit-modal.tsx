@@ -4,7 +4,9 @@ import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { AlertTriangle, SaudiRiyal } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
+import CurrencyAdornment from "@/components/ui/currency-adornment";
+import { useCurrencyInputPadding } from "@/provider/currency";
 import { Button } from "@/components/ui/button";
 import InputErrorMessage from "@/components/ui/input-error-message";
 import Loader from "@/components/ui/loader";
@@ -22,6 +24,7 @@ import { SETTING_META } from "./config";
 type Props = { setting: DriverPricingSetting | null; onClose: () => void; onSaved: () => Promise<void> };
 
 export default function EditSettingModal({ setting, onClose, onSaved }: Props) {
+  const currencyInputPadding = useCurrencyInputPadding();
   const schema = driverPricingSettingSchema(setting?.setting_name ?? "trip_min_start_balance");
   const form = useForm<DriverPricingSettingFormValues>({
     resolver: zodResolver(schema), defaultValues: { value: "" }, mode: "onChange",
@@ -53,7 +56,8 @@ export default function EditSettingModal({ setting, onClose, onSaved }: Props) {
           </div>
         ) : null}
         <label className="block">
-          <span className="mb-2 flex items-center gap-1 text-sm font-medium text-dark-gray">القيمة {meta?.unit === "currency" ? <SaudiRiyal className="size-4" /> : meta?.unit ? `(${meta.unit})` : ""}</span>
+          <span className="mb-2 flex items-center gap-1 text-sm font-medium text-dark-gray">القيمة {meta?.unit === "currency" ? <CurrencyAdornment /> : meta?.unit ? `(${meta.unit})` : ""}</span>
+          <div className="relative">
           <input
             type={isAmountsList ? "text" : "number"}
             inputMode={isAmountsList ? "decimal" : allowsDecimal ? "decimal" : "numeric"}
@@ -61,7 +65,7 @@ export default function EditSettingModal({ setting, onClose, onSaved }: Props) {
             step={allowsDecimal ? "0.01" : "1"}
             dir="ltr"
             autoFocus
-            className="h-12 w-full rounded-xl border border-neutral-200 bg-white px-4 text-sm outline-none [appearance:textfield] focus:border-primary focus:ring-3 focus:ring-primary/15 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            className={`h-12 w-full rounded-xl border border-neutral-200 bg-white text-sm outline-none [appearance:textfield] focus:border-primary focus:ring-3 focus:ring-primary/15 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none ${meta?.unit === "currency" ? currencyInputPadding : "px-4"}`}
             {...form.register("value")}
             onKeyDown={(event) => {
               if (isAmountsList && event.key === ",") return;
@@ -78,6 +82,8 @@ export default function EditSettingModal({ setting, onClose, onSaved }: Props) {
               form.setValue("value", value, { shouldDirty: true, shouldValidate: true });
             }}
           />
+          {meta?.unit === "currency" ? <CurrencyAdornment absolute className="text-xs text-primary" /> : null}
+          </div>
           <InputErrorMessage msg={form.formState.errors.value?.message} />
         </label>
         <div className="grid gap-3 sm:grid-cols-2">

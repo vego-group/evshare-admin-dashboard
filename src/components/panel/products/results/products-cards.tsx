@@ -1,4 +1,4 @@
-import { SaudiRiyal } from "lucide-react";
+import MoneyValue from "@/components/ui/money-value";
 
 import type { ProductListItem } from "@/types";
 
@@ -52,9 +52,7 @@ function ProductsCards({
             <DetailLine
               label="السعر"
               value={
-                <span className="inline-flex items-center gap-1" dir="ltr">
-                  <SaudiRiyal className="size-4 shrink-0" /> {product.price}
-                </span>
+                <MoneyValue value={product.price} />
               }
             />
             <DetailLine label="الكمية" value={String(product.quantity)} />

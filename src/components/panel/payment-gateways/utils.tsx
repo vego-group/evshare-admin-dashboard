@@ -1,14 +1,9 @@
-import { SaudiRiyal } from "lucide-react";
+import CurrencyMoneyValue from "@/components/ui/money-value";
 
 import type { PaymentTransaction } from "@/types";
 
 export function MoneyValue({ amount }: { amount: number }) {
-  return (
-    <span className="inline-flex items-center gap-1" dir="ltr">
-      <SaudiRiyal className="size-4 shrink-0" />
-      {Number(amount || 0).toLocaleString("en-US")}
-    </span>
-  );
+  return <CurrencyMoneyValue value={amount} />;
 }
 
 export function formatDate(value: string) {

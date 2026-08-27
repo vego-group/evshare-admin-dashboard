@@ -1,7 +1,8 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { Eye, SaudiRiyal } from "lucide-react";
+import { Eye } from "lucide-react";
+import MoneyValue from "@/components/ui/money-value";
 
 import type { WalletTransaction } from "@/types";
 
@@ -53,10 +54,7 @@ function WalletCard({
           <DetailLine
             label="إيداع"
             value={
-              <span className="inline-flex items-center gap-1 text-green-600" dir="ltr">
-                <SaudiRiyal className="size-4 shrink-0" />
-                {transaction.credit.toLocaleString("en-US")}
-              </span>
+              <MoneyValue value={transaction.credit} className="text-green-600" />
             }
           />
         )}
@@ -64,20 +62,14 @@ function WalletCard({
           <DetailLine
             label="سحب"
             value={
-              <span className="inline-flex items-center gap-1 text-red-500" dir="ltr">
-                <SaudiRiyal className="size-4 shrink-0" />
-                {transaction.debit.toLocaleString("en-US")}
-              </span>
+              <MoneyValue value={transaction.debit} className="text-red-500" />
             }
           />
         )}
         <DetailLine
           label="الرصيد"
           value={
-            <span className="inline-flex items-center gap-1" dir="ltr">
-              <SaudiRiyal className="size-4 shrink-0" />
-              {transaction.balance.toLocaleString("en-US")}
-            </span>
+            <MoneyValue value={transaction.balance} />
           }
         />
         <DetailLine

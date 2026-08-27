@@ -1,6 +1,8 @@
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
 
 import InputErrorMessage from "@/components/ui/input-error-message";
+import CurrencyAdornment from "@/components/ui/currency-adornment";
+import { useCurrencyInputPadding } from "@/provider/currency";
 import {
   preventNegativeNumberInput,
   preventNegativeNumberPaste,
@@ -16,6 +18,7 @@ const inputClass =
   "h-12 w-full rounded-xl border border-primary/20 px-4 text-sm outline-none focus:border-primary";
 
 function SettlementFields({ errors, register }: Props) {
+  const currencyInputPadding = useCurrencyInputPadding();
   return (
     <div className="grid gap-5 sm:grid-cols-2">
       <label className="text-sm font-medium text-dark-gray">
@@ -31,6 +34,7 @@ function SettlementFields({ errors, register }: Props) {
 
       <label className="text-sm font-medium text-dark-gray">
         المبلغ
+        <div className="relative mt-2">
         <input
           type="number"
           step="0.01"
@@ -41,9 +45,11 @@ function SettlementFields({ errors, register }: Props) {
             preventNegativeNumberInput(event, { allowDecimal: true })
           }
           onPaste={(event) => preventNegativeNumberPaste(event, { allowDecimal: true })}
-          className={`${inputClass} mt-2 text-left [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none`}
+          className={`${inputClass} ${currencyInputPadding} text-left [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none`}
           {...register("amount")}
         />
+        <CurrencyAdornment absolute className="text-xs text-primary" />
+        </div>
         <InputErrorMessage msg={errors.amount?.message} />
       </label>
 

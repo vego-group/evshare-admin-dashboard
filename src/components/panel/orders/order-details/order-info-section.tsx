@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
-import { SaudiRiyal } from "lucide-react";
+import MoneyValue from "@/components/ui/money-value";
 
 import { updateOrderStatusAPI } from "@/services/mutations";
 import type { OrderDetail, OrderNewStatus } from "@/types";
@@ -105,20 +105,20 @@ function OrderInfoSection({ order }: { order: OrderDetail }) {
           </p>
           <FinancialRow
             label="المجموع الفرعي"
-            value={<span className="inline-flex items-center gap-1"><SaudiRiyal className="size-4 shrink-0" /> {order.subtotal}</span>}
+            value={<MoneyValue value={order.subtotal} />}
           />
           <FinancialRow
             label={`ضريبة القيمة المضافة (${order.vat_percentage}%)`}
-            value={<span className="inline-flex items-center gap-1"><SaudiRiyal className="size-4 shrink-0" /> {order.vat_amount}</span>}
+            value={<MoneyValue value={order.vat_amount} />}
           />
           <FinancialRow
             label="رسوم التوصيل"
-            value={<span className="inline-flex items-center gap-1"><SaudiRiyal className="size-4 shrink-0" /> {order.delivery_fee}</span>}
+            value={<MoneyValue value={order.delivery_fee} />}
           />
           <div className="mt-2 border-t border-neutral-100 pt-2">
             <FinancialRow
               label="الإجمالي"
-              value={<span className="inline-flex items-center gap-1"><SaudiRiyal className="size-4 shrink-0" /> {order.total}</span>}
+              value={<MoneyValue value={order.total} />}
               bold
             />
           </div>

@@ -1,4 +1,5 @@
-import { Pencil, SaudiRiyal, Trash2, Truck, type LucideIcon } from "lucide-react";
+import { Pencil, Trash2, Truck, type LucideIcon } from "lucide-react";
+import CurrencyMoneyValue from "@/components/ui/money-value";
 import Image from "next/image";
 
 import { shippingServiceTypeLabels } from "@/data";
@@ -59,13 +60,7 @@ export function ServiceTypeBadge({
 }
 
 export function MoneyValue({ value }: { value: number | string | null }) {
-  if (value === null || value === undefined || value === "") return <>-</>;
-
-  return (
-    <span className="inline-flex items-center gap-1" dir="ltr">
-      <SaudiRiyal className="size-4 shrink-0" /> {value}
-    </span>
-  );
+  return <CurrencyMoneyValue value={value} />;
 }
 
 export function CompanyActions({

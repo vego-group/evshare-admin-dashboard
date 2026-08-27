@@ -1,4 +1,5 @@
-import { CheckCircle2, Clock, Receipt, SaudiRiyal, Wallet } from "lucide-react";
+import { CheckCircle2, Clock, Receipt, Wallet } from "lucide-react";
+import MoneyValue from "@/components/ui/money-value";
 
 import type { VatSummary } from "@/types";
 
@@ -48,8 +49,7 @@ function VatSummaryStats({ data }: { data?: VatSummary }) {
                 dir="ltr"
                 className="flex items-center gap-1 truncate text-2xl font-semibold leading-8 text-secondary text-right"
               >
-                <SaudiRiyal className="size-5 shrink-0" />
-                {value.toLocaleString("en-US")}
+                <MoneyValue value={value} />
               </p>
             </div>
             <div
