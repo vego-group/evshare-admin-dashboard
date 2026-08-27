@@ -64,13 +64,6 @@ function RevenueOverviewInfoPanel({
   );
 }
 
-function formatCompact(value: number) {
-  return Intl.NumberFormat("en-US", {
-    notation: "compact",
-    maximumFractionDigits: 1,
-  }).format(value);
-}
-
 function translateDayName(dayName: string) {
   const days: Record<string, string> = {
     Saturday: "السبت",
