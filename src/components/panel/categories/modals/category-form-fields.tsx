@@ -10,11 +10,14 @@ import type {
 import InputErrorMessage from "@/components/ui/input-error-message";
 import Shimmer from "@/components/ui/shimmer";
 import type { CategoryFormValues } from "@/schemas/categories";
+import type { VehicleType } from "@/types";
+import VehicleTypeDropdown from "@/components/ui/vehicle-type-dropdown";
 
 import CategoryStatusDropdown from "./category-status-dropdown";
 
 type CategoryFormFieldsProps = {
   active: boolean;
+  vehicleType: VehicleType | null;
   errors: FieldErrors<CategoryFormValues>;
   imagePreviewUrl?: string | null;
   onImageChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -24,6 +27,7 @@ type CategoryFormFieldsProps = {
 
 function CategoryFormFields({
   active,
+  vehicleType,
   errors,
   imagePreviewUrl,
   onImageChange,
@@ -56,14 +60,13 @@ function CategoryFormFields({
       </Field>
 
       <Field label="نوع المركبة" error={errors.vehicle_type?.message}>
-        <select
-          {...register("vehicle_type", { setValueAs: (value) => value || null })}
-          className="h-14 w-full rounded-[14px] border border-primary bg-primary/4 px-4 text-right text-sm font-medium text-dark-gray outline-none transition focus:bg-primary/8"
-        >
-          <option value="">تلقائي (حسب المركبة)</option>
-          <option value="bike">دراجة</option>
-          <option value="scooter">سكوتر</option>
-        </select>
+        <VehicleTypeDropdown
+          value={vehicleType}
+          nullLabel="تلقائي (حسب المركبة)"
+          onChange={(value) =>
+            setValue("vehicle_type", value, { shouldDirty: true, shouldValidate: true })
+          }
+        />
       </Field>
 
       <Field label="الصورة" error={errors.image?.message}>

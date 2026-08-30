@@ -48,6 +48,7 @@ function CategoryEditModal({
     mode: "onChange",
   });
   const active = useWatch({ control, name: "active" });
+  const vehicleType = useWatch({ control, name: "vehicle_type" });
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   const previewUrl = imagePreviewUrl ?? category?.image?.url;
 
@@ -128,6 +129,7 @@ function CategoryEditModal({
           <>
             <CategoryFormFields
               active={active}
+              vehicleType={vehicleType}
               errors={errors}
               imagePreviewUrl={previewUrl}
               onImageChange={handleImageChange}

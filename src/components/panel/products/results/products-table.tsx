@@ -7,6 +7,7 @@ import {
   ProductActions,
   ProductImage,
   StatusBadge,
+  VehicleTypeBadge,
 } from "./product-result-parts";
 
 type ProductsTableProps = {
@@ -31,6 +32,7 @@ function ProductsTable({
               <HeaderCell>الصورة</HeaderCell>
               <HeaderCell>العنوان</HeaderCell>
               <HeaderCell>التصنيف</HeaderCell>
+              <HeaderCell>نوع المركبة</HeaderCell>
               <HeaderCell>السعر</HeaderCell>
               <HeaderCell>الكمية</HeaderCell>
               <HeaderCell>الحالة</HeaderCell>
@@ -52,6 +54,7 @@ function ProductsTable({
                   </p>
                 </TableCell>
                 <TableCell>{product.category?.name ?? "-"}</TableCell>
+                <TableCell truncate={false}><VehicleTypeBadge type={product.vehicle_type} /></TableCell>
                 <TableCell>
                   <MoneyValue value={product.price} />
                 </TableCell>

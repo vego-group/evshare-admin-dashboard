@@ -18,6 +18,7 @@ function EditProduct() {
     isDirty,
     active,
     categoryId,
+    vehicleType,
     isLoading,
     product,
     previewUrl,
@@ -45,6 +46,7 @@ function EditProduct() {
               <ProductFormFields
                 active={active}
                 categoryId={categoryId}
+                vehicleType={vehicleType}
                 errors={errors}
                 imagePreviewUrl={previewUrl}
                 imagesPreviewUrls={imagesPreviewUrls}

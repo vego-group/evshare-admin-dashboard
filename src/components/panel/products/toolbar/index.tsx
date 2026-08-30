@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import useDebouncedChange from "@/hooks/use-debounced-change";
 
-import type { OrderBy, Status } from "@/types";
+import type { OrderBy, Status, VehicleType } from "@/types";
 
 import CategoryFilterSelect from "./category-filter-select";
 import FilterSelect, { type FilterOption } from "./filter-select";
@@ -15,10 +15,12 @@ type ProductsToolbarProps = {
   selectedSort?: OrderBy;
   selectedStatus?: Status;
   selectedCategory?: string;
+  selectedVehicleType?: VehicleType;
   onSearchChange?: (value: string) => void;
   onSortChange?: (value: OrderBy) => void;
   onStatusChange?: (value?: Status) => void;
   onCategoryChange?: (categoryId?: string) => void;
+  onVehicleTypeChange?: (value?: VehicleType) => void;
 };
 
 const sortOptions: FilterOption<OrderBy>[] = [
@@ -32,15 +34,24 @@ const statusOptions: FilterOption<Status | "all">[] = [
   { label: "غير نشط", value: "inactive" },
 ];
 
+const vehicleTypeOptions: FilterOption<VehicleType | "all">[] = [
+  { label: "كل أنواع المركبات", value: "all" },
+  { label: "دراجة", value: "bike" },
+  { label: "سكوتر", value: "scooter" },
+  { label: "سيارة", value: "car" },
+];
+
 function ProductsToolbar({
   searchQuery,
   selectedSort,
   selectedStatus,
   selectedCategory,
+  selectedVehicleType,
   onSearchChange,
   onSortChange,
   onStatusChange,
   onCategoryChange,
+  onVehicleTypeChange,
 }: ProductsToolbarProps) {
   const [internalSearchQuery, setInternalSearchQuery] = useState(searchQuery ?? "");
   const [internalSort, setInternalSort] = useState<OrderBy>("desc");
@@ -61,6 +72,14 @@ function ProductsToolbar({
         <CategoryFilterSelect
           value={selectedCategory}
           onChange={(categoryId) => onCategoryChange?.(categoryId)}
+        />
+        <FilterSelect
+          label="نوع المركبة"
+          options={vehicleTypeOptions}
+          value={selectedVehicleType ?? "all"}
+          onChange={(value) =>
+            onVehicleTypeChange?.(value === "all" ? undefined : value)
+          }
         />
         <FilterSelect
           label="الحالة"

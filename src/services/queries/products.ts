@@ -17,6 +17,7 @@ export const productsAPI = async (
     order_by: params.order_by,
     search: params.search,
     category_id: params.category_id,
+    vehicle_type: params.vehicle_type,
   });
 
   return await baseAPI("GET", `/products?${query}`);

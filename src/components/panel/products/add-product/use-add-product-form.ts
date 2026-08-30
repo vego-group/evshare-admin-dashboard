@@ -35,6 +35,7 @@ export function useAddProductForm() {
 
   const active = useWatch({ control, name: "active" });
   const categoryId = useWatch({ control, name: "category_id" });
+  const vehicleType = useWatch({ control, name: "vehicle_type" });
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   const [imagesPreviewUrls, setImagesPreviewUrls] = useState<string[]>([]);
 
@@ -99,6 +100,7 @@ export function useAddProductForm() {
     isSubmitting,
     active,
     categoryId,
+    vehicleType,
     imagePreviewUrl,
     imagesPreviewUrls,
     handleImageChange,

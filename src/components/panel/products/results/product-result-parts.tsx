@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 import type { ProductListItem } from "@/types";
+import { vehicleTypeLabel } from "@/lib/utils/vehicle-type";
 import PermissionGate from "@/components/permission-gate";
 
 export function ProductImage({
@@ -50,6 +51,14 @@ export function StatusBadge({ active }: { active: boolean }) {
         )}
       />
       {active ? "نشط" : "غير نشط"}
+    </span>
+  );
+}
+
+export function VehicleTypeBadge({ type }: { type: ProductListItem["vehicle_type"] }) {
+  return (
+    <span className="inline-flex h-[34px] items-center rounded-full bg-primary/15 px-4 text-sm font-medium text-secondary">
+      {vehicleTypeLabel(type)}
     </span>
   );
 }

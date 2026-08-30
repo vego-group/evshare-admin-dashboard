@@ -1,7 +1,7 @@
 import { OrderBy } from ".";
 
 export type CategoryStatus = "active" | "inactive";
-export type VehicleType = "bike" | "scooter";
+export type VehicleType = "bike" | "scooter" | "car";
 
 export type CategoriesQueryParams = {
   page: number;

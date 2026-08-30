@@ -41,6 +41,7 @@ export function useEditProductForm() {
 
   const active = useWatch({ control, name: "active" });
   const categoryId = useWatch({ control, name: "category_id" });
+  const vehicleType = useWatch({ control, name: "vehicle_type" });
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   const [imagesPreviewUrls, setImagesPreviewUrls] = useState<string[]>([]);
   const previewUrl = imagePreviewUrl ?? product?.default_image?.url;
@@ -64,6 +65,7 @@ export function useEditProductForm() {
       price_per_day: String(product.price_per_day ?? ""),
       active: product.active,
       category_id: product.category?.id ?? "",
+      vehicle_type: product.vehicle_type_override,
       key_features: product.features.map((f) => ({ id: f.id, title_ar: f.title_ar, title_en: f.title_en })),
       default_image: undefined,
       images: undefined,
@@ -145,6 +147,7 @@ export function useEditProductForm() {
     isDirty,
     active,
     categoryId,
+    vehicleType,
     isLoading,
     product,
     previewUrl,

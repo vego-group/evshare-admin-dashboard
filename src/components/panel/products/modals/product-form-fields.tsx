@@ -26,6 +26,8 @@ import type { ProductFormValues } from "@/schemas/products";
 
 import ProductCategorySelect from "./product-category-select";
 import ProductStatusDropdown from "./product-status-dropdown";
+import ProductVehicleTypeSelect from "./product-vehicle-type-select";
+import type { VehicleType } from "@/types";
 
 const inputClassName =
   "h-14 w-full rounded-[14px] border border-primary bg-primary/4 px-4 text-right text-sm font-medium text-dark-gray outline-none transition focus:bg-primary/8";
@@ -42,6 +44,7 @@ const textareaEnClassName =
 type ProductFormFieldsProps = {
   active: boolean;
   categoryId: string;
+  vehicleType: VehicleType | null;
   errors: FieldErrors<ProductFormValues>;
   imagePreviewUrl?: string | null;
   imagesPreviewUrls?: string[];
@@ -57,6 +60,7 @@ type ProductFormFieldsProps = {
 function ProductFormFields({
   active,
   categoryId,
+  vehicleType,
   errors,
   imagePreviewUrl,
   imagesPreviewUrls,
@@ -207,6 +211,14 @@ function ProductFormFields({
 
         <Field label="التصنيف" required error={errors.category_id?.message}>
           <ProductCategorySelect value={categoryId} setValue={setValue} />
+        </Field>
+
+        <Field label="نوع المركبة" error={errors.vehicle_type?.message}>
+          <ProductVehicleTypeSelect
+            categoryId={categoryId}
+            value={vehicleType}
+            setValue={setValue}
+          />
         </Field>
 
         <Field

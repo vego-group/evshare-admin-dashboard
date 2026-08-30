@@ -23,6 +23,7 @@ export const vehiclesAPI = async (
     search: params.search,
     operating_type: params.operating_type,
     operation_company_uuid: params.operation_company_uuid,
+    vehicle_type: params.vehicle_type,
   });
 
   return await baseAPI("GET", `/vehicles?${query}`);

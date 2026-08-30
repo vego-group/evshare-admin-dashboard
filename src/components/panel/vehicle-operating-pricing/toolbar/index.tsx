@@ -7,6 +7,7 @@ import type {
   OperationCompany,
   OrderBy,
   VehicleStatus,
+  VehicleType,
 } from "@/types";
 
 import FilterSelect, { type FilterOption } from "./filter-select";
@@ -17,11 +18,13 @@ type Props = {
   selectedSort?: OrderBy;
   selectedStatus?: VehicleStatus;
   selectedOperationCompany?: string;
+  selectedVehicleType?: VehicleType;
   companies: OperationCompany[];
   onSearchChange: (value: string) => void;
   onSortChange: (value: OrderBy) => void;
   onStatusChange: (value?: VehicleStatus) => void;
   onOperationCompanyChange: (value?: string) => void;
+  onVehicleTypeChange: (value?: VehicleType) => void;
 };
 
 const sortOptions: FilterOption<OrderBy>[] = [
@@ -39,16 +42,25 @@ const statusOptions: FilterOption<VehicleStatus | "all">[] = [
   { label: "قيد الاستخدام", value: "in_use" },
 ];
 
+const vehicleTypeOptions: FilterOption<VehicleType | "all">[] = [
+  { label: "كل أنواع المركبات", value: "all" },
+  { label: "دراجة", value: "bike" },
+  { label: "سكوتر", value: "scooter" },
+  { label: "سيارة", value: "car" },
+];
+
 function VehicleToolbar({
   searchQuery,
   selectedSort = "desc",
   selectedStatus,
   selectedOperationCompany,
+  selectedVehicleType,
   companies,
   onSearchChange,
   onSortChange,
   onStatusChange,
   onOperationCompanyChange,
+  onVehicleTypeChange,
 }: Props) {
   const [internalSearchQuery, setInternalSearchQuery] = useState(searchQuery);
   const [internalSort, setInternalSort] = useState<OrderBy>("desc");
@@ -69,6 +81,12 @@ function VehicleToolbar({
       </div>
 
       <div className="flex flex-col gap-3.25 sm:flex-row sm:flex-wrap lg:shrink-0">
+        <FilterSelect
+          label="نوع المركبة"
+          options={vehicleTypeOptions}
+          value={selectedVehicleType ?? "all"}
+          onChange={(value) => onVehicleTypeChange(value === "all" ? undefined : value)}
+        />
         <FilterSelect
           label="حالة المركبة"
           options={statusOptions}

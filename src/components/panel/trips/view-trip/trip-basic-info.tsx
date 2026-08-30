@@ -4,6 +4,7 @@ import MoneyValue from "../money-value";
 import TripStatusBadge from "../results/trip-status-badge";
 import { formatDate, tripDriverName, tripVehicleTitle } from "../utils";
 import DetailRow from "./detail-row";
+import { vehicleTypeLabel } from "@/lib/utils/vehicle-type";
 
 function formatDistance(value?: number | string | null) {
   if (value == null || value === "") return "-";
@@ -17,14 +18,14 @@ function TripBasicInfo({ trip }: { trip: TripListItem }) {
   const hasAutoStopError =
     (trip.status === "started" || trip.status === "in_progress") &&
     Boolean(trip.auto_stop_last_error);
-  const isNegativeBike =
-    trip.vehicle_type === "bike" &&
+  const isNegativeNonScooter =
+    trip.vehicle_type !== "scooter" &&
     trip.remaining_balance != null &&
     Number(trip.remaining_balance) < 0;
 
   return (
     <>
-      {(trip.auto_stopped_at || hasAutoStopError || isNegativeBike) && (
+      {(trip.auto_stopped_at || hasAutoStopError || isNegativeNonScooter) && (
         <section className="space-y-2">
           {trip.auto_stopped_at && (
             <p className="rounded-xl bg-amber-50 px-4 py-3 text-sm font-medium text-orange-600">
@@ -36,9 +37,9 @@ function TripBasicInfo({ trip }: { trip: TripListItem }) {
               فشل الإيقاف التلقائي — المحاولة {trip.auto_stop_attempts}: {trip.auto_stop_last_error}
             </p>
           )}
-          {isNegativeBike && (
+          {isNegativeNonScooter && (
             <p className="rounded-xl bg-blue-50 px-4 py-3 text-sm font-medium text-blue-600">
-              رصيد سالب (دراجة) — تستمر الرحلة حتى ينهيها السائق أو المشرف
+              رصيد سالب ({vehicleTypeLabel(trip.vehicle_type)}) — تستمر الرحلة حتى ينهيها السائق أو المشرف
             </p>
           )}
         </section>
@@ -46,7 +47,7 @@ function TripBasicInfo({ trip }: { trip: TripListItem }) {
       <section className="grid gap-2 sm:grid-cols-2">
         <DetailRow label="رقم الرحلة" value={<span dir="ltr">{trip.id}</span>} />
         <DetailRow label="الحالة" value={<TripStatusBadge status={trip.status} />} />
-        <DetailRow label="نوع المركبة" value={trip.vehicle_type === "bike" ? "دراجة" : "سكوتر"} />
+        <DetailRow label="نوع المركبة" value={vehicleTypeLabel(trip.vehicle_type)} />
         <DetailRow label="المسافة" value={formatDistance(trip.distance)} />
         <DetailRow label="تاريخ إنشاء الرحلة" value={<span dir="ltr">{formatDate(trip.created_at)}</span>} />
         {trip.auto_stop_attempts != null && (
