@@ -4,6 +4,7 @@ import type {
   ProductsListResponse,
   ProductsQueryParams,
   Status,
+  VehicleType,
 } from "@/types";
 
 import type { ProductsViewMode } from "./header";
@@ -39,6 +40,7 @@ function ProductsMainContent({
         selectedSort={params.order_by ?? "desc"}
         selectedStatus={params.status}
         selectedCategory={params.category_id}
+        selectedVehicleType={params.vehicle_type}
         onSearchChange={(search) =>
           onParamsChange({ search: search || undefined, page: 1 })
         }
@@ -48,6 +50,9 @@ function ProductsMainContent({
         onStatusChange={(status?: Status) => onParamsChange({ status, page: 1 })}
         onCategoryChange={(categoryId) =>
           onParamsChange({ category_id: categoryId, page: 1 })
+        }
+        onVehicleTypeChange={(vehicle_type?: VehicleType) =>
+          onParamsChange({ vehicle_type, page: 1 })
         }
       />
       <ProductsResults

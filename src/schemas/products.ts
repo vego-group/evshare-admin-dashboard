@@ -22,6 +22,7 @@ export const productSchema = z.object({
   price_per_day: z.string().trim().min(1, "سعر اليوم مطلوب"),
   active: z.boolean(),
   category_id: z.string().trim().min(1, "التصنيف مطلوب"),
+  vehicle_type: z.enum(["bike", "scooter", "car"]).nullable(),
   default_image: z
     .custom<FileList>()
     .optional()

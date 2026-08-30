@@ -25,6 +25,7 @@ export const productDefaultValues: ProductFormValues = {
   price_per_day: "",
   active: true,
   category_id: "",
+  vehicle_type: null,
   default_image: undefined,
   images: undefined,
   key_features: [],
@@ -74,6 +75,7 @@ export function buildProductPayload(values: ProductFormValues) {
   appendOptional(formData, "price_per_day", values.price_per_day);
   formData.append("active", values.active ? "1" : "0");
   formData.append("category_id", values.category_id);
+  if (values.vehicle_type) formData.append("vehicle_type", values.vehicle_type);
 
   if (values.default_image?.[0]) {
     formData.append("default_image", values.default_image[0]);
@@ -115,6 +117,7 @@ export function buildChangedProductPayload(
   if (dirtyFields.price_per_day) appendOptional(formData, "price_per_day", values.price_per_day);
   if (dirtyFields.active) formData.append("active", values.active ? "1" : "0");
   if (dirtyFields.category_id) formData.append("category_id", values.category_id);
+  if (dirtyFields.vehicle_type) formData.append("vehicle_type", values.vehicle_type ?? "");
 
   if (dirtyFields.default_image && values.default_image?.[0]) {
     formData.append("default_image", values.default_image[0]);

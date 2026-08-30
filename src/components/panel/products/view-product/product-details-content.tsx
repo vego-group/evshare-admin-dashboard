@@ -6,6 +6,7 @@ import type { ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 import type { ProductDetail } from "@/types";
+import { vehicleTypeLabel } from "@/lib/utils/vehicle-type";
 
 import ProductDetailsShimmer from "../modals/product-details-shimmer";
 
@@ -83,6 +84,11 @@ export function ProductDetailsContent({ product, isLoading }: Props) {
         <DetailRow label="العنوان العربي" value={product.title_ar} />
         <DetailRow label="العنوان الإنجليزي" value={product.title_en} />
         <DetailRow label="التصنيف" value={product.category?.name ?? "-"} />
+        <DetailRow label="نوع المركبة" value={vehicleTypeLabel(product.vehicle_type)} />
+        <DetailRow
+          label="مصدر نوع المركبة"
+          value={product.vehicle_type_override ? "محدد على المنتج" : "موروث من التصنيف"}
+        />
         <DetailRow
           label="السعر"
           value={

@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import toast from "react-hot-toast";
 
 import { Button } from "@/components/ui/button";
+import VehicleTypeDropdown from "@/components/ui/vehicle-type-dropdown";
 import Loader from "@/components/ui/loader";
 import Modal from "@/components/ui/modal";
 import {
@@ -12,7 +13,7 @@ import {
   preventNegativeNumberPaste,
 } from "@/lib/utils/non-negative-input";
 import { editVehicleAPI } from "@/services/mutations";
-import type { VehicleListItem, VehicleStatus } from "@/types";
+import type { VehicleListItem, VehicleStatus, VehicleType } from "@/types";
 import FilterSelect, { type FilterOption } from "../toolbar/filter-select";
 import { buildChangedPayload, pricingFields, vehicleTitle } from "../utils";
 
@@ -102,17 +103,14 @@ function VehicleEditModal({
         <section className="rounded-[18px] border border-primary/25 bg-white p-4 shadow-sm">
           <p className="mb-1 text-sm font-semibold text-secondary">نوع المركبة</p>
           <p className="mb-3 text-xs text-gray">اتركه تلقائياً لاستخدام نوع تصنيف المنتج</p>
-          <select
-            value={values.vehicle_type ?? ""}
-            onChange={(event) =>
-              setValues((current) => ({ ...current, vehicle_type: event.target.value }))
+          <VehicleTypeDropdown
+            value={(values.vehicle_type || null) as VehicleType | null}
+            nullLabel="تلقائي (من المنتج أو التصنيف)"
+            className="h-12"
+            onChange={(value) =>
+              setValues((current) => ({ ...current, vehicle_type: value ?? "" }))
             }
-            className="h-12 w-full rounded-[14px] border border-primary bg-white px-4 text-right text-sm font-semibold text-secondary outline-none"
-          >
-            <option value="">تلقائي (من التصنيف)</option>
-            <option value="bike">دراجة</option>
-            <option value="scooter">سكوتر</option>
-          </select>
+          />
         </section>
 
         <section className="rounded-[18px] border border-primary/25 bg-white p-4 shadow-sm">

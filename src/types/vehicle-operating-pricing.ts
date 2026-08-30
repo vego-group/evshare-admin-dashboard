@@ -18,6 +18,7 @@ export type VehiclesQueryParams = Omit<QueryParams, "status"> & {
   status?: VehicleStatus;
   operating_type?: VehicleOperatingType;
   operation_company_uuid?: string;
+  vehicle_type?: VehicleType;
 };
 
 export type OperationCompany = {

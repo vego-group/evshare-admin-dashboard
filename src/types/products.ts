@@ -1,7 +1,8 @@
-import { QueryParams } from ".";
+import type { QueryParams, VehicleType } from ".";
 
 export type ProductsQueryParams = QueryParams & {
   category_id?: string;
+  vehicle_type?: VehicleType;
 };
 
 export type ProductImage = {
@@ -18,6 +19,7 @@ export type ProductCategory = {
   name_en: string;
   name: string;
   active: boolean;
+  vehicle_type?: VehicleType | null;
   created_at: string;
 };
 
@@ -41,6 +43,8 @@ export type ProductListItem = {
   price_per_hour: number | string | null;
   price_per_day: number | string | null;
   active: boolean;
+  vehicle_type: VehicleType | null;
+  vehicle_type_override: VehicleType | null;
   default_image: ProductImage | null;
   category: ProductCategory | null;
   created_at: string;

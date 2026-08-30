@@ -15,6 +15,7 @@ function AddProduct() {
     isSubmitting,
     active,
     categoryId,
+    vehicleType,
     imagePreviewUrl,
     imagesPreviewUrls,
     handleImageChange,
@@ -36,6 +37,7 @@ function AddProduct() {
           <ProductFormFields
             active={active}
             categoryId={categoryId}
+            vehicleType={vehicleType}
             errors={errors}
             imagePreviewUrl={imagePreviewUrl}
             imagesPreviewUrls={imagesPreviewUrls}

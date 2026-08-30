@@ -91,7 +91,7 @@ export type TripListItem = {
   price: number | string | null;
   commission?: number | string | null;
   distance?: number | string | null;
-  vehicle_type: "bike" | "scooter";
+  vehicle_type: "bike" | "scooter" | "car";
   remaining_balance?: number | string | null;
   auto_stopped_at?: string | null;
   auto_stop_attempts?: number;

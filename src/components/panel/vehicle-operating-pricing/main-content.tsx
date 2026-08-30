@@ -32,11 +32,13 @@ function VehicleMainContent({ data, companies, params, onParamsChange, ...handle
         selectedSort={params.order_by ?? "desc"}
         selectedStatus={params.status}
         selectedOperationCompany={params.operation_company_uuid}
+        selectedVehicleType={params.vehicle_type}
         companies={companies}
         onSearchChange={(search) => onParamsChange({ search: search || undefined, page: 1 })}
         onSortChange={(order_by: OrderBy) => onParamsChange({ order_by, page: 1 })}
         onStatusChange={(status) => onParamsChange({ status, page: 1 })}
         onOperationCompanyChange={(operation_company_uuid) => onParamsChange({ operation_company_uuid, page: 1 })}
+        onVehicleTypeChange={(vehicle_type) => onParamsChange({ vehicle_type, page: 1 })}
       />
       <VehiclesResults vehicles={data?.data ?? []} {...handlers} />
       <VehiclesPagination meta={data?.meta} onPageChange={(page) => onParamsChange({ page })} />

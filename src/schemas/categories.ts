@@ -14,7 +14,7 @@ export const categorySchema = z.object({
   active: z.boolean({
     error: "الحالة يجب أن تكون true أو false",
   }),
-  vehicle_type: z.enum(["bike", "scooter"]).nullable(),
+  vehicle_type: z.enum(["bike", "scooter", "car"]).nullable(),
   image: optionalImageSchema,
 });
 

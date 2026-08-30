@@ -7,6 +7,7 @@ import {
   ProductActions,
   ProductImage,
   StatusBadge,
+  VehicleTypeBadge,
 } from "./product-result-parts";
 
 type ProductsCardsProps = {
@@ -43,7 +44,7 @@ function ProductsCards({
                 </p>
               </div>
               <div className="shrink-0">
-                <StatusBadge active={product.active} />
+                <div className="flex flex-wrap gap-2"><VehicleTypeBadge type={product.vehicle_type} /><StatusBadge active={product.active} /></div>
               </div>
             </div>
           </div>

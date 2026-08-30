@@ -36,6 +36,7 @@ function CategoryAddModal({ open, onClose, onSaved }: CategoryAddModalProps) {
     mode: "onChange",
   });
   const active = useWatch({ control, name: "active" });
+  const vehicleType = useWatch({ control, name: "vehicle_type" });
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
 
   useEffect(() => {
@@ -92,6 +93,7 @@ function CategoryAddModal({ open, onClose, onSaved }: CategoryAddModalProps) {
       >
         <CategoryFormFields
           active={active}
+          vehicleType={vehicleType}
           errors={errors}
           imagePreviewUrl={imagePreviewUrl}
           onImageChange={handleImageChange}

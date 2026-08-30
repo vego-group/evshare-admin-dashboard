@@ -7,7 +7,7 @@ const optionalPrice = z.preprocess(
 
 export const vehiclePricingSchema = z.object({
   status: z.string().trim().optional(),
-  vehicle_type: z.enum(["bike", "scooter"]).nullable().optional(),
+  vehicle_type: z.enum(["bike", "scooter", "car"]).nullable().optional(),
   operation_company_id: z.preprocess(
     (value) => (value === "" || value == null ? undefined : value),
     z.coerce.number().optional(),
