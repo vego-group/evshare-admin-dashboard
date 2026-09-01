@@ -63,13 +63,43 @@ export type SidebarNavGroup = {
 
 export const sidebarNavGroups: SidebarNavGroup[] = [
   { id: "catalog", label: "المتجر", ariaLabel: "المتجر", icon: Package },
-  { id: "access", label: "المستخدمون والصلاحيات", ariaLabel: "المستخدمون والصلاحيات", icon: Users },
-  { id: "requests", label: "الطلبات", ariaLabel: "الطلبات", icon: ClipboardList },
+  {
+    id: "access",
+    label: "المستخدمون والصلاحيات",
+    ariaLabel: "المستخدمون والصلاحيات",
+    icon: Users,
+  },
+  {
+    id: "requests",
+    label: "الطلبات",
+    ariaLabel: "الطلبات",
+    icon: ClipboardList,
+  },
   { id: "shipping", label: "الشحن", ariaLabel: "الشحن", icon: Truck },
-  { id: "fleet", label: "التشغيل والرحلات", ariaLabel: "التشغيل والرحلات", icon: Route },
-  { id: "finance", label: "المالية والمدفوعات", ariaLabel: "المالية والمدفوعات", icon: CircleDollarSign },
-  { id: "content", label: "المحتوى والتسويق", ariaLabel: "المحتوى والتسويق", icon: FileText },
-  { id: "system", label: "إعدادات النظام", ariaLabel: "إعدادات النظام", icon: Settings },
+  {
+    id: "fleet",
+    label: "التشغيل والرحلات",
+    ariaLabel: "التشغيل والرحلات",
+    icon: Route,
+  },
+  {
+    id: "finance",
+    label: "المالية والمدفوعات",
+    ariaLabel: "المالية والمدفوعات",
+    icon: CircleDollarSign,
+  },
+  {
+    id: "content",
+    label: "المحتوى والتسويق",
+    ariaLabel: "المحتوى والتسويق",
+    icon: FileText,
+  },
+  {
+    id: "system",
+    label: "إعدادات النظام",
+    ariaLabel: "إعدادات النظام",
+    icon: Settings,
+  },
 ];
 
 export const sidebarNavItems: SidebarNavItem[] = [
@@ -306,6 +336,14 @@ export const sidebarNavItems: SidebarNavItem[] = [
     ariaLabel: "أكواد الخصم",
     icon: Ticket,
     permission: "Admin Index Promos",
+  },
+  {
+    href: "/subscription-discounts",
+    group: "content",
+    label: "خصومات الاشتراك",
+    ariaLabel: "خصومات الاشتراك التلقائية",
+    icon: Percent,
+    permission: "Admin Index Subscription Discounts",
   },
   {
     href: "/test-accounts",
