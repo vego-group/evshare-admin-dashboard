@@ -183,6 +183,19 @@ function UserDetailsContent({ user }: { user: AdminUserDetail }) {
           />
         </Section>
 
+        <Section title="تفاصيل الاشتراك">
+          <InfoRow
+            label="تاريخ بدء الاشتراك"
+            value={formatDateTime(user.subscription?.start_date ?? null)}
+            dir="ltr"
+          />
+          <InfoRow
+            label="تاريخ انتهاء الاشتراك"
+            value={formatDateTime(user.subscription?.end_date ?? null)}
+            dir="ltr"
+          />
+        </Section>
+
         <Section title="الإحصائيات">
           <InfoRow
             label="العناوين"
