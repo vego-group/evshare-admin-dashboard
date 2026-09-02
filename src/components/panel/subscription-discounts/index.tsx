@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { Pencil, Plus, SaudiRiyal, Trash2 } from "lucide-react";
+import { Eye, Pencil, Plus, SaudiRiyal, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -13,7 +13,7 @@ import Header from "@/components/ui/header";
 import Modal from "@/components/ui/modal";
 import MoneyValue from "@/components/ui/money-value";
 import { PAGE_SIZE } from "@/constants";
-import { useCurrentSubscriptionPricing, useSubscriptionDiscounts } from "@/hooks/api";
+import { useCurrentSubscriptionPricing, useSubscriptionDiscount, useSubscriptionDiscounts } from "@/hooks/api";
 import { subscriptionDiscountSchema, type SubscriptionDiscountFormValues } from "@/schemas";
 import { addSubscriptionDiscount, deleteSubscriptionDiscount, editSubscriptionDiscount } from "@/services/mutations";
 import type { SubscriptionDiscount, SubscriptionDiscountQueryParams, SubscriptionDiscountStatus, SubscriptionDiscountType } from "@/types";
@@ -24,6 +24,7 @@ export default function SubscriptionDiscounts() {
   const queryClient = useQueryClient();
   const [params, setParams] = useState<SubscriptionDiscountQueryParams>({ page: 1, limit: PAGE_SIZE });
   const [editing, setEditing] = useState<SubscriptionDiscount | null>(null);
+  const [viewingId, setViewingId] = useState<string | null>(null);
   const [formOpen, setFormOpen] = useState(false);
   const { data, isLoading } = useSubscriptionDiscounts(params);
   const { data: pricing } = useCurrentSubscriptionPricing();
@@ -67,7 +68,7 @@ export default function SubscriptionDiscounts() {
             <tbody>
               {isLoading ? <tr><td colSpan={7} className="p-10 text-center text-gray">جاري التحميل...</td></tr> : null}
               {!isLoading && !data?.data.length ? <tr><td colSpan={7} className="p-10 text-center text-gray">لا توجد إعدادات خصم</td></tr> : null}
-              {data?.data.map((discount) => <DiscountRow key={discount.id} discount={discount} onEdit={() => openForm(discount)} onDelete={() => remove(discount)} />)}
+              {data?.data.map((discount) => <DiscountRow key={discount.id} discount={discount} onView={() => setViewingId(discount.id)} onEdit={() => openForm(discount)} onDelete={() => remove(discount)} />)}
             </tbody>
           </table>
         </div>
@@ -76,6 +77,7 @@ export default function SubscriptionDiscounts() {
       {meta && meta.lastPage > 1 ? <div className="flex items-center justify-center gap-3"><Button variant="outline" disabled={meta.currentPage <= 1} onClick={() => setParams({ ...params, page: meta.currentPage - 1 })}>السابق</Button><span>{meta.currentPage} / {meta.lastPage}</span><Button variant="outline" disabled={meta.currentPage >= meta.lastPage} onClick={() => setParams({ ...params, page: meta.currentPage + 1 })}>التالي</Button></div> : null}
 
       <DiscountForm key={editing?.id ?? "new"} open={formOpen} discount={editing} onClose={() => setFormOpen(false)} onSaved={refresh} />
+      <DiscountDetails open={Boolean(viewingId)} discountId={viewingId} onClose={() => setViewingId(null)} />
     </div>
   );
 }
@@ -96,7 +98,7 @@ function Filter({ value, onChange, children }: { value: string; onChange: (value
   return <select value={value} onChange={(event) => onChange(event.target.value)} className={`${inputClass} max-w-55`}>{children}</select>;
 }
 
-function DiscountRow({ discount, onEdit, onDelete }: { discount: SubscriptionDiscount; onEdit: () => void; onDelete: () => void }) {
+function DiscountRow({ discount, onView, onEdit, onDelete }: { discount: SubscriptionDiscount; onView: () => void; onEdit: () => void; onDelete: () => void }) {
   const period = `${formatDate(discount.start_date) || "فوراً"} — ${formatDate(discount.end_date) || "دون انتهاء"}`;
   return <tr className="border-t border-neutral-100">
     <td className="px-5 py-4 font-medium">{discount.name || discount.name_ar || discount.name_en || "—"}</td>
@@ -105,8 +107,35 @@ function DiscountRow({ discount, onEdit, onDelete }: { discount: SubscriptionDis
     <td className="px-5 py-4 whitespace-nowrap" dir="ltr">{period}</td>
     <td className="px-5 py-4"><Badge active={discount.is_active} activeText="مفعّل" inactiveText="معطّل" /></td>
     <td className="px-5 py-4"><Badge active={discount.is_running} activeText="ساري" inactiveText="غير ساري" /></td>
-    <td className="px-5 py-4"><div className="flex gap-2"><PermissionGate slug="Admin Edit Subscription Discounts"><button aria-label="تعديل" onClick={onEdit} className="rounded-lg bg-amber-50 p-2 text-orange-500"><Pencil className="size-4" /></button></PermissionGate><PermissionGate slug="Admin Delete Subscription Discounts"><button aria-label="حذف" onClick={onDelete} className="rounded-lg bg-red-50 p-2 text-red-500"><Trash2 className="size-4" /></button></PermissionGate></div></td>
+    <td className="px-5 py-4"><div className="flex gap-2"><PermissionGate slug="Admin View Subscription Discounts"><button aria-label="عرض التفاصيل" onClick={onView} className="rounded-lg bg-blue-50 p-2 text-blue-600"><Eye className="size-4" /></button></PermissionGate><PermissionGate slug="Admin Edit Subscription Discounts"><button aria-label="تعديل" onClick={onEdit} className="rounded-lg bg-amber-50 p-2 text-orange-500"><Pencil className="size-4" /></button></PermissionGate><PermissionGate slug="Admin Delete Subscription Discounts"><button aria-label="حذف" onClick={onDelete} className="rounded-lg bg-red-50 p-2 text-red-500"><Trash2 className="size-4" /></button></PermissionGate></div></td>
   </tr>;
+}
+
+function DiscountDetails({ open, discountId, onClose }: { open: boolean; discountId: string | null; onClose: () => void }) {
+  const { data, isLoading, error } = useSubscriptionDiscount(discountId);
+  const discount = data?.data;
+
+  return <Modal open={open} onClose={onClose} title="تفاصيل الخصم التلقائي" description="بيانات إعداد خصم الاشتراك المحدد" contentClassName="md:max-w-xl">
+    {isLoading ? <p className="p-8 text-center text-gray">جاري تحميل التفاصيل...</p> : null}
+    {error ? <p className="rounded-xl bg-red-50 p-4 text-center text-red-700">تعذر تحميل التفاصيل. قد لا تملك الصلاحية أو تم تغييرها أثناء الجلسة.</p> : null}
+    {discount ? <div className="grid gap-4 p-2 sm:grid-cols-2">
+      <Detail label="الاسم" value={discount.name || discount.name_ar || discount.name_en || "—"} />
+      <Detail label="النوع" value={discount.type === "percentage" ? "نسبة مئوية" : "مبلغ ثابت"} />
+      <Detail label="القيمة" value={discount.type === "percentage" ? `${discount.value}%` : String(discount.value)} />
+      <Detail label="التفعيل" value={discount.is_active ? "مفعّل" : "معطّل"} />
+      <Detail label="الحالة الآن" value={discount.is_running ? "ساري" : "غير ساري"} />
+      <Detail label="تاريخ الإنشاء" value={formatDate(discount.created_at) || "—"} />
+      <Detail label="تاريخ البدء" value={formatDate(discount.start_date) || "فوراً"} />
+      <Detail label="تاريخ الانتهاء" value={formatDate(discount.end_date) || "دون انتهاء"} />
+      <Detail label="الاسم بالعربية" value={discount.name_ar || "—"} />
+      <Detail label="الاسم بالإنجليزية" value={discount.name_en || "—"} />
+    </div> : null}
+    <div className="mt-5 flex justify-end"><Button type="button" variant="outline" onClick={onClose}>إغلاق</Button></div>
+  </Modal>;
+}
+
+function Detail({ label, value }: { label: string; value: string }) {
+  return <div className="rounded-xl bg-neutral-50 p-3"><p className="mb-1 text-xs text-gray">{label}</p><p className="font-medium text-secondary">{value}</p></div>;
 }
 
 function Badge({ active, activeText, inactiveText }: { active: boolean; activeText: string; inactiveText: string }) {
