@@ -43,10 +43,16 @@ export type UserBankAccount = {
   iban: string;
 };
 
+export type UserSubscription = {
+  start_date: string;
+  end_date: string;
+};
+
 export type AdminUserDetail = UserListItem & {
   kyc_status: UserKycStatus;
   wallet_balance: number;
   is_subscribed: boolean;
+  subscription: UserSubscription | null;
   city: UserCity | null;
   location: UserLocation | null;
   bank_account: UserBankAccount | null;
