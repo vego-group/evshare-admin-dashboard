@@ -34,7 +34,7 @@ function SidebarTopbar({ onOpenMobileSidebar, country, onSwitchCountry }: Sideba
             <Menu size={20} className="shrink-0" />
           </button>
 
-          <div className="flex min-w-0 items-center gap-2">
+          <div className="hidden min-w-0 items-center gap-2 sm:flex">
             <div className="grid size-8 shrink-0 place-items-center rounded-full bg-neutral-200 text-neutral-600">
               <User size={16} className="shrink-0" />
             </div>

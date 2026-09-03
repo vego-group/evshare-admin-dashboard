@@ -306,6 +306,14 @@ export const sidebarNavItems: SidebarNavItem[] = [
     permission: "Admin Index Webhook Logs",
   },
   {
+    href: "/iot-webhook-logs",
+    group: "fleet",
+    label: "سجلات ويب هوك الأجهزة",
+    ariaLabel: "سجلات ويب هوك إنترنت الأشياء",
+    icon: Webhook,
+    permission: "Admin Index IoT Webhook Logs",
+  },
+  {
     href: "/commission-settings",
     group: "finance",
     label: "إعدادات العمولة",
