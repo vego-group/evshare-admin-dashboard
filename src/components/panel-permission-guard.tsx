@@ -49,6 +49,7 @@ const routeRules: RouteRule[] = [
   { pattern: /^\/payment(?:-gateways|\/gateways)$/, permission: ["Admin Index Checkouts", "Admin Index Transactions"] },
   { pattern: /^\/payment-methods$/, permission: "Admin Index Payment Methods" },
   { pattern: /^\/webhook-logs$/, permission: "Admin Index Webhook Logs" },
+  { pattern: /^\/iot-webhook-logs$/, permission: "Admin Index IoT Webhook Logs" },
   { pattern: /^\/commission-settings$/, permission: "Admin Index Commission Settings" },
   { pattern: /^\/finance\/vat$/, permission: "Admin View VAT" },
   { pattern: /^\/complaints$/, permission: "Admin Index Complaints" },

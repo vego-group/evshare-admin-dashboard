@@ -22,6 +22,7 @@ export * from "./commission-settings";
 export * from "./settings";
 export * from "./promos";
 export * from "./webhook-logs";
+export * from "./iot-webhook-logs";
 export * from "./pages";
 export * from "./test-accounts";
 export * from "./contact-us";
