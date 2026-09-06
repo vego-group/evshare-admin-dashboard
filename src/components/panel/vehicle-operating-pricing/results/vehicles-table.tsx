@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 import type { VehicleListItem } from "@/types";
 import StatusBadge from "../status-badge";
-import { formatPercentage, vehicleTitle } from "../utils";
+import { vehicleTitle } from "../utils";
 import VehicleActions from "./action-buttons";
 
 type Props = {
@@ -18,10 +18,9 @@ type Props = {
 const headers = [
   "المركبة",
   "الحالة",
-  "التاجر",
-  "نوع التشغيل",
   "شركة التشغيل",
-  "العمولة",
+  `جهاز \u2066IoT\u2069 / القفل`,
+  "الاتصال",
   "الإجراءات",
 ];
 
@@ -29,7 +28,7 @@ function VehiclesTable(props: Props) {
   return (
     <section className="overflow-hidden rounded-lg bg-white">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-340 border-separate border-spacing-0 text-right">
+        <table className="w-full min-w-260 border-separate border-spacing-0 text-right">
           <thead>
             <tr className="bg-primary/8 text-base font-semibold text-dark-gray">
               {headers.map((h) => (
@@ -44,22 +43,17 @@ function VehiclesTable(props: Props) {
                   <VehicleName vehicle={vehicle} />
                 </TableCell>
                 <TableCell truncate={false}>
-                  <StatusBadge status={vehicle.status} />
-                </TableCell>
-                <TableCell>
-                  <MerchantCell vehicle={vehicle} />
-                </TableCell>
-                <TableCell>
-                  {vehicle.operating_type === "evshare"
-                    ? "EvShare"
-                    : "شركة تشغيل"}
+                  <div className="flex flex-col items-start gap-1.5">
+                    <StatusBadge status={vehicle.status} />
+                    <RentalAvailabilityBadge vehicle={vehicle} />
+                  </div>
                 </TableCell>
                 <TableCell>{vehicle.operation_company?.name ?? "-"}</TableCell>
-                <TableCell>
-                  {formatPercentage(
-                    vehicle.operation_company?.pricing_percentage ??
-                      vehicle.operation_company?.commission_percentage,
-                  )}
+                <TableCell truncate={false}>
+                  <DeviceCell vehicle={vehicle} />
+                </TableCell>
+                <TableCell truncate={false}>
+                  <ConnectivityBadge vehicle={vehicle} />
                 </TableCell>
                 <TableCell truncate={false}>
                   <VehicleActions
@@ -81,28 +75,64 @@ function VehiclesTable(props: Props) {
   );
 }
 
+function DeviceCell({ vehicle }: { vehicle: VehicleListItem }) {
+  return (
+    <div dir="rtl" className="min-w-40 space-y-1 text-right text-xs">
+      <p className="flex items-center gap-1.5">
+        <span className="shrink-0 text-gray">جهاز IoT:</span>
+        <bdi dir="ltr" className="truncate font-medium text-secondary">
+          {vehicle.iot_device_id ?? "-"}
+        </bdi>
+      </p>
+      <p className="flex items-center gap-1.5">
+        <span className="shrink-0 text-gray">القفل:</span>
+        <bdi dir="ltr" className="truncate font-medium text-secondary">
+          {vehicle.lock?.device_id ?? vehicle.lock_id ?? "-"}
+        </bdi>
+      </p>
+      {vehicle.lock && (
+        <span className={`inline-flex rounded-full px-2 py-0.5 font-medium ${vehicle.lock.status === "locked" ? "bg-red-50 text-red-700" : "bg-emerald-50 text-emerald-700"}`}>
+          {vehicle.lock.status === "locked" ? "القفل مقفل" : "القفل مفتوح"}
+        </span>
+      )}
+    </div>
+  );
+}
+
+function RentalAvailabilityBadge({ vehicle }: { vehicle: VehicleListItem }) {
+  const availability = vehicle.rental_availability;
+  if (!availability) return null;
+  return (
+    <span
+      title={availability.reason ?? undefined}
+      className={`max-w-36 truncate rounded-full px-2 py-0.5 text-[11px] font-medium ${availability.available ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-orange-600"}`}
+    >
+      {availability.message}
+    </span>
+  );
+}
+
+function ConnectivityBadge({ vehicle }: { vehicle: VehicleListItem }) {
+  const connectivity = vehicle.lock?.connectivity ?? "unknown";
+  const config = {
+    online: { label: "متصل", className: "bg-emerald-50 text-emerald-700", dot: "bg-emerald-500" },
+    offline: { label: "غير متصل", className: "bg-red-50 text-red-700", dot: "bg-red-500" },
+    unknown: { label: "غير معروف", className: "bg-neutral-100 text-gray", dot: "bg-gray" },
+  }[connectivity];
+
+  return (
+    <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${config.className}`}>
+      <span className={`size-2 rounded-full ${config.dot}`} />
+      {config.label}
+    </span>
+  );
+}
+
 function VehicleName({ vehicle }: { vehicle: VehicleListItem }) {
   return (
     <p className="truncate font-medium text-secondary">
       {vehicleTitle(vehicle)}
     </p>
-  );
-}
-
-function MerchantCell({ vehicle }: { vehicle: VehicleListItem }) {
-  if (vehicle.user) {
-    return (
-      <div className="min-w-0">
-        <p className="truncate font-medium text-secondary">{vehicle.user.name}</p>
-        <p className="truncate text-xs text-gray" dir="ltr">
-          {vehicle.user.mobile}
-        </p>
-      </div>
-    );
-  }
-
-  return (
-    <span className="text-gray">{vehicle.user_id ? "تاجر محذوف" : "-"}</span>
   );
 }
 

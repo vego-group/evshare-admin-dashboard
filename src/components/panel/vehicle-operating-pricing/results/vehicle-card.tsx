@@ -20,6 +20,9 @@ function VehicleCard(props: Props) {
     ["شركة التشغيل", vehicle.operation_company?.name ?? "-"],
     ["التاجر", vehicle.user?.name ?? (vehicle.user_id ? "تاجر محذوف" : "-")],
     ["البطارية", vehicle.battery_percentage != null ? `${vehicle.battery_percentage}%` : "-"],
+    ["جهاز IoT", vehicle.iot_device_id ?? "-"],
+    ["معرف القفل", vehicle.lock?.device_id ?? vehicle.lock_id ?? "-"],
+    ["اتصال الجهاز", connectivityLabel(vehicle.lock?.connectivity)],
   ] as const;
 
   return (
@@ -44,6 +47,12 @@ function VehicleCard(props: Props) {
       </div>
     </article>
   );
+}
+
+function connectivityLabel(connectivity?: "online" | "offline" | "unknown") {
+  if (connectivity === "online") return "متصل";
+  if (connectivity === "offline") return "غير متصل";
+  return "غير معروف";
 }
 
 function Line({ label, value }: { label: string; value: React.ReactNode }) {
