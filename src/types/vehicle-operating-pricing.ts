@@ -19,6 +19,8 @@ export type VehiclesQueryParams = Omit<QueryParams, "status"> & {
   operating_type?: VehicleOperatingType;
   operation_company_uuid?: string;
   vehicle_type?: VehicleType;
+  device_id?: string;
+  connectivity?: VehicleLockConnectivity;
 };
 
 export type OperationCompany = {

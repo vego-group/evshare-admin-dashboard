@@ -12,8 +12,8 @@ function SearchInput({
       <Search className="pointer-events-none absolute right-3 top-1/2 size-5 shrink-0 -translate-y-1/2 text-gray sm:right-5 sm:size-5.5" />
       <input
         type="search"
-        aria-label="بحث في المركبات"
-        placeholder="ابحث باسم المركبة..."
+        aria-label="البحث باسم المركبة أو المعرّف"
+        placeholder="ابحث باسم المركبة أو المعرّف..."
         value={value}
         onChange={(event) => onChange(event.target.value)}
         className="h-full w-full bg-transparent text-right text-sm font-normal text-secondary placeholder:text-[#99a1af] sm:text-base"

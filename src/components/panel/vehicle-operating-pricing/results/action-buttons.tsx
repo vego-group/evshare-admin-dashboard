@@ -41,6 +41,19 @@ function VehicleActions({
 }: Props) {
   return (
     <div className={cn("flex items-center gap-2", compact && "w-full flex-wrap")}>
+      <PermissionGate slug={["Admin Locate Vehicles", "Admin View Locks", "Admin Lock Vehicles", "Admin Unlock Vehicles"]}>
+        <button
+          type="button"
+          onClick={onControlPanel}
+          className={cn(
+            "flex h-8 items-center gap-1.5 rounded-lg bg-teal-50 px-2.5 text-xs font-semibold text-teal-700 transition hover:bg-teal-100",
+            compact && "w-full justify-center",
+          )}
+        >
+          <Radio className="size-4 shrink-0" />
+          <span>لوحة التحكم</span>
+        </button>
+      </PermissionGate>
       <PermissionGate slug="Admin View Vehicles">
         <Action icon={Eye} label="عرض" onClick={onView} className="bg-blue-50 text-blue-600" />
       </PermissionGate>
@@ -74,12 +87,6 @@ function VehicleActions({
             <DropdownMenuItem onSelect={onManageZone}>
               <MapPin className="size-4 shrink-0 text-indigo-600" />
               <span className="flex-1 truncate text-right">مناطق التشغيل</span>
-            </DropdownMenuItem>
-          </PermissionGate>
-          <PermissionGate slug={["Admin Locate Vehicles", "Admin View Locks", "Admin Lock Vehicles", "Admin Unlock Vehicles"]}>
-            <DropdownMenuItem onSelect={onControlPanel}>
-              <Radio className="size-4 shrink-0 text-teal-600" />
-              <span className="flex-1 truncate text-right">لوحة التحكم</span>
             </DropdownMenuItem>
           </PermissionGate>
         </DropdownMenuContent>

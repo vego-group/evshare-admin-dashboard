@@ -40,7 +40,9 @@ function VehicleOperatingPricing() {
   const companies = useMemo(() => {
     const byId = new Map<string, OperationCompany>();
     for (const vehicle of allVehicles ?? []) {
-      if (vehicle.operation_company) byId.set(vehicle.operation_company.id, vehicle.operation_company);
+      if (vehicle.operation_company) {
+        byId.set(vehicle.operation_company.id, vehicle.operation_company);
+      }
     }
     return Array.from(byId.values());
   }, [allVehicles]);
