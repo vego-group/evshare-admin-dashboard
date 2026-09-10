@@ -7,6 +7,21 @@ import {
 } from "@/types";
 
 import { baseAPI } from "..";
+import type { ContractAttachment } from "@/types";
+
+export const operatingCompanyContractAPI = async (
+  companyId: string,
+): Promise<{ data: ContractAttachment | null }> => {
+  try {
+    return await baseAPI("GET", `/operation-companies/${companyId}/contract`);
+  } catch (error) {
+    if ((error as { status?: number }).status === 404 ||
+        (error as { response?: { status: number } }).response?.status === 404) {
+      return { data: null };
+    }
+    throw error;
+  }
+};
 
 export const operatingCompaniesAPI = async (
   params: OperatingCompaniesQueryParams,

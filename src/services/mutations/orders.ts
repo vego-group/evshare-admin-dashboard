@@ -5,7 +5,13 @@ import type {
   OrderNewStatus,
   ResolveOrderRefundPayload,
   ReviewOrderReceiptPayload,
+  ReviewOrderOperatingContractPayload,
 } from "@/types";
+
+export const reviewOrderOperatingContractAPI = async (
+  orderId: string,
+  payload: ReviewOrderOperatingContractPayload,
+) => await safeApi("POST", `/orders/${orderId}/operating-contract/review`, payload);
 
 export const updateOrderStatusAPI = async (
   orderId: string,

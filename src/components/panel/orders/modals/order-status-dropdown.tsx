@@ -31,11 +31,12 @@ type DropdownPosition = { top: number; left: number; width: number };
 
 type Props = {
   currentStatus: OrderNewStatus;
+  operatingType?: "evshare" | "operation_company";
   disabled?: boolean;
   onSelect: (status: OrderNewStatus) => void;
 };
 
-function OrderStatusDropdown({ currentStatus, disabled, onSelect }: Props) {
+function OrderStatusDropdown({ currentStatus, operatingType, disabled, onSelect }: Props) {
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState<DropdownPosition | null>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -119,7 +120,7 @@ function OrderStatusDropdown({ currentStatus, disabled, onSelect }: Props) {
             className="overflow-hidden rounded-[14px] border border-neutral-200 bg-white shadow-[0_10px_24px_rgba(16,24,40,0.12)]"
           >
             <div className="dashboard-dropdown-scroll">
-              {STATUS_OPTIONS.map((option) => (
+              {STATUS_OPTIONS.filter((option) => operatingType !== "operation_company" || option.value !== "completed").map((option) => (
                 <button
                   key={option.value}
                   type="button"

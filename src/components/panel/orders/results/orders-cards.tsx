@@ -99,6 +99,7 @@ function OrderCard({ order }: { order: OrderListItem }) {
         <div className="mt-4 flex items-center justify-end border-t border-neutral-100 pt-4">
           {canEdit ? <OrderStatusDropdown
             currentStatus={order.status}
+            operatingType={order.operating_type}
             disabled={isUpdating}
             onSelect={setPendingStatus}
           /> : <span>{order.status}</span>}
