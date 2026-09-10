@@ -1,4 +1,5 @@
 import { QueryParams } from ".";
+import type { ContractAttachment } from "./orders";
 
 export type OperatingCompaniesQueryParams = Pick<
   QueryParams,
@@ -21,6 +22,7 @@ export type OperatingCompanyListItem = {
   mobile: string | null;
   email: string | null;
   logo: OperatingCompanyLogo[];
+  contract?: ContractAttachment | null;
   conditions_ar: string | null;
   conditions_en: string | null;
   conditions: string | null;

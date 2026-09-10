@@ -2,6 +2,7 @@
 
 import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import CompanyContractSection from "../company-contract-section";
 
 import Header from "@/components/ui/header";
 import OperatingCompanyFormFields, {
@@ -20,6 +21,7 @@ function EditOperatingCompany() {
     isSubmitting,
     isDirty,
     isLoading,
+    company,
     previewUrl,
     handleLogoChange,
     handleCancel,
@@ -66,6 +68,7 @@ function EditOperatingCompany() {
           )}
         </form>
       </div>
+      {!isLoading && company && <CompanyContractSection key={company.id} companyId={company.id} />}
     </div>
   );
 }

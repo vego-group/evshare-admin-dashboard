@@ -52,7 +52,7 @@ export function useEditOperatingCompanyForm() {
       conditions_ar: company.conditions_ar ?? "",
       conditions_en: company.conditions_en ?? "",
       logo: undefined,
-    });
+    }, { keepDirtyValues: true });
   }, [company, reset]);
 
   useEffect(() => {

@@ -6,6 +6,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 import MoneyValue from "@/components/ui/money-value";
+import { useHasPermission } from "@/hooks";
 
 import { updateOrderStatusAPI } from "@/services/mutations";
 import type { OrderDetail, OrderNewStatus } from "@/types";
@@ -18,6 +19,7 @@ import {
 
 function OrderInfoSection({ order }: { order: OrderDetail }) {
   const queryClient = useQueryClient();
+  const canEdit = useHasPermission("Admin Edit Orders");
 
   const [pendingStatus, setPendingStatus] = useState<OrderNewStatus | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -47,6 +49,8 @@ function OrderInfoSection({ order }: { order: OrderDetail }) {
       <div className="space-y-4">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <InfoCard label="رقم الطلب" value={order.order_code} />
+          <InfoCard label="طريقة التشغيل عند إنشاء الطلب" value={order.operating_type === "operation_company" ? "شركة مشغلة" : order.operating_type === "evshare" ? "تشغيل ذاتي" : "غير متوفر"} />
+          {order.operating_type === "operation_company" && <InfoCard label="الشركة المشغلة" value={order.operation_company?.name ?? String(order.operation_company_id ?? "-")} />}
           <InfoCard label="العميل" value={order.user.name} />
           <InfoCard label="العنوان" value={order.address?.address ?? "-"} />
           <InfoCard
@@ -82,7 +86,8 @@ function OrderInfoSection({ order }: { order: OrderDetail }) {
             <span className="text-sm text-gray">الحالة</span>
             <OrderStatusDropdown
               currentStatus={order.status}
-              disabled={isUpdating}
+              operatingType={order.operating_type}
+              disabled={isUpdating || !canEdit}
               onSelect={setPendingStatus}
             />
           </div>

@@ -9,6 +9,7 @@ import OrderShimmer from "./order-shimmer";
 import OrderInfoSection from "./order-info-section";
 import OrderItemsSection from "./order-items-section";
 import OrderReceiptSection from "./receipt-section";
+import OperatingContractSection from "./operating-contract-section";
 
 const RECEIPT_STATUSES = ["delivered", "completed"];
 
@@ -19,7 +20,7 @@ function OrderDetails() {
   const order = data?.data;
 
   const shouldFetchReceipt = Boolean(
-    order && !order.receipt && RECEIPT_STATUSES.includes(order.status),
+    order && order.operating_type !== "operation_company" && !order.receipt && RECEIPT_STATUSES.includes(order.status),
   );
   const { data: receiptData } = useOrderReceipt(
     shouldFetchReceipt ? id : null,
@@ -52,7 +53,9 @@ function OrderDetails() {
         <>
           <OrderInfoSection order={order} />
           <OrderItemsSection items={order.items} />
-          {receipt ? (
+          {order.operating_type === "operation_company" && RECEIPT_STATUSES.includes(order.status) ? (
+            <OperatingContractSection key={order.id} orderId={order.id} />
+          ) : order.operating_type !== "operation_company" && receipt ? (
             <OrderReceiptSection orderId={order.id} receipt={receipt} />
           ) : null}
         </>

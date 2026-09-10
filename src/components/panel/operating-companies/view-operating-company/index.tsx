@@ -7,6 +7,7 @@ import Header from "@/components/ui/header";
 import { useOperatingCompany } from "@/hooks/api";
 
 import { OperatingCompanyDetailsContent } from "./operating-company-details-content";
+import CompanyContractSection from "../company-contract-section";
 
 function ViewOperatingCompany() {
   const { id } = useParams<{ id: string }>();
@@ -33,6 +34,7 @@ function ViewOperatingCompany() {
           isLoading={isLoading}
         />
       </div>
+      {data?.data && <CompanyContractSection key={data.data.id} companyId={data.data.id} />}
     </div>
   );
 }

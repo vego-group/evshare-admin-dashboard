@@ -80,6 +80,7 @@ function OrdersTableRow({ order }: { order: OrderListItem }) {
         <TableCell className="max-w-none overflow-visible whitespace-normal">
           {canEdit ? <OrderStatusDropdown
             currentStatus={order.status}
+            operatingType={order.operating_type}
             disabled={isUpdating}
             onSelect={setPendingStatus}
           /> : <span>{order.status}</span>}

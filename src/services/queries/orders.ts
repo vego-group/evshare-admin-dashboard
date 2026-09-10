@@ -1,4 +1,5 @@
 import { baseAPI } from "..";
+import type { OrderOperatingContractResponse } from "@/types";
 import { buildQuery } from "@/lib/utils/build-query";
 import {
   OrderDetailResponse,
@@ -30,3 +31,17 @@ export const orderReceiptAPI = async (
   orderId: string,
 ): Promise<OrderReceiptResponse> =>
   await baseAPI("GET", `/orders/${orderId}/receipt`);
+
+export const orderOperatingContractAPI = async (
+  orderId: string,
+): Promise<OrderOperatingContractResponse> => {
+  try {
+    return await baseAPI("GET", `/orders/${orderId}/operating-contract`);
+  } catch (error) {
+    if ((error as { status?: number; response?: { status: number } }).status === 404 ||
+        (error as { response?: { status: number } }).response?.status === 404) {
+      return { error: false, message: "", data: null };
+    }
+    throw error;
+  }
+};

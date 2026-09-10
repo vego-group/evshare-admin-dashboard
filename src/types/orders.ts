@@ -99,6 +99,9 @@ export type OrderDetail = {
   address: OrderAddress;
   items: OrderItem[];
   receipt?: OrderReceipt | null;
+  operating_type?: "evshare" | "operation_company";
+  operation_company_id?: string | number | null;
+  operation_company?: { id: string; name: string } | null;
   products_count: number;
   created_at: string;
 };
@@ -176,6 +179,33 @@ export type OrderReceiptResponse = {
   message: string;
   data: OrderReceipt;
 };
+
+export type ContractAttachment = {
+  url: string;
+  file_name: string;
+  type: string;
+};
+
+export type OrderOperatingContract = {
+  id: string;
+  status: "pending_signature" | "pending_admin_review" | "approved" | "rejected";
+  rejection_reason: string | null;
+  signed_at: string | null;
+  operation_company: { id: string; name: string };
+  original_contract: ContractAttachment | null;
+  signed_contract: ContractAttachment | null;
+  created_at: string;
+};
+
+export type OrderOperatingContractResponse = {
+  error: boolean;
+  message: string;
+  data: OrderOperatingContract | null;
+};
+
+export type ReviewOrderOperatingContractPayload =
+  | { status: "approved"; rejection_reason?: never }
+  | { status: "rejected"; rejection_reason: string };
 
 export type ReviewOrderReceiptPayload =
   | { status: "approved"; rejection_reason?: undefined }
