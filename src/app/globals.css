@@ -14,6 +14,10 @@
   --color-gray: #6c737f;
   --color-dark-gray: #384250;
   --color-background: #fcfcfd;
+  --color-surface: #ffffff;
+  --color-surface-subtle: #f7f8fa;
+  --color-border-subtle: #e8ebef;
+  --color-text-muted: #596273;
   --color-bg-warm-ivory: #fffdf0;
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -193,5 +197,42 @@
   button:focus,
   [role="button"]:focus {
     outline: none;
+  }
+  :where(a, button, input, select, textarea, [role="button"], [tabindex]):focus-visible {
+    outline: 2px solid #8a6500;
+    outline-offset: 2px;
+  }
+  :where(button, input, select, textarea):disabled {
+    cursor: not-allowed;
+  }
+}
+
+@layer components {
+  .dashboard-content {
+    width: 100%;
+    max-width: 100rem;
+    margin-inline: auto;
+    min-width: 0;
+  }
+  .dashboard-content :where(table) {
+    font-variant-numeric: tabular-nums;
+  }
+  .dashboard-content :where(tbody tr) {
+    transition: background-color 150ms ease;
+  }
+  .dashboard-content :where(tbody tr:hover) {
+    background-color: #fafbfc;
+  }
+  .dashboard-content :where(th) {
+    font-weight: 600;
+    white-space: nowrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
   }
 }

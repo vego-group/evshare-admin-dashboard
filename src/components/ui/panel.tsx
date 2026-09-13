@@ -98,6 +98,8 @@ interface ICloseButtonProps {
 export function CloseButtonPanel({ closeButtonClassname }: ICloseButtonProps) {
   return (
     <SheetClose
+      aria-label="إغلاق اللوحة"
+      title="إغلاق"
       className={cn(
         "w-6 h-6 left-4 bg-transparent rounded-full text-gray-700 border-2 border-gray-700 flex justify-center items-center absolute top-4",
         closeButtonClassname && closeButtonClassname,
