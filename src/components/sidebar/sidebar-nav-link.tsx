@@ -47,6 +47,8 @@ function SidebarNavLink({
           className,
         )}
         aria-label={item.ariaLabel}
+        aria-current={active ? "page" : undefined}
+        title={item.label}
       >
         <Icon size={18} className="shrink-0" />
       </Link>
@@ -63,6 +65,7 @@ function SidebarNavLink({
         className,
       )}
       aria-label={item.ariaLabel}
+      aria-current={active ? "page" : undefined}
     >
       <Icon size={18} className="shrink-0" />
       <span>{item.label}</span>

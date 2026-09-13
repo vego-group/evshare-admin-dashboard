@@ -89,6 +89,8 @@ interface ICloseButtonProps {
 export function CloseButtonModal({ closeButtonClassname }: ICloseButtonProps) {
   return (
     <DialogClose
+      aria-label="إغلاق النافذة"
+      title="إغلاق"
       className={cn(
         "w-6 h-6 rounded-full border-2 flex justify-center items-center absolute left-4 top-4 border-primary bg-background text-primary",
         closeButtonClassname && closeButtonClassname,
