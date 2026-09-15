@@ -13,7 +13,7 @@
   --color-blue: #155dfc;
   --color-gray: #6c737f;
   --color-dark-gray: #384250;
-  --color-background: #fcfcfd;
+  --color-background: #f5f6f8;
   --color-surface: #ffffff;
   --color-surface-subtle: #f7f8fa;
   --color-border-subtle: #e8ebef;
@@ -118,8 +118,8 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
+  --primary-foreground: #1a1a1a;
+  --secondary-foreground: #ffffff;
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
   --accent: oklch(0.97 0 0);
@@ -183,6 +183,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
   }
   input {
     @apply outline-none;
@@ -226,6 +227,35 @@
   .dashboard-content :where(th) {
     font-weight: 600;
     white-space: nowrap;
+  }
+  .dashboard-content :where(thead) {
+    background-color: #f3f5f7;
+    color: #475467;
+  }
+  .dashboard-content :where(th, td) {
+    padding-block: 1rem;
+  }
+  .dashboard-content :where(tbody tr + tr) {
+    border-top: 1px solid var(--color-border-subtle);
+  }
+  .dashboard-content :where(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+  }
+  .dashboard-content :where(input, textarea)::placeholder {
+    color: #667085;
+  }
+  .dashboard-content :where(input, select, textarea):focus-visible {
+    outline: 2px solid #8a6500;
+    outline-offset: 2px;
+  }
+  .dashboard-content :where(input, select, textarea)[aria-invalid="true"] {
+    border-color: var(--color-danger);
+  }
+  /* Search bars retain their resting appearance while typing. */
+  input[type="search"]:focus,
+  input[type="search"]:focus-visible {
+    outline: none;
+    box-shadow: none;
   }
 }
 

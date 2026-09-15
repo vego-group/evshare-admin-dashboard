@@ -25,6 +25,7 @@ function SidebarMobile({
         open ? "translate-x-0" : "translate-x-full"
       }`}
       aria-hidden={!open}
+      inert={!open}
     >
       <div className="flex h-16 items-center justify-between border-b border-neutral-200 bg-primary px-4">
         <SidebarBrand />

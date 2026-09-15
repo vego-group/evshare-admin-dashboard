@@ -52,13 +52,13 @@ function Modal({
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent
-        className={cn("bg-background", contentClassName)}
+        className={cn("max-h-[calc(100svh-2rem)] grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden rounded-2xl bg-white shadow-2xl", contentClassName)}
         showCloseButton={false}
         dir="rtl"
       >
         {/* <ScrollArea className="min-h-full overflow-y-auto"> */}
         {title && (
-          <DialogHeader>
+          <DialogHeader className="min-w-0 border-b border-border-subtle pb-4 pl-10">
             <CloseButtonModal closeButtonClassname={closeButtonClassname} />
             <DialogTitle className={cn("text-right", titleClassName)}>
               {title}
@@ -72,10 +72,10 @@ function Modal({
             )}
           </DialogHeader>
         )}
-        <ScrollArea className="**:data-[slot=scroll-area-viewport]:max-h-[85svh] **:data-[slot=scroll-area-viewport]:overflow-y-auto **:data-[slot=scroll-area-scrollbar]:left-0 **:data-[slot=scroll-area-scrollbar]:right-auto">
+        <ScrollArea className="min-h-0 **:data-[slot=scroll-area-viewport]:max-h-[calc(100svh-14rem)] **:data-[slot=scroll-area-viewport]:overflow-y-auto **:data-[slot=scroll-area-scrollbar]:left-0 **:data-[slot=scroll-area-scrollbar]:right-auto">
           <div dir="rtl">{children}</div>
         </ScrollArea>
-        {footer && <DialogFooter>{footer}</DialogFooter>}
+        {footer && <DialogFooter className="border-t border-border-subtle pt-4">{footer}</DialogFooter>}
         {/* </ScrollArea> */}
       </DialogContent>
     </Dialog>
@@ -92,7 +92,7 @@ export function CloseButtonModal({ closeButtonClassname }: ICloseButtonProps) {
       aria-label="إغلاق النافذة"
       title="إغلاق"
       className={cn(
-        "w-6 h-6 rounded-full border-2 flex justify-center items-center absolute left-4 top-4 border-primary bg-background text-primary",
+        "size-9 rounded-xl border flex justify-center items-center absolute left-4 top-4 border-border-subtle bg-surface-subtle text-dark-gray transition-colors hover:bg-neutral-200",
         closeButtonClassname && closeButtonClassname,
       )}
     >

@@ -101,7 +101,7 @@ export function CloseButtonPanel({ closeButtonClassname }: ICloseButtonProps) {
       aria-label="إغلاق اللوحة"
       title="إغلاق"
       className={cn(
-        "w-6 h-6 left-4 bg-transparent rounded-full text-gray-700 border-2 border-gray-700 flex justify-center items-center absolute top-4",
+        "size-9 left-4 bg-surface-subtle rounded-xl text-dark-gray border border-border-subtle flex justify-center items-center absolute top-4 transition-colors hover:bg-neutral-200",
         closeButtonClassname && closeButtonClassname,
       )}
     >

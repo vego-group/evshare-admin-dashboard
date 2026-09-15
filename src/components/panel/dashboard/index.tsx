@@ -10,13 +10,15 @@ import DashboardContentShimmer from "./content-shimmer";
 import QuickStatsSection from "./quick-stats";
 import RevenueOverviewSection from "./revenue-overview";
 import StatCardsSection from "./stat-cards";
+import Header from "@/components/ui/header";
 
 function Dashboard() {
   const [period, setPeriod] = useState<DashboardPeriod>(7);
   const { data, isLoading, isError, refetch, isFetching } = useDashboardAnalytics({ period });
 
   return (
-    <div className="flex w-full flex-col gap-4">
+    <div className="flex w-full flex-col gap-6">
+      <Header title="نظرة عامة" subtitle="تابع الأداء والإيرادات وحالة الأسطول من مكان واحد." />
       {isLoading ? (
         <DashboardContentShimmer />
       ) : isError ? (

@@ -8,7 +8,7 @@ function SearchInput({
   onChange: (value: string) => void;
 }) {
   return (
-    <div className="relative flex min-h-12 flex-1 items-center rounded-2xl px-3 pr-11 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[#8a6500] sm:min-h-14 sm:px-5 sm:pr-14 lg:min-h-14">
+    <div className="relative flex min-h-12 flex-1 items-center rounded-2xl px-3 pr-11 sm:min-h-14 sm:px-5 sm:pr-14 lg:min-h-14">
       <Search className="pointer-events-none absolute right-3 top-1/2 size-5 shrink-0 -translate-y-1/2 text-gray sm:right-5 sm:size-5.5" />
       <input
         type="search"

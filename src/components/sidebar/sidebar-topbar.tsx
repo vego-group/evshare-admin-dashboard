@@ -1,6 +1,9 @@
 "use client";
 
 import { Menu, User } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { sidebarNavItems } from "@/data";
 
 import { useUserSession } from "@/lib/utils/user-session";
 import { roleLabels } from "@/components/panel/users/results/user-result-parts";
@@ -15,13 +18,16 @@ type SidebarTopbarProps = {
 
 function SidebarTopbar({ onOpenMobileSidebar, country, onSwitchCountry }: SidebarTopbarProps) {
   const user = useUserSession();
+  const pathname = usePathname();
+  const currentPage = sidebarNavItems.filter((item) => pathname === item.href || (item.href !== "/" && pathname.startsWith(`${item.href}/`))).sort((a, b) => b.href.length - a.href.length)[0];
 
   return (
     <header className="sticky top-0 z-40 border-b border-neutral-200 bg-white">
       <div className="flex h-16 items-center justify-between gap-3 px-4 md:pr-20 lg:px-6 lg:pr-72">
-        <h1 className="min-w-0 truncate text-sm font-extrabold text-secondary sm:text-base md:text-lg lg:text-2xl">
-          لوحة التحكم الرئيسية
-        </h1>
+        <nav aria-label="مسار الصفحة" className="flex min-w-0 items-center gap-2 text-sm">
+          <Link href="/" className="shrink-0 font-medium text-text-muted hover:text-secondary">لوحة التحكم</Link>
+          {pathname !== "/" && currentPage && <><span aria-hidden="true" className="text-gray/50">/</span><span aria-current="page" className="truncate font-semibold text-secondary">{currentPage.label}</span></>}
+        </nav>
 
         <div className="flex min-w-0 items-center gap-2 sm:gap-3">
           <CountryBadge country={country} onSwitch={onSwitchCountry} />
