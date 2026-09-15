@@ -18,8 +18,9 @@ async function AdminLayout({ children }: AdminLayoutProps) {
     <PermissionsProvider>
       <SearchDirectionController />
       <div className="min-h-svh">
+        <a href="#dashboard-main" className="sr-only fixed start-4 top-4 z-[100] rounded-xl bg-secondary px-5 py-3 text-white focus:not-sr-only">انتقل إلى المحتوى</a>
         <Sidebar countryCode={country} />
-        <main className="md:pr-16 lg:pr-64">
+        <main id="dashboard-main" tabIndex={-1} className="min-w-0 md:pr-16 lg:pr-64">
           <PageShell><PanelPermissionGuard>{children}</PanelPermissionGuard></PageShell>
         </main>
       </div>

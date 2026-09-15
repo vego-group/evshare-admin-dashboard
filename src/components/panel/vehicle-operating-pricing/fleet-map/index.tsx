@@ -35,7 +35,6 @@ function VehicleFleetMapPage() {
   const [selectedVehicleId, setSelectedVehicleId] = useState<string | null>(
     null,
   );
-  console.log("vehicles", vehicles);
   return (
     <div className="flex w-full flex-col gap-6">
       <div className="flex items-center gap-3">

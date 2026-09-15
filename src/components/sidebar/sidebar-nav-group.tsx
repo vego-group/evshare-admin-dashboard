@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronDown } from "lucide-react";
-import { useState, type MouseEvent } from "react";
+import { useId, useState, type MouseEvent } from "react";
 
 import type { SidebarNavGroup, SidebarNavItem } from "@/data";
 import { cn } from "@/lib/utils";
@@ -31,15 +31,16 @@ function SidebarNavGroup({
   onNavigate,
 }: SidebarNavGroupProps) {
   const containsActiveItem = items.some((item) => item.href === activeHref);
-  const [manuallyOpen, setManuallyOpen] = useState(false);
-  const open = containsActiveItem || manuallyOpen;
+  const [manualState, setManualState] = useState<{ href?: string; open: boolean } | null>(null);
+  const open = manualState && manualState.href === activeHref ? manualState.open : containsActiveItem;
+  const groupId = useId();
   const Icon = group.icon;
 
   return (
     <div className={className}>
       <button
         type="button"
-        onClick={() => setManuallyOpen((current) => !current)}
+        onClick={() => setManualState({ href: activeHref, open: !open })}
         className={cn(
           sidebarLinkClass,
           containsActiveItem
@@ -48,7 +49,7 @@ function SidebarNavGroup({
         )}
         aria-label={group.ariaLabel}
         aria-expanded={open}
-        aria-controls={`sidebar-group-${group.id}`}
+        aria-controls={groupId}
       >
         <Icon size={18} className="shrink-0" />
         <span className="flex-1">{group.label}</span>
@@ -60,7 +61,7 @@ function SidebarNavGroup({
 
       {open && (
         <div
-          id={`sidebar-group-${group.id}`}
+          id={groupId}
           className="relative mr-5 mt-1 flex flex-col gap-1 border-r border-neutral-200 pr-3"
         >
           {items.map((item) => (
