@@ -9,24 +9,33 @@ import Header from "@/components/ui/header";
 import { useAllVehicles } from "@/hooks/api";
 
 import VehicleMapSidebar from "./vehicle-map-sidebar";
+import SearchInput from "../toolbar/search-input";
 
 const VehicleFleetMap = dynamic(() => import("./vehicle-fleet-map"), {
   ssr: false,
-  loading: () => <div className="h-full w-full animate-pulse rounded-2xl bg-primary/5" />,
+  loading: () => (
+    <div className="h-full w-full animate-pulse rounded-2xl bg-primary/5" />
+  ),
 });
 
 const FLEET_MAP_PAGE_SIZE = 100;
 
 function VehicleFleetMapPage() {
   const router = useRouter();
+  const [search, setSearch] = useState("");
+  const searchTerm = search.trim().toLowerCase();
   const { data, isLoading } = useAllVehicles({ limit: FLEET_MAP_PAGE_SIZE });
   const vehicles = (data ?? []).filter(
-    (vehicle) => vehicle.current_location || vehicle.location,
+    (vehicle) =>
+      (vehicle.current_location || vehicle.location) &&
+      (!searchTerm ||
+        vehicle.label?.toLowerCase().includes(searchTerm) ||
+        vehicle.id.toLowerCase().includes(searchTerm)),
   );
   const [selectedVehicleId, setSelectedVehicleId] = useState<string | null>(
     null,
   );
-
+  console.log("vehicles", vehicles);
   return (
     <div className="flex w-full flex-col gap-6">
       <div className="flex items-center gap-3">
@@ -44,6 +53,16 @@ function VehicleFleetMapPage() {
         />
       </div>
 
+      <div className="flex rounded-2xl border border-primary/15 bg-white">
+        <SearchInput
+          value={search}
+          onChange={(value) => {
+            setSearch(value);
+            setSelectedVehicleId(null);
+          }}
+        />
+      </div>
+
       {isLoading ? (
         <p className="p-6 text-center text-sm text-gray">جارٍ التحميل...</p>
       ) : (
@@ -58,6 +77,7 @@ function VehicleFleetMapPage() {
           <div className="order-1 h-56 shrink-0 lg:order-2 lg:h-auto lg:w-80">
             <VehicleMapSidebar
               vehicles={vehicles}
+              isSearching={Boolean(searchTerm)}
               selectedVehicleId={selectedVehicleId}
               onSelectVehicle={setSelectedVehicleId}
             />
