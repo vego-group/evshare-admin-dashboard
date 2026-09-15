@@ -7,17 +7,21 @@ import { batteryBarClass, batteryTextClass, vehicleTitle } from "../utils";
 
 function VehicleMapSidebar({
   vehicles,
+  isSearching = false,
   selectedVehicleId,
   onSelectVehicle,
 }: {
   vehicles: VehicleListItem[];
+  isSearching?: boolean;
   selectedVehicleId: string | null;
   onSelectVehicle: (vehicleId: string) => void;
 }) {
   if (!vehicles.length) {
     return (
       <div className="grid h-full w-full place-items-center rounded-2xl border border-primary/15 bg-white p-4 text-sm text-gray">
-        لا توجد مركبات بموقع معروف حاليًا
+        {isSearching
+          ? "لا توجد مركبات تطابق البحث بموقع معروف"
+          : "لا توجد مركبات بموقع معروف حاليًا"}
       </div>
     );
   }
