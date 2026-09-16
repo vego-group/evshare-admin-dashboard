@@ -3,6 +3,7 @@ import type { SettingsListResponse, SettingsQueryParams } from "@/types";
 import { baseAPI } from "..";
 
 const CONTACT_US_KEY_PREFIX = "contact_us_";
+const REMOVED_COMMISSION_KEY = "evshare_commission_percentage";
 
 export const settingsAPI = async (
   params: SettingsQueryParams = {},
@@ -20,7 +21,9 @@ export const settingsAPI = async (
   return {
     ...result,
     data: result.data.filter(
-      (setting) => !setting.setting_name.startsWith(CONTACT_US_KEY_PREFIX),
+      (setting) =>
+        !setting.setting_name.startsWith(CONTACT_US_KEY_PREFIX) &&
+        setting.setting_name !== REMOVED_COMMISSION_KEY,
     ),
   };
 };

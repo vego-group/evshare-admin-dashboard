@@ -57,6 +57,7 @@ function EditOperatingCompany() {
                 onLogoChange={handleLogoChange}
                 register={register}
                 control={control}
+                isPlatform={company?.slug === "evshare"}
               />
               <OperatingCompanyFormActions
                 submitLabel="حفظ التعديلات"

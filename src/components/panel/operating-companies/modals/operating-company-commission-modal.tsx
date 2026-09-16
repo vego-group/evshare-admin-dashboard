@@ -78,12 +78,12 @@ function OperatingCompanyCommissionModal({
     <Modal
       open={open}
       onClose={onClose}
-      title={`عمولة ${company.name}`}
+      title={company.slug === "evshare" ? "عمولة المنصة" : `عمولة ${company.name}`}
       contentClassName="max-w-md"
     >
       <form onSubmit={handleSubmit(submit)} noValidate className="space-y-4 p-1">
         <label className="block">
-          <span className="mb-2 block text-sm text-dark-gray">نسبة العمولة</span>
+          <span className="mb-2 block text-sm text-dark-gray">{company.slug === "evshare" ? "نسبة عمولة المنصة" : "نسبة العمولة"}</span>
           <input
             type="number"
             min="0"

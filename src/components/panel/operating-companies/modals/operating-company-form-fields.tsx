@@ -36,6 +36,7 @@ type OperatingCompanyFormFieldsProps = {
   onLogoChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   register: UseFormRegister<OperatingCompanyFormValues>;
   control: Control<OperatingCompanyFormValues>;
+  isPlatform?: boolean;
 };
 
 function OperatingCompanyFormFields({
@@ -44,6 +45,7 @@ function OperatingCompanyFormFields({
   onLogoChange,
   register,
   control,
+  isPlatform = false,
 }: OperatingCompanyFormFieldsProps) {
   return (
     <div className="flex flex-col gap-6">
@@ -77,10 +79,11 @@ function OperatingCompanyFormFields({
           />
         </Field>
 
-        <Field
-          label="نسبة العمولة"
-          error={errors.commission_percentage?.message}
-        >
+        {!isPlatform && (
+          <Field
+            label="نسبة العمولة"
+            error={errors.commission_percentage?.message}
+          >
           <div
             dir="ltr"
             className="flex h-14 items-center gap-1 rounded-[14px] border border-primary bg-primary/4 px-4 transition focus-within:bg-primary/8"
@@ -101,7 +104,14 @@ function OperatingCompanyFormFields({
             />
             <span className="shrink-0 text-sm font-medium text-gray">%</span>
           </div>
-        </Field>
+          </Field>
+        )}
+
+        {isPlatform && (
+          <div className="flex flex-col justify-center rounded-[14px] border border-primary/30 bg-primary/5 p-4 text-sm text-dark-gray">
+            عمولة المنصة تُعدّل من زر العمولة في صفحة الشركات المشغلة.
+          </div>
+        )}
 
         <Field label="رقم الجوال" error={errors.mobile?.message}>
           <div

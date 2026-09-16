@@ -38,7 +38,7 @@ function CommissionModal({
 }: Props) {
   const company = vehicle?.operation_company;
   const currentPercentage =
-    company?.pricing_percentage ?? company?.commission_percentage ?? "";
+    vehicle?.commission_percentage ?? company?.commission_percentage ?? "";
   const {
     register,
     handleSubmit,
@@ -81,7 +81,7 @@ function CommissionModal({
     <Modal
       open={open}
       onClose={onClose}
-      title={`عمولة ${company.name}`}
+      title={company.slug === "evshare" ? "عمولة المنصة" : `عمولة ${company.name}`}
       contentClassName="max-w-md"
     >
       <form

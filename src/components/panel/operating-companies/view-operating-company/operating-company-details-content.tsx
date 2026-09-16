@@ -44,6 +44,7 @@ export function OperatingCompanyDetailsContent({ company, isLoading }: Props) {
             {company.name}
           </h3>
           <span className="inline-flex h-8.5 w-fit items-center gap-1 whitespace-nowrap rounded-full bg-primary/10 px-4 text-sm font-medium text-secondary">
+            {company.slug === "evshare" && <span className="me-1">عمولة المنصة</span>}
             {company.commission_percentage ?? 0}
             <Percent className="size-3.5 shrink-0" />
           </span>
@@ -56,7 +57,7 @@ export function OperatingCompanyDetailsContent({ company, isLoading }: Props) {
         <DetailRow label="الاسم بالإنجليزية" value={company.name_en} />
         <DetailRow label="المعرف (Slug)" value={company.slug} />
         <DetailRow
-          label="نسبة العمولة"
+          label={company.slug === "evshare" ? "نسبة عمولة المنصة" : "نسبة العمولة"}
           value={
             <span className="inline-flex items-center gap-1" dir="ltr">
               {company.commission_percentage ?? 0}
