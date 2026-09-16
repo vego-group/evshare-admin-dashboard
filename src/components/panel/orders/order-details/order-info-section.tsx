@@ -86,7 +86,6 @@ function OrderInfoSection({ order }: { order: OrderDetail }) {
             <span className="text-sm text-gray">الحالة</span>
             <OrderStatusDropdown
               currentStatus={order.status}
-              operatingType={order.operating_type}
               disabled={isUpdating || !canEdit}
               onSelect={setPendingStatus}
             />
@@ -136,6 +135,9 @@ function OrderInfoSection({ order }: { order: OrderDetail }) {
           isUpdating={isUpdating}
           orderCode={order.order_code}
           targetStatus={pendingStatus}
+          requiresDeliveryAddress={order.requires_delivery_address}
+          hasDeliveryAddress={Boolean(order.address)}
+          operationCompanyName={order.operation_company?.name}
           onClose={() => {
             if (!isUpdating) setPendingStatus(null);
           }}
