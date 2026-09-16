@@ -7,11 +7,12 @@ import Modal from "@/components/ui/modal";
 type Props = {
   open: boolean;
   isSubmitting: boolean;
+  error?: string | null;
   onClose: () => void;
   onConfirm: () => void;
 };
 
-function EndTripConfirmModal({ open, isSubmitting, onClose, onConfirm }: Props) {
+function EndTripConfirmModal({ open, isSubmitting, error, onClose, onConfirm }: Props) {
   return (
     <Modal open={open} onClose={onClose} title="إنهاء الرحلة" contentClassName="max-w-md" closeButtonClassname="hidden">
       <div className="space-y-5 p-1 text-center">
@@ -21,6 +22,8 @@ function EndTripConfirmModal({ open, isSubmitting, onClose, onConfirm }: Props) 
         <p className="text-sm leading-6 text-dark-gray">
           هل تريد إنهاء هذه الرحلة؟ سيحسب الخادم السعر النهائي ويسوي المحفظة مرة واحدة. يمكن إعادة المحاولة بأمان.
         </p>
+        <p className="text-sm leading-6 text-dark-gray">يجب أن يكون القفل مغلقًا ومتصلاً حتى تنتهي الرحلة. إذا بقي مفتوحًا، أغلقه ثم حاول مرة أخرى.</p>
+        {error && <p role="alert" className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</p>}
         <div className="flex justify-center gap-2">
           <Button type="button" variant="outline" onClick={onClose} disabled={isSubmitting}>تراجع</Button>
           <Button type="button" onClick={onConfirm} disabled={isSubmitting} className="min-w-16 bg-primary text-secondary hover:bg-primary/90">

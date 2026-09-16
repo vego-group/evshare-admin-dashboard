@@ -52,6 +52,11 @@ export type TripCancellation = {
   reason?: string | null;
 };
 
+export type TripLockVerification = {
+  status: "closed" | "not_applicable" | "skipped_integration_disabled" | string;
+  checked_at?: string | null;
+};
+
 export type TripDriver = {
   id: string;
   name?: string;
@@ -113,6 +118,7 @@ export type TripListItem = {
   pricing?: Partial<TripPricingSnapshot> | null;
   cost_breakdown?: Partial<TripCostBreakdown> | null;
   cancellation?: TripCancellation | null;
+  lock_verification?: TripLockVerification | null;
   driver: TripDriver;
   vehicle: TripVehicle;
   created_at?: string;

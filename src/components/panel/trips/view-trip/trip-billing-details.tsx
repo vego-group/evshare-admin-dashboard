@@ -7,6 +7,11 @@ import DetailRow from "./detail-row";
 function TripBillingDetails({ trip }: { trip: TripListItem }) {
   const pricing = tripPricing(trip);
   const breakdown = trip.cost_breakdown;
+  const price = Number(trip.price);
+  const commission = Number(trip.commission);
+  const ownerEarning = trip.price != null && trip.commission != null && Number.isFinite(price) && Number.isFinite(commission)
+    ? Math.max(0, price - commission)
+    : null;
   return (
     <section className="space-y-3">
       <h3 className="font-semibold text-secondary">التسعير والتسوية</h3>
@@ -15,6 +20,9 @@ function TripBillingDetails({ trip }: { trip: TripListItem }) {
         <DetailRow label="سعر الدقيقة" value={<MoneyValue value={pricing.price_per_minute ?? trip.vehicle.price_per_minute} currency={pricing.currency} />} />
         <DetailRow label="سعر الكيلومتر" value={<MoneyValue value={trip.vehicle.price_per_km} currency={pricing.currency} />} />
         <DetailRow label="العمولة" value={<MoneyValue value={trip.commission} currency={pricing.currency} />} />
+        {trip.status === "completed" && ownerEarning !== null && (
+          <DetailRow label="أرباح مالك المركبة" value={<MoneyValue value={ownerEarning} currency={pricing.currency} />} />
+        )}
         <DetailRow label="نسبة عمولة المركبة" value={trip.vehicle.commission_percentage != null ? `${trip.vehicle.commission_percentage}%` : "-"} />
         <DetailRow label="وحدة الاحتساب" value={formatDuration(pricing.billing_increment_seconds)} />
         <DetailRow label="الحد الأدنى للتكلفة" value={<MoneyValue value={pricing.minimum_charge} currency={pricing.currency} />} />

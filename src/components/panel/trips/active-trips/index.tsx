@@ -28,11 +28,13 @@ function ActiveTrips() {
     null,
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [endError, setEndError] = useState<string | null>(null);
 
   function requestAction(action: "cancel" | "end") {
     return (trip: TripListItem) => {
       setPendingTrip(trip);
       setPendingAction(action);
+      setEndError(null);
     };
   }
 
@@ -46,9 +48,19 @@ function ActiveTrips() {
     setIsSubmitting(false);
 
     if (result?.ok) {
+      setEndError(null);
       toast.success(result.message || "تم تنفيذ الإجراء بنجاح");
       setPendingTrip(null);
       setPendingAction(null);
+      await queryClient.invalidateQueries({ queryKey: ["trips"] });
+      return;
+    }
+    if (pendingAction === "end" && (result?.status === 409 || result?.status === 503)) {
+      const errors = result.error?.errors;
+      const reason = errors && typeof errors === "object" && "reason" in errors && typeof errors.reason === "string"
+        ? errors.reason
+        : null;
+      setEndError([result.message, reason].filter(Boolean).join(" — "));
       await queryClient.invalidateQueries({ queryKey: ["trips"] });
       return;
     }
@@ -99,9 +111,11 @@ function ActiveTrips() {
       <EndTripConfirmModal
         open={pendingAction === "end"}
         isSubmitting={isSubmitting}
+        error={endError}
         onClose={() => {
           setPendingAction(null);
           setPendingTrip(null);
+          setEndError(null);
         }}
         onConfirm={handleConfirm}
       />
