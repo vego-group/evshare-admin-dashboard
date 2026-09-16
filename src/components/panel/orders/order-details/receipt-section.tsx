@@ -287,13 +287,15 @@ function OrderReceiptSection({
         onConfirm={handleReject}
       />
 
-      <ResolveRefundModal
-        orderId={orderId}
-        item={refundItem}
-        open={Boolean(refundItem)}
-        onClose={() => setRefundItem(null)}
-        onSaved={refresh}
-      />
+      {refundItem && (
+        <ResolveRefundModal
+          orderId={orderId}
+          item={refundItem}
+          open
+          onClose={() => setRefundItem(null)}
+          onSaved={refresh}
+        />
+      )}
     </section>
   );
 }

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { AlertCircle } from "lucide-react";
 
 import { useDashboardAnalytics } from "@/hooks/api";
 import type { DashboardPeriod } from "@/types";
@@ -11,6 +10,7 @@ import QuickStatsSection from "./quick-stats";
 import RevenueOverviewSection from "./revenue-overview";
 import StatCardsSection from "./stat-cards";
 import Header from "@/components/ui/header";
+import QueryErrorState from "@/components/ui/query-error-state";
 
 function Dashboard() {
   const [period, setPeriod] = useState<DashboardPeriod>(7);
@@ -22,14 +22,7 @@ function Dashboard() {
       {isLoading ? (
         <DashboardContentShimmer />
       ) : isError ? (
-        <section role="alert" className="flex min-h-64 flex-col items-center justify-center gap-3 rounded-xl border border-border-subtle bg-white p-6 text-center">
-          <AlertCircle className="size-7 text-danger" aria-hidden="true" />
-          <h2 className="text-lg font-semibold text-secondary">تعذر تحميل بيانات لوحة التحكم</h2>
-          <p className="text-sm text-text-muted">تحقق من الاتصال ثم حاول مرة أخرى.</p>
-          <button type="button" disabled={isFetching} onClick={() => void refetch()} className="mt-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-secondary transition hover:bg-primary/80 disabled:opacity-50">
-            {isFetching ? "جارٍ إعادة المحاولة..." : "إعادة المحاولة"}
-          </button>
-        </section>
+        <QueryErrorState title="تعذر تحميل بيانات لوحة التحكم" isRetrying={isFetching} onRetry={() => void refetch()} />
       ) : (
         <>
           <StatCardsSection data={data?.data.top_cards} period={period} />

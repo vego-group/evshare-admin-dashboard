@@ -29,11 +29,13 @@ function VehicleMapSidebar({
   return (
     <div className="flex h-full w-full flex-col gap-2 overflow-y-auto rounded-2xl border border-primary/15 bg-white p-3">
       {vehicles.map((vehicle) => (
-        <article
+        <button
+          type="button"
           key={vehicle.id}
           onClick={() => onSelectVehicle(vehicle.id)}
+          aria-pressed={selectedVehicleId === vehicle.id}
           className={cn(
-            "cursor-pointer rounded-[10px] border border-primary/10 p-3 transition hover:bg-primary/5",
+            "w-full cursor-pointer rounded-[10px] border border-primary/10 p-3 text-right transition hover:bg-primary/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
             selectedVehicleId === vehicle.id && "border-primary bg-primary/8",
           )}
         >
@@ -79,7 +81,7 @@ function VehicleMapSidebar({
               </span>
             </div>
           )}
-        </article>
+        </button>
       ))}
     </div>
   );

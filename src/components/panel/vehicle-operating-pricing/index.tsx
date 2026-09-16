@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 import { PAGE_SIZE } from "@/constants";
+import QueryErrorState from "@/components/ui/query-error-state";
 import { useAllVehicles, useVehicle, useVehicles } from "@/hooks/api";
 import { deleteVehicleAPI } from "@/services/mutations";
 import type { OperationCompany, VehicleListItem, VehiclesQueryParams } from "@/types";
@@ -35,7 +36,7 @@ function VehicleOperatingPricing() {
   const [activeVehicle, setActiveVehicle] = useState<VehicleListItem | null>(null);
   const [modal, setModal] = useState<ModalKey | null>(null);
   const [isSaving, setIsSaving] = useState(false);
-  const { data, isLoading } = useVehicles(params);
+  const { data, isLoading, isError, isFetching, refetch } = useVehicles(params);
   const { data: allVehicles } = useAllVehicles();
   const companies = useMemo(() => {
     const byId = new Map<string, OperationCompany>();
@@ -77,7 +78,9 @@ function VehicleOperatingPricing() {
 
   return (
     <div className="flex w-full flex-col gap-6">
-      {isLoading ? <VehicleContentShimmer /> : (
+      {isLoading ? <VehicleContentShimmer /> : isError ? (
+        <QueryErrorState title="تعذر تحميل المركبات" isRetrying={isFetching} onRetry={() => void refetch()} />
+      ) : (
         <>
           <VehicleOperatingPricingHeader onOpenMap={() => router.push("/vehicle-operating-pricing/map")} />
           <VehicleMainContent

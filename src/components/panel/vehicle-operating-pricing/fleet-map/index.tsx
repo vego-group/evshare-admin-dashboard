@@ -6,10 +6,12 @@ import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 
 import Header from "@/components/ui/header";
+import QueryErrorState from "@/components/ui/query-error-state";
 import { useAllVehicles } from "@/hooks/api";
 
 import VehicleMapSidebar from "./vehicle-map-sidebar";
 import SearchInput from "../toolbar/search-input";
+import { vehicleMapLocation } from "../utils";
 
 const VehicleFleetMap = dynamic(() => import("./vehicle-fleet-map"), {
   ssr: false,
@@ -24,10 +26,10 @@ function VehicleFleetMapPage() {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const searchTerm = search.trim().toLowerCase();
-  const { data, isLoading } = useAllVehicles({ limit: FLEET_MAP_PAGE_SIZE });
+  const { data, isLoading, isError, isFetching, refetch } = useAllVehicles({ limit: FLEET_MAP_PAGE_SIZE });
   const vehicles = (data ?? []).filter(
     (vehicle) =>
-      (vehicle.current_location || vehicle.location) &&
+      vehicleMapLocation(vehicle) &&
       (!searchTerm ||
         vehicle.label?.toLowerCase().includes(searchTerm) ||
         vehicle.id.toLowerCase().includes(searchTerm)),
@@ -64,6 +66,8 @@ function VehicleFleetMapPage() {
 
       {isLoading ? (
         <p className="p-6 text-center text-sm text-gray">جارٍ التحميل...</p>
+      ) : isError ? (
+        <QueryErrorState title="تعذر تحميل مواقع المركبات" isRetrying={isFetching} onRetry={() => void refetch()} />
       ) : (
         <div className="flex h-[70vh] min-h-105 flex-col gap-4 lg:h-[75vh] lg:flex-row">
           <div className="order-2 min-h-64 flex-1 lg:order-1 lg:min-h-0">

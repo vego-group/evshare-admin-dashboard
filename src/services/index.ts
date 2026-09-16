@@ -65,20 +65,21 @@ const safe = async <T = unknown, E extends { message: string } = ErrorBody>(
         ...headers,
       },
     });
-    const msg = (res.data as { message: string })?.message;
+    const msg = getPayloadMessage(res.data) ?? "";
     return { ok: true, status: res.status, data: res.data, message: msg };
   } catch (err) {
-    const e = err as AxiosError<E>;
-    const payload = e.response?.data;
+    const e = axios.isAxiosError<E>(err) ? err : null;
+    const payload = e?.response?.data;
     const payloadMessage = getPayloadMessage(payload);
     const validationErrors = getValidationErrors(payload);
+    const fallbackMessage = err instanceof Error ? err.message : "Request failed";
     const message =
       validationErrors.length > 0
-        ? `${payloadMessage ?? e.message}: ${validationErrors.join(" ")}`
-        : (payloadMessage ?? e.message);
+        ? `${payloadMessage ?? fallbackMessage}: ${validationErrors.join(" ")}`
+        : (payloadMessage ?? fallbackMessage);
     return {
       ok: false,
-      status: e.response?.status ?? 500,
+      status: e?.response?.status ?? 500,
       error: payload,
       message,
     };
