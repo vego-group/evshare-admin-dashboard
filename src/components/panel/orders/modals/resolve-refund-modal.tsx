@@ -1,8 +1,8 @@
 "use client";
 
 import { Wallet, Phone } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useForm, type FieldErrors, type Resolver } from "react-hook-form";
+import { useState } from "react";
+import { useForm, useWatch, type FieldErrors, type Resolver } from "react-hook-form";
 import toast from "react-hot-toast";
 
 import { Button } from "@/components/ui/button";
@@ -36,7 +36,7 @@ function ResolveRefundModal({ orderId, item, open, onClose, onSaved }: Props) {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     setValue,
     formState: { errors, isSubmitting },
     reset,
@@ -46,12 +46,8 @@ function ResolveRefundModal({ orderId, item, open, onClose, onSaved }: Props) {
     mode: "onChange",
   });
 
-  const method = watch("method");
+  const method = useWatch({ control, name: "method" });
   const [amountText, setAmountText] = useState("");
-
-  useEffect(() => {
-    if (!open) setAmountText("");
-  }, [open]);
 
   function handleClose() {
     if (isSubmitting) return;

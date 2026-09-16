@@ -1,5 +1,6 @@
 import { PAGE_SIZE } from "@/constants";
 import { buildQuery } from "@/lib/utils/build-query";
+import { getHttpErrorStatus } from "@/lib/utils/helper";
 import {
   OperatingCompaniesListResponse,
   OperatingCompaniesQueryParams,
@@ -15,8 +16,7 @@ export const operatingCompanyContractAPI = async (
   try {
     return await baseAPI("GET", `/operation-companies/${companyId}/contract`);
   } catch (error) {
-    if ((error as { status?: number }).status === 404 ||
-        (error as { response?: { status: number } }).response?.status === 404) {
+    if (getHttpErrorStatus(error) === 404) {
       return { data: null };
     }
     throw error;

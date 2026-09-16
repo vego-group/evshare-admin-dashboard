@@ -4,6 +4,18 @@ export const getPayloadMessage = (payload: unknown): string | undefined => {
   return typeof maybeMessage === "string" ? maybeMessage : undefined;
 };
 
+export const getHttpErrorStatus = (error: unknown): number | undefined => {
+  if (!error || typeof error !== "object") return undefined;
+
+  const directStatus = (error as { status?: unknown }).status;
+  if (typeof directStatus === "number") return directStatus;
+
+  const response = (error as { response?: unknown }).response;
+  if (!response || typeof response !== "object") return undefined;
+  const responseStatus = (response as { status?: unknown }).status;
+  return typeof responseStatus === "number" ? responseStatus : undefined;
+};
+
 export const getValidationErrors = (payload: unknown): string[] => {
   if (!payload || typeof payload !== "object") return [];
   const base = (payload as { error?: unknown }).error ?? payload;

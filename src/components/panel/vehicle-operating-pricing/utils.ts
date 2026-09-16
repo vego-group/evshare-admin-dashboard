@@ -66,7 +66,14 @@ export function buildChangedPayload(
 }
 
 export function vehicleMapLocation(vehicle: VehicleListItem) {
-  return vehicle.current_location ?? vehicle.location ?? null;
+  for (const location of [vehicle.current_location, vehicle.location]) {
+    if (!location || location.latitude === "" || location.longitude === "") continue;
+    const latitude = Number(location.latitude);
+    const longitude = Number(location.longitude);
+    if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) continue;
+    if (Math.abs(latitude) <= 90 && Math.abs(longitude) <= 180) return location;
+  }
+  return null;
 }
 
 function normalize(value: unknown) {
