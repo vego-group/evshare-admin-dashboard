@@ -59,7 +59,7 @@ export function VehicleDetailsContent({ vehicle, isLoading }: Props) {
           />
           <DetailRow label="نوع التشغيل" value={vehicle.operating_type === "evshare" ? "EvShare" : "شركة تشغيل"} />
           <DetailRow label="شركة التشغيل" value={vehicle.operation_company?.name} />
-          <DetailRow label="العمولة" value={formatPercentage(vehicle.operation_company?.pricing_percentage ?? vehicle.operation_company?.commission_percentage)} />
+          <DetailRow label="العمولة" value={formatPercentage(vehicle.commission_percentage ?? vehicle.operation_company?.commission_percentage)} />
           <DetailRow label="رقم عنصر الطلب" value={vehicle.order_item_id} />
           <DetailRow label="تاريخ الإنشاء" value={<span dir="ltr">{formatDate(vehicle.created_at)}</span>} />
         </div>

@@ -46,11 +46,17 @@ export function OperatingCompanyLogo({
 
 export function CommissionBadge({
   value,
+  isPlatform = false,
 }: {
   value: number | string | null;
+  isPlatform?: boolean;
 }) {
   return (
-    <span className="inline-flex h-[34px] w-fit items-center justify-center gap-1 whitespace-nowrap rounded-full bg-primary/10 px-4 text-sm font-medium text-secondary">
+    <span
+      className="inline-flex h-[34px] w-fit items-center justify-center gap-1 whitespace-nowrap rounded-full bg-primary/10 px-4 text-sm font-medium text-secondary"
+      aria-label={isPlatform ? "عمولة المنصة" : undefined}
+    >
+      {isPlatform && <span className="me-1">عمولة المنصة</span>}
       {value ?? 0}
       <Percent className="size-3.5 shrink-0" />
     </span>
@@ -63,12 +69,14 @@ export function OperatingCompanyActions({
   onEdit,
   onEditCommission,
   onDelete,
+  isPlatform = false,
 }: {
   compact?: boolean;
   onView: () => void;
   onEdit: () => void;
   onEditCommission: () => void;
   onDelete: () => void;
+  isPlatform?: boolean;
 }) {
   return (
     <div className={cn("flex flex-nowrap items-center gap-2", compact && "w-full")}>
@@ -88,18 +96,20 @@ export function OperatingCompanyActions({
         <ActionButton
           icon={Percent}
           onClick={onEditCommission}
-          label="تعديل العمولة"
+          label={isPlatform ? "تعديل عمولة المنصة" : "تعديل العمولة"}
           className={cn("bg-purple-50 text-purple-600", compact && "flex-1")}
         />
       </PermissionGate>
-      <PermissionGate slug="Admin Delete Operation Companies">
-        <ActionButton
-          icon={Trash2}
-          onClick={onDelete}
-          label="حذف الشركة"
-          className={cn("bg-red-50 text-red-500", compact && "flex-1")}
-        />
-      </PermissionGate>
+      {!isPlatform && (
+        <PermissionGate slug="Admin Delete Operation Companies">
+          <ActionButton
+            icon={Trash2}
+            onClick={onDelete}
+            label="حذف الشركة"
+            className={cn("bg-red-50 text-red-500", compact && "flex-1")}
+          />
+        </PermissionGate>
+      )}
     </div>
   );
 }

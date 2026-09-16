@@ -28,7 +28,7 @@ function OperatingCompaniesCards({
       {companies.map((company) => (
         <article
           key={company.id}
-          className="overflow-hidden rounded-2xl border border-neutral-100 bg-white p-4"
+          className={company.slug === "evshare" ? "overflow-hidden rounded-2xl border border-primary/40 bg-primary/5 p-4" : "overflow-hidden rounded-2xl border border-neutral-100 bg-white p-4"}
         >
           <div className="space-y-3">
             <div className="flex justify-center rounded-[14px] bg-background p-3">
@@ -44,7 +44,7 @@ function OperatingCompaniesCards({
                 </p>
               </div>
               <div className="shrink-0">
-                <CommissionBadge value={company.commission_percentage} />
+                <CommissionBadge value={company.commission_percentage} isPlatform={company.slug === "evshare"} />
               </div>
             </div>
           </div>
@@ -65,6 +65,7 @@ function OperatingCompaniesCards({
               onEdit={() => onEditCompany(company)}
               onEditCommission={() => onEditCommission(company)}
               onDelete={() => onDeleteCompany(company)}
+              isPlatform={company.slug === "evshare"}
             />
           </div>
         </article>

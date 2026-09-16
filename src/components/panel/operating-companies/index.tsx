@@ -54,7 +54,7 @@ function OperatingCompanies() {
   }
 
   async function handleDeleteCompany() {
-    if (!companyPendingDelete || isDeleting) return;
+    if (!companyPendingDelete || companyPendingDelete.slug === "evshare" || isDeleting) return;
 
     const currentCompany = companyPendingDelete;
     setIsDeleting(true);

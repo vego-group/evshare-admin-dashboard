@@ -74,6 +74,7 @@ export function useEditOperatingCompanyForm() {
     if (!company || !isDirty) return;
 
     const payload = buildChangedOperatingCompanyPayload(values, dirtyFields);
+    if (company.slug === "evshare") payload.delete("commission_percentage");
     if (!hasFormDataEntries(payload)) return;
 
     const result = await editOperatingCompanyAPI(company.id, payload);

@@ -26,11 +26,11 @@ function OperatingCompaniesTable({
   return (
     <section className="overflow-hidden rounded-lg bg-white">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-270 table-fixed border-separate border-spacing-0 text-right">
+        <table className="w-full min-w-300 table-fixed border-separate border-spacing-0 text-right">
           <colgroup>
             <col className="w-[22%]" />
             <col className="w-[16%]" />
-            <col className="w-27.5" />
+            <col className="w-45" />
             <col className="w-[15%]" />
             <col className="w-[19%]" />
             <col className="w-57.5" />
@@ -47,7 +47,7 @@ function OperatingCompaniesTable({
           </thead>
           <tbody>
             {companies.map((company) => (
-              <tr key={company.id} className="text-dark-gray">
+              <tr key={company.id} className={company.slug === "evshare" ? "bg-primary/5 text-dark-gray" : "text-dark-gray"}>
                 <TableCell>
                   <p className="truncate text-base font-medium" title={company.name}>
                     {company.name}
@@ -55,7 +55,7 @@ function OperatingCompaniesTable({
                 </TableCell>
                 <TableCell dir="ltr">{company.slug}</TableCell>
                 <TableCell truncate={false}>
-                  <CommissionBadge value={company.commission_percentage} />
+                  <CommissionBadge value={company.commission_percentage} isPlatform={company.slug === "evshare"} />
                 </TableCell>
                 <TableCell dir="ltr">
                   {company.mobile ? formatSaudiPhoneNumber(company.mobile) : "-"}
@@ -67,6 +67,7 @@ function OperatingCompaniesTable({
                     onEdit={() => onEditCompany(company)}
                     onEditCommission={() => onEditCommission(company)}
                     onDelete={() => onDeleteCompany(company)}
+                    isPlatform={company.slug === "evshare"}
                   />
                 </TableCell>
               </tr>
