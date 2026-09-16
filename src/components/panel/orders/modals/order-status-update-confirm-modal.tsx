@@ -18,6 +18,9 @@ type Props = {
   isUpdating: boolean;
   orderCode: string;
   targetStatus: OrderNewStatus;
+  requiresDeliveryAddress: boolean;
+  hasDeliveryAddress: boolean;
+  operationCompanyName?: string | null;
   onClose: () => void;
   onConfirm: () => void;
 };
@@ -27,9 +30,17 @@ function OrderStatusUpdateConfirmModal({
   isUpdating,
   orderCode,
   targetStatus,
+  requiresDeliveryAddress,
+  hasDeliveryAddress,
+  operationCompanyName,
   onClose,
   onConfirm,
 }: Props) {
+  const addressMissing =
+    requiresDeliveryAddress &&
+    !hasDeliveryAddress &&
+    ["ready", "delivered", "completed"].includes(targetStatus);
+
   return (
     <Modal
       open={open}
@@ -56,6 +67,16 @@ function OrderStatusUpdateConfirmModal({
           <p className="text-base font-medium leading-6 text-[#667085]">
             سيتم تحديث حالة الطلب على الفور بعد تنفيذ هذا الإجراء.
           </p>
+          {addressMissing && (
+            <p role="alert" className="text-base font-medium leading-6 text-red-600">
+              يجب إضافة عنوان التوصيل قبل نقل الطلب إلى الحالة التالية
+            </p>
+          )}
+          {!requiresDeliveryAddress && operationCompanyName && (
+            <p className="text-base font-medium leading-6 text-[#667085]">
+              الشركة المشغلة: {operationCompanyName}
+            </p>
+          )}
         </div>
 
         <div className="grid w-full grid-cols-2 gap-4">
@@ -71,7 +92,7 @@ function OrderStatusUpdateConfirmModal({
           <Button
             type="button"
             onClick={onConfirm}
-            disabled={isUpdating}
+            disabled={isUpdating || addressMissing}
             className="h-13.5 rounded-[14px] bg-secondary px-4 py-3 text-base font-medium text-white shadow-[0_1px_2px_rgba(16,24,40,0.05)] hover:bg-secondary/90"
           >
             {isUpdating ? <Loader /> : "تأكيد"}

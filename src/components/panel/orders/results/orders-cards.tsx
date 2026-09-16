@@ -99,7 +99,6 @@ function OrderCard({ order }: { order: OrderListItem }) {
         <div className="mt-4 flex items-center justify-end border-t border-neutral-100 pt-4">
           {canEdit ? <OrderStatusDropdown
             currentStatus={order.status}
-            operatingType={order.operating_type}
             disabled={isUpdating}
             onSelect={setPendingStatus}
           /> : <span>{order.status}</span>}
@@ -112,6 +111,9 @@ function OrderCard({ order }: { order: OrderListItem }) {
           isUpdating={isUpdating}
           orderCode={order.order_code}
           targetStatus={pendingStatus}
+          requiresDeliveryAddress={order.requires_delivery_address}
+          hasDeliveryAddress={Boolean(order.address)}
+          operationCompanyName={order.operation_company?.name}
           onClose={() => {
             if (!isUpdating) setPendingStatus(null);
           }}

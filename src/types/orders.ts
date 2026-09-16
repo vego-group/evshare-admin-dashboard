@@ -100,6 +100,7 @@ export type OrderDetail = {
   items: OrderItem[];
   receipt?: OrderReceipt | null;
   operating_type?: "evshare" | "operation_company";
+  requires_delivery_address: boolean;
   operation_company_id?: string | number | null;
   operation_company?: { id: string; name: string } | null;
   products_count: number;
