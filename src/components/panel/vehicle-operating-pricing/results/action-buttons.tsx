@@ -1,7 +1,6 @@
 import {
   Eye,
   MapPin,
-  MoreVertical,
   Pencil,
   Percent,
   Radio,
@@ -10,12 +9,6 @@ import {
 } from "lucide-react";
 
 import PermissionGate from "@/components/permission-gate";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -54,6 +47,34 @@ function VehicleActions({
           <span>لوحة التحكم</span>
         </button>
       </PermissionGate>
+      <PermissionGate slug="Admin View Zones">
+        <button
+          type="button"
+          onClick={onManageZone}
+          className={cn(
+            "flex h-8 shrink-0 items-center gap-1.5 rounded-lg bg-indigo-50 px-2.5 text-xs font-semibold text-indigo-600 transition hover:bg-indigo-100",
+            compact && "w-full justify-center",
+          )}
+        >
+          <MapPin className="size-4 shrink-0" />
+          <span>مناطق التشغيل</span>
+        </button>
+      </PermissionGate>
+      {canUpdateCommission && (
+        <PermissionGate slug="Admin View Operation Companies">
+          <button
+            type="button"
+            onClick={onCommission}
+            className={cn(
+              "flex h-8 shrink-0 items-center gap-1.5 rounded-lg bg-purple-50 px-2.5 text-xs font-semibold text-purple-600 transition hover:bg-purple-100",
+              compact && "w-full justify-center",
+            )}
+          >
+            <Percent className="size-4 shrink-0" />
+            <span>العمولة</span>
+          </button>
+        </PermissionGate>
+      )}
       <PermissionGate slug="Admin View Vehicles">
         <Action icon={Eye} label="عرض" onClick={onView} className="bg-blue-50 text-blue-600" />
       </PermissionGate>
@@ -63,34 +84,6 @@ function VehicleActions({
       <PermissionGate slug="Admin Delete Vehicles">
         <Action icon={Trash2} label="حذف" onClick={onDelete} className="bg-red-50 text-red-500" />
       </PermissionGate>
-
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <button
-            type="button"
-            aria-label="المزيد من الإجراءات"
-            className="grid size-8 place-items-center rounded-lg bg-primary/8 text-dark-gray transition hover:brightness-95"
-          >
-            <MoreVertical className="size-4 shrink-0" />
-          </button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          {canUpdateCommission && (
-            <PermissionGate slug="Admin View Operation Companies">
-              <DropdownMenuItem onSelect={onCommission}>
-                <Percent className="size-4 shrink-0 text-purple-600" />
-                <span className="flex-1 truncate text-right">العمولة</span>
-              </DropdownMenuItem>
-            </PermissionGate>
-          )}
-          <PermissionGate slug="Admin View Zones">
-            <DropdownMenuItem onSelect={onManageZone}>
-              <MapPin className="size-4 shrink-0 text-indigo-600" />
-              <span className="flex-1 truncate text-right">مناطق التشغيل</span>
-            </DropdownMenuItem>
-          </PermissionGate>
-        </DropdownMenuContent>
-      </DropdownMenu>
     </div>
   );
 }

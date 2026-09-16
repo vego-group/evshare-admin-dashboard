@@ -2,6 +2,8 @@
 
 import { useParams } from "next/navigation";
 import dynamic from "next/dynamic";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 import Header from "@/components/ui/header";
 import { useTrip } from "@/hooks/api";
@@ -10,6 +12,7 @@ import TripBasicInfo from "./trip-basic-info";
 import TripBillingDetails from "./trip-billing-details";
 import TripLocations from "./trip-locations";
 import TripTimeline from "./trip-timeline";
+import TripDetailsShimmer from "./trip-details-shimmer";
 
 const TripRouteMap = dynamic(() => import("./trip-route-map"), {
   ssr: false,
@@ -23,12 +26,23 @@ function ViewTrip() {
 
   return (
     <div className="flex w-full flex-col gap-6">
-      <Header title="تفاصيل الرحلة" subtitle="عرض بيانات الرحلة المختارة" />
+      <div className="flex items-center gap-3">
+        <Link
+          href="/trips"
+          className="flex size-10 shrink-0 items-center justify-center rounded-full border border-neutral-200 bg-white text-secondary transition hover:bg-neutral-50"
+          aria-label="العودة إلى الرحلات"
+        >
+          <ArrowRight className="size-5" />
+        </Link>
+        <Header title="تفاصيل الرحلة" subtitle="عرض بيانات الرحلة المختارة" />
+      </div>
 
       <div className="rounded-2xl border border-neutral-100 bg-white p-4 shadow-sm md:p-6">
-        {isLoading || !trip ? (
+        {isLoading ? (
+          <TripDetailsShimmer />
+        ) : !trip ? (
           <p className="p-6 text-center text-sm text-gray">
-            {isLoading ? "جارٍ التحميل..." : "تعذر العثور على الرحلة"}
+            تعذر العثور على الرحلة
           </p>
         ) : (
           <div className="space-y-5">
