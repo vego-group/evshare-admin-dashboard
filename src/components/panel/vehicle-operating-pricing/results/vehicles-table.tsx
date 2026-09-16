@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 import type { VehicleListItem } from "@/types";
+import { isGatewayDeviceId } from "@/lib/utils/device-id";
 import StatusBadge from "../status-badge";
 import { vehicleTitle } from "../utils";
 import VehicleActions from "./action-buttons";
@@ -90,10 +91,16 @@ function DeviceCell({ vehicle }: { vehicle: VehicleListItem }) {
           {vehicle.lock?.device_id ?? vehicle.lock_id ?? "-"}
         </bdi>
       </p>
+      {vehicle.lock?.device_id && !isGatewayDeviceId(vehicle.lock.device_id) && (
+        <span className="text-xs font-medium text-orange-700">معرف قفل غير صالح (يلزم UUID)</span>
+      )}
       {vehicle.lock && (
-        <span className={`inline-flex rounded-full px-2 py-0.5 font-medium ${vehicle.lock.status === "locked" ? "bg-red-50 text-red-700" : "bg-emerald-50 text-emerald-700"}`}>
-          {vehicle.lock.status === "locked" ? "القفل مقفل" : "القفل مفتوح"}
+        <span className={`inline-flex rounded-full px-2 py-0.5 font-medium ${vehicle.lock.status === "locked" ? "bg-red-50 text-red-700" : vehicle.lock.status === "unlocked" ? "bg-emerald-50 text-emerald-700" : "bg-neutral-100 text-gray"}`}>
+          {vehicle.lock.status === "locked" ? "القفل مقفل" : vehicle.lock.status === "unlocked" ? "القفل مفتوح" : "حالة القفل غير معروفة"}
         </span>
+      )}
+      {vehicle.lock?.last_seen_at && (
+        <span dir="ltr" className="block text-xs text-gray">{new Date(vehicle.lock.last_seen_at).toLocaleString("ar-EG")}</span>
       )}
     </div>
   );

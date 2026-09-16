@@ -20,6 +20,7 @@ import Modal from "@/components/ui/modal";
 import { useHasPermission } from "@/hooks";
 import { useVehicleAssignedLock, useVehicleLocks } from "@/hooks/api";
 import { cn } from "@/lib/utils";
+import { isGatewayDeviceId } from "@/lib/utils/device-id";
 import type { VehicleCommandValues } from "@/schemas/vehicle-operating-pricing";
 import {
   addVehicleLockAPI,
@@ -80,6 +81,7 @@ function CommandPanelModal({
   );
   const [selectedLockId, setSelectedLockId] = useState("");
   const [newLockDeviceId, setNewLockDeviceId] = useState("");
+  const [deviceIdError, setDeviceIdError] = useState(false);
   const [newLockNotes, setNewLockNotes] = useState("");
   const canViewLocks = useHasPermission("Admin View Locks");
   const canEditLocks = useHasPermission("Admin Edit Locks");
@@ -118,6 +120,11 @@ function CommandPanelModal({
 
   async function assignExistingLock() {
     if (pendingAction || !selectedLockId) return;
+    const selectedLock = unassignedLocks.find((lock) => lock.id === selectedLockId);
+    if (!selectedLock || !isGatewayDeviceId(selectedLock.device_id)) {
+      toast.error("معرف القفل ليس UUID صالحًا. صحح معرف الجهاز قبل ربطه.");
+      return;
+    }
     setPendingAction("assign_existing");
     const result = await assignVehicleLockAPI(selectedLockId, {
       vehicle_uuid: currentVehicle.id,
@@ -137,6 +144,11 @@ function CommandPanelModal({
   async function createAndAssignLock() {
     const deviceId = newLockDeviceId.trim();
     if (pendingAction || !deviceId) return;
+    if (!isGatewayDeviceId(deviceId)) {
+      setDeviceIdError(true);
+      return;
+    }
+    setDeviceIdError(false);
     setPendingAction("create_lock");
     const result = await addVehicleLockAPI({
       device_id: deviceId,
@@ -148,6 +160,7 @@ function CommandPanelModal({
     if (result?.ok) {
       toast.success(result.message || "تم إنشاء القفل وربطه بالمركبة بنجاح");
       setNewLockDeviceId("");
+      setDeviceIdError(false);
       setNewLockNotes("");
       await refreshLockState();
       return;
@@ -257,6 +270,10 @@ function CommandPanelModal({
                   label="معرف جهاز القفل"
                   value={assignedLock.device_id}
                 />
+                {!isGatewayDeviceId(assignedLock.device_id) && (
+                  <p role="alert" className="rounded-xl bg-amber-50 p-3 text-sm text-orange-700">معرف القفل ليس UUID صالحًا. استخدم معرف الجهاز من وحدة Vego IoT.</p>
+                )}
+                <InfoRow label="آخر اتصال" value={formatDate(assignedLock.last_seen_at ?? undefined)} />
                 <InfoRow
                   label="آخر قفل"
                   value={formatDate(assignedLock.last_lock_date ?? undefined)}
@@ -381,8 +398,8 @@ function CommandPanelModal({
                           : "اختر القفل"}
                       </option>
                       {unassignedLocks.map((lock) => (
-                        <option key={lock.id} value={lock.id}>
-                          {lock.device_id}
+                        <option key={lock.id} value={lock.id} disabled={!isGatewayDeviceId(lock.device_id)}>
+                          {lock.device_id}{isGatewayDeviceId(lock.device_id) ? "" : " — معرف غير صالح"}
                         </option>
                       ))}
                     </select>
@@ -423,14 +440,17 @@ function CommandPanelModal({
                     </span>
                     <input
                       value={newLockDeviceId}
-                      onChange={(event) =>
-                        setNewLockDeviceId(event.target.value)
-                      }
+                      onChange={(event) => {
+                        setNewLockDeviceId(event.target.value);
+                        setDeviceIdError(false);
+                      }}
                       disabled={Boolean(pendingAction)}
                       placeholder="3fcbff96-04c0-4803-a24f-6f6aba32f8e7"
                       dir="ltr"
                       className="h-11 w-full rounded-xl border border-primary/15 bg-background px-3 text-left text-sm outline-none transition focus:border-primary"
                     />
+                    <span className="mt-1 block text-xs text-gray">استخدم UUID الجهاز من وحدة Vego IoT.</span>
+                    {deviceIdError && <span role="alert" className="mt-1 block text-xs text-red-600">يجب إدخال UUID صالح للجهاز.</span>}
                   </label>
 
                   <label className="block">

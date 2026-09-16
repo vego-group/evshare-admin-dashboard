@@ -47,6 +47,12 @@ function TripBasicInfo({ trip }: { trip: TripListItem }) {
       <section className="grid gap-2 sm:grid-cols-2">
         <DetailRow label="رقم الرحلة" value={<span dir="ltr">{trip.id}</span>} />
         <DetailRow label="الحالة" value={<TripStatusBadge status={trip.status} />} />
+        {trip.status === "completed" && trip.lock_verification && (
+          <>
+            <DetailRow label="التحقق من القفل" value={lockVerificationLabel(trip.lock_verification.status)} />
+            <DetailRow label="وقت التحقق من القفل" value={<span dir="ltr">{formatDate(trip.lock_verification.checked_at)}</span>} />
+          </>
+        )}
         <DetailRow label="نوع المركبة" value={vehicleTypeLabel(trip.vehicle_type)} />
         <DetailRow label="المسافة" value={formatDistance(trip.distance)} />
         <DetailRow label="تاريخ إنشاء الرحلة" value={<span dir="ltr">{formatDate(trip.created_at)}</span>} />
@@ -90,3 +96,12 @@ function TripBasicInfo({ trip }: { trip: TripListItem }) {
 }
 
 export default TripBasicInfo;
+
+function lockVerificationLabel(status: string) {
+  switch (status) {
+    case "closed": return "تم التأكد من إغلاق القفل";
+    case "not_applicable": return "لا يوجد جهاز مرتبط";
+    case "skipped_integration_disabled": return "تم التخطي لتعطيل التكامل";
+    default: return status;
+  }
+}

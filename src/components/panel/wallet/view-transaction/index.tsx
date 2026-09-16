@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { ArrowRight } from "lucide-react";
 import CurrencyMoneyValue from "@/components/ui/money-value";
 import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
 
 import Header from "@/components/ui/header";
 import Shimmer from "@/components/ui/shimmer";
@@ -120,6 +121,11 @@ function TransactionDetails({
             value={transaction.reference?.id ?? "-"}
             valueDir="ltr"
           />
+          {transaction.reference?.type?.toLowerCase() === "trip" && transaction.reference.id && (
+            <Link href={`/trips/${encodeURIComponent(transaction.reference.id)}`} className="inline-flex rounded-lg bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 hover:bg-blue-100">
+              عرض الرحلة المرتبطة
+            </Link>
+          )}
         </section>
       </div>
     </div>
