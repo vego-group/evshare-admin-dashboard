@@ -13,6 +13,7 @@ import {
   preventNegativeNumberPaste,
 } from "@/lib/utils/non-negative-input";
 import { editVehicleAPI } from "@/services/mutations";
+import { useOperatingCompanies } from "@/hooks/api";
 import type { VehicleListItem, VehicleStatus, VehicleType } from "@/types";
 import FilterSelect, { type FilterOption } from "../toolbar/filter-select";
 import { buildChangedPayload, pricingFields, vehicleTitle } from "../utils";
@@ -46,6 +47,9 @@ function VehicleEditModal({
   onSaved,
   setIsSaving,
 }: Props) {
+  const [companySearch, setCompanySearch] = useState("");
+  const [companyLabel, setCompanyLabel] = useState(vehicle?.operation_company?.name ?? "");
+  const { data: companies } = useOperatingCompanies({ page: 1, limit: 100, status: "active", search: companySearch || undefined });
   const [values, setValues] = useState<Record<string, string>>(() =>
     vehicle ? getInitialValues(vehicle) : {},
   );
@@ -57,6 +61,10 @@ function VehicleEditModal({
     event.preventDefault();
     if (!vehicle || isSaving || !isChanged) return;
     const payload = buildChangedPayload(values, vehicle);
+    if (payload.status === "active" && vehicle.provisioning && !vehicle.provisioning.ready) {
+      toast.error("أكمل تجهيز المركبة قبل تفعيلها");
+      return;
+    }
     setIsSaving(true);
     const result = await editVehicleAPI(vehicle.id, payload);
     setIsSaving(false);
@@ -91,7 +99,7 @@ function VehicleEditModal({
           </div>
           <FilterSelect
             label="حالة المركبة"
-            options={vehicleStatusOptions}
+            options={vehicle.provisioning && !vehicle.provisioning.ready ? vehicleStatusOptions.filter((option) => option.value !== "active") : vehicleStatusOptions}
             value={values.status as VehicleStatus}
             onChange={(status) =>
               setValues((current) => ({ ...current, status }))
@@ -111,6 +119,11 @@ function VehicleEditModal({
               setValues((current) => ({ ...current, vehicle_type: value ?? "" }))
             }
           />
+        </section>
+
+        <section className="grid gap-4 rounded-[18px] border border-primary/25 bg-white p-4 shadow-sm sm:grid-cols-2">
+          {vehicle.operating_type === "operation_company" && <div className="space-y-2"><label className="block text-sm font-medium text-secondary">بحث عن الشركة<input className={numberInputClassName} value={companySearch} onChange={(event) => setCompanySearch(event.target.value)} /></label><label className="block text-sm font-medium text-secondary">شركة التشغيل<select className={numberInputClassName} value={values.operation_company_id ?? ""} onChange={(event) => { setCompanyLabel(event.target.selectedOptions[0]?.text ?? ""); setValues((current) => ({ ...current, operation_company_id: event.target.value })); }}><option value="">اختر شركة نشطة</option>{values.operation_company_id && !companies?.data?.some((company) => company.id === values.operation_company_id) && <option value={values.operation_company_id}>{companyLabel}</option>}{companies?.data?.filter((company) => company.slug !== "evshare").map((company) => <option key={company.id} value={company.id}>{company.name}</option>)}</select></label></div>}
+          <label className="block text-sm font-medium text-secondary">معرف جهاز IoT<input className={numberInputClassName} dir="ltr" value={values.iot_device_id ?? ""} onChange={(event) => setValues((current) => ({ ...current, iot_device_id: event.target.value }))} /></label>
         </section>
 
         <section className="rounded-[18px] border border-primary/25 bg-white p-4 shadow-sm">
@@ -184,6 +197,8 @@ function getInitialValues(vehicle: VehicleListItem) {
   return {
     status: vehicle.status ?? "",
     vehicle_type: vehicle.vehicle_type_override ?? "",
+    operation_company_id: vehicle.operation_company?.id ?? "",
+    iot_device_id: vehicle.iot_device_id ?? "",
     open_price: String(vehicle.open_price ?? ""),
     price_per_minute: String(vehicle.price_per_minute ?? ""),
     price_per_km: String(vehicle.price_per_km ?? ""),

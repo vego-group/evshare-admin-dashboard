@@ -26,6 +26,7 @@ export const vehiclesAPI = async (
     vehicle_type: params.vehicle_type,
     device_id: params.device_id,
     connectivity: params.connectivity,
+    provisioning_status: params.provisioning_status,
   });
 
   return await baseAPI("GET", `/vehicles?${query}`);

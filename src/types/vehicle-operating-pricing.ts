@@ -21,6 +21,14 @@ export type VehiclesQueryParams = Omit<QueryParams, "status"> & {
   vehicle_type?: VehicleType;
   device_id?: string;
   connectivity?: VehicleLockConnectivity;
+  provisioning_status?: VehicleProvisioningStatus;
+};
+
+export type VehicleProvisioningStatus = "draft" | "pending_device" | "ready";
+export type VehicleProvisioning = {
+  status: VehicleProvisioningStatus;
+  ready: boolean;
+  missing: Array<"owner" | "operation_company" | "pricing" | "device">;
 };
 
 export type OperationCompany = {
@@ -92,6 +100,8 @@ export type VehicleListItem = VehiclePricing & {
   id: string;
   label?: string | null;
   status: VehicleStatus;
+  provisioning_status?: VehicleProvisioningStatus;
+  provisioning?: VehicleProvisioning;
   operating_type: VehicleOperatingType;
   user_id?: number | null;
   user?: VehicleMerchant | null;

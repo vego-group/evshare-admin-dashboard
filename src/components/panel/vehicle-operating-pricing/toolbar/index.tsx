@@ -9,6 +9,7 @@ import type {
   VehicleLockConnectivity,
   VehicleStatus,
   VehicleType,
+  VehicleProvisioningStatus,
 } from "@/types";
 import FilterSelect, { type FilterOption } from "./filter-select";
 import SearchInput from "./search-input";
@@ -21,6 +22,8 @@ type Props = {
   selectedOperationCompany?: string;
   selectedVehicleType?: VehicleType;
   selectedConnectivity?: VehicleLockConnectivity;
+  selectedProvisioning?: VehicleProvisioningStatus;
+  onProvisioningChange: (value?: VehicleProvisioningStatus) => void;
   companies: OperationCompany[];
   onSearchChange: (value: string) => void;
   onDeviceQueryChange: (value: string) => void;
@@ -65,6 +68,7 @@ function VehicleToolbar({
   selectedOperationCompany,
   selectedVehicleType,
   selectedConnectivity,
+  selectedProvisioning,
   companies,
   onSearchChange,
   onDeviceQueryChange,
@@ -73,6 +77,7 @@ function VehicleToolbar({
   onOperationCompanyChange,
   onVehicleTypeChange,
   onConnectivityChange,
+  onProvisioningChange,
 }: Props) {
   const [internalSearchQuery, setInternalSearchQuery] = useState(searchQuery);
   const [internalDeviceQuery, setInternalDeviceQuery] = useState(deviceQuery);
@@ -114,7 +119,8 @@ function VehicleToolbar({
           />
         </label>
       </div>
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
+        <FilterSelect label="حالة التجهيز" options={[{ label: "كل مراحل التجهيز", value: "all" }, { label: "مسودة", value: "draft" }, { label: "بانتظار الجهاز", value: "pending_device" }, { label: "جاهزة", value: "ready" }]} value={selectedProvisioning ?? "all"} onChange={(value) => onProvisioningChange(value === "all" ? undefined : value as VehicleProvisioningStatus)} className="sm:w-full" />
         <FilterSelect
           label="حالة اتصال جهاز IoT أو القفل"
           options={connectivityOptions}

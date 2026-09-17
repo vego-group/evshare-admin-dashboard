@@ -42,6 +42,7 @@ function OperatingCompaniesCards({
                 <p dir="ltr" className="truncate text-sm text-gray">
                   {company.slug}
                 </p>
+                {company.status && <span className={`mt-1 inline-flex rounded-full px-2 py-0.5 text-xs ${company.status === "active" ? "bg-green-50 text-green-700" : "bg-neutral-100 text-gray"}`}>{company.status === "active" ? "نشطة" : "غير نشطة"}</span>}
               </div>
               <div className="shrink-0">
                 <CommissionBadge value={company.commission_percentage} isPlatform={company.slug === "evshare"} />

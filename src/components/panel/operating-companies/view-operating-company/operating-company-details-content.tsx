@@ -56,6 +56,8 @@ export function OperatingCompanyDetailsContent({ company, isLoading }: Props) {
         <DetailRow label="الاسم بالعربية" value={company.name_ar} />
         <DetailRow label="الاسم بالإنجليزية" value={company.name_en} />
         <DetailRow label="المعرف (Slug)" value={company.slug} />
+        <DetailRow label="الحالة" value={company.status === "inactive" ? "غير نشطة" : company.status === "active" ? "نشطة" : undefined} />
+        <DetailRow label="المالك" value={company.owner ? `${company.owner.name} — ${company.owner.mobile}` : undefined} />
         <DetailRow
           label={company.slug === "evshare" ? "نسبة عمولة المنصة" : "نسبة العمولة"}
           value={

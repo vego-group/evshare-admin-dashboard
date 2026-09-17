@@ -1,6 +1,17 @@
 "use server";
 
 import { safeApi } from "..";
+import type { OperatingCompanyDetailsResponse } from "@/types";
+
+export const createOperatingCompanyAPI = async (payload: FormData) => {
+  const hasFiles = ["logo", "contract"].some((field) => payload.get(field) instanceof File);
+  return await safeApi<OperatingCompanyDetailsResponse>(
+    "POST",
+    "/operation-companies/add",
+    hasFiles ? payload : Object.fromEntries(payload),
+    { isForm: hasFiles },
+  );
+};
 
 export const uploadOperatingCompanyContractAPI = async (
   companyId: string,
