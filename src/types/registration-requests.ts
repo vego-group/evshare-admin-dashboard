@@ -22,6 +22,8 @@ export type KycListItem = {
   id: string;
   name: string;
   status: RequestStatus;
+  rejection_reason: string | null;
+  reviewed_at: string | null;
   city: KycCity | null;
   created_at: string;
   updated_at: string;
@@ -41,6 +43,7 @@ export type KycUser = {
 
 export type KycDetail = KycListItem & {
   user: KycUser;
+  reviewer?: { id: string; name: string } | null;
 };
 
 export type PaginationMeta = {
