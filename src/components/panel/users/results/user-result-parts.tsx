@@ -2,6 +2,7 @@ import type { MouseEvent } from "react";
 import { Pencil, RotateCcw, Trash2, User, UserRoundX, type LucideIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import PermissionGate from "@/components/permission-gate";
 import type { UserAccountStatus, UserKycStatus, UserListItem, UserRole } from "@/types";
 
 export function AccountStatusBadge({ status }: { status: UserAccountStatus }) {
@@ -10,7 +11,7 @@ export function AccountStatusBadge({ status }: { status: UserAccountStatus }) {
   return <span className={cn("inline-flex rounded-full px-3 py-1 text-sm", colors[status])}>{labels[status]}</span>;
 }
 
-export const roleLabels: Record<UserRole, string> = {
+export const roleLabels: Record<string, string> = {
   user: "مستخدم",
   merchant: "تاجر",
   driver: "سائق",
@@ -19,7 +20,7 @@ export const roleLabels: Record<UserRole, string> = {
   sales: "مبيعات",
 };
 
-export const roleBadgeClass: Record<UserRole, string> = {
+export const roleBadgeClass: Record<string, string> = {
   user: "bg-blue-50 text-blue-600",
   merchant: "bg-purple-50 text-purple-600",
   driver: "bg-orange-50 text-orange-500",
@@ -123,7 +124,7 @@ export function UserActions({
 }) {
   return (
     <div className={cn("flex items-center gap-2", compact && "w-full")}>
-      {user.account_status !== "deleted" && <ActionButton icon={Pencil} onClick={onEdit} label="تعديل المستخدم" className="bg-blue-50 text-blue-600" />}
+      {user.account_status !== "deleted" && <PermissionGate slug={["Admin Edit Users", "Admin Assign User Roles"]}><ActionButton icon={Pencil} onClick={onEdit} label="تعديل المستخدم" className="bg-blue-50 text-blue-600" /></PermissionGate>}
       {user.account_status === "active" && <ActionButton icon={UserRoundX} onClick={onSuspend} label="تعليق المستخدم" className="bg-amber-50 text-amber-700" />}
       {user.account_status === "suspended" && <ActionButton icon={RotateCcw} onClick={onReactivate} label="إعادة تفعيل المستخدم" className="bg-green-50 text-green-700" />}
       {user.account_status !== "deleted" &&

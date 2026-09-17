@@ -30,6 +30,9 @@ export const addUser = async (payload: AddUserPayload) =>
 export const editUser = async (id: string, payload: EditUserPayload) =>
   safeApi<AdminUserDetailResponse, UserMutationError>("POST", `/users/${id}/edit`, payload);
 
+export const assignUserRole = async (id: string, roleId: string) =>
+  safeApi<AdminUserDetailResponse, UserMutationError>("POST", `/users/${id}/role`, { role_id: roleId });
+
 export const suspendUser = async (id: string, reason?: string) =>
   safeApi<AdminUserDetailResponse, UserMutationError>("POST", `/users/${id}/suspend`, reason ? { reason } : {});
 
