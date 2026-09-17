@@ -1,68 +1,41 @@
+"use client";
+
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import InputErrorMessage from "@/components/ui/input-error-message";
 import Loader from "@/components/ui/loader";
 import Modal from "@/components/ui/modal";
 
-type UserDeleteConfirmModalProps = {
+type Props = {
   userName?: string;
   open: boolean;
   isDeleting: boolean;
   onClose: () => void;
-  onConfirm: () => void;
+  onConfirm: (reason: string) => void;
 };
 
-function UserDeleteConfirmModal({
-  userName,
-  open,
-  isDeleting,
-  onClose,
-  onConfirm,
-}: UserDeleteConfirmModalProps) {
-  return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      contentClassName="rounded-[20px] border-0 bg-background shadow-[0_18px_45px_rgba(16,24,40,0.16)]"
-    >
-      <div className="mx-auto flex w-full max-w-[481px] flex-col items-center justify-center gap-6 text-center">
-        <div className="grid size-24 place-items-center rounded-full bg-red-50 text-red-500">
-          <span className="text-5xl leading-none">!</span>
-        </div>
-
-        <div className="space-y-2">
-          <h2 className="text-2xl font-medium leading-8 text-[#344054]">
-            هل أنت متأكد أنك تريد حذف{" "}
-            <span className="inline-block max-w-[220px] truncate align-bottom sm:max-w-[320px]">
-              {userName ?? "هذا المستخدم"}
-            </span>
-            ؟
-          </h2>
-          <p className="text-base font-medium leading-6 text-[#667085]">
-            سيتم حذف هذا المستخدم بشكل نهائي من النظام، ولن تتمكن من استرجاعه بعد تنفيذ هذا الإجراء.
-          </p>
-        </div>
-
-        <div className="grid w-full grid-cols-2 gap-4">
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={onClose}
-            disabled={isDeleting}
-            className="h-[54px] rounded-[14px] bg-neutral-100 px-4 py-3 text-base font-medium text-dark-gray hover:bg-neutral-200"
-          >
-            إغلاق
-          </Button>
-          <Button
-            type="button"
-            onClick={onConfirm}
-            disabled={isDeleting}
-            className="h-[54px] rounded-[14px] bg-[#f04438] px-4 py-3 text-base font-medium text-white shadow-[0_1px_2px_rgba(16,24,40,0.05)] hover:bg-[#d92d20]"
-          >
-            {isDeleting ? <Loader /> : "حذف"}
-          </Button>
-        </div>
+export default function UserDeleteConfirmModal({ userName, open, isDeleting, onClose, onConfirm }: Props) {
+  const [reason, setReason] = useState("");
+  const [error, setError] = useState("");
+  function confirm() {
+    const trimmed = reason.trim();
+    if (trimmed.length < 3 || trimmed.length > 1000) {
+      setError("سبب الإزالة مطلوب (من 3 إلى 1000 حرف)");
+      return;
+    }
+    onConfirm(trimmed);
+  }
+  return <Modal open={open} onClose={onClose} title="إزالة المستخدم" contentClassName="md:max-w-[480px]">
+    <div className="space-y-5 p-2 text-right">
+      <p className="text-sm text-dark-gray">هل تريد إزالة حساب {userName ?? "هذا المستخدم"}؟ سيتم إخفاء بياناته الشخصية وتعطيل الحساب مع الاحتفاظ بالسجل المرتبط به.</p>
+      <label className="block text-sm text-dark-gray">سبب الإزالة *
+        <textarea value={reason} onChange={e => { setReason(e.target.value); setError(""); }} maxLength={1000} rows={4} className="mt-2 w-full rounded-xl border border-primary bg-primary/4 p-3" />
+        <InputErrorMessage msg={error} />
+      </label>
+      <div className="flex gap-3">
+        <Button type="button" onClick={confirm} disabled={isDeleting} className="flex-1 bg-red-600 text-white hover:bg-red-700">{isDeleting ? <Loader /> : "إزالة الحساب"}</Button>
+        <Button type="button" variant="ghost" onClick={onClose} disabled={isDeleting}>إلغاء</Button>
       </div>
-    </Modal>
-  );
+    </div>
+  </Modal>;
 }
-
-export default UserDeleteConfirmModal;

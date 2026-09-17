@@ -9,14 +9,17 @@ type UsersResultsProps = {
   users: UserListItem[];
   viewMode: UsersViewMode;
   onDeleteUser: (user: UserListItem) => void;
+  onEditUser: (user: UserListItem) => void;
+  onSuspendUser: (user: UserListItem) => void;
+  onReactivateUser: (user: UserListItem) => void;
 };
 
-function UsersResults({ users, viewMode, onDeleteUser }: UsersResultsProps) {
+function UsersResults({ users, viewMode, onDeleteUser, onEditUser, onSuspendUser, onReactivateUser }: UsersResultsProps) {
   if (!users.length) {
     return <EmptyState description="لا يوجد مستخدمون مطابقون." />;
   }
 
-  const props = { users, onDeleteUser };
+  const props = { users, onDeleteUser, onEditUser, onSuspendUser, onReactivateUser };
 
   return viewMode === "table" ? <UsersTable {...props} /> : <UsersCards {...props} />;
 }

@@ -20,6 +20,7 @@ import { useUser } from "@/hooks/api";
 import type { AdminUserDetail } from "@/types";
 
 import {
+  AccountStatusBadge,
   formatDateTime,
   KycBadge,
   RoleBadge,
@@ -27,6 +28,7 @@ import {
   VerifiedBadge,
 } from "../results/user-result-parts";
 import UserDetailsShimmer from "./user-details-shimmer";
+import UserDetailActions from "./user-detail-actions";
 
 const EMPTY_VALUE = "-";
 
@@ -66,7 +68,7 @@ function UserDetails() {
       {isLoading ? (
         <UserDetailsShimmer />
       ) : user ? (
-        <UserDetailsContent user={user} />
+        <><UserDetailActions user={user} /><UserDetailsContent user={user} /></>
       ) : (
         <div className="flex min-h-80 items-center justify-center rounded-[14px] bg-white px-4 text-center text-base text-gray">
           تعذر تحميل تفاصيل المستخدم.
@@ -106,13 +108,7 @@ function UserDetailsContent({ user }: { user: AdminUserDetail }) {
         <SummaryCard
           icon={UserRound}
           label="حالة الحساب"
-          value={
-            <BooleanBadge
-              active={user.active}
-              activeLabel="نشط"
-              inactiveLabel="موقوف"
-            />
-          }
+          value={<AccountStatusBadge status={user.account_status} />}
         />
       </div>
 

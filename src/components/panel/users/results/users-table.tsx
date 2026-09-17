@@ -8,6 +8,7 @@ import { useTenantCountry } from "@/provider/currency";
 import type { UserListItem } from "@/types";
 
 import {
+  AccountStatusBadge,
   formatDate,
   getUserDisplayName,
   RoleBadge,
@@ -19,9 +20,12 @@ import {
 type UsersTableProps = {
   users: UserListItem[];
   onDeleteUser: (user: UserListItem) => void;
+  onEditUser: (user: UserListItem) => void;
+  onSuspendUser: (user: UserListItem) => void;
+  onReactivateUser: (user: UserListItem) => void;
 };
 
-function UsersTable({ users, onDeleteUser }: UsersTableProps) {
+function UsersTable({ users, onDeleteUser, onEditUser, onSuspendUser, onReactivateUser }: UsersTableProps) {
   const router = useRouter();
   const countryCode = useTenantCountry();
 
@@ -74,6 +78,7 @@ function UsersTable({ users, onDeleteUser }: UsersTableProps) {
                           {user.email}
                         </p>
                       )}
+                      <AccountStatusBadge status={user.account_status} />
                     </div>
                   </div>
                 </TableCell>
@@ -86,7 +91,7 @@ function UsersTable({ users, onDeleteUser }: UsersTableProps) {
                 </TableCell>
                 <TableCell dir="ltr">{formatDate(user.created_at)}</TableCell>
                 <TableCell truncate={false}>
-                  <UserActions onDelete={() => onDeleteUser(user)} />
+                  <UserActions user={user} onEdit={() => onEditUser(user)} onSuspend={() => onSuspendUser(user)} onReactivate={() => onReactivateUser(user)} onDelete={() => onDeleteUser(user)} />
                 </TableCell>
               </tr>
             ))}

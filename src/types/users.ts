@@ -1,5 +1,6 @@
 export type UserRole = "user" | "root" | "admin" | "merchant" | "driver" | "sales";
 export type UserKycStatus = "not_verified" | "pending" | "approved";
+export type UserAccountStatus = "active" | "suspended" | "deleted";
 
 export type UserListItem = {
   id: string;
@@ -7,6 +8,7 @@ export type UserListItem = {
   mobile: string;
   email: string | null;
   active: boolean;
+  account_status: UserAccountStatus;
   role: UserRole | null;
   mobile_verified: boolean;
   mobile_verified_at: string | null;
@@ -49,6 +51,11 @@ export type UserSubscription = {
 };
 
 export type AdminUserDetail = UserListItem & {
+  first_name: string | null;
+  last_name: string | null;
+  language: "ar" | "en";
+  notifications_enabled: boolean;
+  deleted_at: string | null;
   kyc_status: UserKycStatus;
   wallet_balance: number;
   is_subscribed: boolean;
@@ -71,6 +78,7 @@ export type UsersQueryParams = {
   page: number;
   limit: number;
   role?: UserRole;
+  account_status?: UserAccountStatus;
   order_by?: "asc" | "desc";
   search?: string;
 };
