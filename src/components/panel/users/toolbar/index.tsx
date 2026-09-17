@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import useDebouncedChange from "@/hooks/use-debounced-change";
-import type { UserRole } from "@/types";
+import type { UserAccountStatus, UserRole } from "@/types";
 
 import FilterSelect, { type FilterOption } from "./filter-select";
 import SearchInput from "./search-input";
@@ -11,9 +11,11 @@ import SearchInput from "./search-input";
 type UsersToolbarProps = {
   searchQuery?: string;
   selectedRole?: UserRole;
+  selectedStatus?: UserAccountStatus;
   selectedSort?: "asc" | "desc";
   onSearchChange?: (value: string) => void;
   onRoleChange?: (value?: UserRole) => void;
+  onStatusChange?: (value?: UserAccountStatus) => void;
   onSortChange?: (value: "asc" | "desc") => void;
 };
 
@@ -32,12 +34,21 @@ const roleOptions: FilterOption<UserRole | "all">[] = [
   { label: "مبيعات", value: "sales" },
 ];
 
+const statusOptions: FilterOption<UserAccountStatus | "all">[] = [
+  { label: "كل الحالات", value: "all" },
+  { label: "نشط", value: "active" },
+  { label: "معلق", value: "suspended" },
+  { label: "محذوف", value: "deleted" },
+];
+
 function UsersToolbar({
   searchQuery,
   selectedRole,
+  selectedStatus,
   selectedSort,
   onSearchChange,
   onRoleChange,
+  onStatusChange,
   onSortChange,
 }: UsersToolbarProps) {
   const [internalSearch, setInternalSearch] = useState(searchQuery ?? "");
@@ -53,6 +64,12 @@ function UsersToolbar({
       </div>
 
       <div className="flex flex-col gap-3.25 sm:flex-row sm:flex-wrap lg:shrink-0">
+        <FilterSelect
+          label="حالة الحساب"
+          options={statusOptions}
+          value={selectedStatus ?? "all"}
+          onChange={(value) => onStatusChange?.(value === "all" ? undefined : value)}
+        />
         <FilterSelect
           label="الدور"
           options={roleOptions}

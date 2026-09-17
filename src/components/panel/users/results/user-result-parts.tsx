@@ -1,8 +1,14 @@
 import type { MouseEvent } from "react";
-import { Trash2, User, type LucideIcon } from "lucide-react";
+import { Pencil, RotateCcw, Trash2, User, UserRoundX, type LucideIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import type { UserKycStatus, UserListItem, UserRole } from "@/types";
+import type { UserAccountStatus, UserKycStatus, UserListItem, UserRole } from "@/types";
+
+export function AccountStatusBadge({ status }: { status: UserAccountStatus }) {
+  const labels = { active: "نشط", suspended: "معلق", deleted: "محذوف" };
+  const colors = { active: "bg-green-50 text-green-700", suspended: "bg-amber-50 text-amber-700", deleted: "bg-red-50 text-red-700" };
+  return <span className={cn("inline-flex rounded-full px-3 py-1 text-sm", colors[status])}>{labels[status]}</span>;
+}
 
 export const roleLabels: Record<UserRole, string> = {
   user: "مستخدم",
@@ -60,10 +66,10 @@ export function RoleBadge({ role }: { role: UserRole | null }) {
     <span
       className={cn(
         "inline-flex h-8.5 w-fit items-center justify-center whitespace-nowrap rounded-full px-4 text-sm font-medium",
-        roleBadgeClass[role],
+        roleBadgeClass[role] ?? "bg-gray-100 text-dark-gray",
       )}
     >
-      {roleLabels[role]}
+      {roleLabels[role] ?? role}
     </span>
   );
 }
@@ -102,19 +108,31 @@ export function KycBadge({ status }: { status: UserKycStatus }) {
 
 export function UserActions({
   compact = false,
+  user,
+  onEdit,
+  onSuspend,
+  onReactivate,
   onDelete,
 }: {
   compact?: boolean;
+  user: UserListItem;
+  onEdit: () => void;
+  onSuspend: () => void;
+  onReactivate: () => void;
   onDelete: () => void;
 }) {
   return (
     <div className={cn("flex items-center gap-2", compact && "w-full")}>
+      {user.account_status !== "deleted" && <ActionButton icon={Pencil} onClick={onEdit} label="تعديل المستخدم" className="bg-blue-50 text-blue-600" />}
+      {user.account_status === "active" && <ActionButton icon={UserRoundX} onClick={onSuspend} label="تعليق المستخدم" className="bg-amber-50 text-amber-700" />}
+      {user.account_status === "suspended" && <ActionButton icon={RotateCcw} onClick={onReactivate} label="إعادة تفعيل المستخدم" className="bg-green-50 text-green-700" />}
+      {user.account_status !== "deleted" &&
       <ActionButton
         icon={Trash2}
         onClick={onDelete}
-        label="حذف المستخدم"
+        label="إزالة المستخدم"
         className={cn("bg-red-50 text-red-500", compact && "flex-1")}
-      />
+      />}
     </div>
   );
 }

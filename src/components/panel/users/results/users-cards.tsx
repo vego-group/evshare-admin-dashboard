@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { formatStoredPhone } from "@/lib/utils/format-phone";
 import { useTenantCountry } from "@/provider/currency";
 import {
+  AccountStatusBadge,
   DetailLine,
   formatDate,
   getUserDisplayName,
@@ -17,9 +18,12 @@ import {
 type UsersCardsProps = {
   users: UserListItem[];
   onDeleteUser: (user: UserListItem) => void;
+  onEditUser: (user: UserListItem) => void;
+  onSuspendUser: (user: UserListItem) => void;
+  onReactivateUser: (user: UserListItem) => void;
 };
 
-function UsersCards({ users, onDeleteUser }: UsersCardsProps) {
+function UsersCards({ users, onDeleteUser, onEditUser, onSuspendUser, onReactivateUser }: UsersCardsProps) {
   const router = useRouter();
   const countryCode = useTenantCountry();
 
@@ -52,7 +56,7 @@ function UsersCards({ users, onDeleteUser }: UsersCardsProps) {
               )}
             </div>
             <div className="shrink-0">
-              <RoleBadge role={user.role} />
+              <div className="flex flex-col gap-2"><RoleBadge role={user.role} /><AccountStatusBadge status={user.account_status} /></div>
             </div>
           </div>
 
@@ -63,7 +67,7 @@ function UsersCards({ users, onDeleteUser }: UsersCardsProps) {
           </div>
 
           <div className="mt-4 border-t border-neutral-100 pt-4">
-            <UserActions compact onDelete={() => onDeleteUser(user)} />
+            <UserActions compact user={user} onEdit={() => onEditUser(user)} onSuspend={() => onSuspendUser(user)} onReactivate={() => onReactivateUser(user)} onDelete={() => onDeleteUser(user)} />
           </div>
         </article>
       ))}

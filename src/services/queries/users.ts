@@ -1,6 +1,5 @@
 import { buildQuery } from "@/lib/utils/build-query";
 import { baseAPI } from "..";
-import { PAGE_SIZE } from "@/constants";
 import type {
   AdminUserDetailResponse,
   UsersListResponse,
@@ -10,8 +9,9 @@ import type {
 export const usersAPI = async (params: UsersQueryParams): Promise<UsersListResponse> => {
   const query = buildQuery({
     page: params.page.toString(),
-    limit: PAGE_SIZE.toString(),
+    limit: params.limit.toString(),
     role: params.role,
+    account_status: params.account_status,
     order_by: params.order_by,
     search: params.search,
   });
