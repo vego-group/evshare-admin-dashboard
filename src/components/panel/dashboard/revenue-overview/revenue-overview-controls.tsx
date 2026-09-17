@@ -11,11 +11,13 @@ const periodOptions: { label: string; value: DashboardPeriod }[] = [
 type RevenueOverviewControlsProps = {
   period: DashboardPeriod;
   onPeriodChange: (period: DashboardPeriod) => void;
+  hasComparison: boolean;
 };
 
 function RevenueOverviewControls({
   period,
   onPeriodChange,
+  hasComparison,
 }: RevenueOverviewControlsProps) {
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -24,10 +26,10 @@ function RevenueOverviewControls({
           <span className="h-2.5 w-3 rounded-full bg-primary" />
           الفترة الحالية
         </span>
-        <span className="inline-flex items-center gap-2">
+        {hasComparison && <span className="inline-flex items-center gap-2">
           <span className="h-2.5 w-3 rounded-full border border-dashed border-gray/70 bg-gray/15" />
           الفترة السابقة
-        </span>
+        </span>}
       </div>
 
       <div className="inline-flex w-fit rounded-full bg-gray-100/70 p-1">

@@ -1,106 +1,37 @@
-import {
-  Boxes,
-  DollarSign,
-  ShoppingCart,
-  TrendingUp,
-} from "lucide-react";
-import MoneyValue from "@/components/ui/money-value";
-
-import type {
-  DashboardAnalyticsData,
-  DashboardPeriod,
-  DashboardTrendCard,
-} from "@/types";
+import { DollarSign, ShoppingCart, Bike, Users } from "lucide-react";
+import type { DashboardAnalyticsData, DashboardMeasureId } from "@/types";
 import { DashboardSectionCard, TrendBadge } from "../shared";
+import { formatChange, formatMeasure } from "../measure-utils";
 
-type StatCardsSectionProps = {
-  data?: DashboardAnalyticsData["top_cards"];
-  period: DashboardPeriod;
-};
+type Props = { data?: DashboardAnalyticsData };
 
-const statConfig = [
-  {
-    key: "average_order_value",
-    title: "متوسط قيمة الطلب",
-    icon: TrendingUp,
-    money: true,
-  },
-  {
-    key: "products",
-    title: "المنتجات",
-    icon: Boxes,
-    money: false,
-  },
-  {
-    key: "revenues",
-    title: "الإيرادات",
-    icon: DollarSign,
-    money: true,
-  },
-  {
-    key: "orders",
-    title: "الطلبات",
-    icon: ShoppingCart,
-    money: false,
-  },
-] as const;
+const cards: { id: DashboardMeasureId; title: string; icon: typeof DollarSign }[] = [
+  { id: "revenue.total", title: "الإيرادات", icon: DollarSign },
+  { id: "revenue.orders", title: "إيرادات الطلبات", icon: ShoppingCart },
+  { id: "trips.completed", title: "الرحلات المكتملة", icon: Bike },
+  { id: "users.registered", title: "المستخدمون الجدد", icon: Users },
+];
 
-function formatNumber(value: number) {
-  return value.toLocaleString("en-US");
-}
-
-function formatTrend(value: number) {
-  return `${value.toLocaleString("en-US", {
-    maximumFractionDigits: 1,
-  })}%`;
-}
-
-function emptyCard(): DashboardTrendCard {
-  return {
-    value: 0,
-    trend: 0,
-    is_up: false,
-  };
-}
-
-function StatCardsSection({ data, period }: StatCardsSectionProps) {
+export default function StatCardsSection({ data }: Props) {
   return (
     <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-      {statConfig.map((stat) => {
-        const Icon = stat.icon;
-        const card = data?.[stat.key] ?? emptyCard();
-
+      {cards.map(({ id, title, icon: Icon }) => {
+        const measure = data?.measures[id];
         return (
-          <DashboardSectionCard
-            key={stat.title}
-            className="flex h-43 flex-col justify-center gap-4 rounded-[14px] border border-primary/8 px-6 py-4 shadow-[0_1px_3px_rgba(17,24,39,0.04)]"
-          >
-            <div>
-              <div className="grid size-10 shrink-0 place-items-center rounded-[10px] bg-neutral-100 text-gray">
-                <Icon className="size-4.5 shrink-0" />
-              </div>
-            </div>
-
+          <DashboardSectionCard key={id} className="flex h-43 flex-col justify-center gap-4 rounded-[14px] border border-primary/8 px-6 py-4 shadow-[0_1px_3px_rgba(17,24,39,0.04)]">
+            <div className="grid size-10 shrink-0 place-items-center rounded-[10px] bg-neutral-100 text-gray"><Icon className="size-4.5 shrink-0" /></div>
             <div className="flex w-full flex-col gap-2 text-right">
-              <p className="text-sm leading-5 font-medium text-gray">
-                {stat.title}
-              </p>
-
+              <p className="text-sm leading-5 font-medium text-gray">{title}</p>
               <div className="flex justify-between gap-3">
                 <p className="text-[30px] leading-9.5 font-semibold tracking-[-0.03em] text-dark-gray">
-                  {stat.money ? (
-                    <MoneyValue value={card.value} options={{ maximumFractionDigits: 2 }} />
-                  ) : formatNumber(card.value)}
+                  {measure ? formatMeasure(measure.current.total, measure, data!.meta.currency) : "—"}
                 </p>
-                <TrendBadge
-                  value={formatTrend(card.trend)}
-                  direction={card.is_up ? "up" : "down"}
-                  className="px-0 py-0 text-[14px] font-semibold shadow-none bg-transparent"
-                />
+                {measure && (measure.change.percent === null
+                  ? formatChange(measure, data!.meta)
+                  : <TrendBadge value={formatChange(measure, data!.meta)} direction={measure.change.direction} className="bg-transparent px-0 py-0 text-[14px] shadow-none" />)}
               </div>
-
               <p className="text-xs leading-4.5 font-medium text-gray">
-                مقارنة بآخر {period} أيام السابقة
+                {data?.meta.comparison.mode === "previous_year" ? "مقارنة بالعام السابق" : data?.meta.comparison.mode === "none" ? "بدون مقارنة" : "مقارنة بالفترة السابقة"}
               </p>
             </div>
           </DashboardSectionCard>
@@ -109,5 +40,3 @@ function StatCardsSection({ data, period }: StatCardsSectionProps) {
     </div>
   );
 }
-
-export default StatCardsSection;

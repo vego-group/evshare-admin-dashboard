@@ -12,7 +12,7 @@ type DashboardSectionCardProps = {
 
 type TrendBadgeProps = {
   value: ReactNode;
-  direction: TrendDirection;
+  direction: TrendDirection | null;
   className?: string;
 };
 
@@ -52,17 +52,17 @@ function DashboardSectionCard({
 }
 
 function TrendBadge({ value, direction, className }: TrendBadgeProps) {
-  const Icon = direction === "up" ? ArrowUpRight : ArrowDownRight;
+  const Icon = direction === "up" ? ArrowUpRight : direction === "down" ? ArrowDownRight : null;
 
   return (
     <span
       className={cn(
         "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold",
-        direction === "up" ? "bg-green/10 text-green" : "bg-red/10 text-red",
+        direction === "up" ? "bg-green/10 text-green" : direction === "down" ? "bg-red/10 text-red" : "bg-gray-100 text-gray",
         className,
       )}
     >
-      <Icon className="size-3.5 shrink-0" />
+      {Icon ? <Icon className="size-3.5 shrink-0" /> : null}
       {value}
     </span>
   );
