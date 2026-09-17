@@ -3,7 +3,8 @@
 import type { UserListItem } from "@/types";
 import { useRouter } from "next/navigation";
 
-import { formatSaudiPhoneNumber } from "@/lib/utils/format-phone";
+import { formatStoredPhone } from "@/lib/utils/format-phone";
+import { useTenantCountry } from "@/provider/currency";
 import {
   DetailLine,
   formatDate,
@@ -20,6 +21,7 @@ type UsersCardsProps = {
 
 function UsersCards({ users, onDeleteUser }: UsersCardsProps) {
   const router = useRouter();
+  const countryCode = useTenantCountry();
 
   const openUser = (userId: string) => router.push(`/users/${userId}`);
 
@@ -55,7 +57,7 @@ function UsersCards({ users, onDeleteUser }: UsersCardsProps) {
           </div>
 
           <div className="mt-5 space-y-3 rounded-[14px] bg-background p-4 text-right">
-            <DetailLine label="الجوال" value={formatSaudiPhoneNumber(user.mobile)} dir="ltr" />
+            <DetailLine label="الجوال" value={formatStoredPhone(user.mobile, countryCode)} dir="ltr" />
             <DetailLine label="التحقق" value={user.mobile_verified ? "موثّق" : "غير موثّق"} />
             <DetailLine label="تاريخ الإنشاء" value={formatDate(user.created_at)} />
           </div>

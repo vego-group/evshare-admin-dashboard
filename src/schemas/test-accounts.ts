@@ -12,7 +12,6 @@ export const testAccountSchema = z.object({
   mobile: z
     .string()
     .trim()
-    .regex(/^5\d{8}$/, "من فضلك أدخل رقم جوال صحيح")
     .optional()
     .or(z.literal("")),
   subscription_amount: optionalNonNegativeNumber,

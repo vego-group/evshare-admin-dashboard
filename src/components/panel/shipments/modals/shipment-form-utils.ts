@@ -6,6 +6,7 @@ import {
   shipmentSchema,
   type ShipmentFormValues,
 } from "@/schemas/shipments";
+import { normalizeTenantPhone, PHONE_VALIDATION_MESSAGE } from "@/lib/utils/tenant-phone";
 
 export const shipmentDefaultValues: ShipmentFormValues = {
   order_uuid: "",
@@ -33,11 +34,15 @@ export const shipmentDefaultValues: ShipmentFormValues = {
 };
 
 const buildResolver =
-  (schema: ZodType): Resolver<ShipmentFormValues> =>
+  (schema: ZodType, countryCode: string, unchangedPhone?: string | null): Resolver<ShipmentFormValues> =>
   async (values) => {
     const result = schema.safeParse(values);
 
     if (result.success) {
+      const phone = (result.data as ShipmentFormValues).driver_phone;
+      if (phone && phone !== unchangedPhone && !normalizeTenantPhone(phone, countryCode)) {
+        return { values: {}, errors: { driver_phone: { type: "validate", message: PHONE_VALIDATION_MESSAGE } } };
+      }
       return { values: result.data as ShipmentFormValues, errors: {} };
     }
 
@@ -52,5 +57,5 @@ const buildResolver =
     return { values: {}, errors };
   };
 
-export const shipmentAddResolver = buildResolver(shipmentAddSchema);
-export const shipmentEditResolver = buildResolver(shipmentSchema);
+export const shipmentAddResolver = (countryCode: string) => buildResolver(shipmentAddSchema, countryCode);
+export const shipmentEditResolver = (countryCode: string, unchangedPhone?: string | null) => buildResolver(shipmentSchema, countryCode, unchangedPhone);

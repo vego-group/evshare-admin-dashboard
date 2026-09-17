@@ -10,7 +10,7 @@ export type AuthResponse = {
     user_data: {
       id: string;
       name: string;
-      mobile: number;
+      mobile: string | number;
       role: UserRole;
     };
   };

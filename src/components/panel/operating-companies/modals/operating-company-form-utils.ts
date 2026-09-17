@@ -4,6 +4,7 @@ import {
   operatingCompanyEditSchema,
   type OperatingCompanyFormValues,
 } from "@/schemas/operating-companies";
+import { normalizeTenantPhone, PHONE_VALIDATION_MESSAGE } from "@/lib/utils/tenant-phone";
 
 export const operatingCompanyDefaultValues: OperatingCompanyFormValues = {
   slug: undefined,
@@ -17,12 +18,13 @@ export const operatingCompanyDefaultValues: OperatingCompanyFormValues = {
   conditions_en: "",
 };
 
-export const operatingCompanyFormResolver: Resolver<
-  OperatingCompanyFormValues
-> = async (values) => {
+export const operatingCompanyFormResolver = (countryCode: string, unchangedPhone?: string | null): Resolver<OperatingCompanyFormValues> => async (values) => {
   const result = operatingCompanyEditSchema.safeParse(values);
 
   if (result.success) {
+    if (result.data.mobile && result.data.mobile !== unchangedPhone && !normalizeTenantPhone(result.data.mobile, countryCode)) {
+      return { values: {}, errors: { mobile: { type: "validate", message: PHONE_VALIDATION_MESSAGE } } };
+    }
     return { values: result.data, errors: {} };
   }
 
@@ -42,6 +44,7 @@ export const operatingCompanyFormResolver: Resolver<
 export function buildChangedOperatingCompanyPayload(
   values: OperatingCompanyFormValues,
   dirtyFields: Partial<Record<keyof OperatingCompanyFormValues, unknown>>,
+  countryCode: string,
 ) {
   const formData = new FormData();
 
@@ -56,7 +59,7 @@ export function buildChangedOperatingCompanyPayload(
       String(values.commission_percentage),
     );
   if (dirtyFields.mobile && values.mobile)
-    formData.append("mobile", `+966${values.mobile}`);
+    formData.append("mobile", normalizeTenantPhone(values.mobile, countryCode)!);
   if (dirtyFields.email && values.email)
     formData.append("email", values.email);
   if (dirtyFields.conditions_ar && values.conditions_ar)

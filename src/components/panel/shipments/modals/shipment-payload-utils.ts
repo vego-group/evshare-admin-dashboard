@@ -1,5 +1,6 @@
 import type { ShipmentFormValues } from "@/schemas/shipments";
 import type { ShipmentListItem, ShipmentPayload } from "@/types";
+import { normalizeTenantPhone } from "@/lib/utils/tenant-phone";
 
 /** Fields the API accepts on `POST /shipments/{uuid}/edit`. */
 const editableFields = [
@@ -111,6 +112,7 @@ export function buildAddShipmentPayload(
 export function buildChangedShipmentPayload(
   values: ShipmentFormValues,
   dirtyFields: Partial<Record<keyof ShipmentFormValues, boolean>>,
+  countryCode: string,
 ): ShipmentPayload {
   const full = buildFullPayload(values);
   const payload: ShipmentPayload = {};
@@ -119,6 +121,10 @@ export function buildChangedShipmentPayload(
     if (!dirtyFields[field]) return;
     (payload as Record<string, unknown>)[field] = full[field];
   });
+
+  if (dirtyFields.driver_phone && values.driver_phone) {
+    payload.driver_phone = normalizeTenantPhone(values.driver_phone, countryCode)!;
+  }
 
   return payload;
 }

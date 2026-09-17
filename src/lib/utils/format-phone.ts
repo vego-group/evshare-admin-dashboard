@@ -1,3 +1,6 @@
+import { normalizeTenantPhone } from "./tenant-phone";
+import { phoneCountries } from "@/data/countries";
+
 const UNAVAILABLE_LABEL = "غير متوفر";
 
 export type TextDirection = "ltr" | "rtl" | "auto";
@@ -6,40 +9,31 @@ export function formatPhoneNumber(phone: string) {
   const trimmedPhone = phone.trim();
 
   if (!trimmedPhone || trimmedPhone === UNAVAILABLE_LABEL) return phone;
-  if (trimmedPhone.startsWith("+")) return trimmedPhone;
-
-  return `+${trimmedPhone}`;
+  return formatStoredPhone(trimmedPhone);
 }
 
-export function formatSaudiPhoneNumber(phone: number | string | null | undefined) {
+export function formatStoredPhone(phone: number | string | null | undefined, countryCode?: string) {
   const raw = String(phone ?? "");
-  let digits = raw.replace(/\D/g, "");
-
-  if (digits.startsWith("00")) {
-    digits = digits.slice(2);
+  const trimmed = raw.trim();
+  if (countryCode) {
+    const national = normalizeTenantPhone(trimmed, countryCode);
+    if (national) return national;
+  }
+  // A local legacy number has no reliable country without its tenant context.
+  if (!/^\+|^00|^(966|962|963)/.test(trimmed)) return raw;
+  for (const country of ["sa", "jo", "sy"]) {
+    const normalized = normalizeTenantPhone(raw, country);
+    if (normalized) return normalized;
   }
 
-  if (digits.length === 10 && digits.startsWith("05")) {
-    digits = digits.slice(1);
+  // A stored bare calling code is explicit even if the legacy number is invalid.
+  if (/^\d{8,15}$/.test(trimmed) &&
+      Object.values(phoneCountries).some(({ dialCode }) => trimmed.startsWith(dialCode))) {
+    return `+${trimmed}`;
   }
-
-  if (digits.length === 9 && digits.startsWith("5")) {
-    return `+966 ${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(5)}`;
-  }
-
-  if (digits.length === 12 && digits.startsWith("966")) {
-    return `+966 ${digits.slice(3, 5)} ${digits.slice(5, 8)} ${digits.slice(8)}`;
-  }
-
   return raw;
 }
 
 export function normalizePhoneForLink(phone: string) {
-  const digits = phone.replace(/\D/g, "");
-
-  if (digits.length === 9 && digits.startsWith("5")) {
-    return `+966${digits}`;
-  }
-
-  return phone.startsWith("+") ? phone : `+${digits}`;
+  return formatStoredPhone(phone);
 }

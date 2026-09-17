@@ -1,6 +1,8 @@
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
 
 import type { ShipmentFormValues } from "@/schemas/shipments";
+import { getPhoneCountry } from "@/lib/utils/tenant-phone";
+import { useTenantCountry } from "@/provider/currency";
 
 import { Field, inputClass, inputClassLtr } from "./form-field";
 
@@ -14,6 +16,7 @@ function ShipmentTrackingFields({
   errors,
   register,
 }: ShipmentTrackingFieldsProps) {
+  const phoneCountry = getPhoneCountry(useTenantCountry());
   return (
     <>
       <Field label="رابط التتبع" error={errors.tracking_url?.message}>
@@ -49,7 +52,7 @@ function ShipmentTrackingFields({
         <input
           type="tel"
           dir="ltr"
-          placeholder="9665xxxxxxxx"
+          placeholder={phoneCountry ? `+${phoneCountry.dialCode} ${phoneCountry.placeholder}` : ""}
           className={inputClassLtr}
           {...register("driver_phone")}
         />

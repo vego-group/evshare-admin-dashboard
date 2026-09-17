@@ -1,6 +1,6 @@
 import { Mail, Phone, User } from "lucide-react";
 
-import { formatSaudiPhoneNumber } from "@/lib/utils/format-phone";
+import { formatStoredPhone } from "@/lib/utils/format-phone";
 
 import type { ConsultationListItem } from "@/types";
 import ContactInfoRow from "./contact-info-row";
@@ -15,7 +15,7 @@ function ContactInfoSection({ request }: { request: ConsultationListItem }) {
         <ContactInfoRow
           icon={Phone}
           label="الهاتف"
-          value={formatSaudiPhoneNumber(request.phone)}
+          value={formatStoredPhone(request.phone)}
           valueDir="ltr"
         />
         <ContactInfoRow

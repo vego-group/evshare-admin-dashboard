@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import type { TestAccountFormValues } from "@/schemas/test-accounts";
 import { addTestAccount, editTestAccount } from "@/services/mutations";
 import type { TestAccountListItem } from "@/types";
+import { useTenantCountry } from "@/provider/currency";
 
 import {
   buildAddTestAccountPayload,
@@ -23,10 +24,11 @@ type Options = {
 };
 
 export function useTestAccountForm({ open, testAccount, onClose, onSaved }: Options) {
+  const countryCode = useTenantCountry();
   const isEdit = Boolean(testAccount);
 
   const form = useForm<TestAccountFormValues>({
-    resolver: testAccountFormResolver(isEdit),
+    resolver: testAccountFormResolver(isEdit, countryCode),
     defaultValues: testAccountDefaultValues,
     mode: "onChange",
   });
@@ -54,7 +56,7 @@ export function useTestAccountForm({ open, testAccount, onClose, onSaved }: Opti
           if (!hasPayloadEntries(payload)) return undefined;
           return editTestAccount(testAccount.id, payload);
         })()
-      : await addTestAccount(buildAddTestAccountPayload(values));
+      : await addTestAccount(buildAddTestAccountPayload(values, countryCode));
 
     if (!result) {
       close();

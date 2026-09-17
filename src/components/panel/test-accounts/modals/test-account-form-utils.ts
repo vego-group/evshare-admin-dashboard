@@ -1,6 +1,7 @@
 import type { FieldErrors, Resolver } from "react-hook-form";
 
 import { testAccountSchema, type TestAccountFormValues } from "@/schemas/test-accounts";
+import { normalizeTenantPhone, PHONE_VALIDATION_MESSAGE } from "@/lib/utils/tenant-phone";
 import type { AddTestAccountPayload, EditTestAccountPayload, TestAccountListItem } from "@/types";
 
 export const testAccountDefaultValues: TestAccountFormValues = {
@@ -25,6 +26,7 @@ export function testAccountToFormValues(testAccount: TestAccountListItem): TestA
 
 export function testAccountFormResolver(
   isEdit: boolean,
+  countryCode: string,
 ): Resolver<TestAccountFormValues> {
   return async (values) => {
     const result = testAccountSchema.safeParse(values);
@@ -47,13 +49,17 @@ export function testAccountFormResolver(
       };
     }
 
+    if (!isEdit && !normalizeTenantPhone(result.data.mobile!, countryCode)) {
+      return { values: {}, errors: { mobile: { type: "validate", message: PHONE_VALIDATION_MESSAGE } } };
+    }
+
     return { values: result.data, errors: {} };
   };
 }
 
-export function buildAddTestAccountPayload(values: TestAccountFormValues): AddTestAccountPayload {
+export function buildAddTestAccountPayload(values: TestAccountFormValues, countryCode: string): AddTestAccountPayload {
   return {
-    mobile: (values.mobile as string).trim(),
+    mobile: normalizeTenantPhone(values.mobile!, countryCode)!,
     subscription_amount: values.subscription_amount ?? 1,
     order_amount: values.order_amount ?? 1,
     shipping_fee: values.shipping_fee ?? 2,

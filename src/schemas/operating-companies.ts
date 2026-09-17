@@ -23,7 +23,6 @@ export const operatingCompanyEditSchema = z.object({
     z
       .string()
       .trim()
-      .regex(/^5\d{8}$/, "من فضلك أدخل رقم جوال صحيح")
       .optional(),
   ),
   email: z.preprocess(

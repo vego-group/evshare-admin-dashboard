@@ -1,4 +1,4 @@
-import { formatSaudiPhoneNumber } from "@/lib/utils/format-phone";
+import { formatStoredPhone } from "@/lib/utils/format-phone";
 import type { OperatingCompanyListItem } from "@/types";
 
 import {
@@ -52,7 +52,7 @@ function OperatingCompaniesCards({
           <div className="mt-5 space-y-3 rounded-[14px] bg-background p-4 text-right">
             <DetailLine
               label="الجوال"
-              value={company.mobile ? formatSaudiPhoneNumber(company.mobile) : "-"}
+              value={company.mobile ? formatStoredPhone(company.mobile) : "-"}
               dir="ltr"
             />
             <DetailLine label="البريد الإلكتروني" value={company.email ?? "-"} />
