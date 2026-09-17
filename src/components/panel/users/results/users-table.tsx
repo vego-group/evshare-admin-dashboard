@@ -3,7 +3,8 @@
 import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 
-import { formatSaudiPhoneNumber } from "@/lib/utils/format-phone";
+import { formatStoredPhone } from "@/lib/utils/format-phone";
+import { useTenantCountry } from "@/provider/currency";
 import type { UserListItem } from "@/types";
 
 import {
@@ -22,6 +23,7 @@ type UsersTableProps = {
 
 function UsersTable({ users, onDeleteUser }: UsersTableProps) {
   const router = useRouter();
+  const countryCode = useTenantCountry();
 
   const openUser = (userId: string) => router.push(`/users/${userId}`);
 
@@ -75,7 +77,7 @@ function UsersTable({ users, onDeleteUser }: UsersTableProps) {
                     </div>
                   </div>
                 </TableCell>
-                <TableCell dir="ltr">{formatSaudiPhoneNumber(user.mobile)}</TableCell>
+                <TableCell dir="ltr">{formatStoredPhone(user.mobile, countryCode)}</TableCell>
                 <TableCell>
                   <RoleBadge role={user.role} />
                 </TableCell>

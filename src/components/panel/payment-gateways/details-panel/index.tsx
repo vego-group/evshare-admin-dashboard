@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import Panel from "@/components/ui/panel";
 import Shimmer from "@/components/ui/shimmer";
 import { usePaymentCheckout, usePaymentTransaction } from "@/hooks/api";
-import { formatSaudiPhoneNumber } from "@/lib/utils/format-phone";
+import { formatStoredPhone } from "@/lib/utils/format-phone";
 import type {
   PaymentCheckout,
   PaymentGatewayTab,
@@ -112,7 +112,7 @@ function CheckoutDetails({ checkout }: { checkout: PaymentCheckout }) {
           label="رقم الجوال"
           value={
             checkout.user?.mobile
-              ? formatSaudiPhoneNumber(checkout.user.mobile)
+              ? formatStoredPhone(checkout.user.mobile)
               : "-"
           }
           valueDir="ltr"

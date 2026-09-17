@@ -9,7 +9,7 @@ import Link from "next/link";
 import Header from "@/components/ui/header";
 import Shimmer from "@/components/ui/shimmer";
 import { useWalletTransaction } from "@/hooks/api";
-import { formatSaudiPhoneNumber } from "@/lib/utils/format-phone";
+import { formatStoredPhone } from "@/lib/utils/format-phone";
 import type { WalletTransactionDetails } from "@/types";
 
 import { WalletStatusBadge } from "../table/wallet-status-badge";
@@ -100,7 +100,7 @@ function TransactionDetails({
             label="رقم الجوال"
             value={
               transaction.user?.mobile
-                ? formatSaudiPhoneNumber(transaction.user.mobile)
+                ? formatStoredPhone(transaction.user.mobile)
                 : "-"
             }
             valueDir="ltr"

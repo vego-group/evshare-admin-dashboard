@@ -1,4 +1,4 @@
-import { formatSaudiPhoneNumber } from "@/lib/utils/format-phone";
+import { formatStoredPhone } from "@/lib/utils/format-phone";
 import type { TripListItem } from "@/types";
 import MoneyValue from "../money-value";
 import TripStatusBadge from "../results/trip-status-badge";
@@ -74,7 +74,7 @@ function TripBasicInfo({ trip }: { trip: TripListItem }) {
           <DetailRow label="الاسم" value={tripDriverName(trip.driver)} />
           <DetailRow
             label="رقم الجوال"
-            value={<span dir="ltr">{trip.driver.mobile ? formatSaudiPhoneNumber(trip.driver.mobile) : "-"}</span>}
+            value={<span dir="ltr">{trip.driver.mobile ? formatStoredPhone(trip.driver.mobile) : "-"}</span>}
           />
           <DetailRow label="البريد الإلكتروني" value={trip.driver.email ?? "-"} />
           <DetailRow label="حالة الحساب" value={trip.driver.active == null ? "-" : trip.driver.active ? "نشط" : "غير نشط"} />

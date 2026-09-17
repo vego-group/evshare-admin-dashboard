@@ -2,6 +2,7 @@
 
 import { shipmentPickingTypeLabels } from "@/data";
 import type { ShipmentDetail } from "@/types";
+import { formatStoredPhone } from "@/lib/utils/format-phone";
 
 import ShipmentDetailsShimmer from "../modals/shipment-details-shimmer";
 import {
@@ -113,7 +114,7 @@ export function ShipmentDetailsContent({
         />
         <DetailRow label="بوليصة الشحن" value={shipment.awb_url} dir="ltr" />
         <DetailRow label="اسم المندوب" value={shipment.driver?.name} />
-        <DetailRow label="جوال المندوب" value={shipment.driver?.phone} dir="ltr" />
+        <DetailRow label="جوال المندوب" value={shipment.driver?.phone ? formatStoredPhone(shipment.driver.phone) : null} dir="ltr" />
       </DetailSection>
 
       <DetailSection title="المواعيد">

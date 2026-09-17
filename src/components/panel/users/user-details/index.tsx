@@ -14,7 +14,8 @@ import {
 import { useParams, useRouter } from "next/navigation";
 
 import { cn } from "@/lib/utils";
-import { formatSaudiPhoneNumber } from "@/lib/utils/format-phone";
+import { formatStoredPhone } from "@/lib/utils/format-phone";
+import { useTenantCountry } from "@/provider/currency";
 import { useUser } from "@/hooks/api";
 import type { AdminUserDetail } from "@/types";
 
@@ -76,6 +77,7 @@ function UserDetails() {
 }
 
 function UserDetailsContent({ user }: { user: AdminUserDetail }) {
+  const countryCode = useTenantCountry();
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -122,7 +124,7 @@ function UserDetailsContent({ user }: { user: AdminUserDetail }) {
             value={user.email ?? EMPTY_VALUE}
             dir="ltr"
           />
-          <InfoRow label="الجوال" value={formatSaudiPhoneNumber(user.mobile)} dir="ltr" />
+          <InfoRow label="الجوال" value={formatStoredPhone(user.mobile, countryCode)} dir="ltr" />
           <InfoRow label="الدور" value={<RoleBadge role={user.role} />} />
           <InfoRow
             label="توثيق الجوال"

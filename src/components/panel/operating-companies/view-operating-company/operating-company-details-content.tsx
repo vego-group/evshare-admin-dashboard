@@ -4,7 +4,7 @@ import { ImageIcon, Percent } from "lucide-react";
 import Image from "next/image";
 import type { ReactNode } from "react";
 
-import { formatSaudiPhoneNumber } from "@/lib/utils/format-phone";
+import { formatStoredPhone } from "@/lib/utils/format-phone";
 import type { OperatingCompanyListItem } from "@/types";
 
 import OperatingCompanyDetailsShimmer from "../modals/operating-company-details-shimmer";
@@ -67,7 +67,7 @@ export function OperatingCompanyDetailsContent({ company, isLoading }: Props) {
         />
         <DetailRow
           label="رقم الجوال"
-          value={company.mobile ? formatSaudiPhoneNumber(company.mobile) : undefined}
+          value={company.mobile ? formatStoredPhone(company.mobile) : undefined}
         />
         <DetailRow label="البريد الإلكتروني" value={company.email} />
         <DetailRow label="تاريخ الإنشاء" value={formatDate(company.created_at)} />

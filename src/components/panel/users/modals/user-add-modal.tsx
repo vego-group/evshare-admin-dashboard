@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import Modal from "@/components/ui/modal";
 import type { AddUserFormValues } from "@/schemas/users";
 import { addUser } from "@/services/mutations";
+import { useTenantCountry } from "@/provider/currency";
 
 import { UserFormActions } from "./user-form-modal-parts";
 import UserFormFields from "./user-form-fields";
@@ -18,6 +19,7 @@ type UserAddModalProps = {
 };
 
 function UserAddModal({ open, onClose, onSaved }: UserAddModalProps) {
+  const countryCode = useTenantCountry();
   const {
     register,
     handleSubmit,
@@ -26,7 +28,7 @@ function UserAddModal({ open, onClose, onSaved }: UserAddModalProps) {
     watch,
     formState: { errors, isSubmitting },
   } = useForm<AddUserFormValues>({
-    resolver: addUserFormResolver,
+    resolver: addUserFormResolver(countryCode),
     defaultValues: addUserDefaultValues,
     mode: "onChange",
   });
@@ -37,7 +39,7 @@ function UserAddModal({ open, onClose, onSaved }: UserAddModalProps) {
   };
 
   const onSubmit = async (values: AddUserFormValues) => {
-    const result = await addUser(buildAddUserPayload(values));
+    const result = await addUser(buildAddUserPayload(values, countryCode));
     if (result?.ok) {
       toast.success(result.message || "تم إضافة المستخدم بنجاح");
       await onSaved();

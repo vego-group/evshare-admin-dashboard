@@ -1,13 +1,9 @@
 import type { ReactNode } from "react";
-import Image from "next/image";
 import type { FieldErrors, UseFormRegister, UseFormSetValue, UseFormWatch } from "react-hook-form";
 
 import InputErrorMessage from "@/components/ui/input-error-message";
-import {
-  preventNonDigitInput,
-  preventNonDigitPaste,
-  stripNonDigits,
-} from "@/lib/utils/digits-only-input";
+import { getPhoneCountry } from "@/lib/utils/tenant-phone";
+import { useTenantCountry } from "@/provider/currency";
 import type { AddUserFormValues } from "@/schemas/users";
 
 import UserRoleDropdown from "./user-role-dropdown";
@@ -21,6 +17,7 @@ type UserFormFieldsProps = {
 
 function UserFormFields({ errors, register, setValue, watch }: UserFormFieldsProps) {
   const role = watch("role");
+  const phoneCountry = getPhoneCountry(useTenantCountry());
 
   return (
     <div className="grid gap-x-5 gap-y-5 sm:grid-cols-2">
@@ -48,25 +45,15 @@ function UserFormFields({ errors, register, setValue, watch }: UserFormFieldsPro
           className="flex h-14 w-full overflow-hidden rounded-[14px] border border-primary bg-primary/4 transition focus-within:bg-primary/8"
         >
           <div className="flex shrink-0 items-center gap-1.5 border-r border-primary px-4 select-none">
-            <Image src="/images/flag.png" alt="SA" width={28} height={20} className="rounded-sm object-cover" />
-            <span className="text-sm font-medium text-dark-gray">+966</span>
+            <span className="text-sm font-medium text-dark-gray">{phoneCountry ? `+${phoneCountry.dialCode}` : "?"}</span>
           </div>
           <input
             type="tel"
-            inputMode="numeric"
-            maxLength={9}
-            placeholder="5x xxx xxxx"
+            inputMode="tel"
+            maxLength={20}
+            placeholder={phoneCountry?.placeholder ?? ""}
             className="h-full w-full bg-transparent px-4 text-left text-sm font-medium text-dark-gray outline-none placeholder:text-gray-400"
-            {...register("mobile", {
-              onChange: (event) => {
-                const normalizedValue = stripNonDigits(event.target.value);
-                if (event.target.value !== normalizedValue) {
-                  event.target.value = normalizedValue;
-                }
-              },
-            })}
-            onKeyDown={preventNonDigitInput}
-            onPaste={(event) => preventNonDigitPaste(event)}
+            {...register("mobile")}
           />
         </div>
       </Field>

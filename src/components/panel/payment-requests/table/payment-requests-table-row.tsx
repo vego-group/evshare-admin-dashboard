@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import MoneyValue from "@/components/ui/money-value";
 
 import { cn } from "@/lib/utils";
-import { formatSaudiPhoneNumber } from "@/lib/utils/format-phone";
+import { formatStoredPhone } from "@/lib/utils/format-phone";
 import type { PaymentRequest } from "@/types";
 
 import PaymentRequestStatusBadge from "./payment-request-status-badge";
@@ -32,7 +32,7 @@ function PaymentRequestsTableRow({
         <span className="block truncate">{request.user?.name ?? "-"}</span>
       </TableCell>
       <TableCell dir="ltr">
-        {request.user?.mobile ? formatSaudiPhoneNumber(request.user.mobile) : "-"}
+        {request.user?.mobile ? formatStoredPhone(request.user.mobile) : "-"}
       </TableCell>
       <TableCell dir="ltr">
         <MoneyValue value={request.amount} />

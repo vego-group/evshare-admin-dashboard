@@ -9,7 +9,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 import EmptyState from "@/components/ui/empty-state";
-import { formatSaudiPhoneNumber } from "@/lib/utils/format-phone";
+import { formatStoredPhone } from "@/lib/utils/format-phone";
 import { cn } from "@/lib/utils";
 import { updateConsultationStatusAPI } from "@/services/mutations";
 import type { ConsultationListItem, ConsultationStatus } from "@/types";
@@ -111,7 +111,7 @@ function ConsultationRequestTableRow({
           <span className="block truncate">{request.name}</span>
         </TableCell>
         <TableCell dir="ltr" className="text-right">
-          {formatSaudiPhoneNumber(request.phone)}
+          {formatStoredPhone(request.phone)}
         </TableCell>
         <TableCell className="max-w-0">
           <span className="block truncate text-right" dir="ltr">

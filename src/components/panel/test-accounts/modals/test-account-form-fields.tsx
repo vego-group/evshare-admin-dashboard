@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import CurrencyAdornment from "@/components/ui/currency-adornment";
 import { useCurrencyInputPadding } from "@/provider/currency";
+import { useTenantCountry } from "@/provider/currency";
+import { getPhoneCountry } from "@/lib/utils/tenant-phone";
 import type { FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
 
 import InputErrorMessage from "@/components/ui/input-error-message";
@@ -32,14 +34,15 @@ function TestAccountFormFields({
   register,
   setValue,
 }: TestAccountFormFieldsProps) {
+  const phoneCountry = getPhoneCountry(useTenantCountry());
   return (
     <div className="grid gap-x-5 gap-y-5 sm:grid-cols-2">
       {isEdit ? null : (
         <Field label="رقم جوال المستخدم" required error={errors.mobile?.message} className="sm:col-span-2">
           <input
-            type="text"
+            type="tel"
             dir="ltr"
-            placeholder="5xxxxxxxx"
+            placeholder={phoneCountry?.placeholder ?? ""}
             className={inputClassLtr}
             {...register("mobile")}
           />

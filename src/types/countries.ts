@@ -7,6 +7,7 @@ export type Country = {
   name?: string;
   active: boolean;
   currency_code: string;
+  dial_code?: string;
   currency_symbol_ar?: string | null;
   currency_symbol_en?: string | null;
 };

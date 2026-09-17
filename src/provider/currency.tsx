@@ -6,6 +6,7 @@ import { useCountries } from "@/hooks";
 import { currencySymbols, formatPrice as formatPriceForCountry, getCurrencyDisplay } from "@/lib/utils/money";
 
 type CurrencyContextValue = {
+  countryCode: string;
   currency: string;
   hasLeadingSymbol: boolean;
   formatPrice: (value: number | string, options?: Intl.NumberFormatOptions) => string;
@@ -20,11 +21,12 @@ export function CurrencyProvider({ countryCode, children }: { countryCode: strin
   );
   const value = useMemo<CurrencyContextValue>(
     () => ({
+      countryCode,
       currency: getCurrencyDisplay(country),
       hasLeadingSymbol: Boolean(currencySymbols[country?.currency_code?.trim().toUpperCase() ?? ""]),
       formatPrice: (amount, options) => formatPriceForCountry(amount, country, options),
     }),
-    [country],
+    [country, countryCode],
   );
 
   return <CurrencyContext.Provider value={value}>{children}</CurrencyContext.Provider>;
@@ -34,6 +36,10 @@ export function useCurrency() {
   const context = useContext(CurrencyContext);
   if (!context) throw new Error("useCurrency must be used within CurrencyProvider");
   return context;
+}
+
+export function useTenantCountry() {
+  return useCurrency().countryCode;
 }
 
 export function useCurrencyInputPadding() {

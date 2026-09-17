@@ -13,8 +13,8 @@ export const addUserSchema = z.object({
     .max(100, "اسم العائلة طويل جداً"),
   mobile: z
     .string()
-    .min(1, "رقم الجوال مطلوب")
-    .regex(/^5\d{8}$/, "من فضلك أدخل رقم جوال صحيح"),
+    .trim()
+    .min(1, "رقم الجوال مطلوب"),
   role: z.string().min(1, "الدور مطلوب"),
   email: z
     .union([

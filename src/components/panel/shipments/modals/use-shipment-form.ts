@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import type { ShipmentFormValues } from "@/schemas/shipments";
 import { addShipmentForOrder, editShipment } from "@/services/mutations";
 import type { ShipmentListItem } from "@/types";
+import { useTenantCountry } from "@/provider/currency";
 
 import {
   shipmentAddResolver,
@@ -26,10 +27,11 @@ type Options = {
 };
 
 export function useShipmentForm({ open, shipment, onClose, onSaved }: Options) {
+  const countryCode = useTenantCountry();
   const isEdit = Boolean(shipment);
 
   const form = useForm<ShipmentFormValues>({
-    resolver: isEdit ? shipmentEditResolver : shipmentAddResolver,
+    resolver: isEdit ? shipmentEditResolver(countryCode, shipment?.driver?.phone) : shipmentAddResolver(countryCode),
     defaultValues: shipmentDefaultValues,
     mode: "onChange",
   });
@@ -72,6 +74,7 @@ export function useShipmentForm({ open, shipment, onClose, onSaved }: Options) {
       const payload = buildChangedShipmentPayload(
         values,
         form.formState.dirtyFields,
+        countryCode,
       );
       if (!hasPayloadEntries(payload)) {
         close();

@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { formatSaudiPhoneNumber } from "@/lib/utils/format-phone";
+import { formatStoredPhone } from "@/lib/utils/format-phone";
 import type { OperatingCompanyListItem } from "@/types";
 
 import {
@@ -58,7 +58,7 @@ function OperatingCompaniesTable({
                   <CommissionBadge value={company.commission_percentage} isPlatform={company.slug === "evshare"} />
                 </TableCell>
                 <TableCell dir="ltr">
-                  {company.mobile ? formatSaudiPhoneNumber(company.mobile) : "-"}
+                  {company.mobile ? formatStoredPhone(company.mobile) : "-"}
                 </TableCell>
                 <TableCell dir="ltr">{company.email ?? "-"}</TableCell>
                 <TableCell truncate={false}>

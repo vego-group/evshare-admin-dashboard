@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 import type { OperatingCompanyFormValues } from "@/schemas/operating-companies";
 import { editOperatingCompanyAPI } from "@/services/mutations";
 import { useOperatingCompany } from "@/hooks/api";
-import { stripNonDigits } from "@/lib/utils/digits-only-input";
+import { useTenantCountry } from "@/provider/currency";
 
 import {
   buildChangedOperatingCompanyPayload,
@@ -19,6 +19,7 @@ import {
 } from "../modals/operating-company-form-utils";
 
 export function useEditOperatingCompanyForm() {
+  const countryCode = useTenantCountry();
   const router = useRouter();
   const queryClient = useQueryClient();
   const { id } = useParams<{ id: string }>();
@@ -32,7 +33,7 @@ export function useEditOperatingCompanyForm() {
     reset,
     formState: { errors, isDirty, dirtyFields, isSubmitting },
   } = useForm<OperatingCompanyFormValues>({
-    resolver: operatingCompanyFormResolver,
+    resolver: operatingCompanyFormResolver(countryCode, company?.mobile),
     defaultValues: operatingCompanyDefaultValues,
     mode: "onChange",
   });
@@ -47,7 +48,7 @@ export function useEditOperatingCompanyForm() {
       name_ar: company.name_ar,
       name_en: company.name_en,
       commission_percentage: Number(company.commission_percentage ?? 0),
-      mobile: company.mobile ? stripNonDigits(company.mobile).slice(-9) : undefined,
+      mobile: company.mobile ?? undefined,
       email: company.email ?? undefined,
       conditions_ar: company.conditions_ar ?? "",
       conditions_en: company.conditions_en ?? "",
@@ -73,7 +74,7 @@ export function useEditOperatingCompanyForm() {
   const onSubmit = async (values: OperatingCompanyFormValues) => {
     if (!company || !isDirty) return;
 
-    const payload = buildChangedOperatingCompanyPayload(values, dirtyFields);
+    const payload = buildChangedOperatingCompanyPayload(values, dirtyFields, countryCode);
     if (company.slug === "evshare") payload.delete("commission_percentage");
     if (!hasFormDataEntries(payload)) return;
 
