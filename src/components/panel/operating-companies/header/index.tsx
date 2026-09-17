@@ -1,4 +1,6 @@
-import { LayoutGrid, List } from "lucide-react";
+import { LayoutGrid, List, Plus } from "lucide-react";
+import Link from "next/link";
+import PermissionGate from "@/components/permission-gate";
 
 import { Button } from "@/components/ui/button";
 import Header from "@/components/ui/header";
@@ -23,6 +25,7 @@ function OperatingCompaniesHeader({
       />
 
       <div className="flex items-center gap-3 self-start sm:self-auto">
+        <PermissionGate slug="Admin Add Operation Companies"><Button asChild className="h-12 rounded-2xl"><Link href="/operating-companies/create"><Plus className="size-4" /> إضافة شركة</Link></Button></PermissionGate>
         <div className="flex h-13.25 items-center gap-1 rounded-2xl border border-neutral-100/80 bg-white p-1.5">
           <Button
             type="button"

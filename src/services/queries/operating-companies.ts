@@ -30,6 +30,7 @@ export const operatingCompaniesAPI = async (
     page: params.page.toString(),
     limit: (params.limit || PAGE_SIZE).toString(),
     search: params.search,
+    status: params.status,
   });
 
   return await baseAPI("GET", `/operation-companies?${query}`);

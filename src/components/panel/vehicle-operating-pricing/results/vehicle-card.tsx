@@ -1,5 +1,6 @@
 import type { VehicleListItem } from "@/types";
 import StatusBadge from "../status-badge";
+import ProvisioningBadge from "../provisioning-badge";
 import { vehicleTitle } from "../utils";
 import VehicleActions from "./action-buttons";
 
@@ -34,6 +35,7 @@ function VehicleCard(props: Props) {
           </h3>
           <div className="mt-2 flex flex-wrap gap-2">
             <StatusBadge status={vehicle.status} />
+            <ProvisioningBadge vehicle={vehicle} />
           </div>
         </div>
         <div className="shrink-0">

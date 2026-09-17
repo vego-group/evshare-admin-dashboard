@@ -5,6 +5,7 @@ import type {
   CreateVehicleLockPayload,
   UpdateVehicleLockPayload,
   VehicleLockDetailsResponse,
+  VehicleDetailsResponse,
 } from "@/types";
 import type {
   CommissionValues,
@@ -15,9 +16,32 @@ import type {
 
 import { safeApi } from "..";
 
+export type CreateVehiclePayload = {
+  vehicle_type: "bike" | "scooter" | "car";
+  label: string;
+  operating_type: "evshare" | "operation_company";
+  operation_company_id?: string;
+  user_id?: string;
+  status?: "new" | "active" | "disabled" | "maintenance";
+  product_id?: string;
+  iot_device_id?: string;
+  lock_id?: string;
+  open_price?: number;
+  price_per_minute?: number;
+  price_per_km?: number;
+  price_per_hour?: number;
+  price_per_day?: number;
+  battery_percentage?: number;
+  latitude?: number;
+  longitude?: number;
+};
+
+export const createVehicleAPI = async (payload: CreateVehiclePayload) =>
+  await safeApi<VehicleDetailsResponse>("POST", "/vehicles/add", payload);
+
 export const editVehicleAPI = async (
   vehicleId: string,
-  payload: Partial<VehiclePricingSchemaValues>,
+  payload: Partial<VehiclePricingSchemaValues> & { operation_company_id?: string; iot_device_id?: string },
 ) => await safeApi("POST", `/vehicles/${vehicleId}/edit`, payload);
 
 export const deleteVehicleAPI = async (vehicleId: string) =>

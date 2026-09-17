@@ -34,6 +34,8 @@ function OperatingCompaniesMainContent({
     <>
       <OperatingCompaniesToolbar
         searchQuery={params.search ?? ""}
+        status={params.status}
+        onStatusChange={(status) => onParamsChange({ status, page: 1 })}
         onSearchChange={(search) =>
           onParamsChange({ search: search || undefined, page: 1 })
         }

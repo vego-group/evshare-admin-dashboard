@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 
 import type { OperatingCompanyFormValues } from "@/schemas/operating-companies";
 import { editOperatingCompanyAPI } from "@/services/mutations";
-import { useOperatingCompany } from "@/hooks/api";
+import { useOperatingCompany, useUsers } from "@/hooks/api";
 import { useTenantCountry } from "@/provider/currency";
 
 import {
@@ -30,6 +30,7 @@ export function useEditOperatingCompanyForm() {
     register,
     control,
     handleSubmit,
+    setError,
     reset,
     formState: { errors, isDirty, dirtyFields, isSubmitting },
   } = useForm<OperatingCompanyFormValues>({
@@ -39,10 +40,20 @@ export function useEditOperatingCompanyForm() {
   });
 
   const [logoPreviewUrl, setLogoPreviewUrl] = useState<string | null>(null);
+  const [ownerSearch, setOwnerSearch] = useState("");
+  const [ownerId, setOwnerId] = useState("");
+  const [ownerLabel, setOwnerLabel] = useState("");
+  const [status, setStatus] = useState<"active" | "inactive">("active");
+  const [extraErrors, setExtraErrors] = useState<{ owner_id?: string; status?: string }>({});
+  const { data: owners } = useUsers({ page: 1, limit: 100, account_status: "active", search: ownerSearch || undefined });
+  const extraDirty = Boolean(company && (ownerId !== (company.owner?.id ?? "") || status !== (company.status ?? "active")));
   const previewUrl = logoPreviewUrl ?? company?.logo?.[0]?.url;
 
   useEffect(() => {
     if (!company) return;
+    setOwnerId(company.owner?.id ?? "");
+    setOwnerLabel(company.owner ? `${company.owner.name} — ${company.owner.mobile}` : "");
+    setStatus(company.status ?? "active");
     reset({
       slug: company.slug,
       name_ar: company.name_ar,
@@ -72,14 +83,23 @@ export function useEditOperatingCompanyForm() {
   const handleCancel = () => router.back();
 
   const onSubmit = async (values: OperatingCompanyFormValues) => {
-    if (!company || !isDirty) return;
+    if (!company || (!isDirty && !extraDirty)) return;
 
     const payload = buildChangedOperatingCompanyPayload(values, dirtyFields, countryCode);
     if (company.slug === "evshare") payload.delete("commission_percentage");
+    if (ownerId && ownerId !== (company.owner?.id ?? "")) payload.set("owner_id", ownerId);
+    if (status !== (company.status ?? "active")) payload.set("status", status);
     if (!hasFormDataEntries(payload)) return;
 
     const result = await editOperatingCompanyAPI(company.id, payload);
     if (!result?.ok) {
+      const fieldErrors = (result.error as { errors?: Record<string, string[]> } | undefined)?.errors;
+      if (fieldErrors) {
+        for (const field of ["slug", "name_ar", "name_en", "commission_percentage", "mobile", "email", "logo", "conditions_ar", "conditions_en"] as const) {
+          if (fieldErrors[field]?.[0]) setError(field, { type: "server", message: fieldErrors[field][0] });
+        }
+        setExtraErrors({ owner_id: fieldErrors.owner_id?.[0], status: fieldErrors.status?.[0] });
+      }
       toast.error(result?.message || "فشل تعديل الشركة");
       return;
     }
@@ -101,6 +121,17 @@ export function useEditOperatingCompanyForm() {
     errors,
     isSubmitting,
     isDirty,
+    extraDirty,
+    ownerSearch,
+    setOwnerSearch,
+    ownerId,
+    setOwnerId,
+    ownerLabel,
+    setOwnerLabel,
+    status,
+    setStatus,
+    owners: owners?.data ?? [],
+    extraErrors,
     isLoading,
     company,
     previewUrl,

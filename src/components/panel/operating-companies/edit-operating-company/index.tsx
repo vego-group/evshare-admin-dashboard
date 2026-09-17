@@ -20,6 +20,17 @@ function EditOperatingCompany() {
     errors,
     isSubmitting,
     isDirty,
+    extraDirty,
+    ownerSearch,
+    setOwnerSearch,
+    ownerId,
+    setOwnerId,
+    ownerLabel,
+    setOwnerLabel,
+    status,
+    setStatus,
+    owners,
+    extraErrors,
     isLoading,
     company,
     previewUrl,
@@ -59,10 +70,15 @@ function EditOperatingCompany() {
                 control={control}
                 isPlatform={company?.slug === "evshare"}
               />
+              {company?.slug !== "evshare" && <div className="grid gap-5 md:grid-cols-2">
+                <label className="flex flex-col gap-2 text-sm font-medium text-secondary">بحث عن المالك<input className="h-12 rounded-xl border border-neutral-200 px-4" value={ownerSearch} onChange={(event) => setOwnerSearch(event.target.value)} placeholder="اسم أو جوال" /></label>
+                <label className="flex flex-col gap-2 text-sm font-medium text-secondary">المالك<select className="h-12 rounded-xl border border-neutral-200 px-4" value={ownerId} onChange={(event) => { setOwnerId(event.target.value); setOwnerLabel(event.target.selectedOptions[0]?.text ?? ""); }}><option value="">اختر المالك</option>{ownerId && !owners.some((owner) => owner.id === ownerId) && <option value={ownerId}>{ownerLabel}</option>}{owners.map((owner) => <option key={owner.id} value={owner.id}>{owner.name} — {owner.mobile}</option>)}</select>{extraErrors.owner_id && <span className="text-xs text-red-600">{extraErrors.owner_id}</span>}</label>
+                <label className="flex flex-col gap-2 text-sm font-medium text-secondary">الحالة<select className="h-12 rounded-xl border border-neutral-200 px-4" value={status} onChange={(event) => setStatus(event.target.value as "active" | "inactive")}><option value="active">نشطة</option><option value="inactive">غير نشطة</option></select>{extraErrors.status && <span className="text-xs text-red-600">{extraErrors.status}</span>}</label>
+              </div>}
               <OperatingCompanyFormActions
                 submitLabel="حفظ التعديلات"
                 isSubmitting={isSubmitting}
-                isSubmitDisabled={!isDirty}
+                isSubmitDisabled={!isDirty && !extraDirty}
                 onClose={handleCancel}
               />
             </>

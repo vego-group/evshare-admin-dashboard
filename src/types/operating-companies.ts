@@ -4,7 +4,9 @@ import type { ContractAttachment } from "./orders";
 export type OperatingCompaniesQueryParams = Pick<
   QueryParams,
   "page" | "limit" | "search"
->;
+> & { status?: "active" | "inactive" };
+
+export type OperatingCompanyOwner = { id: string; name: string; mobile: string };
 
 export type OperatingCompanyLogo = {
   id: string;
@@ -22,6 +24,8 @@ export type OperatingCompanyListItem = {
   mobile: string | null;
   email: string | null;
   logo: OperatingCompanyLogo[];
+  status?: "active" | "inactive";
+  owner?: OperatingCompanyOwner | null;
   contract?: ContractAttachment | null;
   conditions_ar: string | null;
   conditions_en: string | null;

@@ -35,6 +35,8 @@ function VehicleMainContent({ data, companies, params, onParamsChange, ...handle
         selectedVehicleType={params.vehicle_type}
         deviceQuery={params.device_id ?? ""}
         selectedConnectivity={params.connectivity}
+        selectedProvisioning={params.provisioning_status}
+        onProvisioningChange={(provisioning_status) => onParamsChange({ provisioning_status, page: 1 })}
         companies={companies}
         onSearchChange={(search) => onParamsChange({ search: search || undefined, page: 1 })}
         onSortChange={(order_by: OrderBy) => onParamsChange({ order_by, page: 1 })}

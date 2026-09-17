@@ -62,6 +62,8 @@ export function buildChangedPayload(
   if ((values.vehicle_type ?? "") !== originalType) {
     payload.vehicle_type = values.vehicle_type || null;
   }
+  if (values.iot_device_id !== undefined && values.iot_device_id !== (original.iot_device_id ?? "")) payload.iot_device_id = values.iot_device_id;
+  if (values.operation_company_id && values.operation_company_id !== original.operation_company?.id) payload.operation_company_id = values.operation_company_id;
   return payload;
 }
 

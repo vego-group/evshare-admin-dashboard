@@ -52,6 +52,7 @@ function OperatingCompaniesTable({
                   <p className="truncate text-base font-medium" title={company.name}>
                     {company.name}
                   </p>
+                  {company.status && <span className={`mt-1 inline-flex rounded-full px-2 py-0.5 text-xs ${company.status === "active" ? "bg-green-50 text-green-700" : "bg-neutral-100 text-gray"}`}>{company.status === "active" ? "نشطة" : "غير نشطة"}</span>}
                 </TableCell>
                 <TableCell dir="ltr">{company.slug}</TableCell>
                 <TableCell truncate={false}>

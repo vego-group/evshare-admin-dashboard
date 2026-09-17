@@ -6,6 +6,7 @@ import type { ReactNode } from "react";
 import type { VehicleListItem } from "@/types";
 import { vehicleTypeLabel } from "@/lib/utils/vehicle-type";
 import StatusBadge from "../status-badge";
+import ProvisioningBadge from "../provisioning-badge";
 import {
   formatDate,
   formatMoney,
@@ -48,6 +49,7 @@ export function VehicleDetailsContent({ vehicle, isLoading }: Props) {
         <div className="grid gap-2 sm:grid-cols-2">
           <DetailRow label="معرف المركبة" value={<span dir="ltr">{vehicle.id}</span>} />
           <DetailRow label="الحالة" value={<StatusBadge status={vehicle.status} />} />
+          <DetailRow label="حالة التجهيز" value={<ProvisioningBadge vehicle={vehicle} />} />
           <DetailRow label="نوع المركبة" value={vehicleTypeLabel(vehicle.vehicle_type)} />
           <DetailRow
             label="توفر الإيجار"

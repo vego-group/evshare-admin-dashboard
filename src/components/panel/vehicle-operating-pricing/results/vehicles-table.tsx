@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import type { VehicleListItem } from "@/types";
 import { isGatewayDeviceId } from "@/lib/utils/device-id";
 import StatusBadge from "../status-badge";
+import ProvisioningBadge from "../provisioning-badge";
 import { vehicleTitle } from "../utils";
 import VehicleActions from "./action-buttons";
 
@@ -46,6 +47,7 @@ function VehiclesTable(props: Props) {
                 <TableCell truncate={false}>
                   <div className="flex flex-col items-start gap-1.5">
                     <StatusBadge status={vehicle.status} />
+                    <ProvisioningBadge vehicle={vehicle} />
                     <RentalAvailabilityBadge vehicle={vehicle} />
                   </div>
                 </TableCell>
