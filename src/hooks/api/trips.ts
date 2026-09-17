@@ -2,7 +2,7 @@ import { keepPreviousData } from "@tanstack/react-query";
 
 import { PAGE_SIZE } from "@/constants";
 import { singleTripAPI, tripsAPI } from "@/services/queries";
-import type { TripsQueryParams } from "@/types";
+import type { TripListItem, TripsQueryParams, TripStatus } from "@/types";
 
 import { useCustomQuery } from "..";
 
@@ -20,16 +20,53 @@ export function useTrip(tripId: string | null) {
   );
 }
 
-const activeTripStatuses: TripsQueryParams["status"][] = ["started", "in_progress"];
+const activeTripStatuses: TripStatus[] = ["started", "in_progress"];
+
+async function activeTripsPage(status: TripStatus, page: number) {
+  const response = await tripsAPI({
+    page,
+    limit: PAGE_SIZE,
+    status,
+    order_by: "desc",
+  });
+
+  if (response.error) {
+    throw new Error(response.message || "Failed to load active trips");
+  }
+
+  return response;
+}
+
+async function allActiveTripsForStatus(
+  status: TripStatus,
+): Promise<TripListItem[]> {
+  const firstPage = await activeTripsPage(status, 1);
+  const lastPage = Math.max(1, firstPage.meta.lastPage);
+
+  if (lastPage === 1) return firstPage.data;
+
+  const remainingPages = await Promise.all(
+    Array.from({ length: lastPage - 1 }, (_, index) =>
+      activeTripsPage(status, index + 2),
+    ),
+  );
+
+  return [firstPage, ...remainingPages].flatMap((response) => response.data);
+}
 
 export function useActiveTrips() {
   return useCustomQuery(
     ["trips", "active", activeTripStatuses],
     async () => {
-      const responses = await Promise.all(
-        activeTripStatuses.map((status) => tripsAPI({ page: 1, limit: PAGE_SIZE, status })),
+      const tripsByStatus = await Promise.all(
+        activeTripStatuses.map(allActiveTripsForStatus),
       );
-      return { ...responses[0], data: responses.flatMap((response) => response.data) };
+
+      return Array.from(
+        new Map(
+          tripsByStatus.flat().map((trip) => [trip.id, trip]),
+        ).values(),
+      );
     },
     {
       placeholderData: keepPreviousData,
