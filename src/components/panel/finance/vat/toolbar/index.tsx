@@ -1,9 +1,11 @@
 "use client";
 
-import { ChevronDown, ListFilter } from "lucide-react";
+import { ChevronDown, Download, ListFilter } from "lucide-react";
 import { useState } from "react";
 
 import { vatStatusOptions } from "@/data/finance";
+import PermissionGate from "@/components/permission-gate";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { VatStatus } from "@/types";
 
@@ -12,6 +14,8 @@ type VatToolbarProps = {
   selectedPeriod?: string;
   onStatusChange: (value?: VatStatus) => void;
   onPeriodChange: (value?: string) => void;
+  onExport: () => void;
+  isExporting: boolean;
 };
 
 type FilterOption<T extends string> = { label: string; value: T };
@@ -26,11 +30,18 @@ function VatToolbar({
   selectedPeriod,
   onStatusChange,
   onPeriodChange,
+  onExport,
+  isExporting,
 }: VatToolbarProps) {
   const statusValue: VatStatus | "all" = selectedStatus ?? "all";
 
   return (
     <section className="flex flex-col gap-3 rounded-2xl border border-neutral-100/60 bg-white p-3 shadow-[0_2px_6px_rgba(0,0,0,0.04)] sm:flex-row sm:items-center sm:justify-end">
+      <PermissionGate slug="Admin Export VAT">
+        <Button type="button" variant="outline" onClick={onExport} disabled={isExporting}>
+          <Download className="size-4" /> تصدير السجلات
+        </Button>
+      </PermissionGate>
       <label className="flex h-9.5 w-full items-center gap-2 rounded-[14px] border border-primary bg-primary/4 px-3 text-sm font-medium text-dark-gray sm:w-49">
         <span className="whitespace-nowrap text-gray">الفترة</span>
         <input

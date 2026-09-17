@@ -124,3 +124,42 @@ export type VatSettlementDetailResponse = {
   message: string;
   data: VatSettlement;
 };
+
+export type VatExportType = "vat_records" | "vat_settlements";
+export type VatExportStatus = "queued" | "processing" | "completed" | "failed" | "expired";
+
+export type VatExportFilters = Pick<VatQueryParams, "date_from" | "date_to" | "status" | "period">;
+
+export type VatExportRequest = VatExportFilters & { type: VatExportType };
+
+export type VatExport = {
+  id: string;
+  type: VatExportType;
+  definition_version: string;
+  format: "csv";
+  status: VatExportStatus;
+  progress: number | null;
+  row_count: number | null;
+  processed_rows: number | null;
+  filters: VatExportFilters;
+  totals: Record<string, number> | null;
+  columns: Record<string, string> | null;
+  file_name: string | null;
+  error: string | null;
+  download_url: string | null;
+  download_count: number;
+  requested_by: { id: string; name: string } | null;
+  requested_at: string;
+  started_at: string | null;
+  completed_at: string | null;
+  expires_at: string | null;
+};
+
+export type VatExportResponse = { data: VatExport } | VatExport;
+export type VatExportsResponse = { data: VatExport[] } | VatExport[];
+
+export type VatExportsQueryParams = {
+  type?: VatExportType;
+  status?: VatExportStatus;
+  limit?: number;
+};

@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { Download, Plus } from "lucide-react";
 import MoneyValue from "@/components/ui/money-value";
 
 import { Button } from "@/components/ui/button";
@@ -9,9 +9,11 @@ import PermissionGate from "@/components/permission-gate";
 type Props = {
   settlements: VatSettlement[];
   onAdd: () => void;
+  onExport: () => void;
+  isExporting: boolean;
 };
 
-function VatSettlements({ settlements, onAdd }: Props) {
+function VatSettlements({ settlements, onAdd, onExport, isExporting }: Props) {
   return (
     <section className="flex flex-col gap-4 rounded-2xl bg-white p-5">
       <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
@@ -19,10 +21,19 @@ function VatSettlements({ settlements, onAdd }: Props) {
           <h2 className="text-lg font-semibold text-secondary">تسويات الضريبة</h2>
           <p className="text-sm text-gray">سجل بمبالغ ضريبة القيمة المضافة التي تم سدادها</p>
         </div>
-        <PermissionGate slug="Admin Add VAT Settlements"><Button type="button" onClick={onAdd} className="gap-2">
-          <Plus className="size-4 shrink-0" />
-          تسجيل تسوية
-        </Button></PermissionGate>
+        <div className="flex flex-wrap gap-2">
+          <PermissionGate slug="Admin Export VAT">
+            <Button type="button" variant="outline" onClick={onExport} disabled={isExporting}>
+              <Download className="size-4" /> تصدير التسويات
+            </Button>
+          </PermissionGate>
+          <PermissionGate slug="Admin Add VAT Settlements">
+            <Button type="button" onClick={onAdd} className="gap-2">
+              <Plus className="size-4 shrink-0" />
+              تسجيل تسوية
+            </Button>
+          </PermissionGate>
+        </div>
       </div>
 
       {!settlements.length ? (
