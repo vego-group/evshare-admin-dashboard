@@ -1,6 +1,11 @@
 "use server";
 
-import type { AddVatSettlementPayload, VatSettlementDetailResponse } from "@/types";
+import type {
+  AddVatSettlementPayload,
+  VatExportRequest,
+  VatExportResponse,
+  VatSettlementDetailResponse,
+} from "@/types";
 
 import { safeApi } from "..";
 
@@ -10,3 +15,6 @@ export const addVatSettlement = async (payload: AddVatSettlementPayload) =>
     "/finance/vat/settlements/add",
     payload,
   );
+
+export const requestVatExport = async (payload: VatExportRequest) =>
+  await safeApi<VatExportResponse>("POST", "/finance/vat/exports", payload);

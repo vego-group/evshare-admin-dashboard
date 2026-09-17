@@ -1,5 +1,8 @@
 import { buildQuery } from "@/lib/utils/build-query";
 import type {
+  VatExportResponse,
+  VatExportsQueryParams,
+  VatExportsResponse,
   VatPeriodsResponse,
   VatQueryParams,
   VatRecordsResponse,
@@ -63,3 +66,13 @@ export const vatSettlementsAPI = async (
 
   return await baseAPI("GET", `/finance/vat/settlements${query ? `?${query}` : ""}`);
 };
+
+export const vatExportsAPI = async (
+  params: VatExportsQueryParams = {},
+): Promise<VatExportsResponse> => {
+  const query = buildQuery({ type: params.type, status: params.status, limit: params.limit });
+  return await baseAPI("GET", `/finance/vat/exports${query ? `?${query}` : ""}`);
+};
+
+export const vatExportStatusAPI = async (id: string): Promise<VatExportResponse> =>
+  await baseAPI("GET", `/finance/vat/exports/${encodeURIComponent(id)}`);
