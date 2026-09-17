@@ -25,13 +25,13 @@ function Dashboard() {
         <QueryErrorState title="تعذر تحميل بيانات لوحة التحكم" isRetrying={isFetching} onRetry={() => void refetch()} />
       ) : (
         <>
-          <StatCardsSection data={data?.data.top_cards} period={period} />
+          <StatCardsSection data={data?.data} />
           <RevenueOverviewSection
-            data={data?.data.revenue_chart}
+            data={data?.data}
             period={period}
             onPeriodChange={setPeriod}
           />
-          <QuickStatsSection data={data?.data.assets} />
+          <QuickStatsSection data={data?.data} />
         </>
       )}
     </div>

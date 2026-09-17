@@ -10,6 +10,10 @@ export const dashboardAnalyticsAPI = async (
 ): Promise<DashboardAnalyticsResponse> => {
   const query = buildQuery({
     period: params.period,
+    from: params.from,
+    to: params.to,
+    granularity: params.granularity,
+    compare: params.compare,
   });
 
   return await baseAPI(

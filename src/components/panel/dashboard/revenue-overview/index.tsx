@@ -2,8 +2,8 @@
 
 import type {
   ChartPoint,
+  DashboardAnalyticsData,
   DashboardPeriod,
-  DashboardRevenueChart,
 } from "@/types";
 import dynamic from "next/dynamic";
 
@@ -15,6 +15,7 @@ import {
 } from "./revenue-overview.constants";
 import RevenueOverviewControls from "./revenue-overview-controls";
 import RevenueOverviewInfoPanel from "./revenue-overview-info-panel";
+import { formatBucket } from "../measure-utils";
 
 const RevenueOverviewChart = dynamic(() => import("./revenue-overview-chart"), {
   ssr: false,
@@ -22,7 +23,7 @@ const RevenueOverviewChart = dynamic(() => import("./revenue-overview-chart"), {
 });
 
 type RevenueOverviewSectionProps = {
-  data?: DashboardRevenueChart;
+  data?: DashboardAnalyticsData;
   period: DashboardPeriod;
   onPeriodChange: (period: DashboardPeriod) => void;
 };
@@ -35,17 +36,15 @@ function RevenueOverviewSection({
   const isMobile = useIsMobile();
   const margins = isMobile ? revenueChartMarginsMobile : revenueChartMargins;
 
-  const chartData = (data?.series ?? []).map<ChartPoint>((point) => ({
-    label: formatChartLabel(point),
-    current: point.current,
-    previous: point.previous,
+  const measure = data?.measures["revenue.total"];
+  const chartData = (measure?.series.points ?? []).map<ChartPoint>((point, index) => ({
+    label: formatBucket(point.ts, data?.meta.timezone ?? "UTC", measure?.series.granularity ?? "day"),
+    current: point.has_data ? point.value : null,
+    previous: measure?.series.comparison_points?.[index]?.has_data
+      ? measure.series.comparison_points[index].value : null,
   }));
-  const fallbackPoint = { label: "", current: 0, previous: 0 };
-  const peakPoint = chartData.length
-    ? chartData.reduce((max, point) =>
-        point.current > max.current ? point : max,
-      )
-    : fallbackPoint;
+  const peakPoint = chartData.filter((point) => point.current !== null)
+    .reduce<ChartPoint | null>((max, point) => !max || point.current! > max.current! ? point : max, null);
 
   return (
     <DashboardSectionCard className="relative overflow-hidden border-primary/12 p-4 sm:p-8">
@@ -55,37 +54,26 @@ function RevenueOverviewSection({
         className="relative grid gap-6 sm:gap-8 xl:grid-cols-[338px_minmax(0,1fr)] xl:items-start"
         dir="rtl"
       >
-        <RevenueOverviewInfoPanel data={data} period={period} />
+        <RevenueOverviewInfoPanel data={data} period={period} peakPoint={peakPoint} />
 
         <div className="space-y-4 sm:space-y-6">
           <RevenueOverviewControls
             period={period}
             onPeriodChange={onPeriodChange}
+            hasComparison={measure?.series.comparison_points != null}
           />
           <RevenueOverviewChart
             chartData={chartData}
             isMobile={isMobile}
             margins={margins}
             peakPoint={peakPoint}
-            peakValue={data?.peak_day.value ?? 0}
+            peakValue={peakPoint?.current ?? 0}
+            currency={data?.meta.currency ?? "SAR"}
           />
         </div>
       </div>
     </DashboardSectionCard>
   );
-}
-
-function formatChartLabel(point: DashboardRevenueChart["series"][number]) {
-  const date = new Date(point.date);
-
-  if (Number.isNaN(date.getTime())) {
-    return point.day_name;
-  }
-
-  return date.toLocaleDateString("ar-SA", {
-    weekday: "short",
-    day: "numeric",
-  });
 }
 
 export default RevenueOverviewSection;

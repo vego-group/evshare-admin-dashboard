@@ -9,7 +9,6 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import MoneyValue from "@/components/ui/money-value";
 
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import type { ChartPoint } from "@/types";
@@ -18,6 +17,7 @@ type RevenueTooltipProps = {
   active?: boolean;
   payload?: { value: number; dataKey: string }[];
   label?: string;
+  currency: string;
 };
 
 type RevenueXAxisTickProps = {
@@ -42,11 +42,12 @@ type RevenueOverviewChartProps = {
     left: number;
     bottom: number;
   };
-  peakPoint: ChartPoint;
+  peakPoint: ChartPoint | null;
   peakValue: number;
+  currency: string;
 };
 
-function RevenueTooltip({ active, payload, label }: RevenueTooltipProps) {
+function RevenueTooltip({ active, payload, label, currency }: RevenueTooltipProps) {
   if (!active || !payload?.length) return null;
 
   return (
@@ -61,7 +62,7 @@ function RevenueTooltip({ active, payload, label }: RevenueTooltipProps) {
           className={entry.dataKey === "current" ? "text-primary" : "text-gray"}
         >
           {entry.dataKey === "current" ? "الحالي" : "السابق"}:{" "}
-          <span className="font-semibold"><MoneyValue value={entry.value} options={{ maximumFractionDigits: 2 }} /></span>
+          <span className="font-semibold">{new Intl.NumberFormat("en-US", { style: "currency", currency, maximumFractionDigits: 2 }).format(entry.value)}</span>
         </p>
       ))}
     </div>
@@ -119,8 +120,9 @@ function RevenueOverviewChart({
   margins,
   peakPoint,
   peakValue,
+  currency,
 }: RevenueOverviewChartProps) {
-  const values = chartData.flatMap((point) => [point.current, point.previous]);
+  const values = chartData.flatMap((point) => [point.current, point.previous]).filter((value): value is number => value !== null);
   const maxValue = Math.max(...values, 0);
   const yMax = Math.max(1, Math.ceil(maxValue / 4) * 4);
   const ticks = buildTicks(yMax);
@@ -171,13 +173,14 @@ function RevenueOverviewChart({
                 <YAxis hide domain={[0, yMax]} />
 
                 <Tooltip
-                  content={<RevenueTooltip />}
+                  content={<RevenueTooltip currency={currency} />}
                   cursor={{ stroke: "#e5e7eb", strokeWidth: 1 }}
                 />
 
                 <Area
                   type="monotone"
                   dataKey="current"
+                  connectNulls={false}
                   stroke="none"
                   fill="url(#revenue-area-gradient)"
                   isAnimationActive={false}
@@ -186,6 +189,7 @@ function RevenueOverviewChart({
                 <Line
                   type="monotone"
                   dataKey="previous"
+                  connectNulls={false}
                   stroke="#98a2b3"
                   strokeDasharray="6 6"
                   strokeWidth={2}
@@ -196,13 +200,14 @@ function RevenueOverviewChart({
                 <Line
                   type="monotone"
                   dataKey="current"
+                  connectNulls={false}
                   stroke="#ffce27"
                   strokeWidth={isMobile ? 2 : 3}
                   dot={false}
                   isAnimationActive={false}
                 />
 
-                {peakPoint.label ? (
+                {peakPoint?.label && peakPoint.current !== null ? (
                   <ReferenceDot
                     x={peakPoint.label}
                     y={peakPoint.current}
