@@ -12,6 +12,7 @@ import { approveKycAPI, rejectKycAPI } from "@/services/mutations";
 import type { KycDetail, RequestStatus } from "@/types";
 
 import OwnerInfoSection from "./owner-info-section";
+import RejectRequestModal from "./reject-request";
 import RequestDetailsFooter from "./request-details-footer";
 import ReviewAlert from "./review-alert";
 
@@ -43,6 +44,9 @@ function RegistrationRequestsDetailsPanel({
   const [actionLoading, setActionLoading] = useState<
     "approve" | "reject" | null
   >(null);
+  const [rejectOpen, setRejectOpen] = useState(false);
+  const [rejectError, setRejectError] = useState<string>();
+  const [conflictedKycId, setConflictedKycId] = useState<string | null>(null);
   const request = data?.data;
 
   if (!kycId) return null;
@@ -64,40 +68,59 @@ function RegistrationRequestsDetailsPanel({
     const currentKycId = kycId;
     setActionLoading("approve");
     const result = await approveKycAPI(currentKycId);
-    setActionLoading(null);
 
     if (result?.ok) {
       toast.success(result.message || "تمت الموافقة على الطلب بنجاح");
       await refreshKycQueries(currentKycId);
+      setActionLoading(null);
       return;
     }
 
+    if (result?.status === 409) {
+      setConflictedKycId(currentKycId);
+      await refreshKycQueries(currentKycId);
+    }
+    setActionLoading(null);
     toast.error(result?.message || "فشلت الموافقة على الطلب");
   }
 
-  async function handleRejectKyc() {
+  async function handleRejectKyc(reason: string) {
     if (!kycId || actionLoading) {
       return;
     }
 
     const currentKycId = kycId;
+    setRejectError(undefined);
     setActionLoading("reject");
-    const result = await rejectKycAPI(currentKycId);
-    setActionLoading(null);
+    const result = await rejectKycAPI(currentKycId, reason);
 
     if (result?.ok) {
       toast.success(result.message || "تم رفض الطلب بنجاح");
       await refreshKycQueries(currentKycId);
+      setRejectOpen(false);
+      setActionLoading(null);
       return;
     }
 
+    if (result?.status === 409) {
+      setConflictedKycId(currentKycId);
+      await refreshKycQueries(currentKycId);
+      setRejectOpen(false);
+    } else if (result?.status === 422) {
+      setRejectError(result.error?.errors?.reason?.[0] ?? result.message);
+    }
+    setActionLoading(null);
     toast.error(result?.message || "فشل رفض الطلب");
   }
 
   return (
     <Panel
       open={open}
-      onClose={onClose}
+      onClose={() => {
+        setRejectOpen(false);
+        setRejectError(undefined);
+        onClose();
+      }}
       contentClassName="w-full gap-0 overflow-hidden bg-white p-0 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] sm:rounded-l-3xl sm:border-l-0"
       headerClassName="relative h-[101px] shrink-0 border-b border-gray/20 px-6 py-6 text-right"
       title="تفاصيل الطلب"
@@ -116,14 +139,28 @@ function RegistrationRequestsDetailsPanel({
           )}
         </div>
 
-        {request?.status === "pending" ? (
+        {request?.status === "pending" && conflictedKycId !== kycId ? (
           <RequestDetailsFooter
             onApprove={handleApproveKyc}
-            onReject={handleRejectKyc}
+            onReject={() => {
+              setRejectError(undefined);
+              setRejectOpen(true);
+            }}
             approveLoading={actionLoading === "approve"}
             rejectLoading={actionLoading === "reject"}
           />
         ) : null}
+        <RejectRequestModal
+          key={kycId}
+          open={rejectOpen && request?.status === "pending"}
+          onClose={() => {
+            setRejectOpen(false);
+            setRejectError(undefined);
+          }}
+          onConfirm={handleRejectKyc}
+          loading={actionLoading === "reject"}
+          error={rejectError}
+        />
       </div>
     </Panel>
   );
@@ -148,6 +185,15 @@ function KycDetails({ request }: { request: KycDetail }) {
           value={formatDate(request.created_at)}
         />
         <DetailRow label="آخر تحديث" value={formatDate(request.updated_at)} />
+        {request.rejection_reason && (
+          <DetailRow label="سبب الرفض" value={request.rejection_reason} />
+        )}
+        {request.reviewer?.name && (
+          <DetailRow label="تمت المراجعة بواسطة" value={request.reviewer.name} />
+        )}
+        {request.reviewed_at && (
+          <DetailRow label="تاريخ المراجعة" value={formatDate(request.reviewed_at)} />
+        )}
       </section>
       <OwnerInfoSection request={request} />
     </div>

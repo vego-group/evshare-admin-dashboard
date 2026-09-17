@@ -12,24 +12,29 @@ type RejectRequestModalProps = {
   open: boolean;
   onClose: () => void;
   onConfirm: (reason: string) => void;
+  loading: boolean;
+  error?: string;
 };
 
 function RejectRequestModal({
   open,
   onClose,
   onConfirm,
+  loading,
+  error,
 }: RejectRequestModalProps) {
   const [reason, setReason] = useState("");
   const trimmedReason = reason.trim();
 
   const handleClose = () => {
+    if (loading) return;
     setReason("");
     onClose();
   };
 
   const handleConfirm = () => {
+    if (loading || trimmedReason.length < 10 || trimmedReason.length > 1000) return;
     onConfirm(trimmedReason);
-    setReason("");
   };
 
   return (
@@ -40,9 +45,10 @@ function RejectRequestModal({
     >
       <div className="flex flex-col gap-6">
         <RejectRequestModalHeader />
-        <RejectRequestReasonField value={reason} onChange={setReason} />
+        <RejectRequestReasonField value={reason} onChange={setReason} error={error} />
         <RejectRequestActions
-          disabled={!trimmedReason}
+          disabled={trimmedReason.length < 10 || trimmedReason.length > 1000 || loading}
+          loading={loading}
           onCancel={handleClose}
           onConfirm={handleConfirm}
         />
