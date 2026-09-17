@@ -1,4 +1,4 @@
-export type UserRole = "user" | "root" | "admin" | "merchant" | "driver" | "sales";
+export type UserRole = string;
 export type UserKycStatus = "not_verified" | "pending" | "approved";
 export type UserAccountStatus = "active" | "suspended" | "deleted";
 
@@ -51,6 +51,7 @@ export type UserSubscription = {
 };
 
 export type AdminUserDetail = UserListItem & {
+  role_id?: string | null;
   first_name: string | null;
   last_name: string | null;
   language: "ar" | "en";

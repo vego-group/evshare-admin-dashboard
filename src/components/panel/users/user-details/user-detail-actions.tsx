@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
+import PermissionGate from "@/components/permission-gate";
 import { reactivateUser, removeUser, suspendUser } from "@/services/mutations/users";
 import type { AdminUserDetail, AdminUserDetailResponse } from "@/types";
 import { UserDeleteConfirmModal, UserEditModal, UserSuspendModal } from "../modals";
@@ -29,7 +30,7 @@ export default function UserDetailActions({ user }: { user: AdminUserDetail }) {
   }
   return <>
     {user.account_status !== "deleted" && <div className="flex flex-wrap gap-2">
-      <Button type="button" variant="outline" onClick={() => setAction("edit")}>تعديل المستخدم</Button>
+      <PermissionGate slug={["Admin Edit Users", "Admin Assign User Roles"]}><Button type="button" variant="outline" onClick={() => setAction("edit")}>تعديل المستخدم</Button></PermissionGate>
       {user.account_status === "active" ? <Button type="button" variant="outline" onClick={() => setAction("suspend")}>تعليق الحساب</Button> :
         <Button type="button" variant="outline" disabled={submitting} onClick={() => run(() => reactivateUser(user.id), "تعذرت إعادة التفعيل")}>إعادة التفعيل</Button>}
       <Button type="button" variant="outline" onClick={() => setAction("remove")}>إزالة الحساب</Button>
