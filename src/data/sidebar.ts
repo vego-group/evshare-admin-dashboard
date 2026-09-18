@@ -18,6 +18,7 @@ import {
   Phone,
   Radar,
   Receipt,
+  FileBarChart2,
   Route,
   ScrollText,
   Settings,
@@ -328,6 +329,14 @@ export const sidebarNavItems: SidebarNavItem[] = [
     ariaLabel: "ضريبة القيمة المضافة",
     icon: Receipt,
     permission: "Admin View VAT",
+  },
+  {
+    href: "/reports",
+    group: "finance",
+    label: "التقارير الإدارية",
+    ariaLabel: "التقارير الإدارية",
+    icon: FileBarChart2,
+    permission: "Admin View Reports",
   },
   {
     href: "/complaints",

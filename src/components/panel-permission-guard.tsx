@@ -52,6 +52,7 @@ const routeRules: RouteRule[] = [
   { pattern: /^\/iot-webhook-logs$/, permission: "Admin Index IoT Webhook Logs" },
   { pattern: /^\/commission-settings$/, permission: "Admin Index Commission Settings" },
   { pattern: /^\/finance\/vat$/, permission: "Admin View VAT" },
+  { pattern: /^\/reports$/, permission: "Admin View Reports" },
   { pattern: /^\/complaints$/, permission: "Admin Index Complaints" },
   { pattern: /^\/promos\/[^/]+$/, permission: "Admin View Promos" },
   { pattern: /^\/promos$/, permission: "Admin Index Promos" },
