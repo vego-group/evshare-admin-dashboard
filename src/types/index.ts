@@ -36,6 +36,7 @@ export * from "./shipments";
 export * from "./shipping-companies";
 export * from "./shipping-cities";
 export * from "./finance";
+export * from "./reports";
 export * from "./driver-pricing-settings";
 export * from "./countries";
 export * from "./subscription-discounts";

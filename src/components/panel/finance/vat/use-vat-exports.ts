@@ -14,7 +14,7 @@ export const getVatExport = (response: VatExportResponse): VatExport =>
   "data" in response ? response.data : response;
 
 async function downloadFile(id: string) {
-  const response = await fetch(`/api/vat-exports/${encodeURIComponent(id)}/download`, {
+  const response = await fetch(`/api/admin/finance/vat/exports/${encodeURIComponent(id)}/download`, {
     credentials: "same-origin",
   });
   if (!response.ok) {
