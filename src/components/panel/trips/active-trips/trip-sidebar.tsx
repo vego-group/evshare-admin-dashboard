@@ -1,6 +1,8 @@
 import { Ban, BatteryMedium, CheckCircle2, Radar } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import PermissionGate from "@/components/permission-gate";
+import { ADMIN_PERMISSIONS } from "@/constants";
 import { batteryBarClass, batteryTextClass } from "@/lib/utils/battery";
 import type { TripListItem } from "@/types";
 import TripStatusBadge from "../results/trip-status-badge";
@@ -88,26 +90,30 @@ function TripSidebar({
             )}
 
             <div className="mt-2 flex items-center gap-2">
-              <button
-                type="button"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  onEndTrip(trip);
-                }}
-                className="flex items-center gap-1 rounded-lg bg-green-50 px-2 py-1 text-xs font-medium text-green-600 transition hover:brightness-95"
-              >
-                <CheckCircle2 className="size-3.5 shrink-0" /> إنهاء
-              </button>
-              <button
-                type="button"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  onCancelTrip(trip);
-                }}
-                className="flex items-center gap-1 rounded-lg bg-red-50 px-2 py-1 text-xs font-medium text-red-600 transition hover:brightness-95"
-              >
-                <Ban className="size-3.5 shrink-0" /> إلغاء
-              </button>
+              <PermissionGate slug={ADMIN_PERMISSIONS.trips.end}>
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onEndTrip(trip);
+                  }}
+                  className="flex items-center gap-1 rounded-lg bg-green-50 px-2 py-1 text-xs font-medium text-green-600 transition hover:brightness-95"
+                >
+                  <CheckCircle2 className="size-3.5 shrink-0" /> إنهاء
+                </button>
+              </PermissionGate>
+              <PermissionGate slug={ADMIN_PERMISSIONS.trips.cancel}>
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onCancelTrip(trip);
+                  }}
+                  className="flex items-center gap-1 rounded-lg bg-red-50 px-2 py-1 text-xs font-medium text-red-600 transition hover:brightness-95"
+                >
+                  <Ban className="size-3.5 shrink-0" /> إلغاء
+                </button>
+              </PermissionGate>
             </div>
           </article>
         );

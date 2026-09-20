@@ -10,6 +10,8 @@ import QueryErrorState from "@/components/ui/query-error-state";
 import { useActiveTrips } from "@/hooks/api";
 import { cancelTripAPI, endTripAPI } from "@/services/mutations";
 import type { TripListItem } from "@/types";
+import { ADMIN_PERMISSIONS } from "@/constants";
+import { useUserPermissions } from "@/hooks";
 
 import { CancelTripConfirmModal, EndTripConfirmModal } from "./modals";
 import TripSidebar from "./trip-sidebar";
@@ -20,6 +22,7 @@ const TripMap = dynamic(() => import("./trip-map"), {
 });
 
 function ActiveTrips() {
+  const { hasPermission } = useUserPermissions();
   const queryClient = useQueryClient();
   const {
     data,
@@ -41,6 +44,8 @@ function ActiveTrips() {
 
   function requestAction(action: "cancel" | "end") {
     return (trip: TripListItem) => {
+      const requiredPermission = ADMIN_PERMISSIONS.trips[action];
+      if (!hasPermission(requiredPermission)) return;
       setPendingTrip(trip);
       setPendingAction(action);
       setEndError(null);
@@ -49,6 +54,11 @@ function ActiveTrips() {
 
   async function handleConfirm() {
     if (!pendingTrip || !pendingAction || isSubmitting) return;
+    if (!hasPermission(ADMIN_PERMISSIONS.trips[pendingAction])) {
+      setPendingTrip(null);
+      setPendingAction(null);
+      return;
+    }
     setIsSubmitting(true);
     const result =
       pendingAction === "cancel"

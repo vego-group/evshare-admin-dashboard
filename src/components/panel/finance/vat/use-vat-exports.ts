@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { useVatExportStatus } from "@/hooks/api";
 import { requestVatExport } from "@/services/mutations";
 import type { VatExport, VatExportRequest, VatExportResponse } from "@/types";
+import { notifyForbidden } from "@/lib/toast-events";
 
 const progressToastId = "vat-export-progress";
 
@@ -20,6 +21,7 @@ async function downloadFile(id: string) {
       credentials: "same-origin",
     },
   );
+  if (response.status === 403) notifyForbidden();
   if (!response.ok) {
     const payload: unknown = await response.json().catch(() => null);
     const message =
@@ -113,7 +115,6 @@ export function useVatExportActions(canExport: boolean) {
       toast.loading("جارٍ طلب ملف التصدير", { id: progressToastId });
       try {
         const result = await requestVatExport(payload);
-        console.log("requestVatExport result:", result);
         if (!result.ok || !result.data) {
           toast.error(result.message || "تعذر طلب ملف التصدير", {
             id: progressToastId,

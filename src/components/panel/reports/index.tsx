@@ -11,6 +11,9 @@ import { useTenantCountry } from "@/provider/currency";
 import { requestReportExport } from "@/services/mutations";
 import { reportCatalogAPI, reportExportStatusAPI, reportExportsAPI } from "@/services/queries";
 import type { ReportDefinition, ReportExport, ReportExportStatus, ReportFilterDefinition } from "@/types/reports";
+import PermissionGate from "@/components/permission-gate";
+import { ADMIN_PERMISSIONS } from "@/constants";
+import { notifyForbidden } from "@/lib/toast-events";
 
 const statusLabels: Record<ReportExportStatus, string> = {
   queued: "في الانتظار",
@@ -151,6 +154,7 @@ function ReportForm({ report, onRequested, busy }: {
 
 async function downloadReport(id: string) {
   const response = await fetch(`/api/admin/reports/exports/${encodeURIComponent(id)}/download`, { credentials: "same-origin" });
+  if (response.status === 403) notifyForbidden();
   if (!response.ok) {
     const payload: unknown = await response.json().catch(() => null);
     throw new Error(payload && typeof payload === "object" && "message" in payload
@@ -167,7 +171,8 @@ async function downloadReport(id: string) {
 }
 
 export default function ManagementReports() {
-  const canGenerate = useHasPermission("Admin Generate Reports");
+  const canGenerate = useHasPermission(ADMIN_PERMISSIONS.reports.generate);
+  const canDownload = useHasPermission(ADMIN_PERMISSIONS.reports.download);
   const tenant = useTenantCountry();
   const queryClient = useQueryClient();
   const [tab, setTab] = useState<"catalog" | "history">("catalog");
@@ -206,14 +211,14 @@ export default function ManagementReports() {
   useEffect(() => {
     if (!active || (active.status !== "completed" && active.status !== "failed" && active.status !== "expired")) return;
     void queryClient.invalidateQueries({ queryKey: ["report-exports"] });
-    if (active.status === "completed" && active.download_url && autoDownloadedId.current !== active.id) {
+    if (canDownload && active.status === "completed" && active.download_url && autoDownloadedId.current !== active.id) {
       autoDownloadedId.current = active.id;
       void downloadReport(active.id).then(
         () => toast.success("تم تنزيل التقرير"),
         (error) => toast.error(error instanceof Error ? error.message : "تعذر تنزيل التقرير"),
       );
     }
-  }, [active, queryClient]);
+  }, [active, canDownload, queryClient]);
 
   async function handleDownload(id: string) {
     if (downloadingId) return;
@@ -249,7 +254,7 @@ export default function ManagementReports() {
               <span className="font-semibold">{statusLabels[active.status]}</span>
               {active.progress != null && (active.status === "queued" || active.status === "processing") && <span>{Math.round(active.progress)}%</span>}
               {active.error && <span className="text-red-700">{active.error}</span>}
-              {active.status === "completed" && <Button size="sm" variant="outline" disabled={Boolean(downloadingId)} onClick={() => void handleDownload(active.id)}><Download /> تنزيل مجدداً</Button>}
+              {active.status === "completed" && <PermissionGate slug={ADMIN_PERMISSIONS.reports.download}><Button size="sm" variant="outline" disabled={Boolean(downloadingId)} onClick={() => void handleDownload(active.id)}><Download /> تنزيل مجدداً</Button></PermissionGate>}
             </div> : "جارٍ متابعة حالة التقرير..."}
         </div>
       )}
@@ -301,7 +306,7 @@ export default function ManagementReports() {
               <td className="px-4 py-3">{new Date(item.requested_at).toLocaleString("ar-SA")}</td>
               <td className="px-4 py-3">{item.row_count ?? item.processed_rows ?? "—"}</td>
               <td className="px-4 py-3"><span className="rounded-full bg-primary/10 px-3 py-1 text-secondary">{statusLabels[item.status] || item.status}</span>{item.progress != null && item.status === "processing" && <span className="mr-2 text-xs text-gray">{Math.round(item.progress)}%</span>}{item.error && <p className="mt-2 text-xs text-red-700">{item.error}</p>}</td>
-              <td className="px-4 py-3">{item.status === "completed" && <Button type="button" size="sm" variant="outline" disabled={Boolean(downloadingId)} onClick={() => void handleDownload(item.id)}><Download />{downloadingId === item.id ? "جارٍ التنزيل..." : "تنزيل"}</Button>}</td>
+              <td className="px-4 py-3">{item.status === "completed" && <PermissionGate slug={ADMIN_PERMISSIONS.reports.download}><Button type="button" size="sm" variant="outline" disabled={Boolean(downloadingId)} onClick={() => void handleDownload(item.id)}><Download />{downloadingId === item.id ? "جارٍ التنزيل..." : "تنزيل"}</Button></PermissionGate>}</td>
             </tr>)}</tbody>
           </table></div>}
         </section>

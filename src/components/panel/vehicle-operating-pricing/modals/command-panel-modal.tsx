@@ -33,6 +33,7 @@ import {
 } from "@/services/mutations";
 import type { VehicleListItem, VehicleLock } from "@/types";
 import { formatDate, vehicleTitle } from "../utils";
+import { ADMIN_PERMISSIONS } from "@/constants";
 
 type PendingAction =
   | "lock"
@@ -496,19 +497,21 @@ function CommandPanelModal({
               لا يوجد جهاز IoT مربوط بهذه المركبة.
             </p>
           ) : (
-            <button
-              type="button"
-              disabled={Boolean(pendingAction)}
-              onClick={() => dispatchVehicleCommand("sound_alarm")}
-              className="flex min-h-20 w-full items-center justify-center gap-2 rounded-xl bg-amber-50 p-4 text-sm font-medium text-orange-500 transition hover:brightness-95 disabled:opacity-60"
-            >
-              {pendingAction === "sound_alarm" ? (
-                <Loader />
-              ) : (
-                <Volume2 className="size-6 shrink-0" />
-              )}
-              تشغيل الجرس
-            </button>
+            <PermissionGate slug={ADMIN_PERMISSIONS.vehicles.sendCommand}>
+              <button
+                type="button"
+                disabled={Boolean(pendingAction)}
+                onClick={() => dispatchVehicleCommand("sound_alarm")}
+                className="flex min-h-20 w-full items-center justify-center gap-2 rounded-xl bg-amber-50 p-4 text-sm font-medium text-orange-500 transition hover:brightness-95 disabled:opacity-60"
+              >
+                {pendingAction === "sound_alarm" ? (
+                  <Loader />
+                ) : (
+                  <Volume2 className="size-6 shrink-0" />
+                )}
+                تشغيل الجرس
+              </button>
+            </PermissionGate>
           )}
         </section>
       </div>

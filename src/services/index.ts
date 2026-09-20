@@ -1,6 +1,7 @@
 import axios, { AxiosError, AxiosInstance, Method } from "axios";
 import { ApiResult, ErrorBody, ExtraConfig } from "@/types";
 import { getPayloadMessage, getValidationErrors } from "@/lib/utils/helper";
+import { notifyForbidden } from "@/lib/toast-events";
 
 export const adminApi = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_ADMIN_BASE_URL,
@@ -30,6 +31,7 @@ const attach401Interceptor = (instance: AxiosInstance) => {
     (response) => response,
     (error: AxiosError) => {
       if (error.response?.status === 401) redirectToExpiredLogin();
+      if (error.response?.status === 403) notifyForbidden();
       return Promise.reject(error);
     },
   );
@@ -124,6 +126,7 @@ export const baseAPI = async (method: Method, url: string) => {
       : await response.text();
 
     if (response.status === 401) redirectToExpiredLogin();
+    if (response.status === 403) notifyForbidden();
 
     if (!response.ok) {
       const message =
