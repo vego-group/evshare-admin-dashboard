@@ -1,7 +1,9 @@
+import type { PricingConfigurationMetadata } from "./pricing-configuration";
+
 export type SubscriptionDiscountType = "percentage" | "fixed";
 export type SubscriptionDiscountStatus = "active" | "inactive";
 
-export type SubscriptionDiscount = {
+export type SubscriptionDiscount = PricingConfigurationMetadata & {
   id: string;
   currency?: string;
   name: string;
@@ -49,7 +51,7 @@ export type SubscriptionDiscountResponse = {
 export type CurrentSubscriptionPricingResponse = {
   error: boolean;
   message: string;
-  data: {
+  data: PricingConfigurationMetadata & {
     currency?: string;
     discount: SubscriptionDiscount | null;
     base_price: number;

@@ -9,6 +9,7 @@ import { PAGE_SIZE } from "@/constants";
 import { usePromos } from "@/hooks/api";
 import { deletePromo } from "@/services/mutations";
 import type { PromoCodesQueryParams, PromoListItem } from "@/types";
+import { invalidatePricingQueries } from "@/lib/pricing-queries";
 
 import PromosContentShimmer from "./content-shimmer";
 import PromosHeader from "./header";
@@ -30,7 +31,7 @@ function Promos() {
     setParams((current) => ({ ...current, ...nextParams }));
 
   async function refreshPromoQueries() {
-    await queryClient.invalidateQueries({ queryKey: ["promos"] });
+    await invalidatePricingQueries(queryClient);
   }
 
   async function handleDeletePromo() {

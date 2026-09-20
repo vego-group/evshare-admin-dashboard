@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { useCommissionSettings } from "@/hooks/api";
 import { deleteCommissionSetting } from "@/services/mutations";
 import type { CommissionSetting } from "@/types";
+import { invalidatePricingQueries } from "@/lib/pricing-queries";
 
 import CommissionSettingsShimmer from "./content-shimmer";
 import CommissionSettingsHeader from "./header";
@@ -24,7 +25,7 @@ function CommissionSettings() {
   const [isDeleting, setIsDeleting] = useState(false);
 
   async function refresh() {
-    await queryClient.invalidateQueries({ queryKey: ["commission-settings"] });
+    await invalidatePricingQueries(queryClient);
   }
 
   async function handleDeleteConfirm() {

@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 
 import MoneyValue from "@/components/ui/money-value";
+import { PricingConfigurationMeta } from "@/components/ui/pricing-configuration-meta";
 import type { VehicleListItem } from "@/types";
 import { vehicleTypeLabel } from "@/lib/utils/vehicle-type";
 import StatusBadge from "../status-badge";
@@ -130,6 +131,7 @@ export function VehicleDetailsContent({ vehicle, isLoading }: Props) {
             <DetailRow key={key} label={label} value={<MoneyValue value={formatMoney(vehicle[key]) as string | number | null | undefined} currency={vehicle.currency} />} />
           ))}
         </div>
+        <PricingConfigurationMeta metadata={vehicle} />
       </section>
 
       <section className="space-y-3 rounded-[14px] bg-background p-4">

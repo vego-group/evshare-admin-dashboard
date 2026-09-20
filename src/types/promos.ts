@@ -1,3 +1,5 @@
+import type { PricingConfigurationMetadata } from "./pricing-configuration";
+
 export type PromoContext = "order" | "subscription" | "both";
 
 export type PromoDiscountType = "percentage" | "fixed";
@@ -12,7 +14,7 @@ export type PromoCodesQueryParams = {
   type?: PromoContext;
 };
 
-export type PromoListItem = {
+export type PromoListItem = PricingConfigurationMetadata & {
   id: string;
   currency?: string;
   code: string;

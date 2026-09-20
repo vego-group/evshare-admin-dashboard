@@ -10,6 +10,7 @@ import { DRIVER_PRICING_SETTING_KEYS, type DriverPricingSetting } from "@/types"
 import { GROUPS, SETTING_META } from "./config";
 import EditSettingModal from "./edit-modal";
 import SettingsGroup from "./settings-group";
+import { invalidatePricingQueries } from "@/lib/pricing-queries";
 
 const EMPTY_SETTINGS: DriverPricingSetting[] = [];
 
@@ -35,10 +36,7 @@ export default function DriverPricingSettings() {
       {!isError && missingCount > 0 ? <Notice text={`لم يُرجع الخادم ${missingCount} من أصل 13 إعداداً. ستُستخدم قيم الخادم الافتراضية للإعدادات غير الموجودة.`} /> : null}
       {grouped.map(({ group, settings: groupSettings }) => <SettingsGroup key={group.id} group={group} settings={groupSettings} onEdit={setEditing} />)}
       <EditSettingModal setting={editing} onClose={() => setEditing(null)} onSaved={async () => {
-        await Promise.all([
-          queryClient.invalidateQueries({ queryKey: ["driver-pricing-settings"] }),
-          queryClient.invalidateQueries({ queryKey: ["settings"] }),
-        ]);
+        await invalidatePricingQueries(queryClient);
       }} />
     </div>
   );

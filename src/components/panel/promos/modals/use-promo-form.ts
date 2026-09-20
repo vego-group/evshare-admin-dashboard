@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import type { PromoFormValues } from "@/schemas/promos";
 import { addPromo, editPromo } from "@/services/mutations";
 import type { PromoListItem } from "@/types";
+import { confirmPricingChange } from "@/lib/utils/confirm-pricing-change";
 
 import {
   buildAddPromoPayload,
@@ -50,6 +51,7 @@ export function usePromoForm({ open, promo, onClose, onSaved }: Options) {
   };
 
   const onSubmit = async (values: PromoFormValues) => {
+    if (values.is_active && !confirmPricingChange("سيصبح كود الخصم مؤهلاً للاستخدام ضمن الفترة المحددة. هل تريد المتابعة؟")) return;
     const result = promo
       ? await (() => {
           const payload = buildChangedPromoPayload(values, form.formState.dirtyFields);

@@ -94,7 +94,7 @@ function PromoFormFields({
         <NumberInput allowDecimal={false} placeholder="1" register={register("per_user_limit")} />
       </Field>
 
-      <Field label="تاريخ البدء" error={errors.start_date?.message}>
+      <Field label="تاريخ البدء (بتوقيت المستأجر)" error={errors.start_date?.message}>
         <DatePicker
           value={startDate}
           maxDate={endDate}
@@ -104,7 +104,7 @@ function PromoFormFields({
         />
       </Field>
 
-      <Field label="تاريخ الانتهاء" error={errors.end_date?.message}>
+      <Field label="تاريخ الانتهاء (بتوقيت المستأجر)" error={errors.end_date?.message}>
         <DatePicker
           value={endDate}
           minDate={startDate}

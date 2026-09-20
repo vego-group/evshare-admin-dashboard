@@ -23,6 +23,9 @@ import { addSubscriptionDiscount, deleteSubscriptionDiscount, editSubscriptionDi
 import type { SubscriptionDiscount, SubscriptionDiscountQueryParams, SubscriptionDiscountStatus, SubscriptionDiscountType } from "@/types";
 import { preventNegativeNumberInput, preventNegativeNumberPaste } from "@/lib/utils/non-negative-input";
 import { cn } from "@/lib/utils";
+import { confirmPricingChange } from "@/lib/utils/confirm-pricing-change";
+import { invalidatePricingQueries } from "@/lib/pricing-queries";
+import { PricingConfigurationMeta } from "@/components/ui/pricing-configuration-meta";
 import FilterSelect, { type FilterOption } from "../promos/toolbar/filter-select";
 
 const inputClass = "h-14 w-full rounded-[14px] border border-primary bg-primary/4 px-4 text-sm font-medium text-dark-gray outline-none transition focus:bg-primary/8";
@@ -38,7 +41,7 @@ export default function SubscriptionDiscounts() {
   const { data, isLoading } = useSubscriptionDiscounts(params);
   const { data: pricing } = useCurrentSubscriptionPricing();
 
-  const refresh = async () => queryClient.invalidateQueries({ queryKey: ["subscription-discounts"] });
+  const refresh = async () => invalidatePricingQueries(queryClient);
   const openForm = (discount: SubscriptionDiscount | null) => { setEditing(discount); setFormOpen(true); };
 
   async function remove() {
@@ -87,12 +90,12 @@ export default function SubscriptionDiscounts() {
 }
 
 function PricingSummary({ pricing }: { pricing?: { base_price: number; discount_amount: number; final_price: number; currency?: string; discount: SubscriptionDiscount | null } }) {
-  return <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+  return <><section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
     <Price label="السعر الأساسي" value={pricing?.base_price} currency={pricing?.currency} icon="money" />
     <Price label="الخصم المطبق الآن" value={pricing?.discount_amount} currency={pricing?.currency} icon="percent" />
     <Price label="السعر النهائي" value={pricing?.final_price} currency={pricing?.currency} icon="money" />
     <div className="flex min-h-29 items-center gap-4 rounded-2xl bg-white p-5 shadow-[0_2px_8px_rgba(0,0,0,0.04)]"><div className="grid size-12 place-items-center rounded-xl bg-primary/15 text-secondary"><Percent className="size-5" /></div><div><p className="text-sm text-gray">الخصم الساري</p><p className="mt-1 max-w-40 truncate text-base font-semibold text-secondary">{pricing?.discount?.name || "لا يوجد"}</p></div></div>
-  </section>;
+  </section>{pricing ? <PricingConfigurationMeta metadata={pricing} compact /> : null}</>;
 }
 
 function Price({ label, value, currency, icon }: { label: string; value?: number; currency?: string; icon: "money" | "percent" }) {
@@ -165,6 +168,7 @@ function DiscountDetails({ open, discountId, onClose }: { open: boolean; discoun
       <Detail label="تاريخ الانتهاء" value={formatDate(discount.end_date) || "دون انتهاء"} />
       <Detail label="الاسم بالعربية" value={discount.name_ar || "—"} />
       <Detail label="الاسم بالإنجليزية" value={discount.name_en || "—"} />
+      <div className="sm:col-span-2"><PricingConfigurationMeta metadata={discount} /></div>
     </div> : null}
     <div className="mt-5 flex justify-end"><Button type="button" variant="outline" onClick={onClose}>إغلاق</Button></div>
   </Modal>;
@@ -190,6 +194,7 @@ function DiscountForm({ open, discount, onClose, onSaved }: { open: boolean; dis
   const startDate = useWatch({ control: form.control, name: "start_date" });
   const endDate = useWatch({ control: form.control, name: "end_date" });
   async function submit(values: SubscriptionDiscountFormValues) {
+    if (values.is_active && !confirmPricingChange("سيصبح هذا الخصم مؤهلاً للتطبيق على المعاملات ضمن الفترة المحددة. هل تريد المتابعة؟")) return;
     const payload = { ...values, start_date: values.start_date || null, end_date: values.end_date || null, name_ar: values.name_ar || null, name_en: values.name_en || null };
     const result = discount ? await editSubscriptionDiscount(discount.id, payload) : await addSubscriptionDiscount(payload);
     if (!result.ok) return toast.error(result.message || "تعذر حفظ الخصم");
@@ -201,8 +206,8 @@ function DiscountForm({ open, discount, onClose, onSaved }: { open: boolean; dis
       <Field label="الاسم بالإنجليزية" error={form.formState.errors.name_en?.message}><input dir="ltr" placeholder="Annual subscription offer" className={inputClass} {...form.register("name_en")} /></Field>
       <Field label="نوع الخصم" error={form.formState.errors.type?.message}><DiscountTypeDropdown value={type} onChange={(value) => form.setValue("type", value, { shouldDirty: true, shouldValidate: true })} /></Field>
       <Field label={type === "percentage" ? "القيمة (%)" : "القيمة"} error={form.formState.errors.value?.message}><div className="relative"><input type="number" min="0" max={type === "percentage" ? 100 : undefined} step="0.01" dir="ltr" placeholder={type === "percentage" ? "25" : "100"} onInput={(event) => { if (type === "percentage" && Number(event.currentTarget.value) > 100) event.currentTarget.value = "100"; }} onKeyDown={(event) => preventNegativeNumberInput(event, { allowDecimal: true })} onPaste={(event) => preventNegativeNumberPaste(event, { allowDecimal: true })} className={`${inputClass} [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none ${type === "percentage" ? "pr-10" : ""}`} {...form.register("value", { valueAsNumber: true })} />{type === "percentage" ? <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-sm font-medium text-gray">%</span> : null}</div></Field>
-      <Field label="تاريخ البدء" error={form.formState.errors.start_date?.message}><DatePicker placement="top" value={startDate} maxDate={endDate} placeholder="اختر تاريخ البدء" onChange={(value) => form.setValue("start_date", value ?? "", { shouldDirty: true, shouldValidate: true })} /></Field>
-      <Field label="تاريخ الانتهاء" error={form.formState.errors.end_date?.message}><DatePicker placement="top" value={endDate} minDate={startDate} placeholder="اختر تاريخ الانتهاء" onChange={(value) => form.setValue("end_date", value ?? "", { shouldDirty: true, shouldValidate: true })} /></Field>
+      <Field label="تاريخ البدء (بتوقيت المستأجر)" error={form.formState.errors.start_date?.message}><DatePicker placement="top" value={startDate} maxDate={endDate} placeholder="اختر تاريخ البدء" onChange={(value) => form.setValue("start_date", value ?? "", { shouldDirty: true, shouldValidate: true })} /></Field>
+      <Field label="تاريخ الانتهاء (بتوقيت المستأجر)" error={form.formState.errors.end_date?.message}><DatePicker placement="top" value={endDate} minDate={startDate} placeholder="اختر تاريخ الانتهاء" onChange={(value) => form.setValue("end_date", value ?? "", { shouldDirty: true, shouldValidate: true })} /></Field>
       <label className="flex h-14 items-center gap-3 rounded-[14px] border border-primary bg-primary/4 px-4 sm:col-span-2"><input type="checkbox" className="size-5 accent-primary" {...form.register("is_active")} /><span className="text-sm font-medium text-dark-gray">تفعيل الخصم</span></label>
       <div className="grid gap-4 sm:col-span-2 sm:grid-cols-2"><Button type="submit" disabled={form.formState.isSubmitting || (Boolean(discount) && !form.formState.isDirty)} className="h-14 rounded-[14px] bg-primary px-6 text-base font-medium text-secondary hover:bg-primary/90">{form.formState.isSubmitting ? <Loader /> : discount ? "حفظ التعديلات" : "إضافة الخصم"}</Button><Button type="button" variant="ghost" onClick={onClose} disabled={form.formState.isSubmitting} className="h-14 rounded-[14px] bg-neutral-100 px-6 text-base font-medium text-dark-gray hover:bg-neutral-200">إلغاء</Button></div>
     </form>

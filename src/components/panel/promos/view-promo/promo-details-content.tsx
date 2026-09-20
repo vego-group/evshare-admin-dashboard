@@ -6,6 +6,7 @@ import type { ReactNode } from "react";
 import { formatStoredPhone } from "@/lib/utils/format-phone";
 import CurrencyMoneyValue from "@/components/ui/money-value";
 import type { PromoDetailData, PromoRedeemableType } from "@/types";
+import { PricingConfigurationMeta } from "@/components/ui/pricing-configuration-meta";
 
 import PromoDetailsShimmer from "../modals/promo-details-shimmer";
 import {
@@ -58,6 +59,8 @@ export function PromoDetailsContent({ detail, isLoading }: Props) {
           </div>
         </div>
       </div>
+
+      <PricingConfigurationMeta metadata={promo} />
 
       {/* Analytics */}
       <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
