@@ -49,3 +49,27 @@ export type UpdateFeatureFlagPayload = Partial<{
   name_en: string;
   is_active: boolean;
 }>;
+
+/**
+ * The browser receives evaluated booleans only. Targeting rules and audience
+ * attributes stay on the server and must never be included in this response.
+ */
+export type EvaluatedFeatureFlags = Record<string, boolean>;
+
+export type FeatureFlagEvaluation = {
+  application: "admin";
+  platform: "web";
+  application_version: string;
+  tenant: string;
+  configuration_version: string;
+  published_at: string;
+  evaluated_at: string;
+  expires_at: string;
+  flags: EvaluatedFeatureFlags;
+};
+
+export type FeatureFlagEvaluationResponse = {
+  error: boolean;
+  message: string;
+  data: FeatureFlagEvaluation;
+};

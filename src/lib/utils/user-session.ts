@@ -3,6 +3,8 @@
 import { useSyncExternalStore } from "react";
 
 import type { UserRole } from "@/types";
+import { getQueryClient } from "./query";
+import { setFeatureFlagRuntimeMetadata } from "../feature-flag-runtime";
 
 const USER_SESSION_KEY = "user_data";
 const USER_SESSION_EVENT = "user-session-change";
@@ -17,6 +19,7 @@ export type SessionUser = {
 export function setUserSession(user: SessionUser): boolean {
   if (typeof window === "undefined") return false;
   try {
+    clearUserScopedCaches();
     localStorage.setItem(USER_SESSION_KEY, JSON.stringify(user));
     window.dispatchEvent(new Event(USER_SESSION_EVENT));
     return true;
@@ -28,11 +31,17 @@ export function setUserSession(user: SessionUser): boolean {
 export function clearUserSession() {
   if (typeof window === "undefined") return;
   try {
+    clearUserScopedCaches();
     localStorage.removeItem(USER_SESSION_KEY);
     window.dispatchEvent(new Event(USER_SESSION_EVENT));
   } catch {
     // ignore
   }
+}
+
+function clearUserScopedCaches() {
+  getQueryClient().clear();
+  setFeatureFlagRuntimeMetadata(null);
 }
 
 let cachedRaw: string | null = null;

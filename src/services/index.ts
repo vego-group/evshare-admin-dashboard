@@ -2,6 +2,7 @@ import axios, { AxiosError, AxiosInstance, Method } from "axios";
 import { ApiResult, ErrorBody, ExtraConfig } from "@/types";
 import { getPayloadMessage, getValidationErrors } from "@/lib/utils/helper";
 import { notifyForbidden } from "@/lib/toast-events";
+import { getFeatureFlagRuntimeHeaders } from "@/lib/feature-flag-runtime";
 
 export const adminApi = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_ADMIN_BASE_URL,
@@ -117,7 +118,10 @@ export const baseAPI = async (method: Method, url: string) => {
   if (typeof window !== "undefined") {
     const response = await fetch(`/api/admin${url}`, {
       method,
-      headers: { Accept: "application/json" },
+      headers: {
+        Accept: "application/json",
+        ...getFeatureFlagRuntimeHeaders(),
+      },
       credentials: "same-origin",
     });
     const contentType = response.headers.get("content-type");

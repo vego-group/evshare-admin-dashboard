@@ -8,6 +8,28 @@ type RouteContext = {
 };
 
 const exportIdPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const flagVersionPattern = /^[a-zA-Z0-9._:-]{1,128}$/;
+
+function featureFlagConsumerHeaders(request: NextRequest): Record<string, string> {
+  const version = request.headers.get("X-Feature-Flag-Version");
+  const evaluatedAt = request.headers.get("X-Feature-Flag-Evaluated-At");
+  const receivedAt = request.headers.get("X-Feature-Flag-Received-At");
+  if (
+    !version ||
+    !flagVersionPattern.test(version) ||
+    !evaluatedAt ||
+    !Number.isFinite(Date.parse(evaluatedAt)) ||
+    !receivedAt ||
+    !Number.isFinite(Date.parse(receivedAt))
+  ) {
+    return {};
+  }
+  return {
+    "X-Feature-Flag-Version": version,
+    "X-Feature-Flag-Evaluated-At": evaluatedAt,
+    "X-Feature-Flag-Received-At": receivedAt,
+  };
+}
 
 function messageFrom(payload: unknown, fallback: string): string {
   if (payload && typeof payload === "object" && "message" in payload && typeof payload.message === "string") {
@@ -134,6 +156,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
       "Accept-Language": "ar",
       Authorization: `Bearer ${token}`,
       "X-Tenant-Id": country,
+      ...featureFlagConsumerHeaders(request),
     },
     cache: "no-store",
   });
