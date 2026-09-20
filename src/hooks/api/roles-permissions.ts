@@ -72,7 +72,11 @@ export const usePermissionCategory = (categoryId: string | null) =>
 
 export const useAuthPermissions = () =>
   useCustomQuery(rolesPermissionsKeys.authPermissions, authPermissionsAPI, {
-    staleTime: 5 * 60 * 1000,
+    // Keep UI gates in sync with role grants/revocations while a dashboard
+    // session remains open. The API still authorizes every request immediately.
+    staleTime: 60 * 1000,
+    refetchInterval: 60 * 1000,
+    refetchOnWindowFocus: "always",
     retry: false,
   });
 

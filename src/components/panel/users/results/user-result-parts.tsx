@@ -4,6 +4,7 @@ import { Pencil, RotateCcw, Trash2, User, UserRoundX, type LucideIcon } from "lu
 import { cn } from "@/lib/utils";
 import PermissionGate from "@/components/permission-gate";
 import type { UserAccountStatus, UserKycStatus, UserListItem, UserRole } from "@/types";
+import { ADMIN_PERMISSIONS } from "@/constants";
 
 export function AccountStatusBadge({ status }: { status: UserAccountStatus }) {
   const labels = { active: "نشط", suspended: "معلق", deleted: "محذوف" };
@@ -125,15 +126,17 @@ export function UserActions({
   return (
     <div className={cn("flex items-center gap-2", compact && "w-full")}>
       {user.account_status !== "deleted" && <PermissionGate slug={["Admin Edit Users", "Admin Assign User Roles"]}><ActionButton icon={Pencil} onClick={onEdit} label="تعديل المستخدم" className="bg-blue-50 text-blue-600" /></PermissionGate>}
-      {user.account_status === "active" && <ActionButton icon={UserRoundX} onClick={onSuspend} label="تعليق المستخدم" className="bg-amber-50 text-amber-700" />}
-      {user.account_status === "suspended" && <ActionButton icon={RotateCcw} onClick={onReactivate} label="إعادة تفعيل المستخدم" className="bg-green-50 text-green-700" />}
+      {user.account_status === "active" && <PermissionGate slug={ADMIN_PERMISSIONS.users.suspend}><ActionButton icon={UserRoundX} onClick={onSuspend} label="تعليق المستخدم" className="bg-amber-50 text-amber-700" /></PermissionGate>}
+      {user.account_status === "suspended" && <PermissionGate slug={ADMIN_PERMISSIONS.users.reactivate}><ActionButton icon={RotateCcw} onClick={onReactivate} label="إعادة تفعيل المستخدم" className="bg-green-50 text-green-700" /></PermissionGate>}
       {user.account_status !== "deleted" &&
-      <ActionButton
-        icon={Trash2}
-        onClick={onDelete}
-        label="إزالة المستخدم"
-        className={cn("bg-red-50 text-red-500", compact && "flex-1")}
-      />}
+      <PermissionGate slug={ADMIN_PERMISSIONS.users.delete}>
+        <ActionButton
+          icon={Trash2}
+          onClick={onDelete}
+          label="إزالة المستخدم"
+          className={cn("bg-red-50 text-red-500", compact && "flex-1")}
+        />
+      </PermissionGate>}
     </div>
   );
 }
