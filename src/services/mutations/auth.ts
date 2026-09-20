@@ -1,13 +1,10 @@
 "use server";
 
-import {
-  countryCodeSchema,
-  LoginFormValues,
-  VerifyOtpFormValues,
-} from "@/schemas";
+import { countryCodeSchema } from "@/schemas/countries";
+import type { LoginFormValues, VerifyOtpFormValues } from "@/schemas/login";
 import { safeAuthApi } from "..";
-import { setCountry } from "@/lib";
-import { AuthResponse } from "@/types";
+import { setCountry } from "@/lib/utils/auth";
+import type { AuthResponse } from "@/types";
 
 export const loginAPI = async (payload: LoginFormValues, country: string) => {
   const selectedCountry = countryCodeSchema.safeParse(country);

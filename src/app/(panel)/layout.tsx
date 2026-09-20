@@ -3,7 +3,7 @@ import Sidebar from "@/components/sidebar";
 import SearchDirectionController from "@/components/panel/search-direction-controller";
 import { PermissionsProvider } from "@/provider/permissions";
 import type { ReactNode } from "react";
-import { getCountry } from "@/lib";
+import { getCountry } from "@/lib/utils/auth";
 import PanelPermissionGuard from "@/components/panel-permission-guard";
 import { CurrencyProvider } from "@/provider/currency";
 import { redirect } from "next/navigation";
