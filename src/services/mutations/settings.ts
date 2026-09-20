@@ -1,6 +1,10 @@
 "use server";
 
-import type { SettingDetailResponse, UpdateSettingPayload } from "@/types";
+import type {
+  SettingDetailResponse,
+  SettingsRollbackResponse,
+  UpdateSettingPayload,
+} from "@/types";
 
 import { safeApi } from "..";
 
@@ -13,3 +17,6 @@ export const editSetting = async (
     `/settings/${settingId}/edit`,
     payload,
   );
+
+export const rollbackSettings = async () =>
+  await safeApi<SettingsRollbackResponse>("POST", "/settings/rollback");

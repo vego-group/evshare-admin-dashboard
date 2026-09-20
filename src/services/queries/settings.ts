@@ -1,5 +1,9 @@
 import { buildQuery } from "@/lib/utils/build-query";
-import type { SettingsListResponse, SettingsQueryParams } from "@/types";
+import type {
+  SettingsListResponse,
+  SettingsPropagationResponse,
+  SettingsQueryParams,
+} from "@/types";
 import { baseAPI } from "..";
 
 const CONTACT_US_KEY_PREFIX = "contact_us_";
@@ -27,3 +31,6 @@ export const settingsAPI = async (
     ),
   };
 };
+
+export const settingsPropagationAPI = async (): Promise<SettingsPropagationResponse> =>
+  await baseAPI("GET", "/settings/propagation-status");

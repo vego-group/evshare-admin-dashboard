@@ -43,18 +43,20 @@ function SettingsResults({ settings, onEdit }: Props) {
                 {getSettingLabel(setting.setting_name, setting.setting_label)}
               </td>
               <td className="max-w-0 overflow-hidden text-ellipsis whitespace-nowrap px-5 py-4">
-                {getSettingValueLabel(setting.setting_name, setting.setting_value)}
+                {setting.is_sensitive || setting.is_masked || setting.sensitivity === "secret"
+                  ? "••••••••"
+                  : getSettingValueLabel(setting.setting_name, setting.setting_value)}
               </td>
               <td className="px-5 py-4">
                 <div className="flex gap-2">
-                  <PermissionGate slug="Admin Edit Settings">
+                  {!setting.is_masked ? <PermissionGate slug="Admin Edit Settings">
                     <SettingActionButton
                       label="تعديل"
                       onClick={() => onEdit(setting)}
                     >
                       <Pencil className="size-4 shrink-0" />
                     </SettingActionButton>
-                  </PermissionGate>
+                  </PermissionGate> : null}
                 </div>
               </td>
             </tr>
