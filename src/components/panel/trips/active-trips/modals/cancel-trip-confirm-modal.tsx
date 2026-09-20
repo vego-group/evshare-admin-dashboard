@@ -7,11 +7,12 @@ import Modal from "@/components/ui/modal";
 type Props = {
   open: boolean;
   isSubmitting: boolean;
+  error?: string | null;
   onClose: () => void;
   onConfirm: () => void;
 };
 
-function CancelTripConfirmModal({ open, isSubmitting, onClose, onConfirm }: Props) {
+function CancelTripConfirmModal({ open, isSubmitting, error, onClose, onConfirm }: Props) {
   return (
     <Modal open={open} onClose={onClose} title="إلغاء الرحلة" contentClassName="max-w-md" closeButtonClassname="hidden">
       <div className="space-y-5 p-1 text-center">
@@ -21,6 +22,7 @@ function CancelTripConfirmModal({ open, isSubmitting, onClose, onConfirm }: Prop
         <p className="text-sm leading-6 text-dark-gray">
           هل تريد إلغاء هذه الرحلة؟ يعتمد رد رسوم الفتح على نافذة الإلغاء المجاني، وسيعرض الخادم قرار الاسترداد النهائي.
         </p>
+        {error && <p role="alert" className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</p>}
         <div className="flex justify-center gap-2">
           <Button type="button" variant="outline" onClick={onClose} disabled={isSubmitting}>تراجع</Button>
           <Button type="button" variant="destructive" onClick={onConfirm} disabled={isSubmitting} className="min-w-16">

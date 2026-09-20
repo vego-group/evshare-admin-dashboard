@@ -153,3 +153,11 @@ export type TripDetailsResponse = {
 };
 
 export type TripMutationResponse = TripDetailsResponse;
+
+export type TripMutationError = {
+  message: string;
+  error_code?: string;
+  errors?: { reason?: string | string[] };
+  correlation_id?: string;
+  recoverable?: boolean;
+};
