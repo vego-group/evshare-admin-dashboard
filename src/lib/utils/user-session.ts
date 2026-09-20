@@ -14,13 +14,14 @@ export type SessionUser = {
   role: UserRole;
 };
 
-export function setUserSession(user: SessionUser) {
-  if (typeof window === "undefined") return;
+export function setUserSession(user: SessionUser): boolean {
+  if (typeof window === "undefined") return false;
   try {
     localStorage.setItem(USER_SESSION_KEY, JSON.stringify(user));
     window.dispatchEvent(new Event(USER_SESSION_EVENT));
+    return true;
   } catch {
-    // ignore write failures (e.g. private browsing storage limits)
+    return false;
   }
 }
 

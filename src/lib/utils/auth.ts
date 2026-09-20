@@ -8,7 +8,14 @@ export const getToken = async () => {
   const token = cookieStore.get(TOKEN_KEY)?.value || null;
   return token;
 };
-export const setToken = async (value: string) => {
+export const setToken = async (value: string, expiresAt: string) => {
+  const expiresAtMs = Date.parse(expiresAt);
+  const maxAge = Math.floor((expiresAtMs - Date.now()) / 1000);
+
+  if (!value || !Number.isFinite(expiresAtMs) || maxAge <= 0) {
+    throw new Error("Cannot create a session from an invalid or expired token");
+  }
+
   const cookieStore = await cookies();
   cookieStore.set({
     name: TOKEN_KEY,
@@ -17,7 +24,7 @@ export const setToken = async (value: string) => {
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
     path: "/",
-    maxAge: 60 * 60 * 24 * 365, // سنة واحدة
+    maxAge,
   });
 };
 export const removeToken = async () => {
