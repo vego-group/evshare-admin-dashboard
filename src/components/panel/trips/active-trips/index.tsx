@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import dynamic from "next/dynamic";
@@ -9,7 +9,7 @@ import Header from "@/components/ui/header";
 import QueryErrorState from "@/components/ui/query-error-state";
 import { useActiveTrips } from "@/hooks/api";
 import { cancelTripAPI, endTripAPI } from "@/services/mutations";
-import type { TripListItem } from "@/types";
+import type { TripListItem, TripMutationError } from "@/types";
 import { ADMIN_PERMISSIONS } from "@/constants";
 import { useUserPermissions } from "@/hooks";
 
@@ -40,50 +40,81 @@ function ActiveTrips() {
     null,
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [endError, setEndError] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
+  const actionAttemptRef = useRef<{
+    action: "cancel" | "end";
+    tripId: string;
+    idempotencyKey: string;
+  } | null>(null);
+  const isActionSubmittingRef = useRef(false);
 
   function requestAction(action: "cancel" | "end") {
     return (trip: TripListItem) => {
       const requiredPermission = ADMIN_PERMISSIONS.trips[action];
       if (!hasPermission(requiredPermission)) return;
+      if (trip.status !== "started" && trip.status !== "in_progress") {
+        toast.error("لم تعد الرحلة نشطة. حدّث القائمة وحاول مرة أخرى.");
+        void queryClient.invalidateQueries({ queryKey: ["trips"] });
+        return;
+      }
+      actionAttemptRef.current = null;
       setPendingTrip(trip);
       setPendingAction(action);
-      setEndError(null);
+      setActionError(null);
     };
   }
 
   async function handleConfirm() {
-    if (!pendingTrip || !pendingAction || isSubmitting) return;
+    if (!pendingTrip || !pendingAction || isActionSubmittingRef.current) return;
     if (!hasPermission(ADMIN_PERMISSIONS.trips[pendingAction])) {
       setPendingTrip(null);
       setPendingAction(null);
       return;
     }
+    isActionSubmittingRef.current = true;
     setIsSubmitting(true);
-    const result =
-      pendingAction === "cancel"
-        ? await cancelTripAPI(pendingTrip.id)
-        : await endTripAPI(pendingTrip.id);
-    setIsSubmitting(false);
+    setActionError(null);
+    const idempotencyKey = getTripActionIdempotencyKey(
+      actionAttemptRef,
+      pendingAction,
+      pendingTrip.id,
+    );
 
-    if (result?.ok) {
-      setEndError(null);
-      toast.success(result.message || "تم تنفيذ الإجراء بنجاح");
-      setPendingTrip(null);
-      setPendingAction(null);
+    try {
+      const result =
+        pendingAction === "cancel"
+          ? await cancelTripAPI(pendingTrip.id, idempotencyKey)
+          : await endTripAPI(pendingTrip.id, idempotencyKey);
+
+      if (result?.ok) {
+        actionAttemptRef.current = null;
+        setActionError(null);
+        toast.success(result.message || "تم تنفيذ الإجراء بنجاح");
+        setPendingTrip(null);
+        setPendingAction(null);
+        await queryClient.invalidateQueries({ queryKey: ["trips"] });
+        return;
+      }
+
+      setActionError(formatTripActionError(result?.message, result?.error));
       await queryClient.invalidateQueries({ queryKey: ["trips"] });
-      return;
-    }
-    if (pendingAction === "end" && (result?.status === 409 || result?.status === 503)) {
-      const errors = result.error?.errors;
-      const reason = errors && typeof errors === "object" && "reason" in errors && typeof errors.reason === "string"
-        ? errors.reason
-        : null;
-      setEndError([result.message, reason].filter(Boolean).join(" — "));
+    } catch {
+      setActionError(
+        "تعذر تأكيد نتيجة الإجراء. تم تحديث الرحلات، ويمكنك إعادة المحاولة بأمان.",
+      );
       await queryClient.invalidateQueries({ queryKey: ["trips"] });
-      return;
+    } finally {
+      isActionSubmittingRef.current = false;
+      setIsSubmitting(false);
     }
-    toast.error(result?.message || "فشل تنفيذ الإجراء");
+  }
+
+  function closeActionModal() {
+    if (isSubmitting) return;
+    actionAttemptRef.current = null;
+    setPendingAction(null);
+    setPendingTrip(null);
+    setActionError(null);
   }
 
   return (
@@ -158,25 +189,61 @@ function ActiveTrips() {
       <CancelTripConfirmModal
         open={pendingAction === "cancel"}
         isSubmitting={isSubmitting}
-        onClose={() => {
-          setPendingAction(null);
-          setPendingTrip(null);
-        }}
+        error={actionError}
+        onClose={closeActionModal}
         onConfirm={handleConfirm}
       />
       <EndTripConfirmModal
         open={pendingAction === "end"}
         isSubmitting={isSubmitting}
-        error={endError}
-        onClose={() => {
-          setPendingAction(null);
-          setPendingTrip(null);
-          setEndError(null);
-        }}
+        error={actionError}
+        onClose={closeActionModal}
         onConfirm={handleConfirm}
       />
     </div>
   );
+}
+
+function getTripActionIdempotencyKey(
+  attempt: React.MutableRefObject<{
+    action: "cancel" | "end";
+    tripId: string;
+    idempotencyKey: string;
+  } | null>,
+  action: "cancel" | "end",
+  tripId: string,
+) {
+  if (attempt.current?.action === action && attempt.current.tripId === tripId) {
+    return attempt.current.idempotencyKey;
+  }
+
+  const suffix =
+    typeof crypto !== "undefined" && "randomUUID" in crypto
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const idempotencyKey = `admin-trip-${tripId}-${action}-${suffix}`;
+  attempt.current = { action, tripId, idempotencyKey };
+  return idempotencyKey;
+}
+
+function formatTripActionError(
+  fallbackMessage?: string,
+  error?: TripMutationError,
+) {
+  const reason = Array.isArray(error?.errors?.reason)
+    ? error.errors.reason.join(" ")
+    : error?.errors?.reason;
+  const reference = error?.correlation_id
+    ? `رقم التتبع: ${error.correlation_id}`
+    : null;
+
+  return [
+    error?.message || fallbackMessage || "تعذر تنفيذ الإجراء. يمكنك المحاولة مرة أخرى بأمان.",
+    reason,
+    reference,
+  ]
+    .filter(Boolean)
+    .join(" — ");
 }
 
 function formatUpdateTime(timestamp: number) {
