@@ -28,6 +28,9 @@ function TripBillingDetails({ trip }: { trip: TripListItem }) {
         <DetailRow label="الحد الأدنى للتكلفة" value={<MoneyValue value={pricing.minimum_charge} currency={pricing.currency} />} />
         <DetailRow label="الرصيد قبل الرحلة" value={<MoneyValue value={pricing.balance_before} currency={pricing.currency} />} />
         <DetailRow label="تثبيت التسعيرة" value={<span dir="ltr">{formatDate(pricing.pricing_locked_at)}</span>} />
+        <DetailRow label="إصدار التسعير" value={pricing.configuration_version != null ? String(pricing.configuration_version) : "-"} />
+        <DetailRow label="مستأجر التسعير" value={pricing.tenant || "-"} />
+        <DetailRow label="بداية سريان التسعير" value={<span dir="ltr">{formatDate(pricing.effective_at)}</span>} />
       </div>
       {breakdown && (
         <div className="grid gap-2 sm:grid-cols-2">

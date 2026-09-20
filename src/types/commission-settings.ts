@@ -4,7 +4,9 @@ export type CommissionSettingsQueryParams = {
   limit?: number;
 };
 
-export type CommissionSetting = {
+import type { PricingConfigurationMetadata } from "./pricing-configuration";
+
+export type CommissionSetting = PricingConfigurationMetadata & {
   id: string;
   name_ar: string;
   name_en: string;
@@ -12,6 +14,7 @@ export type CommissionSetting = {
   amount: string;
   is_active: boolean;
   created_at: string;
+  currency?: string | null;
 };
 
 export type CommissionSettingsListResponse = {

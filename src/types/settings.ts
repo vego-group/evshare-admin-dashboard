@@ -1,10 +1,12 @@
+import type { PricingConfigurationMetadata } from "./pricing-configuration";
+
 export const KYC_DEFAULT_STATUS_KEY = "kyc_default_status";
 export const WORK_CONDITIONS_AR_KEY = "work_conditions_ar";
 export const WORK_CONDITIONS_EN_KEY = "work_conditions_en";
 
 export type KycDefaultStatusValue = "pending" | "approved";
 
-export type Setting = {
+export type Setting = PricingConfigurationMetadata & {
   id: string;
   setting_name: string;
   setting_value: string;

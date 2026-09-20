@@ -1,6 +1,7 @@
 import type { ProductListItem } from "./products";
 import type { QueryParams } from ".";
 import type { VehicleType } from "./categories";
+import type { PricingConfigurationMetadata } from "./pricing-configuration";
 
 export type VehicleOperatingType = "evshare" | "operation_company";
 export type VehicleStatus =
@@ -126,7 +127,7 @@ export type VehicleZone = {
   is_active: boolean;
 };
 
-export type VehicleListItem = VehiclePricing & {
+export type VehicleListItem = PricingConfigurationMetadata & VehiclePricing & {
   id: string;
   currency?: string;
   label?: string | null;

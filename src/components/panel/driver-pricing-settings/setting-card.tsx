@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import MoneyValue from "@/components/ui/money-value";
 import type { DriverPricingSetting } from "@/types";
 import { SETTING_META } from "./config";
+import { PricingConfigurationMeta } from "@/components/ui/pricing-configuration-meta";
 
 type Props = { setting: DriverPricingSetting; onEdit: (setting: DriverPricingSetting) => void };
 
@@ -34,6 +35,7 @@ export default function SettingCard({ setting, onEdit }: Props) {
           <>{meta.unit === "currency" ? <MoneyValue value={setting.setting_value} className="text-2xl font-bold text-secondary" /> : <><strong className="text-2xl text-secondary">{setting.setting_value}</strong><span className="text-sm text-gray">{meta.unit}</span></>}</>
         )}
       </div>
+      <PricingConfigurationMeta metadata={setting} compact />
     </article>
   );
 }

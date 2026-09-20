@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import type { CommissionSettingFormValues } from "@/schemas/commission-settings";
 import { addCommissionSetting, editCommissionSetting } from "@/services/mutations";
 import type { CommissionSetting } from "@/types";
+import { confirmPricingChange } from "@/lib/utils/confirm-pricing-change";
 
 import {
   buildCommissionSettingPayload,
@@ -55,6 +56,7 @@ export function useCommissionSettingForm(options: Options) {
 
   const onSubmit = async (values: CommissionSettingFormValues) => {
     if (commissionSetting && !form.formState.isDirty) return;
+    if (values.is_active && !confirmPricingChange("سيتم تفعيل إعداد العمولة وقد يؤثر في المعاملات الجديدة. هل تريد المتابعة؟")) return;
     const payload = buildCommissionSettingPayload(values);
 
     const result = commissionSetting

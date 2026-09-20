@@ -4,6 +4,7 @@ import PermissionGate from "@/components/permission-gate";
 import EmptyState from "@/components/ui/empty-state";
 import { Button } from "@/components/ui/button";
 import type { CommissionSetting } from "@/types";
+import { PricingConfigurationMeta } from "@/components/ui/pricing-configuration-meta";
 
 type Props = {
   commissionSettings: CommissionSetting[];
@@ -47,6 +48,7 @@ function CommissionSettingsResults({
             >
               <td className="max-w-0 overflow-hidden text-ellipsis whitespace-nowrap px-5 py-4 font-medium">
                 {commissionSetting.name_ar}
+                <PricingConfigurationMeta metadata={commissionSetting} compact />
               </td>
               <td
                 dir="ltr"

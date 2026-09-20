@@ -20,6 +20,7 @@ import { driverPricingSettingSchema, type DriverPricingSettingFormValues } from 
 import { editDriverPricingSettingAPI } from "@/services/mutations";
 import type { DriverPricingSetting } from "@/types";
 import { SETTING_META } from "./config";
+import { confirmPricingChange } from "@/lib/utils/confirm-pricing-change";
 
 type Props = { setting: DriverPricingSetting | null; onClose: () => void; onSaved: () => Promise<void> };
 
@@ -39,6 +40,7 @@ export default function EditSettingModal({ setting, onClose, onSaved }: Props) {
 
   async function submit(values: DriverPricingSettingFormValues) {
     if (!setting || !form.formState.isDirty) return;
+    if (!confirmPricingChange("سيؤثر هذا التغيير في التسعير أو حدود المحفظة للعمليات الجديدة. هل تريد المتابعة؟")) return;
     const result = await editDriverPricingSettingAPI(setting.id, values);
     if (!result.ok) return toast.error(result.message || "تعذر حفظ الإعداد");
     toast.success(result.message || "تم حفظ الإعداد بنجاح");

@@ -29,6 +29,9 @@ export type TripTimelineEvent = {
 };
 
 export type TripPricingSnapshot = {
+  configuration_version?: string | number | null;
+  tenant?: string | null;
+  effective_at?: string | null;
   currency: string;
   unlock_fee: number | string | null;
   price_per_minute: number | string | null;
