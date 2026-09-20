@@ -11,6 +11,7 @@ import {
 } from "recharts";
 
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { formatPrice } from "@/lib/utils/money";
 import type { ChartPoint } from "@/types";
 
 type RevenueTooltipProps = {
@@ -62,7 +63,7 @@ function RevenueTooltip({ active, payload, label, currency }: RevenueTooltipProp
           className={entry.dataKey === "current" ? "text-primary" : "text-gray"}
         >
           {entry.dataKey === "current" ? "الحالي" : "السابق"}:{" "}
-          <span className="font-semibold">{new Intl.NumberFormat("en-US", { style: "currency", currency, maximumFractionDigits: 2 }).format(entry.value)}</span>
+          <span className="font-semibold">{formatPrice(entry.value, undefined, { maximumFractionDigits: 2 }, currency)}</span>
         </p>
       ))}
     </div>

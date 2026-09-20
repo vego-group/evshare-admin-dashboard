@@ -4,12 +4,12 @@ import {
   Pencil,
   Power,
   PowerOff,
-  SaudiRiyal,
   Trash2,
   type LucideIcon,
 } from "lucide-react";
 
 import PermissionGate from "@/components/permission-gate";
+import MoneyValue from "@/components/ui/money-value";
 import { cn } from "@/lib/utils";
 
 export function TestAccountIcon({ className }: { className?: string }) {
@@ -39,12 +39,8 @@ export function StatusBadge({ isActive }: { isActive: boolean }) {
   );
 }
 
-export function Amount({ value }: { value: number }) {
-  return (
-    <span className="inline-flex items-center gap-1 font-medium" dir="ltr">
-      <SaudiRiyal className="size-4 shrink-0" /> {value}
-    </span>
-  );
+export function Amount({ value, currency }: { value: number; currency?: string }) {
+  return <MoneyValue value={value} currency={currency} className="font-medium" />;
 }
 
 export function TestAccountActions({

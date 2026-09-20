@@ -67,17 +67,17 @@ function TransactionDetails({
         />
         <DetailRow
           label="الإيداع"
-          value={<MoneyValue value={transaction.credit} color="text-green-600" />}
+          value={<MoneyValue value={transaction.credit} currency={transaction.currency} color="text-green-600" />}
           valueDir="ltr"
         />
         <DetailRow
           label="السحب"
-          value={<MoneyValue value={transaction.debit} color="text-red-500" />}
+          value={<MoneyValue value={transaction.debit} currency={transaction.currency} color="text-red-500" />}
           valueDir="ltr"
         />
         <DetailRow
           label="الرصيد"
-          value={<MoneyValue value={transaction.balance} />}
+          value={<MoneyValue value={transaction.balance} currency={transaction.currency} />}
           valueDir="ltr"
         />
         <DetailRow
@@ -154,8 +154,8 @@ function DetailRow({
   );
 }
 
-function MoneyValue({ value, color }: { value: number; color?: string }) {
-  return <CurrencyMoneyValue value={value} className={color} />;
+function MoneyValue({ value, currency, color }: { value: number; currency?: string; color?: string }) {
+  return <CurrencyMoneyValue value={value} currency={currency} className={color} />;
 }
 
 function SectionTitle({ children }: { children: ReactNode }) {

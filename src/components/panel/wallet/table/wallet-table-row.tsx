@@ -24,13 +24,13 @@ function WalletTableRow({
         </span>
       </TableCell>
       <TableCell dir="ltr" className="text-right">
-        <AmountCell value={transaction.credit} color="text-green-600" />
+        <AmountCell value={transaction.credit} currency={transaction.currency} color="text-green-600" />
       </TableCell>
       <TableCell dir="ltr" className="text-right">
-        <AmountCell value={transaction.debit} color="text-red-500" />
+        <AmountCell value={transaction.debit} currency={transaction.currency} color="text-red-500" />
       </TableCell>
       <TableCell dir="ltr" className="text-right">
-        <AmountCell value={transaction.balance} />
+        <AmountCell value={transaction.balance} currency={transaction.currency} />
       </TableCell>
       <TableCell className="max-w-none overflow-visible whitespace-normal">
         <WalletStatusBadge status={transaction.status} />
@@ -53,13 +53,15 @@ function WalletTableRow({
 
 function AmountCell({
   value,
+  currency,
   color,
 }: {
   value: number;
+  currency?: string;
   color?: string;
 }) {
   if (!value) return <span className="text-gray">—</span>;
-  return <MoneyValue value={value} className={color} />;
+  return <MoneyValue value={value} currency={currency} className={color} />;
 }
 
 function TableCell({

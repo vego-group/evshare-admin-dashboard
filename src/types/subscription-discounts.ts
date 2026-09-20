@@ -3,6 +3,7 @@ export type SubscriptionDiscountStatus = "active" | "inactive";
 
 export type SubscriptionDiscount = {
   id: string;
+  currency?: string;
   name: string;
   name_ar: string | null;
   name_en: string | null;
@@ -49,6 +50,7 @@ export type CurrentSubscriptionPricingResponse = {
   error: boolean;
   message: string;
   data: {
+    currency?: string;
     discount: SubscriptionDiscount | null;
     base_price: number;
     discount_amount: number;

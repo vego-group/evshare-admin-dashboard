@@ -8,8 +8,9 @@ import { currencySymbols, formatPrice as formatPriceForCountry, getCurrencyDispl
 type CurrencyContextValue = {
   countryCode: string;
   currency: string;
+  currencyCode: string;
   hasLeadingSymbol: boolean;
-  formatPrice: (value: number | string, options?: Intl.NumberFormatOptions) => string;
+  formatPrice: (value: number | string, options?: Intl.NumberFormatOptions, currency?: string | null) => string;
 };
 
 const CurrencyContext = createContext<CurrencyContextValue | null>(null);
@@ -23,8 +24,9 @@ export function CurrencyProvider({ countryCode, children }: { countryCode: strin
     () => ({
       countryCode,
       currency: getCurrencyDisplay(country),
+      currencyCode: country?.currency_code?.trim().toUpperCase() ?? "",
       hasLeadingSymbol: Boolean(currencySymbols[country?.currency_code?.trim().toUpperCase() ?? ""]),
-      formatPrice: (amount, options) => formatPriceForCountry(amount, country, options),
+      formatPrice: (amount, options, currency) => formatPriceForCountry(amount, country, options, currency),
     }),
     [country, countryCode],
   );

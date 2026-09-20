@@ -1,8 +1,9 @@
 import type { DashboardAnalyticsMeta, DashboardMeasure } from "@/types";
+import { formatPrice } from "@/lib/utils/money";
 
 export function formatMeasure(value: number, measure: DashboardMeasure, currency: string, options?: Intl.NumberFormatOptions) {
   if (measure.unit === "currency") {
-    return new Intl.NumberFormat("en-US", { style: "currency", currency, maximumFractionDigits: 2, ...options }).format(value);
+    return formatPrice(value, undefined, { maximumFractionDigits: 2, ...options }, currency);
   }
   return `${new Intl.NumberFormat("en-US", { maximumFractionDigits: 2, ...options }).format(value)}${measure.unit === "percent" ? "%" : measure.unit === "km" ? " km" : ""}`;
 }

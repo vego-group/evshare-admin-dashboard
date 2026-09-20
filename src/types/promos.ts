@@ -14,6 +14,7 @@ export type PromoCodesQueryParams = {
 
 export type PromoListItem = {
   id: string;
+  currency?: string;
   code: string;
   type: PromoContext;
   discount_type: PromoDiscountType;
@@ -57,6 +58,7 @@ export type PromoRedeemableType = "Order" | "Subscription" | null;
 
 export type PromoRedemption = {
   id: number;
+  currency?: string;
   user: PromoRedemptionUser;
   promo_code_used: string;
   discount_amount_applied: number;
@@ -65,6 +67,7 @@ export type PromoRedemption = {
 };
 
 export type PromoAnalytics = {
+  currency?: string;
   total_redemptions: number;
   unique_users: number;
   total_discount_given: number;

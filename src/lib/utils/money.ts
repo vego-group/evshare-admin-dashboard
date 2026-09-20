@@ -14,6 +14,11 @@ export const currencySymbols: Readonly<Record<string, string>> = {
   KRW: "₩",
 };
 
+export function normalizeCurrencyCode(value?: string | null) {
+  const code = value?.trim().toUpperCase();
+  return code && /^[A-Z]{3}$/.test(code) ? code : undefined;
+}
+
 export function hasMoneyValue(value: unknown) {
   return value !== null && value !== undefined && value !== "";
 }
@@ -28,11 +33,26 @@ export function formatPrice(
   value: number | string,
   country: Country | null | undefined,
   options: Intl.NumberFormatOptions = {},
+  recordCurrency?: string | null,
 ) {
   const numericValue = Number(value);
-  const maximumFractionDigits = options.maximumFractionDigits ?? 2;
+  const tenantCurrency = normalizeCurrencyCode(country?.currency_code);
+  const hasRecordCurrency = recordCurrency != null && recordCurrency.trim() !== "";
+  const code = hasRecordCurrency ? normalizeCurrencyCode(recordCurrency) : tenantCurrency;
+  let currencyDigits = 2;
+  if (code) {
+    try {
+      currencyDigits = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: code,
+      }).resolvedOptions().maximumFractionDigits ?? 2;
+    } catch {
+      // Keep a readable code for forward-compatible backend currencies.
+    }
+  }
+  const maximumFractionDigits = options.maximumFractionDigits ?? currencyDigits;
   const minimumFractionDigits = Math.min(
-    options.minimumFractionDigits ?? 2,
+    options.minimumFractionDigits ?? currencyDigits,
     maximumFractionDigits,
   );
   const formattedValue = Number.isFinite(numericValue)
@@ -42,9 +62,8 @@ export function formatPrice(
         maximumFractionDigits,
       })
     : String(value);
-  const code = country?.currency_code?.trim().toUpperCase();
   const symbol = code ? currencySymbols[code] : undefined;
-  const currency = getCurrencyDisplay(country);
+  const currency = code === tenantCurrency ? getCurrencyDisplay(country) : code;
 
   if (!currency) return formattedValue;
   return symbol

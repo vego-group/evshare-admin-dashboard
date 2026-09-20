@@ -82,7 +82,7 @@ function CheckoutDetails({ checkout }: { checkout: PaymentCheckout }) {
         <DetailRow label="رقم العملية" value={checkout.id} valueDir="ltr" />
         <DetailRow
           label="المبلغ"
-          value={<MoneyValue amount={checkout.amount} />}
+          value={<MoneyValue amount={checkout.amount} currency={checkout.currency} />}
           valueDir="ltr"
         />
         <DetailRow
@@ -158,7 +158,7 @@ function TransactionDetails({
         />
         <DetailRow
           label="المبلغ"
-          value={<MoneyValue amount={transaction.amount} />}
+          value={<MoneyValue amount={transaction.amount} currency={transaction.currency} />}
           valueDir="ltr"
         />
         <DetailRow

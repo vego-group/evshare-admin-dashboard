@@ -72,7 +72,8 @@ function ShipmentIdentifierFields({
             type="text"
             dir="ltr"
             maxLength={3}
-            placeholder="SAR"
+            placeholder="ISO 4217"
+            readOnly
             className={inputClassLtr}
             {...register("currency")}
           />

@@ -52,11 +52,11 @@ function OrderDetails() {
       ) : order ? (
         <>
           <OrderInfoSection order={order} />
-          <OrderItemsSection items={order.items} />
+          <OrderItemsSection items={order.items} currency={order.currency} />
           {order.operating_type === "operation_company" && RECEIPT_STATUSES.includes(order.status) ? (
             <OperatingContractSection key={order.id} orderId={order.id} />
           ) : order.operating_type !== "operation_company" && receipt ? (
-            <OrderReceiptSection orderId={order.id} receipt={receipt} />
+            <OrderReceiptSection orderId={order.id} receipt={receipt} currency={order.currency} />
           ) : null}
         </>
       ) : (

@@ -35,7 +35,8 @@ export const shipmentFormObject = z.object({
   currency: z
     .string()
     .trim()
-    .max(3, "رمز العملة من 3 أحرف")
+    .regex(/^[A-Za-z]{3}$/, "رمز العملة يجب أن يتكون من 3 أحرف")
+    .transform((value) => value.toUpperCase())
     .optional()
     .or(z.literal("")),
   package_count: optionalPositiveInt,

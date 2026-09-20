@@ -52,13 +52,13 @@ function TestAccountsTable({
                   </div>
                 </TableCell>
                 <TableCell dir="ltr">
-                  <Amount value={testAccount.subscription_amount} />
+                  <Amount value={testAccount.subscription_amount} currency={testAccount.currency} />
                 </TableCell>
                 <TableCell dir="ltr">
-                  <Amount value={testAccount.order_amount} />
+                  <Amount value={testAccount.order_amount} currency={testAccount.currency} />
                 </TableCell>
                 <TableCell dir="ltr">
-                  <Amount value={testAccount.shipping_fee} />
+                  <Amount value={testAccount.shipping_fee} currency={testAccount.currency} />
                 </TableCell>
                 <TableCell dir="ltr">{testAccount.vat_percentage}%</TableCell>
                 <TableCell truncate={false}>

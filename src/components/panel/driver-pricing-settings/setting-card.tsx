@@ -1,6 +1,7 @@
-import { AlertTriangle, Pencil, SaudiRiyal } from "lucide-react";
+import { AlertTriangle, Pencil } from "lucide-react";
 import PermissionGate from "@/components/permission-gate";
 import { Button } from "@/components/ui/button";
+import MoneyValue from "@/components/ui/money-value";
 import type { DriverPricingSetting } from "@/types";
 import { SETTING_META } from "./config";
 
@@ -29,8 +30,8 @@ export default function SettingCard({ setting, onEdit }: Props) {
         </PermissionGate>
       </div>
       <div dir="ltr" className="flex flex-wrap items-center gap-2 text-right">
-        {values ? values.map((value) => <span key={value} className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-sm font-semibold text-secondary"><SaudiRiyal className="size-4" />{value}</span>) : (
-          <>{meta.unit === "currency" ? <SaudiRiyal className="size-5 text-gray" /> : null}<strong className="text-2xl text-secondary">{setting.setting_value}</strong>{meta.unit !== "currency" ? <span className="text-sm text-gray">{meta.unit}</span> : null}</>
+        {values ? values.map((value) => <MoneyValue key={value} value={value} className="rounded-full bg-primary/10 px-3 py-1 text-sm font-semibold text-secondary" />) : (
+          <>{meta.unit === "currency" ? <MoneyValue value={setting.setting_value} className="text-2xl font-bold text-secondary" /> : <><strong className="text-2xl text-secondary">{setting.setting_value}</strong><span className="text-sm text-gray">{meta.unit}</span></>}</>
         )}
       </div>
     </article>

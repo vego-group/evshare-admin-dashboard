@@ -55,17 +55,17 @@ function TestAccountDetailsModal({
               <DetailRow label="User ID" value={testAccount.user.id} dir="ltr" />
               <DetailRow
                 label="Subscription amount"
-                value={<Amount value={testAccount.subscription_amount} />}
+                value={<Amount value={testAccount.subscription_amount} currency={testAccount.currency} />}
                 dir="ltr"
               />
               <DetailRow
                 label="Order amount"
-                value={<Amount value={testAccount.order_amount} />}
+                value={<Amount value={testAccount.order_amount} currency={testAccount.currency} />}
                 dir="ltr"
               />
               <DetailRow
                 label="Shipping fee"
-                value={<Amount value={testAccount.shipping_fee} />}
+                value={<Amount value={testAccount.shipping_fee} currency={testAccount.currency} />}
                 dir="ltr"
               />
               <DetailRow

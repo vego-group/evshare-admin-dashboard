@@ -75,7 +75,7 @@ function OrdersTableRow({ order }: { order: OrderListItem }) {
           </span>
         </TableCell>
         <TableCell dir="ltr" className="text-right">
-          <MoneyValue value={order.total} />
+          <MoneyValue value={order.total} currency={order.currency} />
         </TableCell>
         <TableCell className="max-w-none overflow-visible whitespace-normal">
           {canEdit ? <OrderStatusDropdown

@@ -98,6 +98,7 @@ export type VehicleZone = {
 
 export type VehicleListItem = VehiclePricing & {
   id: string;
+  currency?: string;
   label?: string | null;
   status: VehicleStatus;
   provisioning_status?: VehicleProvisioningStatus;

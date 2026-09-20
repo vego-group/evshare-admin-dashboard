@@ -90,7 +90,7 @@ function TransactionTableRow({
       <TableCell>{formatGateway(transaction.payment_gateway)}</TableCell>
       <TableCell>{formatPaymentMethod(transaction)}</TableCell>
       <TableCell dir="ltr">
-        <MoneyValue amount={transaction.amount} />
+        <MoneyValue amount={transaction.amount} currency={transaction.currency} />
       </TableCell>
       <TableCell className="max-w-none overflow-visible whitespace-normal">
         <TransactionStatusBadge status={transaction.status} />

@@ -53,9 +53,11 @@ const REFUND_STATUS_LABELS: Record<OrderRefundStatus, string> = {
 function OrderReceiptSection({
   orderId,
   receipt,
+  currency,
 }: {
   orderId: string;
   receipt: OrderReceipt;
+  currency?: string;
 }) {
   const queryClient = useQueryClient();
   const [reviewLoading, setReviewLoading] = useState<
@@ -222,7 +224,7 @@ function OrderReceiptSection({
                             ? "محفظة"
                             : "تواصل مباشر"}
                           {item.refund_amount != null ? (
-                            <MoneyValue value={item.refund_amount} />
+                            <MoneyValue value={item.refund_amount} currency={currency} />
                           ) : null}
                         </span>
                       ) : null}

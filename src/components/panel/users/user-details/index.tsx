@@ -6,7 +6,6 @@ import {
   Banknote,
   type LucideIcon,
   MapPin,
-  SaudiRiyal,
   ShieldCheck,
   UserRound,
   WalletCards,
@@ -14,6 +13,7 @@ import {
 import { useParams, useRouter } from "next/navigation";
 
 import { cn } from "@/lib/utils";
+import MoneyValue from "@/components/ui/money-value";
 import { formatStoredPhone } from "@/lib/utils/format-phone";
 import { useTenantCountry } from "@/provider/currency";
 import { useUser } from "@/hooks/api";
@@ -86,7 +86,7 @@ function UserDetailsContent({ user }: { user: AdminUserDetail }) {
         <SummaryCard
           icon={WalletCards}
           label="رصيد المحفظة"
-          value={<MoneyValue value={user.wallet_balance} />}
+          value={<MoneyValue value={user.wallet_balance} currency={user.wallet_currency ?? user.currency} />}
           dir="ltr"
         />
         <SummaryCard
@@ -297,21 +297,6 @@ function BooleanBadge({
   );
 }
 
-function MoneyValue({ value }: { value: number }) {
-  return (
-    <span className="inline-flex items-center gap-1">
-      <SaudiRiyal className="size-4 shrink-0" />
-      {formatMoneyNumber(value)}
-    </span>
-  );
-}
-
-function formatMoneyNumber(value: number) {
-  return new Intl.NumberFormat("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value);
-}
 
 function formatNumber(value: number) {
   return new Intl.NumberFormat("ar-EG").format(value);

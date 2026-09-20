@@ -1,10 +1,11 @@
 "use client";
 
-import { ImageIcon, SaudiRiyal } from "lucide-react";
+import { ImageIcon } from "lucide-react";
 import Image from "next/image";
 import type { ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
+import MoneyValue from "@/components/ui/money-value";
 import type { ProductDetail } from "@/types";
 import { vehicleTypeLabel } from "@/lib/utils/vehicle-type";
 
@@ -92,44 +93,37 @@ export function ProductDetailsContent({ product, isLoading }: Props) {
         <DetailRow
           label="السعر"
           value={
-            <span className="inline-flex items-center gap-1" dir="ltr">
-              <SaudiRiyal className="size-4 shrink-0" /> {product.price}
-            </span>
+            <MoneyValue value={product.price} currency={product.currency} />
           }
         />
         <DetailRow label="الكمية" value={String(product.quantity)} />
         <DetailRow
           label="سعر الاشتراك الشهري"
           value={
-            <span className="inline-flex items-center gap-1" dir="ltr">
-              <SaudiRiyal className="size-4 shrink-0" />{" "}
-              {product.monthly_subscription_price}
-            </span>
+            <MoneyValue value={product.monthly_subscription_price} currency={product.currency} />
           }
         />
         <DetailRow
           label="سعر فتح القفل"
           value={
-            <span className="inline-flex items-center gap-1" dir="ltr">
-              <SaudiRiyal className="size-4 shrink-0" /> {product.open_price}
-            </span>
+            <MoneyValue value={product.open_price} currency={product.currency} />
           }
         />
         <DetailRow
           label="سعر الدقيقة"
-          value={<MoneyValue value={product.price_per_minute} />}
+          value={<MoneyValue value={product.price_per_minute} currency={product.currency} />}
         />
         <DetailRow
           label="سعر الكيلومتر"
-          value={<MoneyValue value={product.price_per_km} />}
+          value={<MoneyValue value={product.price_per_km} currency={product.currency} />}
         />
         <DetailRow
           label="سعر الساعة"
-          value={<MoneyValue value={product.price_per_hour} />}
+          value={<MoneyValue value={product.price_per_hour} currency={product.currency} />}
         />
         <DetailRow
           label="سعر اليوم"
-          value={<MoneyValue value={product.price_per_day} />}
+          value={<MoneyValue value={product.price_per_day} currency={product.currency} />}
         />
         <DetailRow
           label="تاريخ الإنشاء"
@@ -183,16 +177,6 @@ export function ProductDetailsContent({ product, isLoading }: Props) {
         </section>
       )}
     </div>
-  );
-}
-
-function MoneyValue({ value }: { value: ReactNode }) {
-  return value === null || value === undefined || value === "" ? (
-    "-"
-  ) : (
-    <span className="inline-flex items-center gap-1" dir="ltr">
-      <SaudiRiyal className="size-4 shrink-0" /> {value}
-    </span>
   );
 }
 

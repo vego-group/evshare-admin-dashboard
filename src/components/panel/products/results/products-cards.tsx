@@ -53,7 +53,7 @@ function ProductsCards({
             <DetailLine
               label="السعر"
               value={
-                <MoneyValue value={product.price} />
+                <MoneyValue value={product.price} currency={product.currency} />
               }
             />
             <DetailLine label="الكمية" value={String(product.quantity)} />

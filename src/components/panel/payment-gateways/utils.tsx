@@ -2,8 +2,8 @@ import CurrencyMoneyValue from "@/components/ui/money-value";
 
 import type { PaymentTransaction } from "@/types";
 
-export function MoneyValue({ amount }: { amount: number }) {
-  return <CurrencyMoneyValue value={amount} />;
+export function MoneyValue({ amount, currency }: { amount: number; currency?: string }) {
+  return <CurrencyMoneyValue value={amount} currency={currency} />;
 }
 
 export function formatDate(value: string) {

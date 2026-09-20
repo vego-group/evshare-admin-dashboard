@@ -147,7 +147,7 @@ function PaymentRequestDetails({ request }: { request: PaymentRequestDetail }) {
           label="المبلغ"
           valueDir="ltr"
           value={
-            <MoneyValue value={request.amount} />
+            <MoneyValue value={request.amount} currency={request.currency} />
           }
         />
         <DetailRow label="الملاحظات" value={request.notes || "-"} />

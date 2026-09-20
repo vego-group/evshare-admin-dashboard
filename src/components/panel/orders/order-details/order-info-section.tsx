@@ -109,20 +109,20 @@ function OrderInfoSection({ order }: { order: OrderDetail }) {
           </p>
           <FinancialRow
             label="المجموع الفرعي"
-            value={<MoneyValue value={order.subtotal} />}
+            value={<MoneyValue value={order.subtotal} currency={order.currency} />}
           />
           <FinancialRow
             label={`ضريبة القيمة المضافة (${order.vat_percentage}%)`}
-            value={<MoneyValue value={order.vat_amount} />}
+            value={<MoneyValue value={order.vat_amount} currency={order.currency} />}
           />
           <FinancialRow
             label="رسوم التوصيل"
-            value={<MoneyValue value={order.delivery_fee} />}
+            value={<MoneyValue value={order.delivery_fee} currency={order.currency} />}
           />
           <div className="mt-2 border-t border-neutral-100 pt-2">
             <FinancialRow
               label="الإجمالي"
-              value={<MoneyValue value={order.total} />}
+              value={<MoneyValue value={order.total} currency={order.currency} />}
               bold
             />
           </div>

@@ -8,7 +8,7 @@ import {
 } from "@/schemas/shipments";
 import { normalizeTenantPhone, PHONE_VALIDATION_MESSAGE } from "@/lib/utils/tenant-phone";
 
-export const shipmentDefaultValues: ShipmentFormValues = {
+export const getShipmentDefaultValues = (currency = ""): ShipmentFormValues => ({
   order_uuid: "",
   shipping_company_uuid: "",
   delivery_option_id: "",
@@ -18,7 +18,7 @@ export const shipmentDefaultValues: ShipmentFormValues = {
   price: undefined,
   cod_amount: undefined,
   declared_value: undefined,
-  currency: "SAR",
+  currency,
   package_count: undefined,
   package_weight: undefined,
   box_width: undefined,
@@ -31,7 +31,7 @@ export const shipmentDefaultValues: ShipmentFormValues = {
   estimated_pickup_date: "",
   estimated_delivery_date: "",
   notes: "",
-};
+});
 
 const buildResolver =
   (schema: ZodType, countryCode: string, unchangedPhone?: string | null): Resolver<ShipmentFormValues> =>

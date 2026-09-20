@@ -1,13 +1,13 @@
 import {
   Eye,
   Pencil,
-  SaudiRiyal,
   Ticket,
   Trash2,
   type LucideIcon,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import MoneyValue from "@/components/ui/money-value";
 import type { PromoContext, PromoListItem } from "@/types";
 import PermissionGate from "@/components/permission-gate";
 
@@ -170,11 +170,7 @@ export function DiscountValue({ promo }: { promo: PromoListItem }) {
     );
   }
 
-  return (
-    <span className="inline-flex items-center gap-1 font-medium" dir="ltr">
-      <SaudiRiyal className="size-4 shrink-0" /> {promo.discount_value}
-    </span>
-  );
+  return <MoneyValue value={promo.discount_value} currency={promo.currency} className="font-medium" />;
 }
 
 export function formatUsage(promo: PromoListItem) {
