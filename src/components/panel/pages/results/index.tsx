@@ -1,6 +1,7 @@
 import { Pencil } from "lucide-react";
 
 import PermissionGate from "@/components/permission-gate";
+import ContentPublicationSummary from "@/components/panel/content-publication-summary";
 import EmptyState from "@/components/ui/empty-state";
 import { getPageLabel } from "@/data/pages";
 import type { Page } from "@/types";
@@ -32,6 +33,7 @@ function PagesResults({ pages, onEdit }: Props) {
             <th className="px-5 py-4">العنوان بالعربية</th>
             <th className="px-5 py-4">العنوان بالإنجليزية</th>
             <th className="px-5 py-4">آخر تحديث</th>
+            <th className="px-5 py-4">حالة النشر</th>
             <th className="px-5 py-4">الإجراءات</th>
           </tr>
         </thead>
@@ -52,6 +54,9 @@ function PagesResults({ pages, onEdit }: Props) {
               </td>
               <td className="max-w-0 overflow-hidden text-ellipsis whitespace-nowrap px-5 py-4">
                 {new Date(page.updated_at).toLocaleDateString("ar-EG")}
+              </td>
+              <td className="px-5 py-4">
+                <ContentPublicationSummary publication={page.publication} compact />
               </td>
               <td className="px-5 py-4">
                 <div className="flex gap-2">

@@ -1,3 +1,5 @@
+import type { ContentPublication } from "./content-publication";
+
 export type Page = {
   uuid: string;
   slug: string;
@@ -7,6 +9,7 @@ export type Page = {
   content_en: string;
   created_at: string;
   updated_at: string;
+  publication?: ContentPublication | null;
 };
 
 export type PagesQueryParams = {

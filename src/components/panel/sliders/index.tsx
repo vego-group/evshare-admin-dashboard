@@ -8,6 +8,7 @@ import { PAGE_SIZE } from "@/constants";
 import { useSliders } from "@/hooks/api";
 import { deleteSlider } from "@/services/mutations";
 import type { Slider, QueryParams } from "@/types";
+import QueryErrorState from "@/components/ui/query-error-state";
 
 import SlidersMainContent from "./sliders-main-content";
 import SlidersContentShimmer from "./content-shimmer";
@@ -23,7 +24,7 @@ function Sliders() {
   const [sliderPendingDelete, setSliderPendingDelete] = useState<Slider | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const { data, isLoading } = useSliders(params);
+  const { data, isLoading, isError, isFetching, refetch } = useSliders(params);
 
   const updateParams = (nextParams: Partial<QueryParams>) =>
     setParams((current) => ({ ...current, ...nextParams }));
@@ -51,6 +52,12 @@ function Sliders() {
     <div className="flex w-full flex-col gap-6">
       {isLoading ? (
         <SlidersContentShimmer />
+      ) : isError ? (
+        <QueryErrorState
+          title="تعذر تحميل السلايدرات"
+          onRetry={() => void refetch()}
+          isRetrying={isFetching}
+        />
       ) : (
         <>
           <SlidersHeader
