@@ -35,7 +35,7 @@ function PaymentRequestsTableRow({
         {request.user?.mobile ? formatStoredPhone(request.user.mobile) : "-"}
       </TableCell>
       <TableCell dir="ltr">
-        <MoneyValue value={request.amount} />
+        <MoneyValue value={request.amount} currency={request.currency} />
       </TableCell>
       <TableCell className="max-w-none overflow-visible whitespace-normal">
         <PaymentRequestStatusBadge status={request.status} />

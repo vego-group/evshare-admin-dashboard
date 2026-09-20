@@ -1,15 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import toast from "react-hot-toast";
 
 import type { ShipmentFormValues } from "@/schemas/shipments";
 import { addShipmentForOrder, editShipment } from "@/services/mutations";
 import type { ShipmentListItem } from "@/types";
-import { useTenantCountry } from "@/provider/currency";
+import { useCurrency } from "@/provider/currency";
 
 import {
   shipmentAddResolver,
-  shipmentDefaultValues,
+  getShipmentDefaultValues,
   shipmentEditResolver,
 } from "./shipment-form-utils";
 import {
@@ -27,12 +27,13 @@ type Options = {
 };
 
 export function useShipmentForm({ open, shipment, onClose, onSaved }: Options) {
-  const countryCode = useTenantCountry();
+  const { countryCode, currencyCode } = useCurrency();
   const isEdit = Boolean(shipment);
+  const defaultValues = useMemo(() => getShipmentDefaultValues(currencyCode), [currencyCode]);
 
   const form = useForm<ShipmentFormValues>({
     resolver: isEdit ? shipmentEditResolver(countryCode, shipment?.driver?.phone) : shipmentAddResolver(countryCode),
-    defaultValues: shipmentDefaultValues,
+    defaultValues,
     mode: "onChange",
   });
 
@@ -53,17 +54,17 @@ export function useShipmentForm({ open, shipment, onClose, onSaved }: Options) {
 
   useEffect(() => {
     if (!open) {
-      form.reset(shipmentDefaultValues);
+      form.reset(defaultValues);
       return;
     }
     form.reset(
-      shipment ? shipmentToFormValues(shipment) : shipmentDefaultValues,
+      shipment ? shipmentToFormValues(shipment, currencyCode) : defaultValues,
     );
-  }, [form, open, shipment]);
+  }, [currencyCode, defaultValues, form, open, shipment]);
 
   const close = () => {
     if (form.formState.isSubmitting) return;
-    form.reset(shipmentDefaultValues);
+    form.reset(defaultValues);
     onClose();
   };
 
@@ -95,7 +96,7 @@ export function useShipmentForm({ open, shipment, onClose, onSaved }: Options) {
     }
 
     toast.success(result.message || "تم حفظ الشحنة بنجاح");
-    form.reset(shipmentDefaultValues);
+    form.reset(defaultValues);
     onClose();
     await onSaved();
   };

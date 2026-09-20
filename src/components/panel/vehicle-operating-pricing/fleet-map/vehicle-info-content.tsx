@@ -1,5 +1,6 @@
-import { BatteryMedium, MapPin, Navigation, SaudiRiyal } from "lucide-react";
+import { BatteryMedium, MapPin, Navigation } from "lucide-react";
 
+import MoneyValue from "@/components/ui/money-value";
 import { cn } from "@/lib/utils";
 import type { VehicleListItem } from "@/types";
 import StatusBadge from "../status-badge";
@@ -80,14 +81,14 @@ function VehicleInfoContent({
       </div>
 
       <div className="grid grid-cols-2 gap-2 border-t border-primary/10 bg-primary/4 px-3 py-2.5">
-        <PriceStat label="سعر فتح القفل" value={vehicle.open_price} />
-        <PriceStat label="سعر الدقيقة" value={vehicle.price_per_minute} />
+        <PriceStat label="سعر فتح القفل" value={vehicle.open_price} currency={vehicle.currency} />
+        <PriceStat label="سعر الدقيقة" value={vehicle.price_per_minute} currency={vehicle.currency} />
       </div>
     </div>
   );
 }
 
-function PriceStat({ label, value }: { label: string; value: unknown }) {
+function PriceStat({ label, value, currency }: { label: string; value: unknown; currency?: string }) {
   return (
     <div className="rounded-[10px] bg-white px-2.5 py-2">
       <p className="text-[11px] text-gray">{label}</p>
@@ -97,8 +98,7 @@ function PriceStat({ label, value }: { label: string; value: unknown }) {
       >
         {hasMoneyValue(value) ? (
           <>
-            <SaudiRiyal className="size-3.5 shrink-0" />
-            {String(value)}
+            <MoneyValue value={String(value)} currency={currency} />
           </>
         ) : (
           "-"

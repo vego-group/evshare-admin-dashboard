@@ -2,8 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { ChevronDown, ChevronLeft, ChevronRight, Eye, Pencil, Percent, Plus, SaudiRiyal, Trash2 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { Banknote, ChevronDown, ChevronLeft, ChevronRight, Eye, Pencil, Percent, Plus, Trash2 } from "lucide-react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import toast from "react-hot-toast";
 
@@ -86,17 +86,17 @@ export default function SubscriptionDiscounts() {
   );
 }
 
-function PricingSummary({ pricing }: { pricing?: { base_price: number; discount_amount: number; final_price: number; discount: SubscriptionDiscount | null } }) {
+function PricingSummary({ pricing }: { pricing?: { base_price: number; discount_amount: number; final_price: number; currency?: string; discount: SubscriptionDiscount | null } }) {
   return <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-    <Price label="السعر الأساسي" value={pricing?.base_price} icon="money" />
-    <Price label="الخصم المطبق الآن" value={pricing?.discount_amount} icon="percent" />
-    <Price label="السعر النهائي" value={pricing?.final_price} icon="money" />
+    <Price label="السعر الأساسي" value={pricing?.base_price} currency={pricing?.currency} icon="money" />
+    <Price label="الخصم المطبق الآن" value={pricing?.discount_amount} currency={pricing?.currency} icon="percent" />
+    <Price label="السعر النهائي" value={pricing?.final_price} currency={pricing?.currency} icon="money" />
     <div className="flex min-h-29 items-center gap-4 rounded-2xl bg-white p-5 shadow-[0_2px_8px_rgba(0,0,0,0.04)]"><div className="grid size-12 place-items-center rounded-xl bg-primary/15 text-secondary"><Percent className="size-5" /></div><div><p className="text-sm text-gray">الخصم الساري</p><p className="mt-1 max-w-40 truncate text-base font-semibold text-secondary">{pricing?.discount?.name || "لا يوجد"}</p></div></div>
   </section>;
 }
 
-function Price({ label, value, icon }: { label: string; value?: number; icon: "money" | "percent" }) {
-  return <div className="flex min-h-29 items-center gap-4 rounded-2xl bg-white p-5 shadow-[0_2px_8px_rgba(0,0,0,0.04)]"><div className="grid size-12 place-items-center rounded-xl bg-primary/15 text-secondary">{icon === "money" ? <SaudiRiyal className="size-5" /> : <Percent className="size-5" />}</div><div><p className="text-sm text-gray">{label}</p><div className="mt-1 text-xl font-bold text-secondary"><MoneyValue value={value ?? 0} /></div></div></div>;
+function Price({ label, value, currency, icon }: { label: string; value?: number; currency?: string; icon: "money" | "percent" }) {
+  return <div className="flex min-h-29 items-center gap-4 rounded-2xl bg-white p-5 shadow-[0_2px_8px_rgba(0,0,0,0.04)]"><div className="grid size-12 place-items-center rounded-xl bg-primary/15 text-secondary">{icon === "money" ? <Banknote className="size-5" /> : <Percent className="size-5" />}</div><div><p className="text-sm text-gray">{label}</p><div className="mt-1 text-xl font-bold text-secondary"><MoneyValue value={value ?? 0} currency={currency} /></div></div></div>;
 }
 
 const typeOptions: FilterOption<SubscriptionDiscountType | "all">[] = [
@@ -139,7 +139,7 @@ function DiscountRow({ discount, onView, onEdit, onDelete }: { discount: Subscri
   return <tr className="text-dark-gray">
     <td className="border-b border-primary/15 px-5 py-3"><div className="flex max-w-60 items-center gap-3"><div className="grid size-12 shrink-0 place-items-center rounded-xl bg-primary/15 text-secondary"><Percent className="size-5" /></div><p className="truncate text-base font-medium">{discount.name || discount.name_ar || discount.name_en || "—"}</p></div></td>
     <td className="border-b border-primary/15 px-5 py-3"><span className="inline-flex h-8.5 items-center rounded-full bg-blue-50 px-4 text-sm font-medium text-blue-600">{discount.type === "percentage" ? "نسبة مئوية" : "مبلغ ثابت"}</span></td>
-    <td className="border-b border-primary/15 px-5 py-3" dir="ltr">{discount.type === "percentage" ? `${discount.value}%` : <span className="inline-flex items-center gap-1"><SaudiRiyal className="size-4" />{discount.value}</span>}</td>
+    <td className="border-b border-primary/15 px-5 py-3" dir="ltr">{discount.type === "percentage" ? `${discount.value}%` : <MoneyValue value={discount.value} currency={discount.currency} />}</td>
     <td className="whitespace-nowrap border-b border-primary/15 px-5 py-3" dir="ltr">{period}</td>
     <td className="border-b border-primary/15 px-5 py-3"><Badge active={discount.is_active} activeText="مفعّل" inactiveText="معطّل" /></td>
     <td className="border-b border-primary/15 px-5 py-3"><Badge active={discount.is_running} activeText="ساري" inactiveText="غير ساري" /></td>
@@ -157,7 +157,7 @@ function DiscountDetails({ open, discountId, onClose }: { open: boolean; discoun
     {discount ? <div className="grid gap-4 p-2 sm:grid-cols-2">
       <Detail label="الاسم" value={discount.name || discount.name_ar || discount.name_en || "—"} />
       <Detail label="النوع" value={discount.type === "percentage" ? "نسبة مئوية" : "مبلغ ثابت"} />
-      <Detail label="القيمة" value={discount.type === "percentage" ? `${discount.value}%` : String(discount.value)} />
+      <Detail label="القيمة" value={discount.type === "percentage" ? `${discount.value}%` : <MoneyValue value={discount.value} currency={discount.currency} />} />
       <Detail label="التفعيل" value={discount.is_active ? "مفعّل" : "معطّل"} />
       <Detail label="الحالة الآن" value={discount.is_running ? "ساري" : "غير ساري"} />
       <Detail label="تاريخ الإنشاء" value={formatDate(discount.created_at) || "—"} />
@@ -170,7 +170,7 @@ function DiscountDetails({ open, discountId, onClose }: { open: boolean; discoun
   </Modal>;
 }
 
-function Detail({ label, value }: { label: string; value: string }) {
+function Detail({ label, value }: { label: string; value: ReactNode }) {
   return <div className="rounded-xl bg-neutral-50 p-3"><p className="mb-1 text-xs text-gray">{label}</p><p className="font-medium text-secondary">{value}</p></div>;
 }
 

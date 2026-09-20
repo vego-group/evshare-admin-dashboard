@@ -89,7 +89,7 @@ function OrderCard({ order }: { order: OrderListItem }) {
           <DetailLine label="العنوان" value={order.address?.address ?? "-"} />
           <DetailLine
             label="المبلغ الإجمالي"
-            value={<MoneyValue value={order.total} />}
+            value={<MoneyValue value={order.total} currency={order.currency} />}
           />
           <DetailLine
             label="التاريخ"

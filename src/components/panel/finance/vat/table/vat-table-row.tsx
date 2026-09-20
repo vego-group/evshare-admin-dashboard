@@ -17,10 +17,10 @@ function VatTableRow({ record }: { record: VatRecord }) {
       <TableCell dir="ltr">{formatDate(record.date)}</TableCell>
       <TableCell dir="ltr">{record.period}</TableCell>
       <TableCell dir="ltr">
-        <AmountCell value={record.base_amount} />
+        <AmountCell value={record.base_amount} currency={record.currency} />
       </TableCell>
       <TableCell dir="ltr">
-        <AmountCell value={record.vat_amount} />
+        <AmountCell value={record.vat_amount} currency={record.currency} />
       </TableCell>
       <TableCell dir="ltr">{record.due_date}</TableCell>
       <TableCell className="max-w-none overflow-visible whitespace-normal">
@@ -28,14 +28,14 @@ function VatTableRow({ record }: { record: VatRecord }) {
       </TableCell>
       <TableCell>{record.order?.customer?.name ?? "—"}</TableCell>
       <TableCell dir="ltr">
-        <AmountCell value={record.period_vat_remaining} />
+        <AmountCell value={record.period_vat_remaining} currency={record.currency} />
       </TableCell>
     </tr>
   );
 }
 
-function AmountCell({ value }: { value: number }) {
-  return <MoneyValue value={value} />;
+function AmountCell({ value, currency }: { value: number; currency?: string }) {
+  return <MoneyValue value={value} currency={currency} />;
 }
 
 function TableCell({

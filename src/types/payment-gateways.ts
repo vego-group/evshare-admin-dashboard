@@ -65,6 +65,7 @@ export type PaymentTransactionResponse = Record<string, unknown> & {
 
 export type PaymentTransaction = {
   id: string;
+  currency?: string;
   transaction_id: string;
   status: PaymentTransactionStatus;
   amount: number;

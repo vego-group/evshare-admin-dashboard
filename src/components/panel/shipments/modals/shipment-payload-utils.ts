@@ -35,6 +35,7 @@ const toDateInputValue = (value: string | null) =>
 
 export function shipmentToFormValues(
   shipment: ShipmentListItem,
+  fallbackCurrency = "",
 ): ShipmentFormValues {
   return {
     order_uuid: shipment.order?.id ?? "",
@@ -46,7 +47,7 @@ export function shipmentToFormValues(
     price: toNumber(shipment.price),
     cod_amount: toNumber(shipment.cod_amount),
     declared_value: toNumber(shipment.declared_value),
-    currency: shipment.currency || "SAR",
+    currency: shipment.currency || fallbackCurrency,
     package_count: shipment.package?.count,
     package_weight: toNumber(shipment.package?.weight),
     box_width: toNumber(shipment.package?.width),

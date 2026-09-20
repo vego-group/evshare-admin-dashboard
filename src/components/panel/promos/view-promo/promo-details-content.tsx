@@ -1,9 +1,10 @@
 "use client";
 
-import { SaudiRiyal, Users } from "lucide-react";
+import { Users } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { formatStoredPhone } from "@/lib/utils/format-phone";
+import CurrencyMoneyValue from "@/components/ui/money-value";
 import type { PromoDetailData, PromoRedeemableType } from "@/types";
 
 import PromoDetailsShimmer from "../modals/promo-details-shimmer";
@@ -65,9 +66,7 @@ export function PromoDetailsContent({ detail, isLoading }: Props) {
         <StatCard
           label="إجمالي الخصومات الممنوحة"
           value={
-            <span className="inline-flex items-center gap-1" dir="ltr">
-              <SaudiRiyal className="size-4 shrink-0" /> {analytics.total_discount_given}
-            </span>
+            <CurrencyMoneyValue value={analytics.total_discount_given} currency={analytics.currency ?? promo.currency} />
           }
         />
         <StatCard
@@ -85,11 +84,11 @@ export function PromoDetailsContent({ detail, isLoading }: Props) {
         />
         <DetailRow
           label="الحد الأقصى لمبلغ الخصم"
-          value={<MoneyValue value={promo.max_discount_amount} />}
+          value={<CurrencyMoneyValue value={promo.max_discount_amount} currency={promo.currency} />}
         />
         <DetailRow
           label="الحد الأدنى لمبلغ الطلب"
-          value={<MoneyValue value={promo.minimum_order_amount} />}
+          value={<CurrencyMoneyValue value={promo.minimum_order_amount} currency={promo.currency} />}
         />
         <DetailRow label="الاستخدام" value={formatUsage(promo)} />
         <DetailRow
@@ -146,10 +145,7 @@ export function PromoDetailsContent({ detail, isLoading }: Props) {
                         : "-"}
                     </RedemptionCell>
                     <RedemptionCell dir="ltr">
-                      <span className="inline-flex items-center gap-1">
-                        <SaudiRiyal className="size-4 shrink-0" />
-                        {redemption.discount_amount_applied}
-                      </span>
+                      <CurrencyMoneyValue value={redemption.discount_amount_applied} currency={redemption.currency ?? promo.currency} />
                     </RedemptionCell>
                     <RedemptionCell dir="ltr">{formatDate(redemption.created_at)}</RedemptionCell>
                   </tr>
@@ -169,16 +165,6 @@ function StatCard({ label, value }: { label: string; value: ReactNode }) {
       <span className="text-sm text-gray">{label}</span>
       <span className="text-lg font-bold text-secondary">{value}</span>
     </div>
-  );
-}
-
-function MoneyValue({ value }: { value: number | null }) {
-  return value === null || value === undefined ? (
-    "-"
-  ) : (
-    <span className="inline-flex items-center gap-1" dir="ltr">
-      <SaudiRiyal className="size-4 shrink-0" /> {value}
-    </span>
   );
 }
 

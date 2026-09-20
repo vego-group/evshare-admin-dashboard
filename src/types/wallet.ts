@@ -13,6 +13,7 @@ export type WalletQueryParams = {
 
 export type WalletTransaction = {
   id: string;
+  currency?: string;
   title: string;
   credit: number;
   debit: number;
@@ -44,6 +45,7 @@ export type WalletPaginationMeta = {
 };
 
 export type WalletAnalytics = {
+  currency?: string;
   total_balance: number;
   reserved_amounts: number;
   monthly_profits: number;
@@ -53,6 +55,7 @@ export type WalletAnalytics = {
 
 export type WalletChartEntry = {
   date: string;
+  currency?: string;
   total_credit: number;
   total_debit: number;
   total_balance: number;

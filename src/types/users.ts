@@ -59,6 +59,8 @@ export type AdminUserDetail = UserListItem & {
   deleted_at: string | null;
   kyc_status: UserKycStatus;
   wallet_balance: number;
+  currency?: string;
+  wallet_currency?: string;
   is_subscribed: boolean;
   subscription: UserSubscription | null;
   city: UserCity | null;

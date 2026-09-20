@@ -54,7 +54,7 @@ function WalletCard({
           <DetailLine
             label="إيداع"
             value={
-              <MoneyValue value={transaction.credit} className="text-green-600" />
+              <MoneyValue value={transaction.credit} currency={transaction.currency} className="text-green-600" />
             }
           />
         )}
@@ -62,14 +62,14 @@ function WalletCard({
           <DetailLine
             label="سحب"
             value={
-              <MoneyValue value={transaction.debit} className="text-red-500" />
+              <MoneyValue value={transaction.debit} currency={transaction.currency} className="text-red-500" />
             }
           />
         )}
         <DetailLine
           label="الرصيد"
           value={
-            <MoneyValue value={transaction.balance} />
+            <MoneyValue value={transaction.balance} currency={transaction.currency} />
           }
         />
         <DetailLine

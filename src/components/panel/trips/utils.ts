@@ -33,7 +33,7 @@ export function tripMapLatLng(trip: TripListItem): { lat: number; lng: number } 
 export function tripPricing(trip: TripListItem): TripPricingSnapshot {
   const snapshot = trip.pricing ?? {};
   return {
-    currency: snapshot.currency ?? trip.currency ?? "SAR",
+    currency: snapshot.currency ?? trip.currency ?? "",
     unlock_fee: snapshot.unlock_fee ?? trip.open_price ?? trip.cost_breakdown?.unlock_fee ?? null,
     price_per_minute: snapshot.price_per_minute ?? trip.price_per_minute ?? trip.vehicle.price_per_minute ?? null,
     billing_increment_seconds: snapshot.billing_increment_seconds ?? trip.billing_increment_seconds ?? null,

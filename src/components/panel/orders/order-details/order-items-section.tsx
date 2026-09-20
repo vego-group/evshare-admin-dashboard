@@ -7,7 +7,7 @@ import StatusBadge from "@/components/panel/vehicle-operating-pricing/status-bad
 import { cn } from "@/lib/utils";
 import type { OrderItem } from "@/types";
 
-function OrderItemsSection({ items }: { items: OrderItem[] }) {
+function OrderItemsSection({ items, currency }: { items: OrderItem[]; currency?: string }) {
   return (
     <section className="overflow-hidden rounded-[14px] border border-[#e5e7eb] bg-white">
       <div className="border-b border-neutral-100 px-5 py-4">
@@ -28,7 +28,7 @@ function OrderItemsSection({ items }: { items: OrderItem[] }) {
           </thead>
           <tbody>
             {items.map((item, index) => (
-              <OrderItemRow key={index} item={item} />
+              <OrderItemRow key={index} item={item} currency={currency} />
             ))}
           </tbody>
         </table>
@@ -43,7 +43,7 @@ function OrderItemsSection({ items }: { items: OrderItem[] }) {
   );
 }
 
-function OrderItemRow({ item }: { item: OrderItem }) {
+function OrderItemRow({ item, currency }: { item: OrderItem; currency?: string }) {
   const { product } = item;
   return (
     <tr className="text-sm font-medium text-dark-gray">
@@ -71,10 +71,10 @@ function OrderItemRow({ item }: { item: OrderItem }) {
       </TableCell>
       <TableCell>{item.quantity}</TableCell>
       <TableCell dir="ltr" className="text-right">
-        <MoneyValue value={item.unit_price} />
+        <MoneyValue value={item.unit_price} currency={currency} />
       </TableCell>
       <TableCell dir="ltr" className="text-right font-semibold text-secondary">
-        <MoneyValue value={item.total_price} />
+        <MoneyValue value={item.total_price} currency={currency} />
       </TableCell>
       <TableCell className="max-w-none overflow-visible whitespace-normal">
         {item.vehicles.length ? (

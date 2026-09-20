@@ -56,7 +56,7 @@ function ProductsTable({
                 <TableCell>{product.category?.name ?? "-"}</TableCell>
                 <TableCell truncate={false}><VehicleTypeBadge type={product.vehicle_type} /></TableCell>
                 <TableCell>
-                  <MoneyValue value={product.price} />
+                  <MoneyValue value={product.price} currency={product.currency} />
                 </TableCell>
                 <TableCell>{product.quantity}</TableCell>
                 <TableCell truncate={false}>

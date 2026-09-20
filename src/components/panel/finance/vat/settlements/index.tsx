@@ -61,7 +61,7 @@ function VatSettlements({ settlements, onAdd, onExport, isExporting }: Props) {
                     {settlement.period}
                   </td>
                   <td className="px-5 py-4" dir="ltr">
-                    <MoneyValue value={settlement.amount} />
+                    <MoneyValue value={settlement.amount} currency={settlement.currency} />
                   </td>
                   <td className="px-5 py-4" dir="ltr">
                     {settlement.paid_at}

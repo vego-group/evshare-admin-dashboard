@@ -85,6 +85,7 @@ export type OrderItem = {
 
 export type OrderDetail = {
   id: string;
+  currency?: string;
   order_code: string;
   subtotal: number;
   vat_percentage: number;

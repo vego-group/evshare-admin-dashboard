@@ -93,7 +93,7 @@ function CheckoutTableRow({
       </TableCell>
       <TableCell>{formatGateway(checkout.payment_gateway)}</TableCell>
       <TableCell dir="ltr">
-        <MoneyValue amount={checkout.amount} />
+        <MoneyValue amount={checkout.amount} currency={checkout.currency} />
       </TableCell>
       <TableCell>
         <span>{formatPayableType(checkout.payable?.type)}</span>

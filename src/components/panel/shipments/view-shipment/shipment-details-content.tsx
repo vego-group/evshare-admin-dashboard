@@ -1,6 +1,7 @@
 "use client";
 
 import { shipmentPickingTypeLabels } from "@/data";
+import MoneyValue from "@/components/ui/money-value";
 import type { ShipmentDetail } from "@/types";
 import { formatStoredPhone } from "@/lib/utils/format-phone";
 
@@ -57,15 +58,15 @@ export function ShipmentDetailsContent({
       <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           label="تكلفة الشحن"
-          value={`${shipment.price ?? 0} ${shipment.currency}`}
+          value={<MoneyValue value={shipment.price ?? 0} currency={shipment.currency} />}
         />
         <StatCard
           label="مبلغ التحصيل"
-          value={`${shipment.cod_amount ?? 0} ${shipment.currency}`}
+          value={<MoneyValue value={shipment.cod_amount ?? 0} currency={shipment.currency} />}
         />
         <StatCard
           label="القيمة المعلنة"
-          value={`${shipment.declared_value ?? 0} ${shipment.currency}`}
+          value={<MoneyValue value={shipment.declared_value ?? 0} currency={shipment.currency} />}
         />
         <StatCard
           label="محاولات التسليم"

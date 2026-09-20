@@ -40,6 +40,7 @@ export type VatRecordOrder = {
 
 export type VatRecord = {
   id: string;
+  currency?: string;
   reference: string;
   date: string;
   period: string;
@@ -69,6 +70,7 @@ export type VatRecordsResponse = {
 
 export type VatPeriod = {
   period: string;
+  currency?: string;
   orders_count: number;
   base_amount: number;
   vat_amount: number;
@@ -86,6 +88,7 @@ export type VatPeriodsResponse = {
 
 export type VatSettlement = {
   id: string;
+  currency?: string;
   period: string;
   amount: number;
   paid_at: string;

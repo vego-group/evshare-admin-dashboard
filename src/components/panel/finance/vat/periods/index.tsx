@@ -39,16 +39,16 @@ function VatPeriods({ periods }: { periods: VatPeriod[] }) {
               </td>
               <td className="px-5 py-4">{period.orders_count}</td>
               <td className="px-5 py-4">
-                <AmountCell value={period.base_amount} />
+                <AmountCell value={period.base_amount} currency={period.currency} />
               </td>
               <td className="px-5 py-4">
-                <AmountCell value={period.vat_amount} />
+                <AmountCell value={period.vat_amount} currency={period.currency} />
               </td>
               <td className="px-5 py-4">
-                <AmountCell value={period.vat_paid} />
+                <AmountCell value={period.vat_paid} currency={period.currency} />
               </td>
               <td className="px-5 py-4">
-                <AmountCell value={period.vat_remaining} />
+                <AmountCell value={period.vat_remaining} currency={period.currency} />
               </td>
               <td className="px-5 py-4" dir="ltr">
                 {period.due_date}
@@ -64,8 +64,8 @@ function VatPeriods({ periods }: { periods: VatPeriod[] }) {
   );
 }
 
-function AmountCell({ value }: { value: number }) {
-  return <MoneyValue value={value} />;
+function AmountCell({ value, currency }: { value: number; currency?: string }) {
+  return <MoneyValue value={value} currency={currency} />;
 }
 
 export default VatPeriods;

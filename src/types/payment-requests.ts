@@ -16,6 +16,7 @@ export type PaymentRequestsQueryParams = {
 
 export type PaymentRequest = {
   id: string;
+  currency?: string;
   amount: string;
   status: RequestStatus;
   created_at: string;
@@ -71,6 +72,7 @@ export type PaymentRequestUser = {
 
 export type PaymentRequestDetail = {
   id: string;
+  currency?: string;
   amount: string;
   status: RequestStatus;
   notes: string;

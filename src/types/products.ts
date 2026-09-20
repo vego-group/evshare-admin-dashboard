@@ -25,6 +25,7 @@ export type ProductCategory = {
 
 export type ProductListItem = {
   id: string;
+  currency?: string;
   title_ar: string;
   title_en: string;
   title: string;

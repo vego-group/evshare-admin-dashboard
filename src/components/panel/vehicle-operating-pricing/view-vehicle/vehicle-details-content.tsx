@@ -1,8 +1,8 @@
 "use client";
 
-import { SaudiRiyal } from "lucide-react";
 import type { ReactNode } from "react";
 
+import MoneyValue from "@/components/ui/money-value";
 import type { VehicleListItem } from "@/types";
 import { vehicleTypeLabel } from "@/lib/utils/vehicle-type";
 import StatusBadge from "../status-badge";
@@ -127,7 +127,7 @@ export function VehicleDetailsContent({ vehicle, isLoading }: Props) {
         <h4 className="text-sm font-semibold text-secondary">التسعير الحالي</h4>
         <div className="grid gap-2 sm:grid-cols-2">
           {pricingFields.map(([key, label]) => (
-            <DetailRow key={key} label={label} value={<MoneyValue value={formatMoney(vehicle[key])} />} />
+            <DetailRow key={key} label={label} value={<MoneyValue value={formatMoney(vehicle[key]) as string | number | null | undefined} currency={vehicle.currency} />} />
           ))}
         </div>
       </section>
@@ -146,7 +146,7 @@ export function VehicleDetailsContent({ vehicle, isLoading }: Props) {
         {vehicle.product ? (
           <div className="grid gap-2 sm:grid-cols-2">
             <DetailRow label="اسم المنتج" value={vehicle.product.title} />
-            <DetailRow label="السعر" value={<MoneyValue value={formatMoney(vehicle.product.price)} />} />
+            <DetailRow label="السعر" value={<MoneyValue value={formatMoney(vehicle.product.price) as string | number | null | undefined} currency={vehicle.product.currency ?? vehicle.currency} />} />
             <DetailRow label="الكمية" value={vehicle.product.quantity} />
             <DetailRow label="الحالة" value={<StatusBadge status={vehicle.product.active ? "active" : "disabled"} />} />
           </div>
@@ -175,7 +175,6 @@ export function VehicleDetailsContent({ vehicle, isLoading }: Props) {
     </div>
   );
 }
-
 function DetailRow({ label, value }: { label: string; value?: ReactNode | null }) {
   return (
     <div className="flex flex-col gap-1 rounded-[10px] bg-white px-4 py-3 text-right">
@@ -184,14 +183,5 @@ function DetailRow({ label, value }: { label: string; value?: ReactNode | null }
         {value ?? "-"}
       </span>
     </div>
-  );
-}
-
-function MoneyValue({ value }: { value: unknown }) {
-  if (value === null || value === undefined) return null;
-  return (
-    <span className="inline-flex items-center gap-1" dir="ltr">
-      <SaudiRiyal className="size-4 shrink-0" /> {String(value)}
-    </span>
   );
 }
