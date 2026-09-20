@@ -8,7 +8,7 @@ import {
   type ReactNode,
 } from "react";
 import { useAuthPermissions } from "@/hooks/api";
-import { removeToken } from "@/lib";
+import { removeCountry, removeToken } from "@/lib";
 import { clearUserSession } from "@/lib/utils/user-session";
 
 type PermissionsContextValue = {
@@ -36,7 +36,10 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!isUnauthorized) return;
-    void removeToken();
+    void (async () => {
+      await removeToken();
+      await removeCountry();
+    })();
     clearUserSession();
     window.location.replace("/login?unauthorized=1");
   }, [isUnauthorized]);

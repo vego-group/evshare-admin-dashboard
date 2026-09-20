@@ -51,7 +51,7 @@ function LoginForm() {
     const result = await loginAPI({ mobile: normalized }, selectedCountry.data);
     if (result?.ok) {
       toast.success(result.message || "تم إرسال رمز التحقق");
-      router.push(`/login/verify-otp?mobile=${encodeURIComponent(normalized)}&country=${selectedCountry.data}`);
+      router.push(`/login/verify-otp?mobile=${encodeURIComponent(normalized)}`);
       return;
     }
 

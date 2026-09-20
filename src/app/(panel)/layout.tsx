@@ -6,6 +6,7 @@ import type { ReactNode } from "react";
 import { getCountry } from "@/lib";
 import PanelPermissionGuard from "@/components/panel-permission-guard";
 import { CurrencyProvider } from "@/provider/currency";
+import { redirect } from "next/navigation";
 
 type AdminLayoutProps = {
   children: ReactNode;
@@ -13,6 +14,8 @@ type AdminLayoutProps = {
 
 async function AdminLayout({ children }: AdminLayoutProps) {
   const country = await getCountry();
+  if (!country) redirect("/login?expired=1");
+
   return (
     <CurrencyProvider countryCode={country}>
     <PermissionsProvider>

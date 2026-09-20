@@ -20,6 +20,12 @@ export function proxy(request: NextRequest) {
       path: "/",
       maxAge: 0,
     });
+    response.cookies.set({
+      name: "tenant-country",
+      value: "",
+      path: "/",
+      maxAge: 0,
+    });
     return response;
   }
 
