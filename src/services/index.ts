@@ -17,6 +17,11 @@ let isRedirectingToLogin = false;
 function redirectToExpiredLogin() {
   if (typeof window === "undefined" || isRedirectingToLogin) return;
   isRedirectingToLogin = true;
+  try {
+    window.localStorage.removeItem("user_data");
+  } catch {
+    // Navigation still clears the server-side token cookie via the proxy.
+  }
   window.location.replace("/login?expired=1");
 }
 

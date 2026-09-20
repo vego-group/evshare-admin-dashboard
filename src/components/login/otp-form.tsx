@@ -1,16 +1,32 @@
 "use client";
 
-import { useForm, Controller, type Resolver, type FieldErrors } from "react-hook-form";
+import {
+  useForm,
+  Controller,
+  type Resolver,
+  type FieldErrors,
+} from "react-hook-form";
 import { ShieldCheck } from "lucide-react";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
-import { verifyOtpSchema, type VerifyOtpFormValues } from "@/schemas";
+import {
+  authResponseSchema,
+  verifyOtpSchema,
+  type VerifyOtpFormValues,
+} from "@/schemas";
 import { Button } from "@/components/ui/button";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 import { verifyLoginAPI } from "@/services/mutations";
 import { setToken, removeToken } from "@/lib";
-import { setUserSession } from "@/lib/utils/user-session";
+import {
+  clearUserSession,
+  setUserSession,
+} from "@/lib/utils/user-session";
 import Loader from "@/components/ui/loader";
 import InputErrorMessage from "@/components/ui/input-error-message";
 import { useRouter } from "next/navigation";
@@ -59,22 +75,41 @@ function OtpForm({ mobile, country }: OtpFormProps) {
   const onSubmit = async (data: VerifyOtpFormValues) => {
     const result = await verifyLoginAPI(data, country);
     if (result?.ok) {
-      const userData = result.data?.data?.user_data;
+      const authResult = authResponseSchema.safeParse(result.data);
 
-      if (userData && !ALLOWED_DASHBOARD_ROLES.includes(userData.role)) {
+      if (!authResult.success) {
+        await removeToken();
+        clearUserSession();
+        toast.error("استجابة تسجيل الدخول غير مكتملة، يرجى المحاولة مرة أخرى");
+        return;
+      }
+
+      const { access_token: token, expires_at: expiresAt, user_data: userData } =
+        authResult.data.data;
+
+      if (!ALLOWED_DASHBOARD_ROLES.includes(userData.role)) {
         toast.error(
           ROLE_ACCESS_DENIED_MESSAGES[userData.role] ||
-            "هذا الحساب غير مصرح له بالدخول إلى لوحة التحكم"
+            "هذا الحساب غير مصرح له بالدخول إلى لوحة التحكم",
         );
         await removeToken();
+        clearUserSession();
+        return;
+      }
+
+      try {
+        await setToken(token, expiresAt);
+        if (!setUserSession(userData)) {
+          throw new Error("Could not persist the authenticated user");
+        }
+      } catch {
+        await removeToken();
+        clearUserSession();
+        toast.error("تعذر إنشاء جلسة آمنة، يرجى المحاولة مرة أخرى");
         return;
       }
 
       toast.success(result.message || "تم تسجيل الدخول بنجاح");
-      const token = result.data?.data?.access_token;
-      if (token) await setToken(token);
-      if (userData) setUserSession(userData);
-
       router.replace("/");
       return;
     }
