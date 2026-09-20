@@ -1,5 +1,5 @@
 import OtpVerify from "@/components/login/otp-verify";
-import { getCountry } from "@/lib";
+import { getCountry } from "@/lib/utils/auth";
 import { redirect } from "next/navigation";
 
 type Props = {

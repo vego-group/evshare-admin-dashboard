@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   useForm,
   Controller,
@@ -22,11 +23,8 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { verifyLoginAPI } from "@/services/mutations";
-import { setToken, removeToken } from "@/lib";
-import {
-  clearUserSession,
-  setUserSession,
-} from "@/lib/utils/user-session";
+import { removeToken, setToken } from "@/lib";
+import { clearUserSession, setUserSession } from "@/lib/utils/user-session";
 import Loader from "@/components/ui/loader";
 import InputErrorMessage from "@/components/ui/input-error-message";
 import { useRouter } from "next/navigation";
@@ -61,6 +59,7 @@ interface OtpFormProps {
 
 function OtpForm({ mobile }: OtpFormProps) {
   const router = useRouter();
+  const [accessDeniedMessage, setAccessDeniedMessage] = useState<string>();
   const {
     handleSubmit,
     control,
@@ -72,6 +71,11 @@ function OtpForm({ mobile }: OtpFormProps) {
   });
 
   const onSubmit = async (data: VerifyOtpFormValues) => {
+    if (accessDeniedMessage) {
+      toast.error(accessDeniedMessage);
+      return;
+    }
+
     const result = await verifyLoginAPI(data);
     if (result?.ok) {
       const authResult = authResponseSchema.safeParse(result.data);
@@ -83,16 +87,20 @@ function OtpForm({ mobile }: OtpFormProps) {
         return;
       }
 
-      const { access_token: token, expires_at: expiresAt, user_data: userData } =
-        authResult.data.data;
+      const {
+        access_token: token,
+        expires_at: expiresAt,
+        user_data: userData,
+      } = authResult.data.data;
 
       if (!ALLOWED_DASHBOARD_ROLES.includes(userData.role)) {
-        toast.error(
+        const deniedMessage =
           ROLE_ACCESS_DENIED_MESSAGES[userData.role] ||
-            "هذا الحساب غير مصرح له بالدخول إلى لوحة التحكم",
-        );
+          "هذا الحساب غير مصرح له بالدخول إلى لوحة التحكم";
         await removeToken();
         clearUserSession();
+        setAccessDeniedMessage(deniedMessage);
+        toast.error(deniedMessage);
         return;
       }
 
