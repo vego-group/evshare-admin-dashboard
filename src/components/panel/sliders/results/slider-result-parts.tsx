@@ -1,8 +1,8 @@
 import { Images, Pencil, Trash2, type LucideIcon } from "lucide-react";
-import Image from "next/image";
 
 import { cn } from "@/lib/utils";
 import PermissionGate from "@/components/permission-gate";
+import ContentImage from "@/components/panel/content-image";
 
 export function SliderThumbnail({
   url,
@@ -14,10 +14,9 @@ export function SliderThumbnail({
   if (url) {
     return (
       <div className={cn("relative size-12 shrink-0 overflow-hidden rounded-xl", className)}>
-        <Image
+        <ContentImage
           src={url}
           alt="صورة السلايدر"
-          fill
           sizes="48px"
           className="object-cover"
         />

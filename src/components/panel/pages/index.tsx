@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 
 import { usePages } from "@/hooks/api";
+import QueryErrorState from "@/components/ui/query-error-state";
 
 import PagesContentShimmer from "./content-shimmer";
 import PagesHeader from "./header";
@@ -10,10 +11,20 @@ import PagesResults from "./results";
 
 function Pages() {
   const router = useRouter();
-  const { data, isLoading } = usePages();
+  const { data, isLoading, isError, isFetching, refetch } = usePages();
 
   if (isLoading) {
     return <PagesContentShimmer />;
+  }
+
+  if (isError) {
+    return (
+      <QueryErrorState
+        title="تعذر تحميل الصفحات الثابتة"
+        onRetry={() => void refetch()}
+        isRetrying={isFetching}
+      />
+    );
   }
 
   return (
