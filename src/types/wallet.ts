@@ -24,6 +24,10 @@ export type WalletTransaction = {
 };
 
 export type WalletTransactionDetails = WalletTransaction & {
+  trace_id?: string | null;
+  payment_request_id?: string | null;
+  provider_transaction_id?: string | null;
+  provider_event_id?: string | null;
   user?: {
     id: string;
     name: string;

@@ -125,6 +125,31 @@ function WebhookLogDetails({ log }: { log: WebhookLog }) {
         />
       </section>
 
+      {log.trace_id ||
+      log.provider_event_id ||
+      log.payment_request_id ||
+      log.transaction_id ||
+      log.wallet_ledger_entry_id ? (
+        <section className="space-y-4 rounded-[14px] bg-background p-5">
+          <PanelSectionTitle>التتبع</PanelSectionTitle>
+          {log.trace_id ? (
+            <DetailRow label="معرف التتبع" value={log.trace_id} valueDir="ltr" />
+          ) : null}
+          {log.provider_event_id ? (
+            <DetailRow label="حدث مزود الدفع" value={log.provider_event_id} valueDir="ltr" />
+          ) : null}
+          {log.payment_request_id ? (
+            <DetailRow label="طلب الدفع" value={log.payment_request_id} valueDir="ltr" />
+          ) : null}
+          {log.transaction_id ? (
+            <DetailRow label="المعاملة" value={log.transaction_id} valueDir="ltr" />
+          ) : null}
+          {log.wallet_ledger_entry_id ? (
+            <DetailRow label="قيد المحفظة" value={log.wallet_ledger_entry_id} valueDir="ltr" />
+          ) : null}
+        </section>
+      ) : null}
+
       <JsonBlock title="ترويسات الطلب" value={log.request_header} />
       <JsonBlock title="محتوى الطلب" value={log.request_body} />
     </div>

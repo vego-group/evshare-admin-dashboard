@@ -66,8 +66,13 @@ export function formatPayableType(value?: string) {
 export function formatTransactionStatus(value: string) {
   const labels: Record<string, string> = {
     paid: "مدفوع",
+    succeeded: "نجحت مالياً",
     failed: "فشل",
     initiated: "قيد البدء",
+    pending: "بانتظار المعالجة",
+    processing: "قيد المعالجة",
+    timed_out: "انتهت مهلة المعالجة",
+    reconciliation_required: "تحتاج إلى تسوية",
   };
 
   return labels[value] ?? value;

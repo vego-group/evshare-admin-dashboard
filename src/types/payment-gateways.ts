@@ -8,8 +8,13 @@ export type PayableType = "order" | "subscription" | (string & {});
 
 export type PaymentTransactionStatus =
   | "paid"
+  | "succeeded"
   | "failed"
   | "initiated"
+  | "pending"
+  | "processing"
+  | "timed_out"
+  | "reconciliation_required"
   | (string & {});
 
 export type PaymentGatewaysPaginationMeta = {
@@ -71,6 +76,11 @@ export type PaymentTransaction = {
   amount: number;
   payment_gateway: string;
   transaction_response: PaymentTransactionResponse | null;
+  is_final?: boolean;
+  trace_id?: string | null;
+  payment_request_id?: string | null;
+  provider_event_id?: string | null;
+  wallet_ledger_entry_id?: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -85,6 +95,8 @@ export type PaymentCheckout = {
   user: PaymentGatewayUser | null;
   transactions: PaymentTransaction[];
   request_body: Record<string, unknown> | null;
+  trace_id?: string | null;
+  payment_request_id?: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -94,6 +106,10 @@ export type PaymentTransactionsAnalytics = {
   paid: number;
   failed: number;
   initiated: number;
+  pending?: number;
+  processing?: number;
+  timed_out?: number;
+  reconciliation_required?: number;
 };
 
 export type PaymentCheckoutsListResponse = {

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 
@@ -14,7 +14,11 @@ import {
   approvePaymentRequestAPI,
   rejectPaymentRequestAPI,
 } from "@/services/mutations";
-import type { PaymentRequestDetail, RequestStatus } from "@/types";
+import type {
+  PaymentOutcomeStatus,
+  PaymentRequestDetail,
+  RequestStatus,
+} from "@/types";
 import PermissionGate from "@/components/permission-gate";
 
 import UserInfoSection from "./user-info-section";
@@ -33,6 +37,24 @@ const STATUS_LABELS: Record<RequestStatus, string> = {
   pending: "قيد المراجعة",
 };
 
+const OUTCOME_LABELS: Record<string, string> = {
+  pending: "بانتظار المعالجة",
+  processing: "قيد المعالجة",
+  succeeded: "نجحت مالياً",
+  failed: "فشلت",
+  timed_out: "انتهت مهلة المعالجة",
+  reconciliation_required: "تحتاج إلى تسوية",
+};
+
+const OUTCOME_STYLES: Record<string, string> = {
+  pending: "bg-amber-50 text-orange-500",
+  processing: "bg-blue/10 text-blue",
+  succeeded: "bg-green-50 text-green",
+  failed: "bg-red-50 text-red",
+  timed_out: "bg-amber-50 text-orange-500",
+  reconciliation_required: "bg-red-50 text-red",
+};
+
 interface PaymentRequestsDetailsPanelProps {
   paymentRequestId: string | null;
   open: boolean;
@@ -49,6 +71,8 @@ function PaymentRequestsDetailsPanel({
   const [actionLoading, setActionLoading] = useState<
     "approve" | "reject" | null
   >(null);
+  const actionLock = useRef(false);
+  const approvalKeys = useRef(new Map<string, string>());
   const request = data?.data;
 
   if (!paymentRequestId) return null;
@@ -63,37 +87,57 @@ function PaymentRequestsDetailsPanel({
   }
 
   async function handleApprove() {
-    if (!paymentRequestId || actionLoading) return;
+    if (!paymentRequestId || actionLoading || actionLock.current) return;
 
     const currentId = paymentRequestId;
+    const idempotencyKey = getApprovalIdempotencyKey(
+      currentId,
+      approvalKeys.current,
+    );
+    actionLock.current = true;
     setActionLoading("approve");
-    const result = await approvePaymentRequestAPI(currentId);
-    setActionLoading(null);
+    try {
+      const result = await approvePaymentRequestAPI(currentId, idempotencyKey);
 
-    if (result?.ok) {
-      toast.success(result.message || "تمت الموافقة على الطلب بنجاح");
-      await refreshQueries(currentId);
-      return;
+      if (result?.ok) {
+        approvalKeys.current.delete(currentId);
+        toast.success("تم قبول طلب الموافقة للمعالجة. النتيجة المالية لم تُحسم بعد.");
+        await refreshQueries(currentId);
+        return;
+      }
+
+      toast.error(
+        result?.message ||
+          "تعذر تأكيد نتيجة الطلب. حدّث البيانات قبل إعادة المحاولة.",
+      );
+    } catch {
+      toast.error("تعذر تأكيد نتيجة الطلب. حدّث البيانات قبل إعادة المحاولة.");
+    } finally {
+      setActionLoading(null);
+      actionLock.current = false;
     }
-
-    toast.error(result?.message || "فشلت الموافقة على الطلب");
   }
 
   async function handleReject() {
-    if (!paymentRequestId || actionLoading) return;
+    if (!paymentRequestId || actionLoading || actionLock.current) return;
 
     const currentId = paymentRequestId;
+    actionLock.current = true;
     setActionLoading("reject");
-    const result = await rejectPaymentRequestAPI(currentId);
-    setActionLoading(null);
+    try {
+      const result = await rejectPaymentRequestAPI(currentId);
 
-    if (result?.ok) {
-      toast.success(result.message || "تم رفض الطلب بنجاح");
-      await refreshQueries(currentId);
-      return;
+      if (result?.ok) {
+        toast.success(result.message || "تم رفض الطلب بنجاح");
+        await refreshQueries(currentId);
+        return;
+      }
+
+      toast.error(result?.message || "فشل رفض الطلب");
+    } finally {
+      setActionLoading(null);
+      actionLock.current = false;
     }
-
-    toast.error(result?.message || "فشل رفض الطلب");
   }
 
   return (
@@ -156,9 +200,116 @@ function PaymentRequestDetails({ request }: { request: PaymentRequestDetail }) {
           value={formatDate(request.created_at)}
         />
       </section>
+      {request.payment_status ? <PaymentOutcomeSection request={request} /> : null}
       <UserInfoSection request={request} />
     </div>
   );
+}
+
+function PaymentOutcomeSection({ request }: { request: PaymentRequestDetail }) {
+  const needsAttention =
+    request.payment_status === "timed_out" ||
+    request.payment_status === "reconciliation_required";
+  const hasTraceData = Boolean(
+    request.trace_id ||
+      request.provider_transaction_id ||
+      request.provider_event_id ||
+      request.wallet_ledger_entry_id,
+  );
+
+  return (
+    <section className="space-y-4 rounded-[14px] bg-background p-5">
+      <h3 className="text-base font-semibold leading-6 text-secondary">
+        النتيجة المالية
+      </h3>
+      {needsAttention ? (
+        <div className="rounded-[10px] border border-danger/20 bg-red-50 px-4 py-3 text-sm text-red">
+          لم يتم تأكيد النتيجة المالية النهائية. يلزم التحقق أو التسوية قبل اتخاذ أي إجراء مالي.
+        </div>
+      ) : null}
+      <DetailRow
+        label="حالة الدفع"
+        value={<OutcomeStatusBadge status={request.payment_status!} />}
+      />
+      {request.wallet_status ? (
+        <DetailRow
+          label="حالة المحفظة"
+          value={<OutcomeStatusBadge status={request.wallet_status} />}
+        />
+      ) : null}
+      <DetailRow
+        label="النتيجة نهائية"
+        value={request.is_final ? "نعم" : "لا"}
+      />
+      {request.outcome_updated_at ? (
+        <DetailRow
+          label="آخر تحديث للنتيجة"
+          value={formatDate(request.outcome_updated_at)}
+          valueDir="ltr"
+        />
+      ) : null}
+      {hasTraceData ? (
+        <div className="space-y-4 border-t border-gray/20 pt-4">
+          <h3 className="text-base font-semibold leading-6 text-secondary">
+            التتبع
+          </h3>
+          {request.trace_id ? (
+            <DetailRow label="معرف التتبع" value={request.trace_id} valueDir="ltr" />
+          ) : null}
+          {request.provider_transaction_id ? (
+            <DetailRow
+              label="معاملة مزود الدفع"
+              value={request.provider_transaction_id}
+              valueDir="ltr"
+            />
+          ) : null}
+          {request.provider_event_id ? (
+            <DetailRow
+              label="حدث مزود الدفع"
+              value={request.provider_event_id}
+              valueDir="ltr"
+            />
+          ) : null}
+          {request.wallet_ledger_entry_id ? (
+            <DetailRow
+              label="قيد المحفظة"
+              value={request.wallet_ledger_entry_id}
+              valueDir="ltr"
+            />
+          ) : null}
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
+function OutcomeStatusBadge({ status }: { status: PaymentOutcomeStatus }) {
+  return (
+    <span
+      className={cn(
+        "inline-flex h-8.5 items-center justify-center whitespace-nowrap rounded-full px-4 text-sm font-medium",
+        OUTCOME_STYLES[status] ?? "bg-primary/10 text-primary",
+      )}
+    >
+      {OUTCOME_LABELS[status] ?? status}
+    </span>
+  );
+}
+
+function getApprovalIdempotencyKey(
+  paymentRequestId: string,
+  keys: Map<string, string>,
+) {
+  const existingKey = keys.get(paymentRequestId);
+  if (existingKey) return existingKey;
+
+  const randomPart =
+    typeof crypto !== "undefined" && "randomUUID" in crypto
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const key = `payment-request-${paymentRequestId}-${randomPart}`;
+  keys.set(paymentRequestId, key);
+  return key;
 }
 
 function StatusBadge({ status }: { status: RequestStatus }) {

@@ -23,8 +23,13 @@ export function TransactionStatusBadge({
 }) {
   const styles: Record<string, string> = {
     paid: "bg-green-50 text-green",
+    succeeded: "bg-green-50 text-green",
     failed: "bg-red-50 text-red",
     initiated: "bg-amber-50 text-orange-500",
+    pending: "bg-amber-50 text-orange-500",
+    processing: "bg-blue/10 text-blue",
+    timed_out: "bg-amber-50 text-orange-500",
+    reconciliation_required: "bg-red-50 text-red",
   };
 
   return (

@@ -20,6 +20,11 @@ export type WebhookLog = {
   is_processed: boolean;
   request_body: Record<string, unknown> | null;
   request_header: Record<string, unknown> | null;
+  trace_id?: string | null;
+  provider_event_id?: string | null;
+  payment_request_id?: string | null;
+  transaction_id?: string | null;
+  wallet_ledger_entry_id?: string | null;
   created_at: string;
   updated_at: string;
 };
