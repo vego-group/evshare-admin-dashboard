@@ -15,6 +15,12 @@ export function usePaymentRequest(paymentRequestId: string | null) {
   return useCustomQuery(
     ["payment-request", paymentRequestId],
     async () => singlePaymentRequestAPI(paymentRequestId!),
-    { enabled: Boolean(paymentRequestId) },
+    {
+      enabled: Boolean(paymentRequestId),
+      refetchInterval: (query) => {
+        const status = query.state.data?.data?.payment_status;
+        return status === "pending" || status === "processing" ? 5_000 : false;
+      },
+    },
   );
 }

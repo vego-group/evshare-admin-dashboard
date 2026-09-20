@@ -183,7 +183,46 @@ function TransactionDetails({
           value={formatDate(transaction.updated_at)}
           valueDir="ltr"
         />
+        {transaction.is_final !== undefined ? (
+          <DetailRow
+            label="النتيجة نهائية"
+            value={transaction.is_final ? "نعم" : "لا"}
+          />
+        ) : null}
       </section>
+
+      {transaction.trace_id ||
+      transaction.payment_request_id ||
+      transaction.provider_event_id ||
+      transaction.wallet_ledger_entry_id ? (
+        <section className="space-y-4 rounded-[14px] bg-background p-5">
+          <PanelSectionTitle>التتبع</PanelSectionTitle>
+          {transaction.trace_id ? (
+            <DetailRow label="معرف التتبع" value={transaction.trace_id} valueDir="ltr" />
+          ) : null}
+          {transaction.payment_request_id ? (
+            <DetailRow
+              label="طلب الدفع"
+              value={transaction.payment_request_id}
+              valueDir="ltr"
+            />
+          ) : null}
+          {transaction.provider_event_id ? (
+            <DetailRow
+              label="حدث مزود الدفع"
+              value={transaction.provider_event_id}
+              valueDir="ltr"
+            />
+          ) : null}
+          {transaction.wallet_ledger_entry_id ? (
+            <DetailRow
+              label="قيد المحفظة"
+              value={transaction.wallet_ledger_entry_id}
+              valueDir="ltr"
+            />
+          ) : null}
+        </section>
+      ) : null}
 
       <JsonBlock
         title="استجابة بوابة الدفع"

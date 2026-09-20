@@ -27,6 +27,15 @@ export type PaymentRequest = {
   };
 };
 
+export type PaymentOutcomeStatus =
+  | "pending"
+  | "processing"
+  | "succeeded"
+  | "failed"
+  | "timed_out"
+  | "reconciliation_required"
+  | (string & {});
+
 export type PaymentRequestsPaginationMeta = {
   currentPage: number;
   lastPage: number;
@@ -79,6 +88,14 @@ export type PaymentRequestDetail = {
   user: PaymentRequestUser;
   bank_account: BankAccount;
   created_at: string;
+  payment_status?: PaymentOutcomeStatus | null;
+  wallet_status?: PaymentOutcomeStatus | null;
+  is_final?: boolean;
+  trace_id?: string | null;
+  provider_transaction_id?: string | null;
+  provider_event_id?: string | null;
+  wallet_ledger_entry_id?: string | null;
+  outcome_updated_at?: string | null;
 };
 
 export type PaymentRequestDetailResponse = {

@@ -127,6 +127,39 @@ function TransactionDetails({
             </Link>
           )}
         </section>
+
+        {transaction.trace_id ||
+        transaction.payment_request_id ||
+        transaction.provider_transaction_id ||
+        transaction.provider_event_id ? (
+          <section className="space-y-3 rounded-[14px] bg-white p-5">
+            <SectionTitle>التتبع</SectionTitle>
+            {transaction.trace_id ? (
+              <DetailRow label="معرف التتبع" value={transaction.trace_id} valueDir="ltr" />
+            ) : null}
+            {transaction.payment_request_id ? (
+              <DetailRow
+                label="طلب الدفع"
+                value={transaction.payment_request_id}
+                valueDir="ltr"
+              />
+            ) : null}
+            {transaction.provider_transaction_id ? (
+              <DetailRow
+                label="معاملة مزود الدفع"
+                value={transaction.provider_transaction_id}
+                valueDir="ltr"
+              />
+            ) : null}
+            {transaction.provider_event_id ? (
+              <DetailRow
+                label="حدث مزود الدفع"
+                value={transaction.provider_event_id}
+                valueDir="ltr"
+              />
+            ) : null}
+          </section>
+        ) : null}
       </div>
     </div>
   );
