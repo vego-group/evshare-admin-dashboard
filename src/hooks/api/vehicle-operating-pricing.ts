@@ -7,6 +7,7 @@ import {
   vehicleLockAPI,
   vehicleLockByVehicleAPI,
   vehicleLocksAPI,
+  vehicleDeviceCommandAPI,
   vehiclesAPI,
 } from "@/services/queries";
 import type {
@@ -59,5 +60,26 @@ export function useVehicleAssignedLock(vehicleId: string | null) {
     ["vehicle-lock", vehicleId],
     async () => vehicleLockByVehicleAPI(vehicleId!),
     { enabled: Boolean(vehicleId) },
+  );
+}
+
+export function useVehicleDeviceCommand(
+  vehicleId: string | null,
+  commandId: string | null,
+  enabled = true,
+) {
+  return useCustomQuery(
+    ["vehicle-device-command", vehicleId, commandId],
+    async () => vehicleDeviceCommandAPI(vehicleId!, commandId!),
+    {
+      enabled: Boolean(vehicleId && commandId && enabled),
+      retry: 2,
+      refetchInterval: (query) => {
+        const status = query.state.data?.data.status;
+        return !status || status === "accepted" || status === "sent"
+          ? 2_000
+          : false;
+      },
+    },
   );
 }

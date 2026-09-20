@@ -14,6 +14,36 @@ export type VehicleStatus =
 export type VehicleLockStatus = "locked" | "unlocked";
 export type VehicleLockConnectivity = "online" | "offline" | "unknown";
 
+export type VehicleDeviceCommandType = "lock" | "unlock" | "locate";
+export type VehicleDeviceCommandStatus =
+  | "accepted"
+  | "sent"
+  | "acknowledged"
+  | "failed"
+  | "timed_out"
+  | "superseded";
+
+export type VehicleDeviceCommand = {
+  command_id: string;
+  correlation_id: string;
+  type: VehicleDeviceCommandType;
+  status: VehicleDeviceCommandStatus;
+  accepted_at: string;
+  sent_at?: string | null;
+  acknowledged_at?: string | null;
+  failed_at?: string | null;
+  timed_out_at?: string | null;
+  superseded_at?: string | null;
+  failure_code?: string | null;
+  failure_message?: string | null;
+};
+
+export type VehicleDeviceCommandResponse = {
+  error: boolean;
+  message: string;
+  data: VehicleDeviceCommand;
+};
+
 export type VehiclesQueryParams = Omit<QueryParams, "status"> & {
   status?: VehicleStatus;
   operating_type?: VehicleOperatingType;

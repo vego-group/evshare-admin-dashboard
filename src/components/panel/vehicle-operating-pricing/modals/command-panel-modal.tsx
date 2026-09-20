@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   Link2,
@@ -18,7 +18,11 @@ import PermissionGate from "@/components/permission-gate";
 import Loader from "@/components/ui/loader";
 import Modal from "@/components/ui/modal";
 import { useHasPermission } from "@/hooks";
-import { useVehicleAssignedLock, useVehicleLocks } from "@/hooks/api";
+import {
+  useVehicleAssignedLock,
+  useVehicleDeviceCommand,
+  useVehicleLocks,
+} from "@/hooks/api";
 import { cn } from "@/lib/utils";
 import { isGatewayDeviceId } from "@/lib/utils/device-id";
 import type { VehicleCommandValues } from "@/schemas/vehicle-operating-pricing";
@@ -31,7 +35,12 @@ import {
   unassignVehicleLockAPI,
   unlockVehicleLockAPI,
 } from "@/services/mutations";
-import type { VehicleListItem, VehicleLock } from "@/types";
+import type {
+  VehicleDeviceCommand,
+  VehicleDeviceCommandStatus,
+  VehicleListItem,
+  VehicleLock,
+} from "@/types";
 import { formatDate, vehicleTitle } from "../utils";
 import { ADMIN_PERMISSIONS } from "@/constants";
 
@@ -43,6 +52,8 @@ type PendingAction =
   | "assign_existing"
   | "create_lock"
   | "unassign_lock";
+
+const UNKNOWN_COMMAND_OUTCOME_STATUSES = new Set([408, 500, 502, 503, 504]);
 
 const lockActions: {
   action: Extract<PendingAction, "lock" | "unlock">;
@@ -84,13 +95,23 @@ function CommandPanelModal({
   const [newLockDeviceId, setNewLockDeviceId] = useState("");
   const [deviceIdError, setDeviceIdError] = useState(false);
   const [newLockNotes, setNewLockNotes] = useState("");
+  const [submittedCommand, setSubmittedCommand] = useState<{
+    vehicleId: string;
+    command: VehicleDeviceCommand;
+  } | null>(null);
+  const announcedTerminalState = useRef<string | null>(null);
+  const commandAttempt = useRef<{
+    action: VehicleDeviceCommand["type"];
+    lockId: string;
+    idempotencyKey: string;
+  } | null>(null);
   const canViewLocks = useHasPermission("Admin View Locks");
   const canEditLocks = useHasPermission("Admin Edit Locks");
   const vehicleId = open ? (vehicle?.id ?? null) : null;
   const { data: assignedLockData, isLoading: isLoadingLock } =
     useVehicleAssignedLock(canViewLocks ? vehicleId : null);
   const assignedLock = useMemo(
-    () => vehicle?.lock ?? assignedLockData?.data ?? null,
+    () => assignedLockData?.data ?? vehicle?.lock ?? null,
     [assignedLockData?.data, vehicle?.lock],
   );
   const { data: unassignedLocksData, isLoading: isLoadingUnassignedLocks } =
@@ -99,6 +120,64 @@ function CommandPanelModal({
       { enabled: Boolean(vehicleId && canViewLocks && canEditLocks) },
     );
   const unassignedLocks = unassignedLocksData?.data ?? [];
+  const activeCommand =
+    submittedCommand?.vehicleId === vehicleId
+      ? submittedCommand.command
+      : readStoredCommand(vehicleId);
+  const {
+    data: commandStatusData,
+    isError: isCommandStatusError,
+    refetch: refetchCommandStatus,
+  } = useVehicleDeviceCommand(
+    vehicleId,
+    activeCommand?.command_id ?? null,
+    Boolean(activeCommand),
+  );
+  const queriedCommand = commandStatusData?.data;
+  const displayedCommand =
+    queriedCommand?.command_id === activeCommand?.command_id
+      ? queriedCommand
+      : activeCommand;
+  const commandInProgress = isPendingCommand(displayedCommand?.status);
+  const isBusy = Boolean(pendingAction) || commandInProgress;
+
+  useEffect(() => {
+    const command = commandStatusData?.data;
+    if (
+      !vehicleId ||
+      !command ||
+      command.command_id !== activeCommand?.command_id
+    ) {
+      return;
+    }
+
+    if (isPendingCommand(command.status)) {
+      window.localStorage.setItem(
+        commandStorageKey(vehicleId),
+        JSON.stringify(command),
+      );
+      return;
+    }
+
+    if (vehicleId) {
+      window.localStorage.removeItem(commandStorageKey(vehicleId));
+    }
+    const terminalKey = `${command.command_id}:${command.status}`;
+    if (announcedTerminalState.current === terminalKey) return;
+    announcedTerminalState.current = terminalKey;
+
+    if (command.status === "acknowledged") {
+      toast.success(commandSuccessMessage(command.type));
+    } else {
+      toast.error(commandFailureMessage(command));
+    }
+    void Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["vehicle-lock", vehicleId] }),
+      queryClient.invalidateQueries({ queryKey: ["locks"] }),
+      queryClient.invalidateQueries({ queryKey: ["vehicle", vehicleId] }),
+      queryClient.invalidateQueries({ queryKey: ["vehicles"] }),
+    ]);
+  }, [activeCommand?.command_id, commandStatusData, queryClient, vehicleId]);
 
   if (!vehicle) return null;
 
@@ -120,7 +199,7 @@ function CommandPanelModal({
   }
 
   async function assignExistingLock() {
-    if (pendingAction || !selectedLockId) return;
+    if (isBusy || !selectedLockId) return;
     const selectedLock = unassignedLocks.find((lock) => lock.id === selectedLockId);
     if (!selectedLock || !isGatewayDeviceId(selectedLock.device_id)) {
       toast.error("معرف القفل ليس UUID صالحًا. صحح معرف الجهاز قبل ربطه.");
@@ -144,7 +223,7 @@ function CommandPanelModal({
 
   async function createAndAssignLock() {
     const deviceId = newLockDeviceId.trim();
-    if (pendingAction || !deviceId) return;
+    if (isBusy || !deviceId) return;
     if (!isGatewayDeviceId(deviceId)) {
       setDeviceIdError(true);
       return;
@@ -171,7 +250,7 @@ function CommandPanelModal({
   }
 
   async function unassignCurrentLock() {
-    if (pendingAction || !assignedLock) return;
+    if (isBusy || !assignedLock) return;
     setPendingAction("unassign_lock");
     const result = await unassignVehicleLockAPI(assignedLock.id);
     setPendingAction(null);
@@ -186,21 +265,27 @@ function CommandPanelModal({
   }
 
   async function dispatchLock(action: "lock" | "unlock") {
-    if (pendingAction || !assignedLock) return;
+    if (pendingAction || commandInProgress || !assignedLock) return;
     setPendingAction(action);
+    const idempotencyKey = getCommandIdempotencyKey(
+      commandAttempt,
+      action,
+      assignedLock.id,
+    );
     const result =
       action === "lock"
-        ? await lockVehicleLockAPI(assignedLock.id)
-        : await unlockVehicleLockAPI(assignedLock.id);
+        ? await lockVehicleLockAPI(assignedLock.id, idempotencyKey)
+        : await unlockVehicleLockAPI(assignedLock.id, idempotencyKey);
     setPendingAction(null);
 
     if (result?.ok) {
-      toast.success(
-        result.message ||
-          (action === "lock" ? "تم قفل المركبة بنجاح" : "تم فتح المركبة بنجاح"),
-      );
-      await refreshLockState();
+      commandAttempt.current = null;
+      handleAcceptedCommand(result.data?.data);
       return;
+    }
+
+    if (!UNKNOWN_COMMAND_OUTCOME_STATUSES.has(result?.status ?? 500)) {
+      commandAttempt.current = null;
     }
 
     toast.error(
@@ -210,24 +295,62 @@ function CommandPanelModal({
   }
 
   async function dispatchLocate() {
-    if (pendingAction || !assignedLock) return;
+    if (pendingAction || commandInProgress || !assignedLock) return;
     setPendingAction("locate");
-    const result = await locateVehicleLockAPI(assignedLock.id);
+    const idempotencyKey = getCommandIdempotencyKey(
+      commandAttempt,
+      "locate",
+      assignedLock.id,
+    );
+    const result = await locateVehicleLockAPI(
+      assignedLock.id,
+      idempotencyKey,
+    );
     setPendingAction(null);
 
     if (result?.ok) {
-      toast.success(result.message || "تم تحديد موقع المركبة بنجاح");
-      await refreshLockState();
+      commandAttempt.current = null;
+      handleAcceptedCommand(result.data?.data);
       return;
+    }
+
+    if (!UNKNOWN_COMMAND_OUTCOME_STATUSES.has(result?.status ?? 500)) {
+      commandAttempt.current = null;
     }
 
     toast.error(result?.message || "فشل تحديد موقع المركبة");
   }
 
+  function handleAcceptedCommand(command?: VehicleDeviceCommand) {
+    if (!command?.command_id) {
+      toast("تم إرسال الطلب، لكن الخادم لم يُرجع معرفًا لتتبع النتيجة.", {
+        icon: "⚠️",
+      });
+      return;
+    }
+
+    setSubmittedCommand({ vehicleId: currentVehicle.id, command });
+    if (isPendingCommand(command.status)) {
+      window.localStorage.setItem(
+        commandStorageKey(currentVehicle.id),
+        JSON.stringify(command),
+      );
+      toast.success("تم قبول الأمر وجارٍ انتظار تأكيد الجهاز");
+      return;
+    }
+
+    if (command.status === "acknowledged") {
+      toast.success(commandSuccessMessage(command.type));
+      void refreshLockState();
+    } else {
+      toast.error(commandFailureMessage(command));
+    }
+  }
+
   async function dispatchVehicleCommand(
     command: VehicleCommandValues["command"],
   ) {
-    if (pendingAction) return;
+    if (isBusy) return;
     setPendingAction(command);
     const result = await sendVehicleCommandAPI(currentVehicle.id, { command });
     setPendingAction(null);
@@ -299,14 +422,23 @@ function CommandPanelModal({
                 />
               </div>
 
+              {displayedCommand && (
+                <CommandStatusCard
+                  command={displayedCommand}
+                  refreshFailed={isCommandStatusError}
+                  onRetry={() => void refetchCommandStatus()}
+                />
+              )}
+
               <PermissionGate slug="Admin Locate Vehicles">
                 <button
                   type="button"
-                  disabled={Boolean(pendingAction)}
+                  disabled={isBusy}
                   onClick={dispatchLocate}
                   className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-blue-50 px-4 py-3 text-sm font-medium text-blue-600 transition hover:brightness-95 disabled:opacity-60"
                 >
-                  {pendingAction === "locate" ? (
+                  {pendingAction === "locate" ||
+                  (commandInProgress && displayedCommand?.type === "locate") ? (
                     <Loader />
                   ) : (
                     <MapPin className="size-5 shrink-0" />
@@ -327,14 +459,15 @@ function CommandPanelModal({
                       <PermissionGate key={action} slug={permission}>
                         <button
                           type="button"
-                          disabled={Boolean(pendingAction) || isCurrentState}
+                          disabled={isBusy || isCurrentState}
                           onClick={() => dispatchLock(action)}
                           className={cn(
                             "flex min-h-24 flex-col items-center justify-center gap-2 rounded-xl p-4 text-sm font-medium transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-60",
                             className,
                           )}
                         >
-                          {pendingAction === action ? (
+                          {pendingAction === action ||
+                          (commandInProgress && displayedCommand?.type === action) ? (
                             <Loader />
                           ) : (
                             <Icon className="size-6 shrink-0" />
@@ -350,7 +483,7 @@ function CommandPanelModal({
               <PermissionGate slug="Admin Edit Locks">
                 <button
                   type="button"
-                  disabled={Boolean(pendingAction)}
+                  disabled={isBusy}
                   onClick={unassignCurrentLock}
                   className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-medium text-red-600 transition hover:bg-red-50 disabled:opacity-60"
                 >
@@ -389,7 +522,7 @@ function CommandPanelModal({
                         setSelectedLockId(event.target.value)
                       }
                       disabled={
-                        isLoadingUnassignedLocks || Boolean(pendingAction)
+                        isLoadingUnassignedLocks || isBusy
                       }
                       className="h-11 w-full rounded-xl border border-primary/15 bg-background px-3 text-right text-sm outline-none transition focus:border-primary"
                     >
@@ -409,7 +542,7 @@ function CommandPanelModal({
                   <button
                     type="button"
                     disabled={
-                      Boolean(pendingAction) ||
+                      isBusy ||
                       isLoadingUnassignedLocks ||
                       !selectedLockId
                     }
@@ -445,7 +578,7 @@ function CommandPanelModal({
                         setNewLockDeviceId(event.target.value);
                         setDeviceIdError(false);
                       }}
-                      disabled={Boolean(pendingAction)}
+                      disabled={isBusy}
                       placeholder="3fcbff96-04c0-4803-a24f-6f6aba32f8e7"
                       dir="ltr"
                       className="h-11 w-full rounded-xl border border-primary/15 bg-background px-3 text-left text-sm outline-none transition focus:border-primary"
@@ -461,7 +594,7 @@ function CommandPanelModal({
                     <textarea
                       value={newLockNotes}
                       onChange={(event) => setNewLockNotes(event.target.value)}
-                      disabled={Boolean(pendingAction)}
+                      disabled={isBusy}
                       rows={3}
                       className="w-full resize-none rounded-xl border border-primary/15 bg-background px-3 py-2 text-right text-sm outline-none transition focus:border-primary"
                     />
@@ -469,7 +602,7 @@ function CommandPanelModal({
 
                   <button
                     type="button"
-                    disabled={Boolean(pendingAction) || !newLockDeviceId.trim()}
+                    disabled={isBusy || !newLockDeviceId.trim()}
                     onClick={createAndAssignLock}
                     className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-secondary px-4 py-3 text-sm font-medium text-white transition hover:brightness-95 disabled:opacity-60"
                   >
@@ -500,7 +633,7 @@ function CommandPanelModal({
             <PermissionGate slug={ADMIN_PERMISSIONS.vehicles.sendCommand}>
               <button
                 type="button"
-                disabled={Boolean(pendingAction)}
+                disabled={isBusy}
                 onClick={() => dispatchVehicleCommand("sound_alarm")}
                 className="flex min-h-20 w-full items-center justify-center gap-2 rounded-xl bg-amber-50 p-4 text-sm font-medium text-orange-500 transition hover:brightness-95 disabled:opacity-60"
               >
@@ -554,6 +687,158 @@ function LockStatus({
       {lock.status === "locked" ? "مقفل" : "مفتوح"}
     </span>
   );
+}
+
+function CommandStatusCard({
+  command,
+  refreshFailed,
+  onRetry,
+}: {
+  command: VehicleDeviceCommand;
+  refreshFailed: boolean;
+  onRetry: () => void;
+}) {
+  const pending = isPendingCommand(command.status);
+  const statusStyles: Record<VehicleDeviceCommandStatus, string> = {
+    accepted: "bg-blue-50 text-blue-700",
+    sent: "bg-blue-50 text-blue-700",
+    acknowledged: "bg-green-50 text-green-700",
+    failed: "bg-red-50 text-red-700",
+    timed_out: "bg-amber-50 text-amber-700",
+    superseded: "bg-slate-100 text-slate-600",
+  };
+
+  return (
+    <div
+      className="space-y-2 rounded-xl border border-primary/10 bg-white p-3"
+      role="status"
+      aria-live="polite"
+    >
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-sm font-medium text-secondary">
+          حالة آخر أمر: {commandTypeLabel(command.type)}
+        </span>
+        <span
+          className={cn(
+            "rounded-full px-3 py-1 text-xs font-medium",
+            statusStyles[command.status],
+          )}
+        >
+          {commandStatusLabel(command.status)}
+        </span>
+      </div>
+      {pending && (
+        <p className="text-xs text-gray">
+          قبول الخادم للأمر لا يعني أن الجهاز نفّذه بعد. سيتم تحديث الحالة
+          تلقائيًا عند وصول التأكيد.
+        </p>
+      )}
+      <div className="space-y-1 text-xs text-gray" dir="ltr">
+        <p className="break-all">Command: {command.command_id}</p>
+        <p className="break-all">Correlation: {command.correlation_id}</p>
+      </div>
+      {refreshFailed && pending && (
+        <div className="flex items-center justify-between gap-3 rounded-lg bg-amber-50 p-2 text-xs text-amber-700">
+          <span>تعذر تحديث حالة الأمر مؤقتًا.</span>
+          <button
+            type="button"
+            onClick={onRetry}
+            className="shrink-0 font-semibold underline"
+          >
+            إعادة المحاولة
+          </button>
+        </div>
+      )}
+      {!pending && command.failure_message && (
+        <p className="text-xs text-red-600">{command.failure_message}</p>
+      )}
+    </div>
+  );
+}
+
+function isPendingCommand(status?: VehicleDeviceCommandStatus) {
+  return status === "accepted" || status === "sent";
+}
+
+function commandStorageKey(vehicleId: string) {
+  return `evshare:vehicle-command:${vehicleId}`;
+}
+
+function createCommandIdempotencyKey(lockId: string, action: string) {
+  const suffix =
+    typeof crypto !== "undefined" && "randomUUID" in crypto
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  return `lock-${lockId}-${action}-${suffix}`;
+}
+
+function getCommandIdempotencyKey(
+  attempt: React.MutableRefObject<{
+    action: VehicleDeviceCommand["type"];
+    lockId: string;
+    idempotencyKey: string;
+  } | null>,
+  action: VehicleDeviceCommand["type"],
+  lockId: string,
+) {
+  if (
+    attempt.current?.action === action &&
+    attempt.current.lockId === lockId
+  ) {
+    return attempt.current.idempotencyKey;
+  }
+
+  const idempotencyKey = createCommandIdempotencyKey(lockId, action);
+  attempt.current = { action, lockId, idempotencyKey };
+  return idempotencyKey;
+}
+
+function readStoredCommand(vehicleId: string | null) {
+  if (!vehicleId || typeof window === "undefined") return null;
+
+  try {
+    const stored = window.localStorage.getItem(commandStorageKey(vehicleId));
+    if (!stored) return null;
+    const command = JSON.parse(stored) as VehicleDeviceCommand;
+    if (command.command_id && isPendingCommand(command.status)) return command;
+    window.localStorage.removeItem(commandStorageKey(vehicleId));
+  } catch {
+    window.localStorage.removeItem(commandStorageKey(vehicleId));
+  }
+  return null;
+}
+
+function commandTypeLabel(type: VehicleDeviceCommand["type"]) {
+  return type === "lock" ? "قفل" : type === "unlock" ? "فتح" : "تحديد الموقع";
+}
+
+function commandStatusLabel(status: VehicleDeviceCommandStatus) {
+  const labels: Record<VehicleDeviceCommandStatus, string> = {
+    accepted: "مقبول",
+    sent: "تم الإرسال للجهاز",
+    acknowledged: "تم التأكيد",
+    failed: "فشل",
+    timed_out: "انتهت المهلة",
+    superseded: "تم استبداله",
+  };
+  return labels[status];
+}
+
+function commandSuccessMessage(type: VehicleDeviceCommand["type"]) {
+  if (type === "lock") return "أكد الجهاز قفل المركبة بنجاح";
+  if (type === "unlock") return "أكد الجهاز فتح المركبة بنجاح";
+  return "أكد الجهاز تحديث موقع المركبة بنجاح";
+}
+
+function commandFailureMessage(command: VehicleDeviceCommand) {
+  if (command.failure_message) return command.failure_message;
+  if (command.status === "timed_out") {
+    return "انتهت مهلة الأمر دون تأكيد من الجهاز";
+  }
+  if (command.status === "superseded") {
+    return "تم استبدال الأمر بأمر أحدث";
+  }
+  return `فشل تنفيذ أمر ${commandTypeLabel(command.type)}`;
 }
 
 function InfoRow({ label, value }: { label: string; value?: string | null }) {
