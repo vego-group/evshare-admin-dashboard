@@ -4,6 +4,7 @@ import type {
   AssignVehicleLockPayload,
   CreateVehicleLockPayload,
   UpdateVehicleLockPayload,
+  VehicleDeviceCommandResponse,
   VehicleLockDetailsResponse,
   VehicleDetailsResponse,
 } from "@/types";
@@ -108,11 +109,35 @@ export const unassignVehicleLockAPI = async (lockId: string) =>
     `/locks/${lockId}/unassign`,
   );
 
-export const lockVehicleLockAPI = async (lockId: string) =>
-  await safeApi<VehicleLockDetailsResponse>("POST", `/locks/${lockId}/lock`);
+export const lockVehicleLockAPI = async (
+  lockId: string,
+  idempotencyKey: string,
+) =>
+  await safeApi<VehicleDeviceCommandResponse>(
+    "POST",
+    `/locks/${lockId}/lock`,
+    undefined,
+    { headers: { "Idempotency-Key": idempotencyKey } },
+  );
 
-export const unlockVehicleLockAPI = async (lockId: string) =>
-  await safeApi<VehicleLockDetailsResponse>("POST", `/locks/${lockId}/unlock`);
+export const unlockVehicleLockAPI = async (
+  lockId: string,
+  idempotencyKey: string,
+) =>
+  await safeApi<VehicleDeviceCommandResponse>(
+    "POST",
+    `/locks/${lockId}/unlock`,
+    undefined,
+    { headers: { "Idempotency-Key": idempotencyKey } },
+  );
 
-export const locateVehicleLockAPI = async (lockId: string) =>
-  await safeApi<VehicleLockDetailsResponse>("POST", `/locks/${lockId}/locate`);
+export const locateVehicleLockAPI = async (
+  lockId: string,
+  idempotencyKey: string,
+) =>
+  await safeApi<VehicleDeviceCommandResponse>(
+    "POST",
+    `/locks/${lockId}/locate`,
+    undefined,
+    { headers: { "Idempotency-Key": idempotencyKey } },
+  );

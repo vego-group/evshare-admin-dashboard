@@ -144,7 +144,18 @@ export type OrderReceiptStatus =
   | "approved"
   | "rejected";
 
-export type OrderRefundStatus = "not_applicable" | "pending" | "resolved";
+export type OrderRefundStatus =
+  | "not_applicable"
+  | "pending"
+  | "resolved"
+  | "requested"
+  | "processing"
+  | "pending_provider"
+  | "completed"
+  | "failed"
+  | "timed_out"
+  | "reconciliation_required"
+  | "cancelled";
 export type OrderRefundMethod = "wallet" | "contact";
 
 export type OrderReceiptVehicle = {
@@ -162,6 +173,17 @@ export type OrderReceiptItem = {
   refund_notes: string | null;
   refund_amount: number | null;
   refund_resolved_at: string | null;
+  /** Financial values and references are supplied by the backend when available. */
+  total_paid?: number | null;
+  refunded_amount?: number | null;
+  pending_refund_amount?: number | null;
+  refundable_amount?: number | null;
+  remaining_refundable_amount?: number | null;
+  refund_currency?: string | null;
+  refund_id?: string | null;
+  provider_refund_id?: string | null;
+  correlation_id?: string | null;
+  can_refund?: boolean;
 };
 
 export type OrderReceiptAttachment = ProductImage;
@@ -214,5 +236,5 @@ export type ReviewOrderReceiptPayload =
   | { status: "rejected"; rejection_reason: string };
 
 export type ResolveOrderRefundPayload =
-  | { method: "wallet"; amount: number; notes?: string }
-  | { method: "contact"; amount?: undefined; notes?: string };
+  | { method: "wallet"; amount: number; notes: string; currency?: string }
+  | { method: "contact"; amount?: undefined; notes: string; currency?: string };

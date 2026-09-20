@@ -27,6 +27,22 @@ export function useOrderReceipt(orderId: string | null, enabled = true) {
   return useCustomQuery(
     ["order-receipt", orderId],
     async () => orderReceiptAPI(orderId!),
-    { enabled: Boolean(orderId) && enabled, retry: false },
+    {
+      enabled: Boolean(orderId) && enabled,
+      retry: false,
+      refetchInterval: (query) => {
+        const receipt = query.state.data?.data;
+        const hasInProgressRefund = receipt?.items?.some((item) =>
+          [
+            "requested",
+            "processing",
+            "pending_provider",
+            "timed_out",
+            "reconciliation_required",
+          ].includes(item.refund_status),
+        );
+        return hasInProgressRefund ? 10_000 : false;
+      },
+    },
   );
 }

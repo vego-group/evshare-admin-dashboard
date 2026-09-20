@@ -2,6 +2,7 @@ import { PAGE_SIZE } from "@/constants";
 import { buildQuery } from "@/lib/utils/build-query";
 import type {
   VehicleDetailsResponse,
+  VehicleDeviceCommandResponse,
   VehicleListItem,
   VehicleLockDetailsResponse,
   VehicleLocksListResponse,
@@ -86,3 +87,9 @@ export const vehicleLockByVehicleAPI = async (
     ? { error: response.error, message: response.message, data: response.data[0] }
     : null;
 };
+
+export const vehicleDeviceCommandAPI = async (
+  vehicleId: string,
+  commandId: string,
+): Promise<VehicleDeviceCommandResponse> =>
+  await baseAPI("GET", `/vehicles/${vehicleId}/commands/${commandId}`);

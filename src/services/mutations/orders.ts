@@ -27,9 +27,11 @@ export const resolveOrderReceiptRefundAPI = async (
   orderId: string,
   itemId: string,
   payload: ResolveOrderRefundPayload,
+  idempotencyKey: string,
 ) =>
   await safeApi(
     "POST",
     `/orders/${orderId}/receipt/items/${itemId}/resolve-refund`,
     payload,
+    { headers: { "Idempotency-Key": idempotencyKey } },
   );

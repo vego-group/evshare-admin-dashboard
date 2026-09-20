@@ -42,13 +42,40 @@ const REFUND_STATUS_STYLES: Record<OrderRefundStatus, string> = {
   not_applicable: "bg-gray-100 text-dark-gray",
   pending: "bg-amber-50 text-orange-500",
   resolved: "bg-green-50 text-green-600",
+  requested: "bg-blue-50 text-blue-600",
+  processing: "bg-blue-50 text-blue-600",
+  pending_provider: "bg-amber-50 text-orange-600",
+  completed: "bg-green-50 text-green-600",
+  failed: "bg-red-50 text-red-600",
+  timed_out: "bg-amber-50 text-amber-700",
+  reconciliation_required: "bg-red-50 text-red-700",
+  cancelled: "bg-gray-100 text-dark-gray",
 };
 
 const REFUND_STATUS_LABELS: Record<OrderRefundStatus, string> = {
   not_applicable: "لا ينطبق",
   pending: "بانتظار الحل",
   resolved: "تم الحل",
+  requested: "تم الطلب",
+  processing: "قيد المعالجة",
+  pending_provider: "بانتظار مزود الدفع",
+  completed: "مكتمل",
+  failed: "فشل",
+  timed_out: "بانتظار التحقق",
+  reconciliation_required: "يتطلب تسوية مالية",
+  cancelled: "ملغي",
 };
+
+const COMPLETED_REFUND_STATUSES = new Set<OrderRefundStatus>([
+  "resolved",
+  "completed",
+]);
+
+const REFUND_ACTION_STATUSES = new Set<OrderRefundStatus>([
+  "pending",
+  "failed",
+  "cancelled",
+]);
 
 function OrderReceiptSection({
   orderId,
@@ -70,7 +97,7 @@ function OrderReceiptSection({
   const attachments = receipt.attachments ?? [];
   const returnedCount = items.filter((item) => !item.received).length;
   const resolvedCount = items.filter(
-    (item) => item.refund_status === "resolved",
+    (item) => COMPLETED_REFUND_STATUSES.has(item.refund_status),
   ).length;
 
   async function refresh() {
@@ -218,7 +245,7 @@ function OrderReceiptSection({
                       >
                         {REFUND_STATUS_LABELS[item.refund_status]}
                       </span>
-                      {item.refund_status === "resolved" ? (
+                      {COMPLETED_REFUND_STATUSES.has(item.refund_status) ? (
                         <span className="text-xs text-gray">
                           {item.refund_method === "wallet"
                             ? "محفظة"
@@ -228,11 +255,26 @@ function OrderReceiptSection({
                           ) : null}
                         </span>
                       ) : null}
+                      {item.refund_status === "timed_out" ? (
+                        <span className="max-w-52 text-xs text-amber-700">
+                          لا تُعد المحاولة قبل التحقق من النتيجة.
+                        </span>
+                      ) : null}
+                      {item.refund_status === "reconciliation_required" ? (
+                        <span className="max-w-52 text-xs text-red-700">
+                          لم يكتمل التطابق المالي بعد.
+                        </span>
+                      ) : null}
+                      {item.correlation_id ? (
+                        <span className="max-w-52 break-all font-mono text-[11px] text-gray" dir="ltr">
+                          {item.correlation_id}
+                        </span>
+                      ) : null}
                     </div>
                   </td>
                   <td className="border-b border-primary/15 px-4 py-3">
                     {receipt.status === "approved" &&
-                    item.refund_status === "pending" ? (
+                    (item.can_refund ?? REFUND_ACTION_STATUSES.has(item.refund_status)) ? (
                       <PermissionGate slug="Admin Resolve Order Refunds">
                         <Button
                           type="button"
@@ -293,6 +335,7 @@ function OrderReceiptSection({
         <ResolveRefundModal
           orderId={orderId}
           item={refundItem}
+          currency={currency}
           open
           onClose={() => setRefundItem(null)}
           onSaved={refresh}
