@@ -1,10 +1,14 @@
 import OtpVerify from "@/components/login/otp-verify";
+import { getCountry } from "@/lib";
+import { redirect } from "next/navigation";
 
 type Props = {
-  searchParams: Promise<{ mobile?: string; country?: string }>;
+  searchParams: Promise<{ mobile?: string }>;
 };
 
 export default async function VerifyOtpPage({ searchParams }: Props) {
-  const { mobile = "", country = "sa" } = await searchParams;
-  return <OtpVerify mobile={mobile} country={country} />;
+  const [params, country] = await Promise.all([searchParams, getCountry()]);
+  if (!country) redirect("/login");
+
+  return <OtpVerify mobile={params.mobile ?? ""} />;
 }

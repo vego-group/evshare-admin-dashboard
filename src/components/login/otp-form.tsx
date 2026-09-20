@@ -57,10 +57,9 @@ const verifyOtpResolver: Resolver<VerifyOtpFormValues> = async (values) => {
 
 interface OtpFormProps {
   mobile: string;
-  country: string;
 }
 
-function OtpForm({ mobile, country }: OtpFormProps) {
+function OtpForm({ mobile }: OtpFormProps) {
   const router = useRouter();
   const {
     handleSubmit,
@@ -73,7 +72,7 @@ function OtpForm({ mobile, country }: OtpFormProps) {
   });
 
   const onSubmit = async (data: VerifyOtpFormValues) => {
-    const result = await verifyLoginAPI(data, country);
+    const result = await verifyLoginAPI(data);
     if (result?.ok) {
       const authResult = authResponseSchema.safeParse(result.data);
 

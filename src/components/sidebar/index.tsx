@@ -3,7 +3,7 @@
 import { useState, type MouseEvent } from "react";
 import { usePathname } from "next/navigation";
 
-import { removeToken } from "@/lib";
+import { removeCountry, removeToken } from "@/lib";
 import { clearUserSession } from "@/lib/utils/user-session";
 import { logoutAPI } from "@/services/mutations";
 
@@ -13,7 +13,6 @@ import SidebarOverlay from "./sidebar-overlay";
 import SidebarTablet from "./sidebar-tablet";
 import SidebarTopbar from "./sidebar-topbar";
 import { useCountries } from "@/hooks";
-import { selectCountryAPI } from "@/services/mutations";
 
 function Sidebar({ countryCode }: { countryCode: string }) {
   const pathname = usePathname();
@@ -37,13 +36,15 @@ function Sidebar({ countryCode }: { countryCode: string }) {
     closeTabletSidebar();
     await logoutAPI();
     await removeToken();
+    await removeCountry();
     clearUserSession();
     window.location.assign("/login");
   };
 
   const handleSwitchCountry = async () => {
     await logoutAPI();
-    await selectCountryAPI(countryCode);
+    await removeToken();
+    await removeCountry();
     clearUserSession();
     window.location.assign("/login");
   };

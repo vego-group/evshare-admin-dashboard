@@ -46,7 +46,7 @@ export const initApi = async () => {
   const { getCountry, getToken } = await import("@/lib/utils/auth");
   const [token, country] = await Promise.all([getToken(), getCountry()]);
   return {
-    "X-Tenant-Id": country,
+    ...(country ? { "X-Tenant-Id": country } : {}),
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 };

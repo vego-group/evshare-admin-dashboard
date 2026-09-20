@@ -109,9 +109,9 @@ export async function GET(request: NextRequest, context: RouteContext) {
 
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
-  const country = cookieStore.get("tenant-country")?.value || "sa";
+  const country = cookieStore.get("tenant-country")?.value?.toLowerCase();
 
-  if (!token) {
+  if (!token || !country || !/^[a-z]{2}$/.test(country)) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
