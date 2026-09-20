@@ -2,6 +2,7 @@ import PageShell from "@/components/ui/page-shell";
 import Sidebar from "@/components/sidebar";
 import SearchDirectionController from "@/components/panel/search-direction-controller";
 import { PermissionsProvider } from "@/provider/permissions";
+import { FeatureFlagsProvider } from "@/provider/feature-flags";
 import type { ReactNode } from "react";
 import { getCountry } from "@/lib/utils/auth";
 import PanelPermissionGuard from "@/components/panel-permission-guard";
@@ -18,6 +19,7 @@ async function AdminLayout({ children }: AdminLayoutProps) {
 
   return (
     <CurrencyProvider countryCode={country}>
+    <FeatureFlagsProvider tenant={country}>
     <PermissionsProvider>
       <SearchDirectionController />
       <div className="min-h-svh">
@@ -28,6 +30,7 @@ async function AdminLayout({ children }: AdminLayoutProps) {
         </main>
       </div>
     </PermissionsProvider>
+    </FeatureFlagsProvider>
     </CurrencyProvider>
   );
 }
