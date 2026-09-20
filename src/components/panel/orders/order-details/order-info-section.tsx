@@ -51,7 +51,7 @@ function OrderInfoSection({ order }: { order: OrderDetail }) {
           <InfoCard label="رقم الطلب" value={order.order_code} />
           <InfoCard label="طريقة التشغيل عند إنشاء الطلب" value={order.operating_type === "operation_company" ? "شركة مشغلة" : order.operating_type === "evshare" ? "تشغيل ذاتي" : "غير متوفر"} />
           {order.operating_type === "operation_company" && <InfoCard label="الشركة المشغلة" value={order.operation_company?.name ?? String(order.operation_company_id ?? "-")} />}
-          <InfoCard label="العميل" value={order.user.name} />
+          <InfoCard label="العميل" value={order.user?.name ?? "-"} />
           <InfoCard label="العنوان" value={order.address?.address ?? "-"} />
           <InfoCard
             label="اسم الشارع"

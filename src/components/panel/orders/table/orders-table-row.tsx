@@ -67,7 +67,7 @@ function OrdersTableRow({ order }: { order: OrderListItem }) {
           {order.order_code}
         </TableCell>
         <TableCell className="max-w-0">
-          <span className="block truncate">{order.user.name}</span>
+          <span className="block truncate">{order.user?.name ?? "-"}</span>
         </TableCell>
         <TableCell className="max-w-0">
           <span className="block truncate">
