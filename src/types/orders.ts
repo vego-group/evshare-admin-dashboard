@@ -95,7 +95,7 @@ export type OrderDetail = {
   status_category: OrderStatusCategory;
   is_draft: boolean;
   notes: string | null;
-  user: OrderUser;
+  user: OrderUser | null;
   address: OrderAddress;
   items: OrderItem[];
   receipt?: OrderReceipt | null;

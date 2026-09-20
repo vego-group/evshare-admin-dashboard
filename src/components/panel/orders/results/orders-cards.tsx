@@ -76,7 +76,9 @@ function OrderCard({ order }: { order: OrderListItem }) {
             <h3 className="truncate text-lg font-semibold text-secondary">
               {order.order_code}
             </h3>
-            <p className="truncate text-sm text-gray">{order.user.name}</p>
+            <p className="truncate text-sm text-gray">
+              {order.user?.name ?? "-"}
+            </p>
           </div>
           <div className="shrink-0">
             <StatusCategoryBadge category={order.status_category} />
