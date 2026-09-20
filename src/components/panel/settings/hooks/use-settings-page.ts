@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { PAGE_SIZE } from "@/constants";
-import { useSettings } from "@/hooks/api";
+import { useSettings, useSettingsPropagation } from "@/hooks/api";
 import type { Setting, SettingsQueryParams } from "@/types";
 
 export function useSettingsPage() {
@@ -14,10 +14,14 @@ export function useSettingsPage() {
     limit: PAGE_SIZE,
   });
   const { data, isLoading } = useSettings(params);
+  const propagation = useSettingsPropagation();
   const [pendingEdit, setPendingEdit] = useState<Setting | null>(null);
 
   async function refresh() {
-    await queryClient.refetchQueries({ queryKey: ["settings"], type: "all" });
+    await Promise.all([
+      queryClient.refetchQueries({ queryKey: ["settings"], type: "all" }),
+      queryClient.refetchQueries({ queryKey: ["settings-propagation"], type: "all" }),
+    ]);
   }
 
   return {
@@ -28,5 +32,6 @@ export function useSettingsPage() {
     pendingEdit,
     setPendingEdit,
     refresh,
+    propagation,
   };
 }
