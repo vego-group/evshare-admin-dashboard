@@ -32,7 +32,8 @@ export const resolveOrderRefundSchema = z
           : value,
       z.coerce.number().min(0, "المبلغ يجب أن يكون 0 أو أكثر").optional(),
     ),
-    notes: z.string().trim().optional(),
+    notes: z.string().trim().min(1, "سبب الاسترداد مطلوب"),
+    confirmed: z.boolean().refine(Boolean, "يجب تأكيد عملية الاسترداد"),
   })
   .superRefine((values, ctx) => {
     if (values.method === "wallet" && (values.amount == null || values.amount <= 0)) {

@@ -20,13 +20,15 @@ function OrderDetails() {
   const order = data?.data;
 
   const shouldFetchReceipt = Boolean(
-    order && order.operating_type !== "operation_company" && !order.receipt && RECEIPT_STATUSES.includes(order.status),
+    order &&
+      order.operating_type !== "operation_company" &&
+      RECEIPT_STATUSES.includes(order.status),
   );
   const { data: receiptData } = useOrderReceipt(
     shouldFetchReceipt ? id : null,
     shouldFetchReceipt,
   );
-  const receipt = order?.receipt ?? receiptData?.data ?? null;
+  const receipt = receiptData?.data ?? order?.receipt ?? null;
 
   return (
     <div className="flex w-full flex-col gap-6">
