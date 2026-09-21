@@ -8,6 +8,7 @@ import Modal from "@/components/ui/modal";
 import type { SettingFormValues } from "@/schemas/settings";
 import { editSetting } from "@/services/mutations";
 import type { Setting } from "@/types";
+import { validateSettingValue } from "@/lib/settings-catalog";
 
 import { getSettingLabel, isRichTextSetting } from "../../utils";
 import SettingFormActions from "./actions";
@@ -48,6 +49,12 @@ function SettingFormModal({ open, setting, onClose, onSaved }: Props) {
   const onSubmit = async (values: SettingFormValues) => {
     if (!setting || !form.formState.isDirty) return;
 
+    const validationError = validateSettingValue(setting, values.value);
+    if (validationError) {
+      form.setError("value", { type: "catalog", message: validationError });
+      return;
+    }
+
     const result = await editSetting(setting.id, { value: values.value });
     if (!result?.ok) {
       toast.error(result?.message || "فشل تعديل الإعداد");
@@ -81,7 +88,7 @@ function SettingFormModal({ open, setting, onClose, onSaved }: Props) {
         className="flex flex-col gap-6 p-1 text-right md:p-4"
       >
         <SettingFormFields
-          settingName={setting?.setting_name ?? ""}
+          setting={setting}
           value={value}
           errors={form.formState.errors}
           register={form.register}

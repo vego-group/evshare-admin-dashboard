@@ -9,6 +9,7 @@ import type {
 
 const statusLabels: Record<ContentPublicationStatus, string> = {
   draft: "مسودة",
+  archived: "مؤرشف",
   scheduled: "مجدول",
   publishing: "جارٍ النشر",
   published: "منشور",
@@ -19,16 +20,22 @@ const statusLabels: Record<ContentPublicationStatus, string> = {
 const audienceLabels: Record<ContentAudience, string> = {
   rider: "تطبيق الراكب",
   merchant: "تطبيق التاجر",
+  all: "جميع التطبيقات",
 };
 
 const statusStyles: Record<ContentPublicationStatus, string> = {
   draft: "bg-gray-100 text-dark-gray",
+  archived: "bg-gray-100 text-dark-gray",
   scheduled: "bg-blue-50 text-blue-700",
   publishing: "bg-amber-50 text-amber-700",
   published: "bg-green-50 text-green-700",
   failed: "bg-red-50 text-red-700",
   rolled_back: "bg-violet-50 text-violet-700",
 };
+
+function publicationAudiences(publication: ContentPublication) {
+  return publication.audiences ?? (publication.audience ? [publication.audience] : []);
+}
 
 function formatDate(value?: string | null) {
   if (!value) return "—";
@@ -93,7 +100,7 @@ export default function ContentPublicationSummary({
         <PublicationStatusBadge publication={publication} />
         <span className="text-xs text-gray">الإصدار {publication.version}</span>
         <span className="text-xs text-gray">
-          {publication.audiences.map((item) => audienceLabels[item]).join("، ")}
+          {publicationAudiences(publication).map((item) => audienceLabels[item]).join("، ")}
         </span>
         {staleOrFailedConsumers.length ? (
           <span className="inline-flex items-center gap-1 text-xs font-medium text-red-700">
@@ -114,9 +121,9 @@ export default function ContentPublicationSummary({
         </span>
       </div>
       <dl className="grid gap-2 text-xs text-gray sm:grid-cols-2">
-        <div>الجمهور: {publication.audiences.map((item) => audienceLabels[item]).join("، ") || "—"}</div>
+        <div>الجمهور: {publicationAudiences(publication).map((item) => audienceLabels[item]).join("، ") || "—"}</div>
         <div>المستأجر: {publication.tenant || "—"}</div>
-        <div>اللغات: {publication.locales.join("، ").toUpperCase() || "—"}</div>
+        <div>اللغات: {(publication.locales ?? []).join("، ").toUpperCase() || "—"}</div>
         <div>وقت السريان: {formatDate(publication.effective_at)}</div>
         <div>وقت النشر: {formatDate(publication.published_at)}</div>
         <div>اكتمال الانتشار: {formatDate(publication.propagated_at)}</div>

@@ -9,7 +9,7 @@ import type {
 import { safeApi } from "..";
 
 export const addFeatureFlag = async (payload: CreateFeatureFlagPayload) =>
-  await safeApi<FeatureFlagDetailsResponse>("POST", "/feature-flags", payload);
+  await safeApi<FeatureFlagDetailsResponse>("POST", "/feature-flags/add", payload);
 
 export const editFeatureFlag = async (
   featureFlagId: string,
@@ -22,4 +22,14 @@ export const editFeatureFlag = async (
   );
 
 export const deleteFeatureFlag = async (featureFlagId: string) =>
-  await safeApi("DELETE", `/feature-flags/${featureFlagId}`);
+  await safeApi("DELETE", `/feature-flags/${featureFlagId}/delete`);
+
+export const rollbackFeatureFlag = async (
+  featureFlagId: string,
+  version: number,
+) =>
+  await safeApi<FeatureFlagDetailsResponse>(
+    "POST",
+    `/feature-flags/${featureFlagId}/rollback`,
+    { version },
+  );

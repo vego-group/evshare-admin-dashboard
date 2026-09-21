@@ -75,7 +75,7 @@ export function useVehicleDeviceCommand(
       enabled: Boolean(vehicleId && commandId && enabled),
       retry: 2,
       refetchInterval: (query) => {
-        const status = query.state.data?.data.status;
+        const status = query.state.data?.status;
         return !status || status === "accepted" || status === "sent"
           ? 2_000
           : false;

@@ -155,7 +155,63 @@ export type TripDetailsResponse = {
   data: TripDetail;
 };
 
-export type TripMutationResponse = TripDetailsResponse;
+export type TripOperationState =
+  | "REQUESTED"
+  | "IN_PROGRESS"
+  | "DEVICE_PENDING"
+  | "COMPENSATING"
+  | "COMPENSATED"
+  | "COMPLETED"
+  | "FAILED"
+  | "RECONCILIATION_REQUIRED";
+
+export type TripOperationStep = {
+  name: "device" | "billing" | "audit" | (string & {});
+  status: string;
+  in_effect?: boolean;
+  attempts?: number;
+  context?: Record<string, unknown> | null;
+};
+
+export type TripOperation = {
+  operation_id: string;
+  correlation_id: string;
+  type: "complete" | "cancel";
+  state: TripOperationState;
+  succeeded: boolean;
+  needs_attention: boolean;
+  is_retryable: boolean;
+  trip_id: string;
+  trip_status_before: string;
+  trip_status_after: string | null;
+  actor?: { id: string; name?: string } | null;
+  actor_type: "admin" | "system" | "rider";
+  reason?: string | null;
+  idempotency_key: string;
+  result?: {
+    trip_status?: string;
+    final_price?: number | string | null;
+    currency?: string | null;
+    commission?: number | string | null;
+    billing?: Record<string, unknown> | null;
+    cancellation?: Record<string, unknown> | null;
+    vehicle_status?: string | null;
+  } | null;
+  failure_code?: string | null;
+  failure_reason?: string | null;
+  reconciliation_note?: string | null;
+  attempts: number;
+  steps: TripOperationStep[];
+  timestamps?: Record<string, string | null>;
+};
+
+export type TripMutationResponse = TripOperation;
+
+export type TripOperationsResponse = {
+  error?: boolean;
+  message?: string;
+  data: TripOperation[];
+};
 
 export type TripMutationError = {
   message: string;
@@ -163,4 +219,6 @@ export type TripMutationError = {
   errors?: { reason?: string | string[] };
   correlation_id?: string;
   recoverable?: boolean;
+  operation_id?: string;
+  operation?: TripOperation;
 };

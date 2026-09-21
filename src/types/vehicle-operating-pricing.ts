@@ -15,7 +15,7 @@ export type VehicleStatus =
 export type VehicleLockStatus = "locked" | "unlocked";
 export type VehicleLockConnectivity = "online" | "offline" | "unknown";
 
-export type VehicleDeviceCommandType = "lock" | "unlock" | "locate";
+export type VehicleDeviceCommandType = "lock" | "unlock" | "locate" | "ring";
 export type VehicleDeviceCommandStatus =
   | "accepted"
   | "sent"
@@ -29,6 +29,10 @@ export type VehicleDeviceCommand = {
   correlation_id: string;
   type: VehicleDeviceCommandType;
   status: VehicleDeviceCommandStatus;
+  physical_action_confirmed: boolean;
+  is_terminal?: boolean;
+  vehicle_id?: string | null;
+  device_id?: string | null;
   accepted_at: string;
   sent_at?: string | null;
   acknowledged_at?: string | null;
@@ -37,12 +41,55 @@ export type VehicleDeviceCommand = {
   superseded_at?: string | null;
   failure_code?: string | null;
   failure_message?: string | null;
+  attempts?: number;
+  max_attempts?: number;
+  next_retry_at?: string | null;
+  superseded_by?: string | null;
+  provider_command_id?: string | null;
+  dispatch_latency_ms?: number | null;
+  ack_latency_ms?: number | null;
 };
 
-export type VehicleDeviceCommandResponse = {
-  error: boolean;
-  message: string;
-  data: VehicleDeviceCommand;
+export type VehicleDeviceCommandWire = Partial<VehicleDeviceCommand> & {
+  commandId?: string;
+  correlationId?: string;
+  physicalActionConfirmed?: boolean;
+  vehicleId?: string | null;
+  deviceId?: string | null;
+  acceptedAt?: string;
+  sentAt?: string | null;
+  acknowledgedAt?: string | null;
+  failedAt?: string | null;
+  timedOutAt?: string | null;
+  supersededAt?: string | null;
+  failureCode?: string | null;
+  failureMessage?: string | null;
+  maxAttempts?: number;
+  nextRetryAt?: string | null;
+  supersededBy?: string | null;
+  providerCommandId?: string | null;
+  dispatchLatencyMs?: number | null;
+  ackLatencyMs?: number | null;
+};
+
+export type VehicleDeviceCommandResponse = VehicleDeviceCommandWire | {
+  error?: boolean;
+  message?: string;
+  data: VehicleDeviceCommandWire;
+};
+
+export type VehicleDeviceCommandsQueryParams = {
+  status?: VehicleDeviceCommandStatus;
+  type?: VehicleDeviceCommandType;
+  device_id?: string;
+  correlation_id?: string;
+  limit?: number;
+};
+
+export type VehicleDeviceCommandsListResponse = {
+  error?: boolean;
+  message?: string;
+  data: VehicleDeviceCommandWire[];
 };
 
 export type VehiclesQueryParams = Omit<QueryParams, "status"> & {

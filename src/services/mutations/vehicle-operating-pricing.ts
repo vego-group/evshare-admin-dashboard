@@ -5,6 +5,8 @@ import type {
   CreateVehicleLockPayload,
   UpdateVehicleLockPayload,
   VehicleDeviceCommandResponse,
+  VehicleDeviceCommand,
+  ApiResult,
   VehicleLockDetailsResponse,
   VehicleDetailsResponse,
 } from "@/types";
@@ -75,7 +77,34 @@ export const deleteVehicleZoneAPI = async (vehicleId: string, zoneId: string) =>
 export const sendVehicleCommandAPI = async (
   vehicleId: string,
   payload: VehicleCommandValues,
-) => await safeApi("POST", `/vehicles/${vehicleId}/command`, payload);
+): Promise<ApiResult<VehicleDeviceCommand>> => {
+  const result = await safeApi<VehicleDeviceCommandResponse>(
+    "POST",
+    `/vehicles/${vehicleId}/commands`,
+    payload,
+    { headers: { "Idempotency-Key": payload.idempotencyKey } },
+  );
+  if (!result.ok || !result.data) {
+    return {
+      ok: false,
+      status: result.status,
+      error: result.error,
+      message: result.message,
+      retryAfterSeconds: result.retryAfterSeconds,
+    };
+  }
+
+  const { normalizeVehicleDeviceCommand } = await import("@/lib/utils/device-command");
+  try {
+    return { ...result, data: normalizeVehicleDeviceCommand(result.data) };
+  } catch {
+    return {
+      ok: false as const,
+      status: 502,
+      message: "Invalid vehicle command response",
+    };
+  }
+};
 
 export const addVehicleLockAPI = async (payload: CreateVehicleLockPayload) =>
   await safeApi<VehicleLockDetailsResponse>("POST", "/locks/add", payload);
