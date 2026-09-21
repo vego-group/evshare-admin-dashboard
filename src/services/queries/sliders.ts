@@ -1,7 +1,7 @@
 import { buildQuery } from "@/lib/utils/build-query";
 import { baseAPI } from "..";
 import { PAGE_SIZE } from "@/constants";
-import { QueryParams, SlidersListResponse } from "@/types";
+import { ContentPublicationVersionsResponse, QueryParams, SlidersListResponse } from "@/types";
 
 export const slidersAPI = async (
   params: QueryParams,
@@ -15,3 +15,8 @@ export const slidersAPI = async (
 
   return await baseAPI("GET", `/slides?${query}`);
 };
+
+export const sliderVersionsAPI = async (
+  sliderId: string,
+): Promise<ContentPublicationVersionsResponse> =>
+  await baseAPI("GET", `/slides/${sliderId}/versions`);

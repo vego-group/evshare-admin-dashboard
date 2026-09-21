@@ -16,7 +16,10 @@ export const ADMIN_PERMISSIONS = {
     delete: "Admin Delete Users",
   },
   vehicles: {
-    sendCommand: "Admin Command Vehicles",
+    // The first slug is the current command contract; the second preserves a
+    // safe UI rollout for tenants still carrying the split-permission name.
+    sendCommand: ["Admin Send Vehicle Commands", "Admin Command Vehicles"],
+    viewCommands: "Admin Index Vehicle Commands",
   },
   locks: {
     assign: "Admin Assign Locks",

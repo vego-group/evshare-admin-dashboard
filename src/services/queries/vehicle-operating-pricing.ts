@@ -3,6 +3,8 @@ import { buildQuery } from "@/lib/utils/build-query";
 import type {
   VehicleDetailsResponse,
   VehicleDeviceCommandResponse,
+  VehicleDeviceCommandsListResponse,
+  VehicleDeviceCommandsQueryParams,
   VehicleListItem,
   VehicleLockDetailsResponse,
   VehicleLocksListResponse,
@@ -10,6 +12,7 @@ import type {
   VehiclesListResponse,
   VehiclesQueryParams,
 } from "@/types";
+import { normalizeVehicleDeviceCommand } from "@/lib/utils/device-command";
 
 import { baseAPI } from "..";
 
@@ -91,5 +94,25 @@ export const vehicleLockByVehicleAPI = async (
 export const vehicleDeviceCommandAPI = async (
   vehicleId: string,
   commandId: string,
-): Promise<VehicleDeviceCommandResponse> =>
-  await baseAPI("GET", `/vehicles/${vehicleId}/commands/${commandId}`);
+)=> {
+  const response: VehicleDeviceCommandResponse = await baseAPI(
+    "GET",
+    `/vehicles/${vehicleId}/commands/${commandId}`,
+  );
+  return normalizeVehicleDeviceCommand(response);
+};
+
+export const vehicleDeviceCommandsAPI = async (
+  vehicleId: string,
+  params: VehicleDeviceCommandsQueryParams = {},
+) => {
+  const query = buildQuery(params);
+  const response: VehicleDeviceCommandsListResponse = await baseAPI(
+    "GET",
+    `/vehicles/${vehicleId}/commands${query ? `?${query}` : ""}`,
+  );
+  return {
+    ...response,
+    data: response.data.map((command) => normalizeVehicleDeviceCommand(command)),
+  };
+};

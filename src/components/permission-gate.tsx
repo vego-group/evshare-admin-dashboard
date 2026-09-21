@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { useUserPermissions } from "@/hooks";
 
 type PermissionGateProps = {
-  slug: string | string[];
+  slug: string | readonly string[];
   children: ReactNode;
   fallback?: ReactNode;
   requireAll?: boolean;
@@ -13,9 +13,11 @@ type PermissionGateProps = {
 function PermissionGate({ slug, children, fallback = null, requireAll = false }: PermissionGateProps) {
   const { isLoading, hasAnyPermission, hasPermission } = useUserPermissions();
   if (isLoading) return null;
-  const allowed = requireAll && Array.isArray(slug)
-    ? slug.every(hasPermission)
-    : hasAnyPermission(slug);
+  const normalizedSlug: string | string[] =
+    typeof slug === "string" ? slug : [...slug];
+  const allowed = requireAll && Array.isArray(normalizedSlug)
+    ? normalizedSlug.every(hasPermission)
+    : hasAnyPermission(normalizedSlug);
   return allowed ? <>{children}</> : <>{fallback}</>;
 }
 

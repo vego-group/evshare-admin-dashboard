@@ -3,6 +3,7 @@ import type {
   PageDetailResponse,
   PagesListResponse,
   PagesQueryParams,
+  ContentPublicationVersionsResponse,
 } from "@/types";
 import { baseAPI } from "..";
 
@@ -16,3 +17,8 @@ export const pagesAPI = async (
 export const singlePageAPI = async (
   uuid: string,
 ): Promise<PageDetailResponse> => await baseAPI("GET", `/pages/${uuid}`);
+
+export const pageVersionsAPI = async (
+  uuid: string,
+): Promise<ContentPublicationVersionsResponse> =>
+  await baseAPI("GET", `/pages/${uuid}/versions`);

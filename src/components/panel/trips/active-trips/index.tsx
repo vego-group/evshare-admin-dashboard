@@ -86,10 +86,29 @@ function ActiveTrips() {
           ? await cancelTripAPI(pendingTrip.id, idempotencyKey)
           : await endTripAPI(pendingTrip.id, idempotencyKey);
 
-      if (result?.ok) {
+      if (result?.ok && result.data?.state === "COMPLETED" && result.data.succeeded) {
         actionAttemptRef.current = null;
         setActionError(null);
-        toast.success(result.message || "تم تنفيذ الإجراء بنجاح");
+        toast.success(
+          pendingAction === "end"
+            ? "اكتمل إنهاء الرحلة وتسويتها بنجاح"
+            : "اكتمل إلغاء الرحلة بنجاح",
+        );
+        setPendingTrip(null);
+        setPendingAction(null);
+        await queryClient.invalidateQueries({ queryKey: ["trips"] });
+        return;
+      }
+
+      if (result?.ok && result.data) {
+        actionAttemptRef.current = null;
+        const reference = result.data.correlation_id
+          ? ` — رقم التتبع: ${result.data.correlation_id}`
+          : "";
+        toast(
+          tripOperationStatusMessage(result.data.state) + reference,
+          { icon: result.data.needs_attention ? "⚠️" : "⏳" },
+        );
         setPendingTrip(null);
         setPendingAction(null);
         await queryClient.invalidateQueries({ queryKey: ["trips"] });
@@ -244,6 +263,20 @@ function formatTripActionError(
   ]
     .filter(Boolean)
     .join(" — ");
+}
+
+function tripOperationStatusMessage(state: string) {
+  if (state === "DEVICE_PENDING") {
+    return "لم يؤكد الجهاز الإجراء بعد، ولم تتم أي تسوية مالية.";
+  }
+  if (state === "RECONCILIATION_REQUIRED") {
+    return "تحتاج العملية إلى مراجعة وتسوية بشرية قبل اعتبارها مكتملة.";
+  }
+  if (state === "COMPENSATED") {
+    return "تعذر الإجراء وتم التراجع عن الخطوات المنفذة بأمان.";
+  }
+  if (state === "FAILED") return "فشلت العملية ولم تُعتبر الرحلة مكتملة.";
+  return "تم قبول العملية وما زالت قيد التنفيذ؛ لم تُعتبر مكتملة بعد.";
 }
 
 function formatUpdateTime(timestamp: number) {

@@ -29,11 +29,8 @@ import type { VehicleCommandValues } from "@/schemas/vehicle-operating-pricing";
 import {
   addVehicleLockAPI,
   assignVehicleLockAPI,
-  locateVehicleLockAPI,
-  lockVehicleLockAPI,
   sendVehicleCommandAPI,
   unassignVehicleLockAPI,
-  unlockVehicleLockAPI,
 } from "@/services/mutations";
 import type {
   VehicleDeviceCommand,
@@ -65,14 +62,14 @@ const lockActions: {
   {
     action: "lock",
     label: "قفل",
-    permission: "Admin Lock Vehicles",
+    permission: ["Admin Send Vehicle Commands", "Admin Command Vehicles", "Admin Lock Vehicles"],
     icon: Lock,
     className: "bg-red-50 text-red-600",
   },
   {
     action: "unlock",
     label: "فتح",
-    permission: ["Admin Unlock Vehicles", "Admin Unlock Scooters"],
+    permission: ["Admin Send Vehicle Commands", "Admin Command Vehicles", "Admin Unlock Vehicles", "Admin Unlock Scooters"],
     icon: Unlock,
     className: "bg-green-50 text-green-600",
   },
@@ -133,7 +130,7 @@ function CommandPanelModal({
     activeCommand?.command_id ?? null,
     Boolean(activeCommand),
   );
-  const queriedCommand = commandStatusData?.data;
+  const queriedCommand = commandStatusData;
   const displayedCommand =
     queriedCommand?.command_id === activeCommand?.command_id
       ? queriedCommand
@@ -142,7 +139,7 @@ function CommandPanelModal({
   const isBusy = Boolean(pendingAction) || commandInProgress;
 
   useEffect(() => {
-    const command = commandStatusData?.data;
+    const command = commandStatusData;
     if (
       !vehicleId ||
       !command ||
@@ -166,7 +163,7 @@ function CommandPanelModal({
     if (announcedTerminalState.current === terminalKey) return;
     announcedTerminalState.current = terminalKey;
 
-    if (command.status === "acknowledged") {
+    if (command.status === "acknowledged" && command.physical_action_confirmed) {
       toast.success(commandSuccessMessage(command.type));
     } else {
       toast.error(commandFailureMessage(command));
@@ -272,15 +269,15 @@ function CommandPanelModal({
       action,
       assignedLock.id,
     );
-    const result =
-      action === "lock"
-        ? await lockVehicleLockAPI(assignedLock.id, idempotencyKey)
-        : await unlockVehicleLockAPI(assignedLock.id, idempotencyKey);
+    const result = await sendVehicleCommandAPI(currentVehicle.id, {
+      type: action,
+      idempotencyKey,
+    });
     setPendingAction(null);
 
     if (result?.ok) {
       commandAttempt.current = null;
-      handleAcceptedCommand(result.data?.data);
+      handleAcceptedCommand(result.data);
       return;
     }
 
@@ -302,15 +299,15 @@ function CommandPanelModal({
       "locate",
       assignedLock.id,
     );
-    const result = await locateVehicleLockAPI(
-      assignedLock.id,
+    const result = await sendVehicleCommandAPI(currentVehicle.id, {
+      type: "locate",
       idempotencyKey,
-    );
+    });
     setPendingAction(null);
 
     if (result?.ok) {
       commandAttempt.current = null;
-      handleAcceptedCommand(result.data?.data);
+      handleAcceptedCommand(result.data);
       return;
     }
 
@@ -339,7 +336,7 @@ function CommandPanelModal({
       return;
     }
 
-    if (command.status === "acknowledged") {
+    if (command.status === "acknowledged" && command.physical_action_confirmed) {
       toast.success(commandSuccessMessage(command.type));
       void refreshLockState();
     } else {
@@ -347,19 +344,30 @@ function CommandPanelModal({
     }
   }
 
-  async function dispatchVehicleCommand(
-    command: VehicleCommandValues["command"],
-  ) {
+  async function dispatchVehicleCommand(type: VehicleCommandValues["type"]) {
     if (isBusy) return;
-    setPendingAction(command);
-    const result = await sendVehicleCommandAPI(currentVehicle.id, { command });
+    const pending = type === "ring" ? "sound_alarm" : type;
+    setPendingAction(pending);
+    const idempotencyKey = getCommandIdempotencyKey(
+      commandAttempt,
+      type,
+      assignedLock?.id ?? currentVehicle.iot_device_id ?? currentVehicle.id,
+    );
+    const result = await sendVehicleCommandAPI(currentVehicle.id, {
+      type,
+      idempotencyKey,
+    });
     setPendingAction(null);
 
     if (result?.ok) {
-      toast.success(result.message || "تم إرسال الأمر بنجاح");
+      commandAttempt.current = null;
+      handleAcceptedCommand(result.data);
       return;
     }
 
+    if (!UNKNOWN_COMMAND_OUTCOME_STATUSES.has(result?.status ?? 500)) {
+      commandAttempt.current = null;
+    }
     toast.error(result?.message || "فشل إرسال الأمر");
   }
 
@@ -430,7 +438,7 @@ function CommandPanelModal({
                 />
               )}
 
-              <PermissionGate slug="Admin Locate Vehicles">
+              <PermissionGate slug={["Admin Send Vehicle Commands", "Admin Command Vehicles", "Admin Locate Vehicles"]}>
                 <button
                   type="button"
                   disabled={isBusy}
@@ -634,7 +642,7 @@ function CommandPanelModal({
               <button
                 type="button"
                 disabled={isBusy}
-                onClick={() => dispatchVehicleCommand("sound_alarm")}
+                onClick={() => dispatchVehicleCommand("ring")}
                 className="flex min-h-20 w-full items-center justify-center gap-2 rounded-xl bg-amber-50 p-4 text-sm font-medium text-orange-500 transition hover:brightness-95 disabled:opacity-60"
               >
                 {pendingAction === "sound_alarm" ? (
@@ -809,7 +817,10 @@ function readStoredCommand(vehicleId: string | null) {
 }
 
 function commandTypeLabel(type: VehicleDeviceCommand["type"]) {
-  return type === "lock" ? "قفل" : type === "unlock" ? "فتح" : "تحديد الموقع";
+  if (type === "lock") return "قفل";
+  if (type === "unlock") return "فتح";
+  if (type === "locate") return "تحديد الموقع";
+  return "تشغيل الجرس";
 }
 
 function commandStatusLabel(status: VehicleDeviceCommandStatus) {
@@ -827,11 +838,15 @@ function commandStatusLabel(status: VehicleDeviceCommandStatus) {
 function commandSuccessMessage(type: VehicleDeviceCommand["type"]) {
   if (type === "lock") return "أكد الجهاز قفل المركبة بنجاح";
   if (type === "unlock") return "أكد الجهاز فتح المركبة بنجاح";
-  return "أكد الجهاز تحديث موقع المركبة بنجاح";
+  if (type === "locate") return "أكد الجهاز تحديث موقع المركبة بنجاح";
+  return "أكد الجهاز تشغيل الجرس بنجاح";
 }
 
 function commandFailureMessage(command: VehicleDeviceCommand) {
   if (command.failure_message) return command.failure_message;
+  if (command.status === "acknowledged" && !command.physical_action_confirmed) {
+    return "وصل إقرار للأمر، لكن الخادم لم يؤكد تنفيذ الإجراء الفعلي.";
+  }
   if (command.status === "timed_out") {
     return "انتهت مهلة الأمر دون تأكيد من الجهاز";
   }

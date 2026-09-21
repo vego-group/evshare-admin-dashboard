@@ -4,6 +4,7 @@ import type {
   FeatureFlagEvaluationResponse,
   FeatureFlagsListResponse,
   FeatureFlagsQueryParams,
+  FeatureFlagVersionsResponse,
 } from "@/types";
 
 import { baseAPI } from "..";
@@ -18,13 +19,39 @@ export const featureFlagsAPI = async (
     is_enabled: params.is_enabled,
   });
 
-  return await baseAPI("GET", `/feature-flags${query ? `?${query}` : ""}`);
+  const response: FeatureFlagsListResponse = await baseAPI(
+    "GET",
+    `/feature-flags${query ? `?${query}` : ""}`,
+  );
+  return {
+    ...response,
+    data: response.data.map((flag) => ({
+      ...flag,
+      is_enabled: flag.is_enabled ?? flag.is_active ?? false,
+    })),
+  };
 };
 
 export const singleFeatureFlagAPI = async (
   featureFlagId: string,
-): Promise<FeatureFlagDetailsResponse> =>
-  await baseAPI("GET", `/feature-flags/${featureFlagId}`);
+): Promise<FeatureFlagDetailsResponse> => {
+  const response: FeatureFlagDetailsResponse = await baseAPI(
+    "GET",
+    `/feature-flags/${featureFlagId}`,
+  );
+  return {
+    ...response,
+    data: {
+      ...response.data,
+      is_enabled: response.data.is_enabled ?? response.data.is_active ?? false,
+    },
+  };
+};
+
+export const featureFlagVersionsAPI = async (
+  featureFlagId: string,
+): Promise<FeatureFlagVersionsResponse> =>
+  await baseAPI("GET", `/feature-flags/${featureFlagId}/versions`);
 
 export const evaluatedFeatureFlagsAPI = async (
   applicationVersion: string,

@@ -14,9 +14,27 @@ export type Setting = PricingConfigurationMetadata & {
   sensitivity?: "public" | "internal" | "sensitive" | "secret";
   is_sensitive?: boolean;
   is_masked?: boolean;
+  type?: SettingValueType;
+  rules?: string[];
+  scope?: "tenant" | "environment" | "global";
+  default?: string | number | boolean | string[] | null;
+  owner?: string;
+  consumers?: string[];
+  description?: string;
   created_at?: string;
   updated_at?: string;
 };
+
+export type SettingValueType =
+  | "decimal"
+  | "integer"
+  | "boolean"
+  | "enum"
+  | "html"
+  | "phone"
+  | "email"
+  | "csv_decimal"
+  | "string";
 
 export const settingsPropagationStatuses = [
   "pending",

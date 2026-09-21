@@ -22,3 +22,42 @@ export type PricingConfigurationMetadata = {
   updated_at?: string | null;
   updated_by?: string | null;
 };
+
+export type PricingConfigurationState = {
+  config_version: number;
+  checksum: string;
+  published_at: string;
+  propagation_sla_seconds: number;
+  active_versions: Record<string, string>;
+  precedence: string[];
+};
+
+export type PricingConfigurationStateResponse = {
+  error: boolean;
+  message?: string;
+  data: PricingConfigurationState;
+};
+
+export type PricingSettingVersion = {
+  uuid: string;
+  setting_name: string;
+  value: string;
+  effective_from: string;
+  effective_until: string | null;
+  is_active: boolean;
+  config_version?: number;
+  created_at?: string;
+};
+
+export type PricingSettingHistoryResponse = {
+  error: boolean;
+  message?: string;
+  data: PricingSettingVersion[];
+};
+
+export type SchedulePricingPayload = {
+  setting_name: string;
+  value: string;
+  effective_from?: string;
+  effective_until?: string;
+};

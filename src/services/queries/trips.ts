@@ -1,6 +1,12 @@
 import { PAGE_SIZE } from "@/constants";
 import { buildQuery } from "@/lib/utils/build-query";
-import type { TripDetailsResponse, TripsListResponse, TripsQueryParams } from "@/types";
+import type {
+  TripDetailsResponse,
+  TripMutationResponse,
+  TripOperationsResponse,
+  TripsListResponse,
+  TripsQueryParams,
+} from "@/types";
 
 import { baseAPI } from "..";
 
@@ -20,3 +26,13 @@ export const tripsAPI = async (
 
 export const singleTripAPI = async (tripId: string): Promise<TripDetailsResponse> =>
   await baseAPI("GET", `/trips/${tripId}`);
+
+export const tripOperationsAPI = async (
+  tripId: string,
+): Promise<TripOperationsResponse> =>
+  await baseAPI("GET", `/trips/${tripId}/operations`);
+
+export const tripOperationAPI = async (
+  operationId: string,
+): Promise<TripMutationResponse> =>
+  await baseAPI("GET", `/trip-operations/${operationId}`);
