@@ -38,6 +38,7 @@ function ShipmentsMainContent({
         selectedDirection={params.direction}
         selectedCompany={params.shipping_company_uuid}
         selectedSort={params.order_by ?? "desc"}
+        selectedCurrency={params.currency}
         onSearchChange={(search) =>
           onParamsChange({ search: search || undefined, page: 1 })
         }
@@ -53,6 +54,7 @@ function ShipmentsMainContent({
         onSortChange={(order_by: OrderBy) =>
           onParamsChange({ order_by, page: 1 })
         }
+        onCurrencyChange={(currency) => onParamsChange({ currency, page: 1 })}
       />
       <ShipmentsResults shipments={data?.data ?? []} {...actions} />
       <ShipmentsPagination

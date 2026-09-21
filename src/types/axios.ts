@@ -2,7 +2,11 @@ import { AxiosRequestConfig } from "axios";
 
 export type ExtraConfig = AxiosRequestConfig & { isForm?: boolean };
 export type ErrorBody = {
-  message: string;
+  message?: string;
+  code?: string;
+  error_code?: string;
+  details?: Record<string, unknown> | null;
+  retry_after_seconds?: number;
   [key: string]: unknown;
 };
 export type ApiResult<
@@ -14,4 +18,5 @@ export type ApiResult<
   data?: T;
   error?: E;
   message: string;
+  retryAfterSeconds?: number;
 };

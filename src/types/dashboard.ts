@@ -22,6 +22,7 @@ export type DashboardMeasure = {
   id: DashboardMeasureId;
   group: string;
   unit: "currency" | "count" | "km" | "percent";
+  currency: string | null;
   definition: string;
   current: { total: number; from: string | null; to: string | null };
   comparison: { available: boolean; total: number | null; from: string | null; to: string | null };
@@ -50,6 +51,7 @@ export type DashboardRevenueSeriesEntry = {
   day_name: string;
   current: number;
   previous: number;
+  totals_by_currency: Record<string, number>;
 };
 
 export type DashboardPeakDay = {
@@ -58,8 +60,10 @@ export type DashboardPeakDay = {
 };
 
 export type DashboardRevenueChart = {
-  total: number;
-  daily_average: number;
+  total?: number;
+  totals_by_currency?: Record<string, number>;
+  currency: string | null;
+  daily_average: number | null;
   peak_day: DashboardPeakDay;
   series: DashboardRevenueSeriesEntry[];
 };

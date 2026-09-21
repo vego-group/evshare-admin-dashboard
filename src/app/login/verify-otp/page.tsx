@@ -10,5 +10,5 @@ export default async function VerifyOtpPage({ searchParams }: Props) {
   const [params, country] = await Promise.all([searchParams, getCountry()]);
   if (!country) redirect("/login");
 
-  return <OtpVerify mobile={params.mobile ?? ""} />;
+  return <OtpVerify mobile={params.mobile ?? ""} country={country} />;
 }

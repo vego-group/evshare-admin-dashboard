@@ -35,7 +35,12 @@ function VatSummaryStats({ data }: { data?: VatSummary }) {
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {statConfig.map((stat) => {
         const Icon = stat.icon;
-        const value = data?.[stat.key] ?? 0;
+        const values = data && "totals_by_currency" in data
+          ? data.currencies.map((currency) => ({
+              currency,
+              value: data.totals_by_currency[currency]?.[stat.key] ?? 0,
+            }))
+          : [{ currency: data?.currency, value: data?.[stat.key] ?? 0 }];
         return (
           <div
             key={stat.key}
@@ -45,12 +50,15 @@ function VatSummaryStats({ data }: { data?: VatSummary }) {
               <p className="whitespace-nowrap text-sm font-normal leading-5 text-gray">
                 {stat.label}
               </p>
-              <p
-                dir="ltr"
-                className="flex items-center gap-1 truncate text-2xl font-semibold leading-8 text-secondary text-right"
-              >
-                <MoneyValue value={value} />
-              </p>
+              {values.map(({ currency, value }) => (
+                <p
+                  key={currency ?? "tenant"}
+                  dir="ltr"
+                  className="flex items-center gap-1 truncate text-2xl font-semibold leading-8 text-secondary text-right"
+                >
+                  <MoneyValue value={value} currency={currency} />
+                </p>
+              ))}
             </div>
             <div
               className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-[10px] ${stat.iconClassName}`}

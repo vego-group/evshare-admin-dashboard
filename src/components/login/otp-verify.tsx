@@ -7,9 +7,10 @@ import OtpForm from "./otp-form";
 
 interface OtpVerifyProps {
   mobile: string;
+  country: string;
 }
 
-function OtpVerify({ mobile }: OtpVerifyProps) {
+function OtpVerify({ mobile, country }: OtpVerifyProps) {
   return (
     <main className="relative min-h-svh overflow-hidden bg-[#0f1118] px-4 py-8">
       <div className="pointer-events-none absolute inset-0">
@@ -45,7 +46,7 @@ function OtpVerify({ mobile }: OtpVerifyProps) {
             </p>
           </div>
 
-          <OtpForm mobile={mobile} />
+          <OtpForm mobile={mobile} country={country} />
         </motion.section>
       </div>
     </main>

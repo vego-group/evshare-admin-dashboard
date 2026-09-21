@@ -98,11 +98,19 @@ export const useDeleteRole = () => {
   return useMutation({ mutationFn: deleteRole, onSuccess: invalidate });
 };
 export const useAddPermissionToRole = () => {
-  const invalidate = useInvalidate(rolesPermissionsKeys.roles, rolesPermissionsKeys.role);
+  const invalidate = useInvalidate(
+    rolesPermissionsKeys.roles,
+    rolesPermissionsKeys.role,
+    rolesPermissionsKeys.authPermissions,
+  );
   return useMutation({ mutationFn: ({ roleId, permissionId }: { roleId: string; permissionId: string }) => addPermissionToRole(roleId, permissionId), onSuccess: invalidate });
 };
 export const useRemovePermissionFromRole = () => {
-  const invalidate = useInvalidate(rolesPermissionsKeys.roles, rolesPermissionsKeys.role);
+  const invalidate = useInvalidate(
+    rolesPermissionsKeys.roles,
+    rolesPermissionsKeys.role,
+    rolesPermissionsKeys.authPermissions,
+  );
   return useMutation({ mutationFn: ({ roleId, permissionId }: { roleId: string; permissionId: string }) => removePermissionFromRole(roleId, permissionId), onSuccess: invalidate });
 };
 export const useSyncRolePermissions = () => {

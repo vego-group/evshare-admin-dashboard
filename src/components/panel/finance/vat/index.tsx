@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
-import { PAGE_SIZE } from "@/constants";
+import { ADMIN_PERMISSIONS, PAGE_SIZE } from "@/constants";
 import { useHasPermission } from "@/hooks";
 import { useVatPeriods, useVatRecords, useVatSettlements, useVatSummary } from "@/hooks/api";
 import type { VatStatus } from "@/types";
@@ -23,6 +23,7 @@ import { useVatExportActions } from "./use-vat-exports";
 type Filters = {
   status?: VatStatus;
   period?: string;
+  currency?: string;
 };
 
 function VatFinance() {
@@ -31,11 +32,16 @@ function VatFinance() {
   const [page, setPage] = useState(1);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"records" | "exports">("records");
-  const canExport = useHasPermission("Admin Export VAT");
+  const canExport = useHasPermission(ADMIN_PERMISSIONS.vat.export);
+  const canViewExports = useHasPermission(ADMIN_PERMISSIONS.vat.viewExports);
   const { startExport, downloadExport, isBusy: isExporting, downloadingId } =
-    useVatExportActions(canExport);
+    useVatExportActions(canExport, canViewExports);
 
-  const sharedFilters = { status: filters.status, period: filters.period };
+  const sharedFilters = {
+    status: filters.status,
+    period: filters.period,
+    currency: filters.currency,
+  };
 
   const { data: summary, isLoading: isSummaryLoading } = useVatSummary(sharedFilters);
   const { data: periods, isLoading: isPeriodsLoading } = useVatPeriods(sharedFilters);
@@ -73,7 +79,7 @@ function VatFinance() {
     <div className="flex w-full flex-col gap-6">
       <VatHeader />
       <VatSummaryStats data={summary?.data} />
-      {canExport && (
+      {canViewExports && (
         <div className="flex gap-2 border-b border-primary/20" role="tablist" aria-label="أقسام ضريبة القيمة المضافة">
           <button
             type="button"
@@ -97,7 +103,7 @@ function VatFinance() {
           </button>
         </div>
       )}
-      {activeTab === "exports" && canExport ? (
+      {activeTab === "exports" && canViewExports ? (
         <div id="vat-exports-panel" role="tabpanel">
           <VatExports onDownload={downloadExport} downloadingId={downloadingId} />
         </div>
@@ -107,8 +113,10 @@ function VatFinance() {
           <VatToolbar
             selectedStatus={filters.status}
             selectedPeriod={filters.period}
+            selectedCurrency={filters.currency}
             onStatusChange={(status) => updateFilters({ status })}
             onPeriodChange={(period) => updateFilters({ period })}
+            onCurrencyChange={(currency) => updateFilters({ currency })}
             onExport={() => void startExport({ type: "vat_records", ...sharedFilters })}
             isExporting={isExporting}
           />

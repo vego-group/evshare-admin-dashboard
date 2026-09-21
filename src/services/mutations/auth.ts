@@ -23,4 +23,7 @@ export const loginAPI = async (payload: LoginFormValues, country: string) => {
 export const verifyLoginAPI = async (payload: VerifyOtpFormValues) =>
   await safeAuthApi<AuthResponse>("POST", "/login/verify", payload);
 
+export const resendLoginOtpAPI = async (mobile: string) =>
+  await safeAuthApi("POST", "/login/send", { mobile });
+
 export const logoutAPI = async () => await safeAuthApi("POST", "/logout");

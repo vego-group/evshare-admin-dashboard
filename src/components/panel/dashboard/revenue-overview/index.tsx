@@ -68,7 +68,7 @@ function RevenueOverviewSection({
             margins={margins}
             peakPoint={peakPoint}
             peakValue={peakPoint?.current ?? 0}
-            currency={data?.meta.currency ?? ""}
+            currency={measure?.currency ?? data?.revenue_chart.currency ?? data?.meta.currency ?? ""}
           />
         </div>
       </div>

@@ -1,4 +1,5 @@
 import type { Country } from "@/types/countries";
+import { CURRENCY_MINOR_UNITS, type SupportedCurrency } from "@/constants/currency";
 
 // Only currencies with a recognizable frontend symbol belong here. Other
 // currencies intentionally fall back to currency_symbol_en/currency_code.
@@ -39,8 +40,10 @@ export function formatPrice(
   const tenantCurrency = normalizeCurrencyCode(country?.currency_code);
   const hasRecordCurrency = recordCurrency != null && recordCurrency.trim() !== "";
   const code = hasRecordCurrency ? normalizeCurrencyCode(recordCurrency) : tenantCurrency;
-  let currencyDigits = 2;
-  if (code) {
+  let currencyDigits = code && code in CURRENCY_MINOR_UNITS
+    ? CURRENCY_MINOR_UNITS[code as SupportedCurrency]
+    : 2;
+  if (code && !(code in CURRENCY_MINOR_UNITS)) {
     try {
       currencyDigits = new Intl.NumberFormat("en-US", {
         style: "currency",

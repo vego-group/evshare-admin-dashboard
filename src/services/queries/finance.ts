@@ -21,6 +21,7 @@ export const vatSummaryAPI = async (
     date_to: params.date_to,
     status: params.status,
     period: params.period,
+    currency: params.currency,
   });
 
   return await baseAPI("GET", `/finance/vat/summary${query ? `?${query}` : ""}`);
@@ -36,6 +37,7 @@ export const vatRecordsAPI = async (
     period: params.period,
     page: params.page,
     limit: params.limit,
+    currency: params.currency,
   });
 
   return await baseAPI("GET", `/finance/vat${query ? `?${query}` : ""}`);

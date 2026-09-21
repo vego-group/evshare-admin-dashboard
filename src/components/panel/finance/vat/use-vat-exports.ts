@@ -42,12 +42,12 @@ async function downloadFile(id: string) {
   window.setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
 }
 
-export function useVatExportActions(canExport: boolean) {
+export function useVatExportActions(canExport: boolean, canViewExports: boolean) {
   const queryClient = useQueryClient();
   const [activeId, setActiveId] = useState<string | null>(null);
   const [isRequesting, setIsRequesting] = useState(false);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
-  const statusQuery = useVatExportStatus(activeId, canExport);
+  const statusQuery = useVatExportStatus(activeId, canViewExports);
 
   useEffect(() => {
     if (!activeId) return;
@@ -110,7 +110,7 @@ export function useVatExportActions(canExport: boolean) {
 
   const startExport = useCallback(
     async (payload: VatExportRequest) => {
-      if (!canExport || isRequesting || activeId) return;
+      if (!canExport || !canViewExports || isRequesting || activeId) return;
       setIsRequesting(true);
       toast.loading("جارٍ طلب ملف التصدير", { id: progressToastId });
       try {
@@ -139,12 +139,12 @@ export function useVatExportActions(canExport: boolean) {
         setIsRequesting(false);
       }
     },
-    [activeId, canExport, isRequesting, queryClient],
+    [activeId, canExport, canViewExports, isRequesting, queryClient],
   );
 
   const downloadExport = useCallback(
     async (id: string) => {
-      if (!canExport || downloadingId) return;
+      if (!canViewExports || downloadingId) return;
       setDownloadingId(id);
       try {
         await downloadFile(id);
@@ -157,7 +157,7 @@ export function useVatExportActions(canExport: boolean) {
         setDownloadingId(null);
       }
     },
-    [canExport, downloadingId],
+    [canViewExports, downloadingId],
   );
 
   return {

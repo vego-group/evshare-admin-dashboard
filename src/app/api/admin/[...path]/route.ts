@@ -168,6 +168,17 @@ export async function GET(request: NextRequest, context: RouteContext) {
     status: upstreamResponse.status,
     headers: contentType ? { "content-type": contentType } : undefined,
   });
+  if (upstreamResponse.status === 401) {
+    response.cookies.set({
+      name: "token",
+      value: "",
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/",
+      maxAge: 0,
+    });
+  }
   response.headers.set(
     "X-Tenant-Id",
     upstreamResponse.headers.get("X-Tenant-Id") || country,

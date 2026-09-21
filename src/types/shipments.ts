@@ -28,6 +28,7 @@ export type ShipmentsQueryParams = {
   shipping_company_uuid?: string;
   order_uuid?: string;
   order_by?: OrderBy;
+  currency?: string;
 };
 
 export type ShipmentLocationCity = {

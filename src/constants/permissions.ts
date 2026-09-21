@@ -18,6 +18,22 @@ export const ADMIN_PERMISSIONS = {
   vehicles: {
     sendCommand: "Admin Command Vehicles",
   },
+  locks: {
+    assign: "Admin Assign Locks",
+    unassign: "Admin Unassign Locks",
+  },
+  operationCompanies: {
+    editCommission: "Admin Edit Operation Company Commission",
+    uploadContract: "Admin Upload Operation Company Contracts",
+  },
+  paymentRequests: {
+    approve: "Admin Approve Payment Requests",
+    reject: "Admin Reject Payment Requests",
+  },
+  vat: {
+    export: "Admin Export VAT",
+    viewExports: "Admin View VAT Exports",
+  },
   reports: {
     generate: "Admin Generate Reports",
     download: "Admin Download Reports",

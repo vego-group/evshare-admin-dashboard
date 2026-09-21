@@ -10,6 +10,7 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 
 import PermissionGate from "@/components/permission-gate";
+import { ADMIN_PERMISSIONS } from "@/constants";
 import { cn } from "@/lib/utils";
 import type { OperatingCompanyListItem } from "@/types";
 
@@ -93,6 +94,8 @@ export function OperatingCompanyActions({
           label="تعديل الشركة"
           className={cn("bg-amber-50 text-orange-500", compact && "flex-1")}
         />
+      </PermissionGate>
+      <PermissionGate slug={ADMIN_PERMISSIONS.operationCompanies.editCommission}>
         <ActionButton
           icon={Percent}
           onClick={onEditCommission}

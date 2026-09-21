@@ -7,12 +7,15 @@ type PermissionGateProps = {
   slug: string | string[];
   children: ReactNode;
   fallback?: ReactNode;
+  requireAll?: boolean;
 };
 
-function PermissionGate({ slug, children, fallback = null }: PermissionGateProps) {
-  const { isLoading, hasAnyPermission } = useUserPermissions();
+function PermissionGate({ slug, children, fallback = null, requireAll = false }: PermissionGateProps) {
+  const { isLoading, hasAnyPermission, hasPermission } = useUserPermissions();
   if (isLoading) return null;
-  const allowed = hasAnyPermission(slug);
+  const allowed = requireAll && Array.isArray(slug)
+    ? slug.every(hasPermission)
+    : hasAnyPermission(slug);
   return allowed ? <>{children}</> : <>{fallback}</>;
 }
 

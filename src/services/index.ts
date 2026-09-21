@@ -3,6 +3,7 @@ import { ApiResult, ErrorBody, ExtraConfig } from "@/types";
 import { getPayloadMessage, getValidationErrors } from "@/lib/utils/helper";
 import { notifyForbidden } from "@/lib/toast-events";
 import { getFeatureFlagRuntimeHeaders } from "@/lib/feature-flag-runtime";
+import { getRetryAfterSeconds } from "@/lib/utils/api-error";
 
 export const adminApi = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_ADMIN_BASE_URL,
@@ -24,22 +25,28 @@ function redirectToExpiredLogin() {
   } catch {
     // Navigation still clears the server-side token cookie via the proxy.
   }
-  window.location.replace("/login?expired=1");
+  void fetch("/api/auth/session", {
+    method: "DELETE",
+    credentials: "same-origin",
+    keepalive: true,
+  }).finally(() => window.location.replace("/login?expired=1"));
 }
 
-const attach401Interceptor = (instance: AxiosInstance) => {
+const attachAuthInterceptor = (instance: AxiosInstance, notifyOnForbidden: boolean) => {
   instance.interceptors.response.use(
     (response) => response,
     (error: AxiosError) => {
       if (error.response?.status === 401) redirectToExpiredLogin();
-      if (error.response?.status === 403) notifyForbidden();
+      if (notifyOnForbidden && error.response?.status === 403) {
+        notifyForbidden(error.response.data);
+      }
       return Promise.reject(error);
     },
   );
 };
 
-attach401Interceptor(adminApi);
-attach401Interceptor(authApi);
+attachAuthInterceptor(adminApi, true);
+attachAuthInterceptor(authApi, false);
 
 export const initApi = async () => {
   if (typeof window !== "undefined") return {};
@@ -52,7 +59,7 @@ export const initApi = async () => {
   };
 };
 
-const safe = async <T = unknown, E extends { message: string } = ErrorBody>(
+const safe = async <T = unknown, E extends { message?: string } = ErrorBody>(
   instance: AxiosInstance,
   method: Method,
   url: string,
@@ -77,6 +84,18 @@ const safe = async <T = unknown, E extends { message: string } = ErrorBody>(
     return { ok: true, status: res.status, data: res.data, message: msg };
   } catch (err) {
     const e = axios.isAxiosError<E>(err) ? err : null;
+    if (
+      typeof window === "undefined" &&
+      instance === adminApi &&
+      e?.response?.status === 401
+    ) {
+      const [{ removeToken }, { redirect }] = await Promise.all([
+        import("@/lib/utils/auth"),
+        import("next/navigation"),
+      ]);
+      await removeToken();
+      redirect("/login?expired=1");
+    }
     const payload = e?.response?.data;
     const payloadMessage = getPayloadMessage(payload);
     const validationErrors = getValidationErrors(payload);
@@ -90,13 +109,16 @@ const safe = async <T = unknown, E extends { message: string } = ErrorBody>(
       status: e?.response?.status ?? 500,
       error: payload,
       message,
+      retryAfterSeconds:
+        getRetryAfterSeconds(payload) ??
+        getRetryAfterSeconds({ retry_after_seconds: e?.response?.headers?.["retry-after"] }),
     };
   }
 };
 
 export const safeApi = async <
   T = unknown,
-  E extends { message: string } = ErrorBody,
+  E extends { message?: string } = ErrorBody,
 >(
   method: Method,
   url: string,
@@ -106,7 +128,7 @@ export const safeApi = async <
 
 export const safeAuthApi = async <
   T = unknown,
-  E extends { message: string } = ErrorBody,
+  E extends { message?: string } = ErrorBody,
 >(
   method: Method,
   url: string,
@@ -130,7 +152,7 @@ export const baseAPI = async (method: Method, url: string) => {
       : await response.text();
 
     if (response.status === 401) redirectToExpiredLogin();
-    if (response.status === 403) notifyForbidden();
+    if (response.status === 403) notifyForbidden(data);
 
     if (!response.ok) {
       const message =

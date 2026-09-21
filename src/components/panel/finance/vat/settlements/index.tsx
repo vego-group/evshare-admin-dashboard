@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import EmptyState from "@/components/ui/empty-state";
 import type { VatSettlement } from "@/types";
 import PermissionGate from "@/components/permission-gate";
+import { ADMIN_PERMISSIONS } from "@/constants";
 
 type Props = {
   settlements: VatSettlement[];
@@ -22,7 +23,10 @@ function VatSettlements({ settlements, onAdd, onExport, isExporting }: Props) {
           <p className="text-sm text-gray">سجل بمبالغ ضريبة القيمة المضافة التي تم سدادها</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <PermissionGate slug="Admin Export VAT">
+          <PermissionGate
+            slug={[ADMIN_PERMISSIONS.vat.export, ADMIN_PERMISSIONS.vat.viewExports]}
+            requireAll
+          >
             <Button type="button" variant="outline" onClick={onExport} disabled={isExporting}>
               <Download className="size-4" /> تصدير التسويات
             </Button>
