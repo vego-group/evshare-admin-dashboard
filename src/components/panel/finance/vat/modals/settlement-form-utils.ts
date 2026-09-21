@@ -1,11 +1,11 @@
-import type { FieldErrors, Resolver } from "react-hook-form";
+import type { DefaultValues, FieldErrors, Resolver } from "react-hook-form";
 
 import { vatSettlementSchema, type VatSettlementFormValues } from "@/schemas/finance";
 import type { AddVatSettlementPayload } from "@/types";
 
-export const vatSettlementDefaults: VatSettlementFormValues = {
+export const vatSettlementDefaults: DefaultValues<VatSettlementFormValues> = {
   period: "",
-  amount: 0,
+  amount: undefined,
   paid_at: "",
   notes: "",
 };

@@ -3,18 +3,18 @@ import Shimmer from "@/components/ui/shimmer";
 function DashboardContentShimmer() {
   return (
     <section className="space-y-4" aria-hidden="true">
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid min-w-0 gap-4 md:grid-cols-2 xl:grid-cols-4">
         {Array.from({ length: 4 }).map((_, index) => (
           <div
             key={index}
-            className="flex h-[172px] flex-col justify-center gap-4 rounded-[14px] border border-primary/8 bg-white px-6 py-4"
+            className="flex min-h-40 min-w-0 flex-col justify-center gap-3 rounded-[14px] border border-primary/8 bg-white px-4 py-4 sm:min-h-43 sm:gap-4 sm:px-6"
           >
             <Shimmer className="size-10 rounded-[10px]" />
             <div className="space-y-3">
               <Shimmer className="h-5 w-28 rounded-md" />
-              <div className="flex items-center justify-between gap-3">
-                <Shimmer className="h-9 w-24 rounded-md" />
-                <Shimmer className="h-7 w-16 rounded-full" />
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <Shimmer className="h-8 w-32 max-w-[65%] rounded-md sm:h-9" />
+                <Shimmer className="h-6 w-16 rounded-full sm:h-7" />
               </div>
               <Shimmer className="h-4 w-3/4 max-w-40 rounded-md" />
             </div>

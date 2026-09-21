@@ -16,12 +16,14 @@ function Dashboard() {
   const [period, setPeriod] = useState<DashboardPeriod>(7);
   const { data, isLoading, isError, refetch, isFetching } = useDashboardAnalytics({ period });
 
+  if (isLoading) {
+    return <DashboardContentShimmer />;
+  }
+
   return (
     <div className="flex w-full flex-col gap-6">
       <Header title="نظرة عامة" subtitle="تابع الأداء والإيرادات وحالة الأسطول من مكان واحد." />
-      {isLoading ? (
-        <DashboardContentShimmer />
-      ) : isError ? (
+      {isError ? (
         <QueryErrorState title="تعذر تحميل بيانات لوحة التحكم" isRetrying={isFetching} onRetry={() => void refetch()} />
       ) : (
         <>

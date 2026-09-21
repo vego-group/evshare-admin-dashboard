@@ -40,11 +40,15 @@ export function useVatSettlementForm(options: Options) {
   };
 
   const onSubmit = async (values: VatSettlementFormValues) => {
+    form.clearErrors("root");
     const payload = buildVatSettlementPayload(values);
     const result = await addVatSettlement(payload);
 
     if (!result?.ok) {
-      toast.error(result?.message || "فشل تسجيل التسوية الضريبية");
+      form.setError("root", {
+        type: "server",
+        message: result?.message || "فشل تسجيل التسوية الضريبية",
+      });
       return;
     }
 

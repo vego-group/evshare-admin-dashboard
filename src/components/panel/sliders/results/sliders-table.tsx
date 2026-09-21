@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 
 import type { Slider } from "@/types";
-import ContentPublicationSummary from "@/components/panel/content-publication-summary";
 
 import { formatDate, SliderActions, SliderThumbnail, StatusBadge } from "./slider-result-parts";
 
@@ -20,7 +19,6 @@ function SlidersTable({ sliders, onEditSlider, onDeleteSlider }: SlidersTablePro
             <tr className="bg-primary/8 text-base font-semibold text-dark-gray">
               <HeaderCell>الصورة</HeaderCell>
               <HeaderCell>الحالة</HeaderCell>
-              <HeaderCell>النشر</HeaderCell>
               <HeaderCell>تاريخ الإنشاء</HeaderCell>
               <HeaderCell>الإجراءات</HeaderCell>
             </tr>
@@ -33,9 +31,6 @@ function SlidersTable({ sliders, onEditSlider, onDeleteSlider }: SlidersTablePro
                 </TableCell>
                 <TableCell truncate={false}>
                   <StatusBadge active={slider.active} />
-                </TableCell>
-                <TableCell truncate={false}>
-                  <ContentPublicationSummary publication={slider.publication} compact />
                 </TableCell>
                 <TableCell dir="ltr">{formatDate(slider.created_at)}</TableCell>
                 <TableCell truncate={false}>

@@ -4,7 +4,6 @@ import { ShieldX } from "lucide-react";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
-import Loader from "@/components/ui/loader";
 import { useUserPermissions } from "@/hooks";
 
 type RouteRule = {
@@ -63,13 +62,37 @@ const routeRules: RouteRule[] = [
   { pattern: /^\/pages$/, permission: "Admin Index Pages" },
 ];
 
+function PermissionLoadingShimmer() {
+  return (
+    <div
+      role="status"
+      aria-label="Loading page permissions"
+      className="flex min-h-40 w-full items-center justify-center py-10 sm:min-h-48 sm:py-14"
+    >
+      <span className="sr-only">Loading page permissions</span>
+      <div
+        aria-hidden="true"
+        className="flex items-center gap-2 rounded-2xl border border-primary/20 bg-white px-6 py-5 shadow-sm"
+      >
+        {[0, 1, 2].map((index) => (
+          <span
+            key={index}
+            className="size-2.5 animate-bounce rounded-full bg-primary"
+            style={{ animationDelay: `${index * 150}ms` }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function PanelPermissionGuard({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const { isLoading, hasAnyPermission } = useUserPermissions();
   const rule = routeRules.find(({ pattern }) => pattern.test(pathname));
 
   if (isLoading) {
-    return <div className="grid min-h-[50vh] place-items-center"><Loader /></div>;
+    return <PermissionLoadingShimmer />;
   }
 
   if (rule && !hasAnyPermission(rule.permission)) {

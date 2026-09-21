@@ -39,7 +39,8 @@ export default function SubscriptionDiscounts() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
   const { data, isLoading } = useSubscriptionDiscounts(params);
-  const { data: pricing } = useCurrentSubscriptionPricing();
+  const { data: pricing, isLoading: isPricingLoading } = useCurrentSubscriptionPricing();
+  const isPageLoading = isLoading || isPricingLoading;
 
   const refresh = async () => invalidatePricingQueries(queryClient);
   const openForm = (discount: SubscriptionDiscount | null) => { setEditing(discount); setFormOpen(true); };
@@ -56,6 +57,11 @@ export default function SubscriptionDiscounts() {
   }
 
   const meta = data?.meta;
+
+  if (isPageLoading) {
+    return <SubscriptionDiscountsPageShimmer />;
+  }
+
   return (
     <div className="flex w-full flex-col gap-6">
       <section className="flex w-full flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
@@ -69,7 +75,7 @@ export default function SubscriptionDiscounts() {
 
       <DiscountToolbar params={params} onChange={(next) => setParams({ ...params, ...next, page: 1 })} />
 
-      {isLoading ? <DiscountsShimmer /> : data?.data.length ? <section className="overflow-hidden rounded-lg bg-white">
+      {data?.data.length ? <section className="overflow-hidden rounded-lg bg-white">
         <div className="overflow-x-auto">
           <table className="w-full min-w-225 border-separate border-spacing-0 text-right">
             <thead><tr className="bg-primary/8 text-base font-semibold text-dark-gray">{["الاسم", "النوع", "القيمة", "الفترة", "التفعيل", "الحالة الآن", "الإجراءات"].map((label) => <th key={label} className="border-b border-primary/15 px-5 py-5">{label}</th>)}</tr></thead>
@@ -89,6 +95,21 @@ export default function SubscriptionDiscounts() {
   );
 }
 
+function SubscriptionDiscountsPageShimmer() {
+  return (
+    <div className="flex w-full flex-col gap-6" aria-hidden="true">
+      <PricingSummaryShimmer />
+
+      <section className="flex gap-3 rounded-2xl border border-neutral-100/60 bg-white p-1.5">
+        <Shimmer className="h-10 w-40 rounded-xl" />
+        <Shimmer className="h-10 w-40 rounded-xl" />
+      </section>
+
+      <DiscountsShimmer />
+    </div>
+  );
+}
+
 function PricingSummary({ pricing }: { pricing?: { base_price: number; discount_amount: number; final_price: number; currency?: string; discount: SubscriptionDiscount | null } }) {
   return <><section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
     <Price label="السعر الأساسي" value={pricing?.base_price} currency={pricing?.currency} icon="money" />
@@ -96,6 +117,25 @@ function PricingSummary({ pricing }: { pricing?: { base_price: number; discount_
     <Price label="السعر النهائي" value={pricing?.final_price} currency={pricing?.currency} icon="money" />
     <div className="flex min-h-29 items-center gap-4 rounded-2xl bg-white p-5 shadow-[0_2px_8px_rgba(0,0,0,0.04)]"><div className="grid size-12 place-items-center rounded-xl bg-primary/15 text-secondary"><Percent className="size-5" /></div><div><p className="text-sm text-gray">الخصم الساري</p><p className="mt-1 max-w-40 truncate text-base font-semibold text-secondary">{pricing?.discount?.name || "لا يوجد"}</p></div></div>
   </section>{pricing ? <PricingConfigurationMeta metadata={pricing} compact /> : null}</>;
+}
+
+function PricingSummaryShimmer() {
+  return (
+    <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-hidden="true">
+      {Array.from({ length: 4 }).map((_, index) => (
+        <div
+          key={index}
+          className="flex min-h-29 items-center gap-4 rounded-2xl bg-white p-5 shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
+        >
+          <Shimmer className="size-12 shrink-0 rounded-xl" />
+          <div className="flex-1 space-y-2">
+            <Shimmer className="h-4 w-28 max-w-full rounded-md" />
+            <Shimmer className="h-7 w-24 max-w-full rounded-md" />
+          </div>
+        </div>
+      ))}
+    </section>
+  );
 }
 
 function Price({ label, value, currency, icon }: { label: string; value?: number; currency?: string; icon: "money" | "percent" }) {

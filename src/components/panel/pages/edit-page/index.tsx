@@ -1,7 +1,6 @@
 "use client";
 
 import Header from "@/components/ui/header";
-import ContentPublicationSummary from "@/components/panel/content-publication-summary";
 import { getPageLabel } from "@/data/pages";
 
 import PageFormActions from "./page-form-actions";
@@ -28,8 +27,6 @@ function EditPage() {
         title={page ? `تعديل صفحة ${getPageLabel(page.slug)}` : "تعديل الصفحة"}
         subtitle="قم بتعديل عنوان ومحتوى الصفحة"
       />
-
-      {page ? <ContentPublicationSummary publication={page.publication} /> : null}
 
       <div className="rounded-2xl border border-neutral-100 bg-white p-4 shadow-sm md:p-6">
         <form

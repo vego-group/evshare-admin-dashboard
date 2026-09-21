@@ -2,14 +2,7 @@ import Shimmer from "@/components/ui/shimmer";
 
 function ContactUsContentShimmer() {
   return (
-    <div className="flex w-full flex-col gap-6" aria-hidden="true">
-      <section className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-col gap-2">
-          <Shimmer className="h-7 w-40 rounded-md" />
-          <Shimmer className="h-4 w-64 rounded-md" />
-        </div>
-      </section>
-
+    <div className="w-full" aria-hidden="true">
       <div className="overflow-hidden rounded-2xl bg-white">
         <div className="overflow-x-auto">
           <div className="min-w-212.5">

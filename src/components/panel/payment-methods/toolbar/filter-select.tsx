@@ -27,7 +27,7 @@ function FilterSelect<T extends string>({
   const selectedLabel = options.find((option) => option.value === value)?.label;
 
   return (
-    <div className="relative h-9.5 w-full text-sm font-medium leading-5 text-dark-gray sm:w-44">
+    <div className="relative h-9.5 w-full text-sm font-medium leading-5 text-dark-gray sm:w-49">
       <button
         type="button"
         aria-label={label}

@@ -1,5 +1,6 @@
-import type { FieldErrors, UseFormRegister } from "react-hook-form";
+import { Controller, type Control, type FieldErrors, type UseFormRegister } from "react-hook-form";
 
+import DatePicker from "@/components/ui/date-picker";
 import InputErrorMessage from "@/components/ui/input-error-message";
 import CurrencyAdornment from "@/components/ui/currency-adornment";
 import { useCurrencyInputPadding } from "@/provider/currency";
@@ -10,6 +11,7 @@ import {
 import type { VatSettlementFormValues } from "@/schemas/finance";
 
 type Props = {
+  control: Control<VatSettlementFormValues>;
   errors: FieldErrors<VatSettlementFormValues>;
   register: UseFormRegister<VatSettlementFormValues>;
 };
@@ -17,7 +19,7 @@ type Props = {
 const inputClass =
   "h-12 w-full rounded-xl border border-primary/20 px-4 text-sm outline-none focus:border-primary";
 
-function SettlementFields({ errors, register }: Props) {
+function SettlementFields({ control, errors, register }: Props) {
   const currencyInputPadding = useCurrencyInputPadding();
   return (
     <div className="grid gap-5 sm:grid-cols-2">
@@ -40,7 +42,7 @@ function SettlementFields({ errors, register }: Props) {
           step="0.01"
           min="0"
           dir="ltr"
-          placeholder="0.00"
+          placeholder="10"
           onKeyDown={(event) =>
             preventNegativeNumberInput(event, { allowDecimal: true })
           }
@@ -55,11 +57,17 @@ function SettlementFields({ errors, register }: Props) {
 
       <label className="text-sm font-medium text-dark-gray">
         تاريخ السداد
-        <input
-          type="date"
-          dir="ltr"
-          className={`${inputClass} mt-2 text-left`}
-          {...register("paid_at")}
+        <Controller
+          control={control}
+          name="paid_at"
+          render={({ field }) => (
+            <DatePicker
+              className="mt-2"
+              placement="top"
+              value={field.value}
+              onChange={(value) => field.onChange(value ?? "")}
+            />
+          )}
         />
         <InputErrorMessage msg={errors.paid_at?.message} />
       </label>

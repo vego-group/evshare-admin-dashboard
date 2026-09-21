@@ -17,18 +17,18 @@ export default function RevenueOverviewInfoPanel({ data, period, peakPoint }: Pr
       <Bolt className="size-4 shrink-0 text-secondary" />إيرادات المنصة
     </div>
     <div className="space-y-2">
-      <p className="text-[2.5rem] font-medium leading-none tracking-[-0.03em] text-dark-gray sm:text-[3rem]">{measure ? format(measure.current.total, true) : "—"}</p>
+      <p dir="ltr" className="whitespace-nowrap text-3xl font-medium leading-none tracking-[-0.03em] text-dark-gray sm:text-[3rem]">{measure ? format(measure.current.total, true) : "—"}</p>
       <p className="text-sm font-medium text-gray">إجمالي إيرادات آخر {period} أيام</p>
     </div>
     <div className="grid grid-cols-2 gap-3">
-      <div className="rounded-[18px] border border-primary/10 bg-neutral-50 px-4 py-3">
+      <div className="min-w-0 rounded-[18px] border border-primary/10 bg-neutral-50 px-3 py-3 sm:px-4">
         <p className="text-xs font-medium text-gray">ذروة الفترة</p>
-        <p className="mt-1 text-2xl font-semibold text-dark-gray sm:text-3xl">{peakPoint?.current != null ? format(peakPoint.current, true) : "—"}</p>
+        <p dir="ltr" className="mt-1 whitespace-nowrap text-xl font-semibold text-dark-gray sm:text-3xl">{peakPoint?.current != null ? format(peakPoint.current, true) : "—"}</p>
         <p className="mt-1 text-xs font-medium text-gray">{peakPoint?.label ?? "لا يوجد"}</p>
       </div>
-      <div className="rounded-[18px] border border-primary/10 bg-neutral-50 px-4 py-3">
+      <div className="min-w-0 rounded-[18px] border border-primary/10 bg-neutral-50 px-3 py-3 sm:px-4">
         <p className="text-xs font-medium text-gray">متوسط يومي</p>
-        <p className="mt-1 text-2xl font-semibold text-dark-gray sm:text-3xl">{measure ? format(dailyAverage, true) : "—"}</p>
+        <p dir="ltr" className="mt-1 whitespace-nowrap text-xl font-semibold text-dark-gray sm:text-3xl">{measure ? format(dailyAverage, true) : "—"}</p>
         <p className="mt-1 text-xs font-medium text-gray">/ يوم</p>
       </div>
     </div>

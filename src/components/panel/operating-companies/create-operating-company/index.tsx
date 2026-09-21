@@ -8,21 +8,33 @@ import { ArrowRight } from "lucide-react";
 
 import Header from "@/components/ui/header";
 import { Button } from "@/components/ui/button";
+import InputErrorMessage from "@/components/ui/input-error-message";
 import { useUsers } from "@/hooks/api";
-import { normalizeTenantPhone } from "@/lib/utils/tenant-phone";
+import { getPhoneCountry, normalizeTenantPhone } from "@/lib/utils/tenant-phone";
 import { useTenantCountry } from "@/provider/currency";
 import { createOperatingCompanyAPI } from "@/services/mutations";
 
+import FormSelectDropdown, {
+  type FormSelectOption,
+} from "./form-select-dropdown";
+
 type Field = "slug" | "name_ar" | "name_en" | "owner_id" | "commission_percentage" | "mobile" | "email" | "status" | "conditions_ar" | "conditions_en" | "logo" | "contract";
 type Errors = Partial<Record<Field, string>>;
+type CompanyStatus = "active" | "inactive";
 const inputClass = "h-12 w-full rounded-xl border border-neutral-200 bg-white px-4 text-sm text-secondary outline-none focus:border-primary";
+const statusOptions: FormSelectOption[] = [
+  { label: "نشطة", value: "active" },
+  { label: "غير نشطة", value: "inactive" },
+];
 
 function CreateOperatingCompany() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const country = useTenantCountry();
+  const phoneCountry = getPhoneCountry(country);
   const [ownerSearch, setOwnerSearch] = useState("");
   const [selectedOwner, setSelectedOwner] = useState<{ id: string; label: string } | null>(null);
+  const [status, setStatus] = useState<CompanyStatus>("active");
   const { data: users, isLoading: usersLoading } = useUsers({ page: 1, limit: 100, account_status: "active", search: ownerSearch || undefined });
   const [errors, setErrors] = useState<Errors>({});
   const [saving, setSaving] = useState(false);
@@ -76,25 +88,25 @@ function CreateOperatingCompany() {
     <form onSubmit={submit} className="space-y-6 rounded-2xl border border-neutral-100 bg-white p-6" noValidate>
       <div className="grid gap-5 md:grid-cols-2">
         <Field label="المعرف (Slug)" error={errors.slug}><input name="slug" required maxLength={255} dir="ltr" className={inputClass} placeholder="north-fleet" /></Field>
-        <Field label="اسم الشركة بالعربية" error={errors.name_ar}><input name="name_ar" required maxLength={255} className={inputClass} /></Field>
-        <Field label="اسم الشركة بالإنجليزية" error={errors.name_en}><input name="name_en" required maxLength={255} dir="ltr" className={inputClass} /></Field>
+        <Field label="اسم الشركة بالعربية" error={errors.name_ar}><input name="name_ar" required maxLength={255} className={inputClass} placeholder="أدخل اسم الشركة بالعربية" /></Field>
+        <Field label="اسم الشركة بالإنجليزية" error={errors.name_en}><input name="name_en" required maxLength={255} dir="ltr" className={inputClass} placeholder="Enter company name in English" /></Field>
         <Field label="بحث عن المالك" ><input value={ownerSearch} onChange={(e) => setOwnerSearch(e.target.value)} className={inputClass} placeholder="ابحث بالاسم أو الجوال" /></Field>
-        <Field label="المالك" error={errors.owner_id}><select name="owner_id" required className={inputClass} value={selectedOwner?.id ?? ""} onChange={(event) => { const option = event.target.selectedOptions[0]; setSelectedOwner(event.target.value ? { id: event.target.value, label: option.text } : null); }}><option value="">{usersLoading ? "جار التحميل..." : "اختر مستخدماً نشطاً"}</option>{selectedOwner && !users?.data?.some((user) => user.id === selectedOwner.id) && <option value={selectedOwner.id}>{selectedOwner.label}</option>}{users?.data?.map((user) => <option key={user.id} value={user.id}>{user.name} — {user.mobile}</option>)}</select></Field>
-        <Field label="عمولة المنصة (%)" error={errors.commission_percentage}><input name="commission_percentage" type="number" min="0" max="100" step="0.01" required dir="ltr" className={inputClass} /></Field>
-        <Field label="رقم الجوال" error={errors.mobile}><input name="mobile" type="tel" required dir="ltr" className={inputClass} /></Field>
-        <Field label="البريد الإلكتروني" error={errors.email}><input name="email" type="email" required maxLength={255} dir="ltr" className={inputClass} /></Field>
-        <Field label="الحالة" error={errors.status}><select name="status" className={inputClass}><option value="active">نشطة</option><option value="inactive">غير نشطة</option></select></Field>
+        <Field label="المالك" error={errors.owner_id}><FormSelectDropdown name="owner_id" label="المالك" placeholder={usersLoading ? "جار التحميل..." : "اختر مستخدماً نشطاً"} value={selectedOwner?.id ?? ""} options={[...(selectedOwner && !users?.data?.some((user) => user.id === selectedOwner.id) ? [{ value: selectedOwner.id, label: selectedOwner.label }] : []), ...(users?.data?.map((user) => ({ value: user.id, label: `${user.name} — ${user.mobile}` })) ?? [])]} onChange={(option) => setSelectedOwner({ id: option.value, label: option.label })} emptyMessage={ownerSearch ? "لا توجد نتائج مطابقة" : "لا يوجد مستخدمون نشطون"} disabled={usersLoading} /></Field>
+        <Field label="عمولة المنصة (%)" error={errors.commission_percentage}><input name="commission_percentage" type="number" min="0" max="100" step="0.01" required dir="ltr" className={inputClass} placeholder="مثال: 10" /></Field>
+        <Field label="رقم الجوال" error={errors.mobile}><input name="mobile" type="tel" required dir="ltr" className={inputClass} placeholder={phoneCountry?.placeholder ?? "أدخل رقم الجوال"} /></Field>
+        <Field label="البريد الإلكتروني" error={errors.email}><input name="email" type="email" required maxLength={255} dir="ltr" className={inputClass} placeholder="ops@example.com" /></Field>
+        <Field label="الحالة" error={errors.status}><FormSelectDropdown name="status" label="الحالة" placeholder="اختر حالة الشركة" value={status} options={statusOptions} onChange={(option) => setStatus(option.value as CompanyStatus)} /></Field>
         <Field label="الشعار (اختياري)" error={errors.logo}><input name="logo" type="file" accept="image/jpeg,image/png,image/gif,image/svg+xml" className={inputClass} /></Field>
         <Field label="العقد PDF (اختياري)" error={errors.contract}><input name="contract" type="file" accept="application/pdf" className={inputClass} /></Field>
       </div>
-      <div className="grid gap-5 md:grid-cols-2"><Field label="الشروط بالعربية" error={errors.conditions_ar}><textarea name="conditions_ar" rows={4} className={inputClass + " h-auto py-3"} /></Field><Field label="الشروط بالإنجليزية" error={errors.conditions_en}><textarea name="conditions_en" rows={4} dir="ltr" className={inputClass + " h-auto py-3"} /></Field></div>
+      <div className="grid gap-5 md:grid-cols-2"><Field label="الشروط بالعربية" error={errors.conditions_ar}><textarea name="conditions_ar" rows={4} className={inputClass + " h-auto py-3"} placeholder="أدخل الشروط والأحكام بالعربية" /></Field><Field label="الشروط بالإنجليزية" error={errors.conditions_en}><textarea name="conditions_en" rows={4} dir="ltr" className={inputClass + " h-auto py-3"} placeholder="Enter terms and conditions in English" /></Field></div>
       <div className="flex gap-3"><Button type="submit" disabled={saving}>{saving ? "جار الحفظ..." : "إنشاء الشركة"}</Button><Button type="button" variant="outline" onClick={() => router.push("/operating-companies")}>إلغاء</Button></div>
     </form>
   </div>;
 }
 
 function Field({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
-  return <label className="flex flex-col gap-2 text-sm font-medium text-secondary"><span>{label}</span>{children}{error && <span className="text-xs text-red-600">{error}</span>}</label>;
+  return <label className="flex flex-col"><span className="mb-2 text-sm font-medium text-secondary">{label}</span>{children}<InputErrorMessage msg={error} /></label>;
 }
 
 export default CreateOperatingCompany;

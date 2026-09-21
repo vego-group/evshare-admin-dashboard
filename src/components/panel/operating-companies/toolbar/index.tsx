@@ -4,13 +4,22 @@ import { useState } from "react";
 
 import useDebouncedChange from "@/hooks/use-debounced-change";
 
+import FilterSelect, { type FilterOption } from "./filter-select";
 import SearchInput from "./search-input";
+
+type CompanyStatus = "active" | "inactive";
+
+const statusOptions: FilterOption<CompanyStatus | "all">[] = [
+  { label: "كل الحالات", value: "all" },
+  { label: "نشطة", value: "active" },
+  { label: "غير نشطة", value: "inactive" },
+];
 
 type OperatingCompaniesToolbarProps = {
   searchQuery?: string;
   onSearchChange?: (value: string) => void;
-  status?: "active" | "inactive";
-  onStatusChange?: (value?: "active" | "inactive") => void;
+  status?: CompanyStatus;
+  onStatusChange?: (value?: CompanyStatus) => void;
 };
 
 function OperatingCompaniesToolbar({
@@ -26,8 +35,24 @@ function OperatingCompaniesToolbar({
   useDebouncedChange(internalSearchQuery, onSearchChange, 500);
 
   return (
-    <section className="rounded-2xl border border-neutral-100/60 bg-white p-1.5 shadow-[0_2px_6px_rgba(0,0,0,0.04)]">
-      <div className="flex flex-wrap gap-2"><div className="min-w-60 flex-1"><SearchInput value={internalSearchQuery} onChange={setInternalSearchQuery} /></div><select aria-label="تصفية حسب حالة الشركة" className="rounded-xl border border-neutral-200 px-3 text-sm" value={status ?? "all"} onChange={(event) => onStatusChange?.(event.target.value === "all" ? undefined : event.target.value as "active" | "inactive")}><option value="all">كل الحالات</option><option value="active">نشطة</option><option value="inactive">غير نشطة</option></select></div>
+    <section className="space-y-3 lg:flex lg:items-center lg:justify-between lg:gap-3 lg:space-y-0 lg:rounded-2xl lg:border lg:border-neutral-100/60 lg:bg-white lg:p-1.5 lg:shadow-[0_2px_6px_rgba(0,0,0,0.04)]">
+      <div className="rounded-2xl border border-neutral-100/60 bg-white p-1.5 shadow-[0_2px_6px_rgba(0,0,0,0.04)] lg:flex-1 lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none">
+        <SearchInput
+          value={internalSearchQuery}
+          onChange={setInternalSearchQuery}
+        />
+      </div>
+
+      <div className="flex flex-col gap-3.25 sm:flex-row sm:flex-wrap lg:shrink-0">
+        <FilterSelect
+          label="الحالة"
+          options={statusOptions}
+          value={status ?? "all"}
+          onChange={(value) =>
+            onStatusChange?.(value === "all" ? undefined : value)
+          }
+        />
+      </div>
     </section>
   );
 }

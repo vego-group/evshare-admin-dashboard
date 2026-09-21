@@ -14,6 +14,7 @@ type VatToolbarProps = {
   selectedStatus?: VatStatus;
   selectedPeriod?: string;
   selectedCurrency?: string;
+  periods: string[];
   onStatusChange: (value?: VatStatus) => void;
   onPeriodChange: (value?: string) => void;
   onCurrencyChange: (value?: string) => void;
@@ -37,6 +38,7 @@ function VatToolbar({
   selectedStatus,
   selectedPeriod,
   selectedCurrency,
+  periods,
   onStatusChange,
   onPeriodChange,
   onCurrencyChange,
@@ -61,15 +63,15 @@ function VatToolbar({
         value={selectedCurrency ?? "all"}
         onChange={(value) => onCurrencyChange(value === "all" ? undefined : value)}
       />
-      <label className="flex h-9.5 w-full items-center gap-2 rounded-[14px] border border-primary bg-primary/4 px-3 text-sm font-medium text-dark-gray sm:w-49">
-        <span className="whitespace-nowrap text-gray">الفترة</span>
-        <input
-          type="month"
-          value={selectedPeriod ?? ""}
-          onChange={(event) => onPeriodChange(event.target.value || undefined)}
-          className="w-full bg-transparent text-dark-gray outline-none"
-        />
-      </label>
+      <FilterSelect
+        label="الفترة"
+        options={[
+          { label: "كل الفترات", value: "all" },
+          ...periods.map((period) => ({ label: period, value: period })),
+        ]}
+        value={selectedPeriod ?? "all"}
+        onChange={(value) => onPeriodChange(value === "all" ? undefined : value)}
+      />
       <FilterSelect
         label="الحالة"
         options={statusOptions}

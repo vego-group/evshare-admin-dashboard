@@ -3,6 +3,7 @@ import MoneyValue from "@/components/ui/money-value";
 
 import { Button } from "@/components/ui/button";
 import EmptyState from "@/components/ui/empty-state";
+import TableShimmer from "@/components/ui/table-shimmer";
 import type { VatSettlement } from "@/types";
 import PermissionGate from "@/components/permission-gate";
 import { ADMIN_PERMISSIONS } from "@/constants";
@@ -12,9 +13,16 @@ type Props = {
   onAdd: () => void;
   onExport: () => void;
   isExporting: boolean;
+  isLoading?: boolean;
 };
 
-function VatSettlements({ settlements, onAdd, onExport, isExporting }: Props) {
+function VatSettlements({
+  settlements,
+  onAdd,
+  onExport,
+  isExporting,
+  isLoading = false,
+}: Props) {
   return (
     <section className="flex flex-col gap-4 rounded-2xl bg-white p-5">
       <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
@@ -40,7 +48,7 @@ function VatSettlements({ settlements, onAdd, onExport, isExporting }: Props) {
         </div>
       </div>
 
-      {!settlements.length ? (
+      {!isLoading && !settlements.length ? (
         <EmptyState
           title="لا توجد تسويات"
           description="لم يتم تسجيل أي تسويات ضريبية بعد."
@@ -58,26 +66,31 @@ function VatSettlements({ settlements, onAdd, onExport, isExporting }: Props) {
                 <th className="px-5 py-4">بواسطة</th>
               </tr>
             </thead>
-            <tbody>
-              {settlements.map((settlement) => (
-                <tr key={settlement.id} className="border-b border-primary/15 last:border-0">
-                  <td className="px-5 py-4 font-medium" dir="ltr">
-                    {settlement.period}
-                  </td>
-                  <td className="px-5 py-4" dir="ltr">
-                    <MoneyValue value={settlement.amount} currency={settlement.currency} />
-                  </td>
-                  <td className="px-5 py-4" dir="ltr">
-                    {settlement.paid_at}
-                  </td>
-                  <td className="max-w-0 overflow-hidden text-ellipsis whitespace-nowrap px-5 py-4">
-                    {settlement.notes || "—"}
-                  </td>
-                  <td className="px-5 py-4">{settlement.recorded_by?.name ?? "—"}</td>
-                </tr>
-              ))}
-            </tbody>
+            {isLoading ? (
+              <TableShimmer columns={5} />
+            ) : (
+              <tbody>
+                {settlements.map((settlement) => (
+                  <tr key={settlement.id} className="border-b border-primary/15 last:border-0">
+                    <td className="px-5 py-4 font-medium" dir="ltr">
+                      {settlement.period}
+                    </td>
+                    <td className="px-5 py-4" dir="ltr">
+                      <MoneyValue value={settlement.amount} currency={settlement.currency} />
+                    </td>
+                    <td className="px-5 py-4" dir="ltr">
+                      {settlement.paid_at}
+                    </td>
+                    <td className="max-w-0 overflow-hidden text-ellipsis whitespace-nowrap px-5 py-4">
+                      {settlement.notes || "—"}
+                    </td>
+                    <td className="px-5 py-4">{settlement.recorded_by?.name ?? "—"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            )}
           </table>
+          {isLoading && <span className="sr-only">جارٍ تحميل تسويات الضريبة...</span>}
         </div>
       )}
     </section>
