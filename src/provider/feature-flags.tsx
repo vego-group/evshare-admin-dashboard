@@ -17,7 +17,13 @@ import {
 } from "@/lib/utils/feature-flags";
 import { useUserSession } from "@/lib/utils/user-session";
 
-const APPLICATION_VERSION = process.env.NEXT_PUBLIC_APP_VERSION || "0.1.0";
+const configuredBuildNumber = Number(
+  process.env.NEXT_PUBLIC_APP_BUILD_NUMBER ?? "1",
+);
+const APPLICATION_BUILD_NUMBER =
+  Number.isInteger(configuredBuildNumber) && configuredBuildNumber > 0
+    ? configuredBuildNumber
+    : 1;
 
 type FeatureFlagsContextValue = {
   isEnabled: (key: string, safeDefault?: boolean) => boolean;
@@ -43,7 +49,7 @@ export function FeatureFlagsProvider({
   const user = useUserSession();
   const [now, setNow] = useState(() => Date.now());
   const query = useEvaluatedFeatureFlags({
-    applicationVersion: APPLICATION_VERSION,
+    applicationVersion: APPLICATION_BUILD_NUMBER,
     tenant,
     userId: user?.id ?? null,
   });
@@ -52,7 +58,7 @@ export function FeatureFlagsProvider({
     () =>
       parseFeatureFlagEvaluation(query.data, {
         tenant,
-        applicationVersion: APPLICATION_VERSION,
+        applicationVersion: APPLICATION_BUILD_NUMBER,
         now,
       }),
     [query.data, tenant, now],

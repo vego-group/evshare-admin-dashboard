@@ -1,6 +1,11 @@
 "use client";
 
-import { Controller, useForm, type Resolver, type FieldErrors } from "react-hook-form";
+import {
+  Controller,
+  useForm,
+  type Resolver,
+  type FieldErrors,
+} from "react-hook-form";
 import { LogIn } from "lucide-react";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
@@ -28,7 +33,8 @@ const loginFormResolver: Resolver<LoginFormValues> = async (values) => {
 
 function LoginForm() {
   const router = useRouter();
-  const { data: countriesResponse, isLoading: countriesLoading } = useCountries();
+  const { data: countriesResponse, isLoading: countriesLoading } =
+    useCountries();
   const [country, setCountry] = useState("");
   const [countryError, setCountryError] = useState<string>();
   const {
@@ -68,7 +74,10 @@ function LoginForm() {
         value={country}
         error={countryError}
         disabled={countriesLoading}
-        onChange={(value) => { setCountry(value); setCountryError(undefined); }}
+        onChange={(value) => {
+          setCountry(value);
+          setCountryError(undefined);
+        }}
       />
       <Controller
         name="mobile"

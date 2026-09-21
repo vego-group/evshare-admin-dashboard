@@ -10,7 +10,7 @@ backend responsibilities.
 Authenticated clients call:
 
 ```http
-GET /feature-flags/evaluations?application=admin&platform=web&application_version=0.1.0
+GET /feature-flags/evaluations?application=admin&platform=web&application_version=1
 Authorization: Bearer <token>
 X-Tenant-Id: sa
 ```
@@ -29,7 +29,7 @@ between the authenticated tenant and `X-Tenant-Id`.
   "data": {
     "application": "admin",
     "platform": "web",
-    "application_version": "0.1.0",
+    "application_version": 1,
     "tenant": "sa",
     "configuration_version": "43",
     "published_at": "2026-09-21T11:59:55.000Z",
@@ -55,6 +55,8 @@ agreed propagation SLA.
 ## Frontend behavior
 
 - The query cache key includes tenant, user ID, and application version.
+- `application_version` is a positive integer build number configured through
+  `NEXT_PUBLIC_APP_BUILD_NUMBER`; it is not the semantic display version.
 - The client polls every 30 seconds and refreshes on focus and reconnect.
 - Missing flags default to `false` unless the call site explicitly supplies a
   reviewed safe default.

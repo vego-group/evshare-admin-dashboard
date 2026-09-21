@@ -26,7 +26,7 @@ export function useEvaluatedFeatureFlags({
   tenant,
   userId,
 }: {
-  applicationVersion: string;
+  applicationVersion: number;
   tenant: string;
   userId: string | null;
 }) {

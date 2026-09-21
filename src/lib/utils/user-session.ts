@@ -14,7 +14,6 @@ export type SessionUser = {
   name: string;
   mobile: string;
   role: UserRole;
-  permissions?: string[];
 };
 
 export function setUserSession(user: SessionUser): boolean {
