@@ -7,6 +7,7 @@ import { PAGE_SIZE } from "@/constants";
 import { useUsers } from "@/hooks/api";
 import { reactivateUser, removeUser, suspendUser } from "@/services/mutations/users";
 import type { AdminUserDetailResponse, UserListItem, UsersQueryParams } from "@/types";
+import { syncUserMutationResponse } from "@/lib/user-query-cache";
 import UsersMainContent from "./users-main-content";
 import UsersContentShimmer from "./content-shimmer";
 import UsersHeader, { type UsersViewMode } from "./header";
@@ -25,44 +26,58 @@ function Users() {
 
   const updateParams = (next: Partial<UsersQueryParams>) => setParams(current => ({ ...current, ...next }));
   const refreshUserQueries = async () => { await queryClient.invalidateQueries({ queryKey: ["users"] }); };
-  async function updateUser(id: string, response: AdminUserDetailResponse) {
-    queryClient.setQueryData(["user", id], response);
-    await refreshUserQueries();
+  async function updateUser(_id: string, response: AdminUserDetailResponse) {
+    await syncUserMutationResponse(queryClient, response);
   }
 
   async function handleDeleteUser(reason: string) {
     if (!userPendingDelete || isSubmitting) return;
     setIsSubmitting(true);
-    const result = await removeUser(userPendingDelete.id, reason);
-    if (result.ok && result.data) {
-      await updateUser(userPendingDelete.id, result.data);
-      toast.success(result.message || "تمت إزالة المستخدم");
-      setUserPendingDelete(null);
-    } else toast.error(result.error?.message || result.message || "تعذرت إزالة المستخدم");
-    setIsSubmitting(false);
+    try {
+      const result = await removeUser(userPendingDelete.id, reason);
+      if (result.ok && result.data) {
+        await updateUser(userPendingDelete.id, result.data);
+        toast.success(result.message || "تمت إزالة المستخدم");
+        setUserPendingDelete(null);
+      } else toast.error(result.error?.message || result.message || "تعذرت إزالة المستخدم");
+    } catch {
+      toast.error("تعذرت إزالة المستخدم");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   async function handleSuspendUser(reason?: string) {
     if (!userPendingSuspend || isSubmitting) return;
     setIsSubmitting(true);
-    const result = await suspendUser(userPendingSuspend.id, reason);
-    if (result.ok && result.data) {
-      await updateUser(userPendingSuspend.id, result.data);
-      toast.success(result.message || "تم تعليق المستخدم");
-      setUserPendingSuspend(null);
-    } else toast.error(result.error?.message || result.message || "تعذر تعليق المستخدم");
-    setIsSubmitting(false);
+    try {
+      const result = await suspendUser(userPendingSuspend.id, reason);
+      if (result.ok && result.data) {
+        await updateUser(userPendingSuspend.id, result.data);
+        toast.success(result.message || "تم تعليق المستخدم");
+        setUserPendingSuspend(null);
+      } else toast.error(result.error?.message || result.message || "تعذر تعليق المستخدم");
+    } catch {
+      toast.error("تعذر تعليق المستخدم");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   async function handleReactivateUser(user: UserListItem) {
     if (isSubmitting) return;
     setIsSubmitting(true);
-    const result = await reactivateUser(user.id);
-    if (result.ok && result.data) {
-      await updateUser(user.id, result.data);
-      toast.success(result.message || "تمت إعادة تفعيل المستخدم");
-    } else toast.error(result.error?.message || result.message || "تعذرت إعادة تفعيل المستخدم");
-    setIsSubmitting(false);
+    try {
+      const result = await reactivateUser(user.id);
+      if (result.ok && result.data) {
+        await updateUser(user.id, result.data);
+        toast.success(result.message || "تمت إعادة تفعيل المستخدم");
+      } else toast.error(result.error?.message || result.message || "تعذرت إعادة تفعيل المستخدم");
+    } catch {
+      toast.error("تعذرت إعادة تفعيل المستخدم");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return <div className="flex w-full flex-col gap-6">
