@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test:phone": "node --test tests/tenant-phone.test.mjs",
-    "test:feature-flags": "node --test tests/feature-flags.test.mjs"
+    "test:feature-flags": "node --test tests/feature-flags.test.mjs",
+    "test:users": "node --test tests/user-account-actions.test.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
