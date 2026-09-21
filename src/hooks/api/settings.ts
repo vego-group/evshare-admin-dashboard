@@ -15,7 +15,7 @@ export function useSettingsPropagation() {
       retry: false,
       refetchInterval: (query) => {
         const status = query.state.data?.data.status;
-        return status === "pending" || status === "propagating" ? 5_000 : 30_000;
+        return status === "propagating" ? 5_000 : 30_000;
       },
     },
   );

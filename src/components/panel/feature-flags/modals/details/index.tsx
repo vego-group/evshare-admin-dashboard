@@ -37,6 +37,10 @@ function FeatureFlagDetailsModal({ featureFlagId, open, onClose }: Props) {
               label="الحالة"
               value={<FeatureFlagStatusBadge isEnabled={flag.is_enabled} />}
             />
+            <FeatureFlagDetailRow label="الجمهور" value={flag.audience ?? "all"} dir="ltr" />
+            <FeatureFlagDetailRow label="المنصات" value={flag.platforms?.join(", ") || "الكل"} dir="ltr" />
+            <FeatureFlagDetailRow label="أقل رقم بناء" value={flag.min_app_version ?? "—"} dir="ltr" />
+            <FeatureFlagDetailRow label="أعلى رقم بناء" value={flag.max_app_version ?? "—"} dir="ltr" />
           </>
         ) : (
           <p className="py-10 text-center text-gray">

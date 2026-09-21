@@ -27,33 +27,30 @@ const { parseFeatureFlagEvaluation, isFeatureEnabled } = load(
   "src/lib/utils/feature-flags.ts",
 );
 
-const now = Date.parse("2026-09-21T12:00:00.000Z");
-
 function response(overrides = {}) {
   return {
     error: false,
     message: "",
     data: {
-      application: "admin",
-      platform: "web",
-      application_version: 1,
-      tenant: "sa",
-      configuration_version: "42",
-      published_at: "2026-09-21T11:59:55.000Z",
+      feature_flags: [
+        { id: "1", key: "new-dashboard", name: "New dashboard", name_ar: "لوحة جديدة", name_en: "New dashboard", is_enabled: true, enabled: true },
+        { id: "2", key: "legacy-export", name: "Legacy export", name_ar: "تصدير قديم", name_en: "Legacy export", is_enabled: false, enabled: false },
+      ],
+      config_version: 42,
+      config_published_at: "2026-09-21T11:59:55.000Z",
       evaluated_at: "2026-09-21T11:59:58.000Z",
-      expires_at: "2026-09-21T12:01:00.000Z",
-      flags: { "new-dashboard": true, "legacy-export": false },
+      evaluation_context: { audience: "admin", platform: "web", version_code: 1 },
       ...overrides,
     },
   };
 }
 
-const context = { tenant: "sa", applicationVersion: 1, now };
+const context = { applicationVersion: 1 };
 
 test("uses evaluated enable and disable values", () => {
   const evaluation = parseFeatureFlagEvaluation(response(), context);
-  assert.equal(isFeatureEnabled(evaluation, "new-dashboard", false, now), true);
-  assert.equal(isFeatureEnabled(evaluation, "legacy-export", true, now), false);
+  assert.equal(isFeatureEnabled(evaluation, "new-dashboard", false), true);
+  assert.equal(isFeatureEnabled(evaluation, "legacy-export", true), false);
 });
 
 test("missing flags use the caller's explicit safe default", () => {
@@ -62,21 +59,11 @@ test("missing flags use the caller's explicit safe default", () => {
   assert.equal(isFeatureEnabled(evaluation, "missing", true), true);
 });
 
-test("expired cached evaluations fail closed", () => {
-  const evaluation = parseFeatureFlagEvaluation(
-    response({ expires_at: "2026-09-21T11:59:59.000Z" }),
-    context,
-  );
-  assert.equal(evaluation, null);
-  assert.equal(isFeatureEnabled(evaluation, "new-dashboard"), false);
-});
-
-test("tenant, application, platform, and app-version mismatches are rejected", () => {
+test("audience, platform, and app-version mismatches are rejected", () => {
   for (const overrides of [
-    { tenant: "jo" },
-    { application: "merchant" },
-    { platform: "ios" },
-    { application_version: 2 },
+    { evaluation_context: { audience: "merchant", platform: "web", version_code: 1 } },
+    { evaluation_context: { audience: "admin", platform: "ios", version_code: 1 } },
+    { evaluation_context: { audience: "admin", platform: "web", version_code: 2 } },
   ]) {
     assert.equal(parseFeatureFlagEvaluation(response(overrides), context), null);
   }
@@ -85,7 +72,7 @@ test("tenant, application, platform, and app-version mismatches are rejected", (
 test("malformed and non-boolean payloads fail closed", () => {
   assert.equal(parseFeatureFlagEvaluation({ data: null }, context), null);
   assert.equal(
-    parseFeatureFlagEvaluation(response({ flags: { unsafe: "true" } }), context),
+    parseFeatureFlagEvaluation(response({ feature_flags: [{ id: "1", key: "unsafe", name: "Unsafe", name_ar: "غير آمن", name_en: "Unsafe", is_enabled: true, enabled: "true" }] }), context),
     null,
   );
 });
@@ -94,14 +81,17 @@ test("rollback replaces the complete configuration atomically", () => {
   const enabled = parseFeatureFlagEvaluation(response(), context);
   const rollback = parseFeatureFlagEvaluation(
     response({
-      configuration_version: "43",
-      flags: { "new-dashboard": false, "legacy-export": true },
+      config_version: 43,
+      feature_flags: [
+        { id: "1", key: "new-dashboard", name: "New dashboard", name_ar: "لوحة جديدة", name_en: "New dashboard", is_enabled: false, enabled: false },
+        { id: "2", key: "legacy-export", name: "Legacy export", name_ar: "تصدير قديم", name_en: "Legacy export", is_enabled: true, enabled: true },
+      ],
     }),
     context,
   );
 
-  assert.equal(isFeatureEnabled(enabled, "new-dashboard", false, now), true);
-  assert.equal(isFeatureEnabled(rollback, "new-dashboard", false, now), false);
+  assert.equal(isFeatureEnabled(enabled, "new-dashboard", false), true);
+  assert.equal(isFeatureEnabled(rollback, "new-dashboard", false), false);
   assert.deepEqual(rollback.flags, {
     "new-dashboard": false,
     "legacy-export": true,

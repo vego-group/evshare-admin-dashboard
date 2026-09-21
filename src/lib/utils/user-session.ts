@@ -4,7 +4,6 @@ import { useSyncExternalStore } from "react";
 
 import type { UserRole } from "@/types";
 import { getQueryClient } from "./query";
-import { setFeatureFlagRuntimeMetadata } from "../feature-flag-runtime";
 
 const USER_SESSION_KEY = "user_data";
 const USER_SESSION_EVENT = "user-session-change";
@@ -41,7 +40,6 @@ export function clearUserSession() {
 
 function clearUserScopedCaches() {
   getQueryClient().clear();
-  setFeatureFlagRuntimeMetadata(null);
 }
 
 let cachedRaw: string | null = null;

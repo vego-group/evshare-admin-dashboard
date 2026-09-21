@@ -209,6 +209,23 @@ export type ShipmentPayload = {
   estimated_pickup_date?: string | null;
   estimated_delivery_date?: string | null;
   notes?: string | null;
+  sender_name?: string | null;
+  sender_mobile?: string | null;
+  sender_email?: string | null;
+  sender_address?: string | null;
+  sender_latitude?: number | null;
+  sender_longitude?: number | null;
+  sender_city_uuid?: string | null;
+  recipient_name?: string | null;
+  recipient_mobile?: string | null;
+  recipient_email?: string | null;
+  recipient_address?: string | null;
+  recipient_district?: string | null;
+  recipient_postcode?: string | null;
+  recipient_short_address_code?: string | null;
+  recipient_latitude?: number | null;
+  recipient_longitude?: number | null;
+  recipient_city_uuid?: string | null;
 };
 
 export type ShipmentStatusPayload = {

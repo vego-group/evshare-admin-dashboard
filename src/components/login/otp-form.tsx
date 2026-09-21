@@ -11,7 +11,6 @@ import { RefreshCw, ShieldCheck } from "lucide-react";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
-import { useRouter } from "next/navigation";
 import { formatPhoneNumberIntl } from "react-phone-number-input";
 
 import { Button } from "@/components/ui/button";
@@ -51,7 +50,6 @@ type OtpFormProps = {
 };
 
 export default function OtpForm({ mobile, country }: OtpFormProps) {
-  const router = useRouter();
   const [accessDeniedMessage, setAccessDeniedMessage] = useState<string>();
   const [mustResend, setMustResend] = useState(false);
   const [isResending, setIsResending] = useState(false);
@@ -143,7 +141,9 @@ export default function OtpForm({ mobile, country }: OtpFormProps) {
     }
 
     toast.success(result.message || "تم تسجيل الدخول بنجاح");
-    router.replace("/");
+    // Start a fresh request so the dashboard guard sees the cookies that were
+    // just written by the server actions instead of a prefetched login result.
+    window.location.replace("/");
   };
 
   async function resendCode() {

@@ -5,12 +5,10 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useState,
   type ReactNode,
 } from "react";
 
 import { useEvaluatedFeatureFlags } from "@/hooks/api";
-import { setFeatureFlagRuntimeMetadata } from "@/lib/feature-flag-runtime";
 import {
   isFeatureEnabled,
   parseFeatureFlagEvaluation,
@@ -28,7 +26,7 @@ const APPLICATION_BUILD_NUMBER =
 type FeatureFlagsContextValue = {
   isEnabled: (key: string, safeDefault?: boolean) => boolean;
   status: "loading" | "ready" | "degraded";
-  configurationVersion: string | null;
+  configurationVersion: number | null;
   propagationLagMs: number | null;
 };
 
@@ -47,44 +45,30 @@ export function FeatureFlagsProvider({
   children: ReactNode;
 }) {
   const user = useUserSession();
-  const [now, setNow] = useState(() => Date.now());
   const query = useEvaluatedFeatureFlags({
     applicationVersion: APPLICATION_BUILD_NUMBER,
     tenant,
     userId: user?.id ?? null,
   });
+  const refetch = query.refetch;
 
   const evaluation = useMemo(
     () =>
       parseFeatureFlagEvaluation(query.data, {
-        tenant,
         applicationVersion: APPLICATION_BUILD_NUMBER,
-        now,
       }),
-    [query.data, tenant, now],
+    [query.data],
   );
 
   useEffect(() => {
-    const timer = window.setInterval(() => setNow(Date.now()), 30_000);
-    return () => window.clearInterval(timer);
-  }, []);
-
-  useEffect(() => {
-    if (!evaluation) {
-      setFeatureFlagRuntimeMetadata(null);
-      return;
-    }
-    setFeatureFlagRuntimeMetadata({
-      configurationVersion: evaluation.configuration_version,
-      evaluatedAt: evaluation.evaluated_at,
-      receivedAt: new Date(query.dataUpdatedAt).toISOString(),
-    });
-    return () => setFeatureFlagRuntimeMetadata(null);
-  }, [
-    evaluation?.configuration_version,
-    evaluation?.evaluated_at,
-    query.dataUpdatedAt,
-  ]);
+    const refreshIfNewer = (event: Event) => {
+      const nextVersion = (event as CustomEvent<number>).detail;
+      if (Number.isInteger(nextVersion) &&
+        (!evaluation || nextVersion > evaluation.config_version)) void refetch();
+    };
+    window.addEventListener("feature-flags-config-version", refreshIfNewer);
+    return () => window.removeEventListener("feature-flags-config-version", refreshIfNewer);
+  }, [evaluation, refetch]);
 
   const value = useMemo<FeatureFlagsContextValue>(() => {
     const status = evaluation
@@ -94,14 +78,14 @@ export function FeatureFlagsProvider({
         : "degraded";
     return {
       isEnabled: (key, safeDefault = false) =>
-        isFeatureEnabled(evaluation, key, safeDefault, now),
+        isFeatureEnabled(evaluation, key, safeDefault),
       status,
-      configurationVersion: evaluation?.configuration_version ?? null,
-      propagationLagMs: evaluation
-        ? Math.max(0, query.dataUpdatedAt - Date.parse(evaluation.published_at))
+      configurationVersion: evaluation?.config_version ?? null,
+      propagationLagMs: evaluation?.config_published_at
+        ? Math.max(0, query.dataUpdatedAt - Date.parse(evaluation.config_published_at))
         : null,
     };
-  }, [evaluation, now, query.dataUpdatedAt, query.isPending]);
+  }, [evaluation, query.dataUpdatedAt, query.isPending]);
 
   return (
     <FeatureFlagsContext.Provider value={value}>

@@ -1,51 +1,26 @@
 import {
   AlertTriangle,
-  CheckCircle2,
-  Clock3,
   RefreshCw,
-  RotateCcw,
-  XCircle,
 } from "lucide-react";
 
-import PermissionGate from "@/components/permission-gate";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import type {
-  SettingsConsumerStatus,
-  SettingsPropagation,
-  SettingsPropagationStatus,
-} from "@/types";
+import type { SettingsPropagation, SettingsPropagationStatus } from "@/types";
 
 const propagationLabels: Record<SettingsPropagationStatus, string> = {
-  pending: "بانتظار النشر",
-  propagating: "جارٍ النشر",
-  propagated: "تم النشر",
-  failed: "فشل النشر",
-  rolled_back: "تم التراجع",
+  degraded: "متدهورة",
+  unpublished: "لم تُنشر بعد",
+  lagging: "متأخرة عن المهلة",
+  propagating: "جارٍ الانتشار",
+  propagated: "تم الانتشار",
 };
 
 const propagationStyles: Record<SettingsPropagationStatus, string> = {
-  pending: "bg-amber-50 text-amber-700",
+  degraded: "bg-red-50 text-red-700",
+  unpublished: "bg-gray-100 text-dark-gray",
+  lagging: "bg-amber-50 text-amber-800",
   propagating: "bg-blue-50 text-blue-700",
   propagated: "bg-green-50 text-green-700",
-  failed: "bg-red-50 text-red-700",
-  rolled_back: "bg-violet-50 text-violet-700",
-};
-
-const consumerLabels: Record<SettingsConsumerStatus, string> = {
-  pending: "بانتظار التحديث",
-  current: "محدّث",
-  stale: "نسخة قديمة",
-  failed: "فشل التحديث",
-  unknown: "غير معروف",
-};
-
-const consumerStyles: Record<SettingsConsumerStatus, string> = {
-  pending: "bg-amber-50 text-amber-700",
-  current: "bg-green-50 text-green-700",
-  stale: "bg-orange-50 text-orange-700",
-  failed: "bg-red-50 text-red-700",
-  unknown: "bg-gray-100 text-dark-gray",
 };
 
 function formatDate(value?: string | null) {
@@ -64,7 +39,6 @@ type Props = {
   isError: boolean;
   isRefreshing: boolean;
   onRefresh: () => void;
-  onRollback: () => void;
 };
 
 export default function SettingsPropagationSummary({
@@ -73,7 +47,6 @@ export default function SettingsPropagationSummary({
   isError,
   isRefreshing,
   onRefresh,
-  onRollback,
 }: Props) {
   if (isLoading) {
     return (
@@ -112,8 +85,9 @@ export default function SettingsPropagationSummary({
             </span>
           </div>
           <p className="mt-2 text-sm text-gray">
-            الإصدار <strong dir="ltr" className="text-secondary">{propagation.version}</strong>
-            {propagation.tenant ? ` · المستأجر: ${propagation.tenant}` : ""}
+            الإصدار المنشور <strong dir="ltr" className="text-secondary">{propagation.config_version}</strong>
+            {` · الإصدار المستخدم: ${propagation.serving_version}`}
+            {` · المستأجر: ${propagation.tenant}`}
             {` · نُشر في ${formatDate(propagation.published_at)}`}
           </p>
         </div>
@@ -123,47 +97,29 @@ export default function SettingsPropagationSummary({
             <RefreshCw className={cn("size-4", isRefreshing && "animate-spin")} />
             تحديث الحالة
           </Button>
-          {propagation.previous_version != null && propagation.can_rollback !== false ? (
-            <PermissionGate slug="Admin Edit Settings">
-              <Button type="button" variant="outline" onClick={onRollback}>
-                <RotateCcw className="size-4" />
-                التراجع إلى الإصدار {propagation.previous_version}
-              </Button>
-            </PermissionGate>
-          ) : null}
         </div>
       </div>
 
-      <div className="mt-5 overflow-x-auto">
-        <table className="w-full min-w-180 text-right text-sm">
-          <thead className="bg-primary/8 text-dark-gray">
-            <tr>
-              <th className="px-4 py-3">المستهلك</th>
-              <th className="px-4 py-3">الحالة</th>
-              <th className="px-4 py-3">الإصدار النشط</th>
-              <th className="px-4 py-3">آخر تحديث</th>
-              <th className="px-4 py-3">التفاصيل</th>
-            </tr>
-          </thead>
-          <tbody>
-            {propagation.consumers.length ? propagation.consumers.map((consumer) => (
-              <tr key={consumer.name} className="border-b border-primary/15 last:border-0">
-                <td className="px-4 py-3 font-medium text-secondary">{consumer.name}</td>
-                <td className="px-4 py-3">
-                  <span className={cn("inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium", consumerStyles[consumer.status])}>
-                    {consumer.status === "current" ? <CheckCircle2 className="size-3.5" /> : consumer.status === "failed" ? <XCircle className="size-3.5" /> : <Clock3 className="size-3.5" />}
-                    {consumerLabels[consumer.status]}
-                  </span>
-                </td>
-                <td dir="ltr" className="px-4 py-3 text-right">{consumer.active_version ?? "—"}</td>
-                <td className="px-4 py-3">{formatDate(consumer.refreshed_at)}</td>
-                <td className="max-w-80 px-4 py-3 text-gray">{consumer.error || "—"}</td>
-              </tr>
-            )) : (
-              <tr><td colSpan={5} className="px-4 py-6 text-center text-gray">لا توجد بيانات للمستهلكين.</td></tr>
-            )}
-          </tbody>
-        </table>
+      <div className="mt-5 grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
+        {([
+          ["الإجمالي", propagation.consumers.total],
+          ["نشط", propagation.consumers.live],
+          ["محدّث", propagation.consumers.current],
+          ["متأخر", propagation.consumers.behind],
+          ["متدهور", propagation.consumers.degraded],
+          ["صامت", propagation.consumers.silent],
+        ] as const).map(([label, value]) => (
+          <div key={label} className="rounded-xl bg-neutral-50 p-3 text-center">
+            <strong className="block text-lg text-secondary">{value}</strong>
+            <span className="text-xs text-gray">{label}</span>
+          </div>
+        ))}
+      </div>
+      <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray">
+        <span>مهلة الانتشار: {propagation.propagation.sla_seconds} ثانية</span>
+        <span>ضمن المهلة: {propagation.propagation.within_sla ? "نعم" : "لا"}</span>
+        <span>آخر تقرير: {formatDate(propagation.last_consumer_report_at)}</span>
+        {propagation.propagation.deadline_at ? <span>الموعد النهائي: {formatDate(propagation.propagation.deadline_at)}</span> : null}
       </div>
     </section>
   );

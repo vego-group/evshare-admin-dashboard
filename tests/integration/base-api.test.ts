@@ -1,10 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@/lib/toast-events", () => ({ notifyForbidden: vi.fn() }));
-vi.mock("@/lib/feature-flag-runtime", () => ({
-  getFeatureFlagRuntimeHeaders: () => ({ "X-Feature-Flag-Version": "test-1" }),
-}));
-
 describe("browser API integration", () => {
   beforeEach(() => {
     vi.resetModules();
@@ -37,5 +33,24 @@ describe("browser API integration", () => {
     const { baseAPI } = await import("@/services");
 
     await expect(baseAPI("GET", "/users")).rejects.toMatchObject({ message: "Forbidden", status: 403 });
+  });
+
+  it("announces newer feature-flag configuration versions", async () => {
+    const listener = vi.fn();
+    window.addEventListener("feature-flags-config-version", listener);
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(JSON.stringify({ data: [] }), {
+        status: 200,
+        headers: {
+          "content-type": "application/json",
+          "X-Config-Version": "pricing=93;content=108;feature_flags=312",
+        },
+      }),
+    );
+    const { baseAPI } = await import("@/services");
+    await baseAPI("GET", "/users");
+    expect(listener).toHaveBeenCalledOnce();
+    expect((listener.mock.calls[0][0] as CustomEvent).detail).toBe(312);
+    window.removeEventListener("feature-flags-config-version", listener);
   });
 });
