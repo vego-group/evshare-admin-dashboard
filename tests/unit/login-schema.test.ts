@@ -37,4 +37,28 @@ describe("authentication validation", () => {
 
     expect(authResponseSchema.safeParse(response).success).toBe(false);
   });
+
+  it("accepts auth responses without embedded permissions", () => {
+    const response = {
+      data: {
+        access_token: "token",
+        expires_at: new Date(Date.now() + 60_000).toISOString(),
+        tenant: { id: "1", code: "sa" },
+        mobile_verified: true,
+        kyc_verified: false,
+        kyc_status: "not_verified",
+        last_kyc: null,
+        user_data: {
+          id: "user-1",
+          name: "Admin",
+          mobile: "966512345678",
+          role: "root",
+        },
+      },
+    };
+
+    const result = authResponseSchema.safeParse(response);
+
+    expect(result.success).toBe(true);
+  });
 });

@@ -25,7 +25,6 @@ const authUserSchema = z.object({
   name: z.string().min(1),
   mobile: z.string().min(1),
   role: z.string().min(1),
-  permissions: z.array(z.string()),
 });
 
 export const authResponseSchema = z.object({

@@ -8,7 +8,7 @@ export const ADMIN_PLATFORM = "web" as const;
 
 type EvaluationContext = {
   tenant: string;
-  applicationVersion: string;
+  applicationVersion: number;
   now?: number;
 };
 

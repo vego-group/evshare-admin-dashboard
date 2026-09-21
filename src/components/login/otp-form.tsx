@@ -23,10 +23,7 @@ import {
 } from "@/components/ui/input-otp";
 import Loader from "@/components/ui/loader";
 import { removeToken, setCountry, setToken } from "@/lib";
-import {
-  API_ERROR_CODES,
-  getApiErrorCode,
-} from "@/lib/utils/api-error";
+import { API_ERROR_CODES, getApiErrorCode } from "@/lib/utils/api-error";
 import { clearUserSession, setUserSession } from "@/lib/utils/user-session";
 import {
   authResponseSchema,
@@ -42,7 +39,8 @@ const verifyOtpResolver: Resolver<VerifyOtpFormValues> = async (values) => {
   const errors: FieldErrors<VerifyOtpFormValues> = {};
   for (const issue of result.error.issues) {
     const field = issue.path[0] as keyof VerifyOtpFormValues;
-    if (!errors[field]) errors[field] = { type: issue.code, message: issue.message };
+    if (!errors[field])
+      errors[field] = { type: issue.code, message: issue.message };
   }
   return { values: {}, errors };
 };
@@ -91,7 +89,10 @@ export default function OtpForm({ mobile, country }: OtpFormProps) {
     const result = await verifyLoginAPI(data);
     if (!result.ok) {
       const code = getApiErrorCode(result.error);
-      if (code === API_ERROR_CODES.otpExpired || code === API_ERROR_CODES.otpAttemptsExceeded) {
+      if (
+        code === API_ERROR_CODES.otpExpired ||
+        code === API_ERROR_CODES.otpAttemptsExceeded
+      ) {
         setMustResend(true);
       }
       if (
@@ -123,7 +124,9 @@ export default function OtpForm({ mobile, country }: OtpFormProps) {
     if (tenant.code !== country) {
       await removeToken();
       clearUserSession();
-      setAccessDeniedMessage("الجلسة تخص دولة أخرى. سجّل الدخول للدولة المحددة من جديد.");
+      setAccessDeniedMessage(
+        "الجلسة تخص دولة أخرى. سجّل الدخول للدولة المحددة من جديد.",
+      );
       return;
     }
 
@@ -173,10 +176,15 @@ export default function OtpForm({ mobile, country }: OtpFormProps) {
     : "";
 
   return (
-    <form className="space-y-5 px-3 py-5 md:px-4 md:py-6" onSubmit={handleSubmit(onSubmit)}>
+    <form
+      className="space-y-5 px-3 py-5 md:px-4 md:py-6"
+      onSubmit={handleSubmit(onSubmit)}
+    >
       <div className="space-y-0.5 text-center">
         <p className="text-sm text-gray-500">تم إرسال رمز التحقق إلى</p>
-        <p className="font-semibold text-secondary" dir="ltr">{displayPhone}</p>
+        <p className="font-semibold text-secondary" dir="ltr">
+          {displayPhone}
+        </p>
       </div>
 
       <div className="flex flex-col items-center gap-1">
@@ -190,7 +198,10 @@ export default function OtpForm({ mobile, country }: OtpFormProps) {
                 pattern={REGEXP_ONLY_DIGITS}
                 value={field.value}
                 onChange={field.onChange}
-                disabled={Boolean(accessDeniedMessage) || mustResend}
+                onComplete={() => void handleSubmit(onSubmit)()}
+                disabled={
+                  isSubmitting || Boolean(accessDeniedMessage) || mustResend
+                }
               >
                 <InputOTPGroup className="flex items-center">
                   {Array.from({ length: 6 }).map((_, index) => (
@@ -207,8 +218,14 @@ export default function OtpForm({ mobile, country }: OtpFormProps) {
           />
         </div>
         <InputErrorMessage msg={errors.otp?.message} />
-        {mustResend && <p className="text-xs text-red-600">انتهت صلاحية الرمز أو استُنفدت المحاولات. اطلب رمزاً جديداً.</p>}
-        {accessDeniedMessage && <p className="text-xs text-red-600">{accessDeniedMessage}</p>}
+        {mustResend && (
+          <p className="text-xs text-red-600">
+            انتهت صلاحية الرمز أو استُنفدت المحاولات. اطلب رمزاً جديداً.
+          </p>
+        )}
+        {accessDeniedMessage && (
+          <p className="text-xs text-red-600">{accessDeniedMessage}</p>
+        )}
       </div>
 
       <motion.div whileTap={{ scale: 0.99 }}>
@@ -217,7 +234,14 @@ export default function OtpForm({ mobile, country }: OtpFormProps) {
           disabled={isSubmitting || mustResend || Boolean(accessDeniedMessage)}
           className="h-10 w-full rounded-lg bg-primary font-bold text-secondary shadow-[0_10px_24px_rgba(255,208,29,0.35)] hover:bg-primary/95"
         >
-          {isSubmitting ? <Loader /> : <><ShieldCheck className="size-4 shrink-0" />تحقق من الرمز</>}
+          {isSubmitting ? (
+            <Loader />
+          ) : (
+            <>
+              <ShieldCheck className="size-4 shrink-0" />
+              تحقق من الرمز
+            </>
+          )}
         </Button>
       </motion.div>
 
@@ -229,7 +253,9 @@ export default function OtpForm({ mobile, country }: OtpFormProps) {
         className="h-10 w-full gap-2"
       >
         {isResending ? <Loader /> : <RefreshCw className="size-4" />}
-        {retryAfter > 0 ? `إعادة الإرسال بعد ${retryAfter} ث` : "إعادة إرسال الرمز"}
+        {retryAfter > 0
+          ? `إعادة الإرسال بعد ${retryAfter} ث`
+          : "إعادة إرسال الرمز"}
       </Button>
     </form>
   );

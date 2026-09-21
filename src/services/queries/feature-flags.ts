@@ -54,7 +54,7 @@ export const featureFlagVersionsAPI = async (
   await baseAPI("GET", `/feature-flags/${featureFlagId}/versions`);
 
 export const evaluatedFeatureFlagsAPI = async (
-  applicationVersion: string,
+  applicationVersion: number,
 ): Promise<FeatureFlagEvaluationResponse> => {
   const query = buildQuery({
     application: "admin",

@@ -17,7 +17,6 @@ export type AuthResponse = {
       name: string;
       mobile: string;
       role: UserRole;
-      permissions: string[];
     };
   };
 };

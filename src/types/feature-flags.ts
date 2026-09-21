@@ -81,7 +81,7 @@ export type EvaluatedFeatureFlags = Record<string, boolean>;
 export type FeatureFlagEvaluation = {
   application: "admin";
   platform: "web";
-  application_version: string;
+  application_version: number;
   tenant: string;
   configuration_version: string;
   published_at: string;

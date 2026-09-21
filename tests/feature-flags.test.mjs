@@ -36,7 +36,7 @@ function response(overrides = {}) {
     data: {
       application: "admin",
       platform: "web",
-      application_version: "0.1.0",
+      application_version: 1,
       tenant: "sa",
       configuration_version: "42",
       published_at: "2026-09-21T11:59:55.000Z",
@@ -48,7 +48,7 @@ function response(overrides = {}) {
   };
 }
 
-const context = { tenant: "sa", applicationVersion: "0.1.0", now };
+const context = { tenant: "sa", applicationVersion: 1, now };
 
 test("uses evaluated enable and disable values", () => {
   const evaluation = parseFeatureFlagEvaluation(response(), context);
@@ -76,7 +76,7 @@ test("tenant, application, platform, and app-version mismatches are rejected", (
     { tenant: "jo" },
     { application: "merchant" },
     { platform: "ios" },
-    { application_version: "0.2.0" },
+    { application_version: 2 },
   ]) {
     assert.equal(parseFeatureFlagEvaluation(response(overrides), context), null);
   }
