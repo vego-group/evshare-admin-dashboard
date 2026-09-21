@@ -6,7 +6,7 @@ type Props = { data?: DashboardAnalyticsData; period: DashboardPeriod; peakPoint
 
 export default function RevenueOverviewInfoPanel({ data, period, peakPoint }: Props) {
   const measure = data?.measures["revenue.total"];
-  const currency = data?.meta.currency ?? "";
+  const currency = measure?.currency ?? data?.revenue_chart.currency ?? data?.meta.currency ?? "";
   const dailyAverage = measure && data?.meta.window.days ? measure.current.total / data.meta.window.days : 0;
   const format = (value: number, compact = false) => measure
     ? formatMeasure(value, measure, currency, compact ? { notation: "compact", maximumFractionDigits: 1 } : undefined)

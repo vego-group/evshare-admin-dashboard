@@ -23,8 +23,9 @@ export const verifyOtpSchema = z.object({
 const authUserSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1),
-  mobile: z.union([z.string().min(1), z.number()]),
+  mobile: z.string().min(1),
   role: z.string().min(1),
+  permissions: z.array(z.string()),
 });
 
 export const authResponseSchema = z.object({
@@ -33,11 +34,17 @@ export const authResponseSchema = z.object({
     expires_at: z
       .string()
       .min(1)
+      .regex(/Z$/, "Session expiry must be UTC")
       .refine((value) => !Number.isNaN(Date.parse(value)))
       .refine((value) => Date.parse(value) > Date.now()),
+    tenant: z.object({
+      id: z.string().min(1),
+      code: z.string().regex(/^[a-z]{2}$/),
+    }),
     mobile_verified: z.boolean(),
     kyc_verified: z.boolean(),
     kyc_status: z.enum(["not_verified", "pending", "verified"]),
+    last_kyc: z.unknown().nullable(),
     user_data: authUserSchema,
   }),
 });

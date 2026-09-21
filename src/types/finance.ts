@@ -7,9 +7,10 @@ export type VatQueryParams = {
   period?: string;
   page?: number;
   limit?: number;
+  currency?: string;
 };
 
-export type VatSummary = {
+export type VatSummarySingleCurrency = {
   total_vat: number;
   vat_due: number;
   vat_paid: number;
@@ -18,6 +19,21 @@ export type VatSummary = {
   vat_rate: number;
   as_of: string;
 };
+
+export type VatSummaryMixedCurrency = {
+  currency: null;
+  vat_rate: number;
+  as_of: string;
+  totals_by_currency: Record<string, {
+    total_vat: number;
+    vat_due: number;
+    vat_paid: number;
+    vat_remaining: number;
+  }>;
+  currencies: string[];
+};
+
+export type VatSummary = VatSummarySingleCurrency | VatSummaryMixedCurrency;
 
 export type VatSummaryResponse = {
   error: boolean;
@@ -131,7 +147,7 @@ export type VatSettlementDetailResponse = {
 export type VatExportType = "vat_records" | "vat_settlements";
 export type VatExportStatus = "queued" | "processing" | "completed" | "failed" | "expired";
 
-export type VatExportFilters = Pick<VatQueryParams, "date_from" | "date_to" | "status" | "period">;
+export type VatExportFilters = Pick<VatQueryParams, "date_from" | "date_to" | "status" | "period" | "currency">;
 
 export type VatExportRequest = VatExportFilters & { type: VatExportType };
 

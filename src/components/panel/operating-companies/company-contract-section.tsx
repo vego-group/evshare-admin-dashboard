@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import PermissionGate from "@/components/permission-gate";
+import { ADMIN_PERMISSIONS } from "@/constants";
 import { Button } from "@/components/ui/button";
 import { useCustomQuery, useHasPermission } from "@/hooks";
 import { operatingCompanyContractAPI } from "@/services/queries/operating-companies";
@@ -54,7 +55,7 @@ export default function CompanyContractSection({ companyId }: { companyId: strin
       ) : data?.data?.url ? (
         <a href={data.data.url} target="_blank" rel="noopener noreferrer" className="block break-all text-sm text-primary underline">عرض العقد: {data.data.file_name || "عقد التشغيل"}</a>
       ) : <p className="text-sm text-gray">لم يتم رفع عقد تشغيل للشركة بعد.</p>)}
-      <PermissionGate slug="Admin Edit Operation Companies">
+      <PermissionGate slug={ADMIN_PERMISSIONS.operationCompanies.uploadContract}>
         <div className="space-y-3">
           <label htmlFor={`company-contract-${companyId}`} className="block text-sm font-medium">رفع / استبدال العقد (PDF، DOC، DOCX — حتى 10 ميجابايت)</label>
           <input ref={input} id={`company-contract-${companyId}`} type="file" accept=".pdf,.doc,.docx" disabled={busy} className="block w-full rounded-lg border p-3 text-sm" onChange={(event) => {

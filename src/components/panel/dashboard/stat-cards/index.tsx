@@ -24,7 +24,7 @@ export default function StatCardsSection({ data }: Props) {
               <p className="text-sm leading-5 font-medium text-gray">{title}</p>
               <div className="flex justify-between gap-3">
                 <p className="text-[30px] leading-9.5 font-semibold tracking-[-0.03em] text-dark-gray">
-                  {measure ? formatMeasure(measure.current.total, measure, data!.meta.currency) : "—"}
+                  {measure ? formatMeasure(measure.current.total, measure, measure.currency ?? data!.meta.currency) : "—"}
                 </p>
                 {measure && (measure.change.percent === null
                   ? formatChange(measure, data!.meta)

@@ -46,7 +46,7 @@ export default function QuickStatsSection({ data }: Props) {
               <p className="text-sm font-medium text-gray">{title}</p>
             </div>
             <p className="text-2xl font-semibold leading-none tracking-[-0.02em] text-dark-gray">
-              {measure ? formatMeasure(measure.current.total, measure, data!.meta.currency) : "—"}
+              {measure ? formatMeasure(measure.current.total, measure, measure.currency ?? data!.meta.currency) : "—"}
             </p>
           </div>
         </div>

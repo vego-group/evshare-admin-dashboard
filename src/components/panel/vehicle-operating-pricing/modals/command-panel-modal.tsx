@@ -106,7 +106,7 @@ function CommandPanelModal({
     idempotencyKey: string;
   } | null>(null);
   const canViewLocks = useHasPermission("Admin View Locks");
-  const canEditLocks = useHasPermission("Admin Edit Locks");
+  const canAssignLocks = useHasPermission(ADMIN_PERMISSIONS.locks.assign);
   const vehicleId = open ? (vehicle?.id ?? null) : null;
   const { data: assignedLockData, isLoading: isLoadingLock } =
     useVehicleAssignedLock(canViewLocks ? vehicleId : null);
@@ -117,7 +117,7 @@ function CommandPanelModal({
   const { data: unassignedLocksData, isLoading: isLoadingUnassignedLocks } =
     useVehicleLocks(
       { assigned: false, limit: 100 },
-      { enabled: Boolean(vehicleId && canViewLocks && canEditLocks) },
+      { enabled: Boolean(vehicleId && canViewLocks && canAssignLocks) },
     );
   const unassignedLocks = unassignedLocksData?.data ?? [];
   const activeCommand =
@@ -480,7 +480,7 @@ function CommandPanelModal({
                 )}
               </div>
 
-              <PermissionGate slug="Admin Edit Locks">
+              <PermissionGate slug={ADMIN_PERMISSIONS.locks.unassign}>
                 <button
                   type="button"
                   disabled={isBusy}
@@ -504,10 +504,10 @@ function CommandPanelModal({
               </p>
 
               <PermissionGate
-                slug="Admin Edit Locks"
+                slug={ADMIN_PERMISSIONS.locks.assign}
                 fallback={
                   <p className="rounded-xl bg-white p-3 text-center text-sm text-gray">
-                    تحتاج صلاحية Admin Edit Locks لربط قفل موجود.
+                    تحتاج صلاحية Admin Assign Locks لربط قفل موجود.
                   </p>
                 }
               >

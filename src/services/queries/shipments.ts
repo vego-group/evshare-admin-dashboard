@@ -20,6 +20,7 @@ export const shipmentsAPI = async (
     shipping_company_uuid: params.shipping_company_uuid,
     order_uuid: params.order_uuid,
     order_by: params.order_by,
+    currency: params.currency,
   });
 
   return await baseAPI("GET", `/shipments?${query}`);

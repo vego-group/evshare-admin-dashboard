@@ -8,12 +8,15 @@ import PermissionGate from "@/components/permission-gate";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { VatStatus } from "@/types";
+import { ADMIN_PERMISSIONS, SUPPORTED_CURRENCIES } from "@/constants";
 
 type VatToolbarProps = {
   selectedStatus?: VatStatus;
   selectedPeriod?: string;
+  selectedCurrency?: string;
   onStatusChange: (value?: VatStatus) => void;
   onPeriodChange: (value?: string) => void;
+  onCurrencyChange: (value?: string) => void;
   onExport: () => void;
   isExporting: boolean;
 };
@@ -25,11 +28,18 @@ const statusOptions: FilterOption<VatStatus | "all">[] = [
   ...vatStatusOptions,
 ];
 
+const currencyOptions: FilterOption<string>[] = [
+  { label: "كل العملات", value: "all" },
+  ...SUPPORTED_CURRENCIES.map((currency) => ({ label: currency, value: currency })),
+];
+
 function VatToolbar({
   selectedStatus,
   selectedPeriod,
+  selectedCurrency,
   onStatusChange,
   onPeriodChange,
+  onCurrencyChange,
   onExport,
   isExporting,
 }: VatToolbarProps) {
@@ -37,11 +47,20 @@ function VatToolbar({
 
   return (
     <section className="flex flex-col gap-3 rounded-2xl border border-neutral-100/60 bg-white p-3 shadow-[0_2px_6px_rgba(0,0,0,0.04)] sm:flex-row sm:items-center sm:justify-end">
-      <PermissionGate slug="Admin Export VAT">
+      <PermissionGate
+        slug={[ADMIN_PERMISSIONS.vat.export, ADMIN_PERMISSIONS.vat.viewExports]}
+        requireAll
+      >
         <Button type="button" variant="outline" onClick={onExport} disabled={isExporting}>
           <Download className="size-4" /> تصدير السجلات
         </Button>
       </PermissionGate>
+      <FilterSelect
+        label="العملة"
+        options={currencyOptions}
+        value={selectedCurrency ?? "all"}
+        onChange={(value) => onCurrencyChange(value === "all" ? undefined : value)}
+      />
       <label className="flex h-9.5 w-full items-center gap-2 rounded-[14px] border border-primary bg-primary/4 px-3 text-sm font-medium text-dark-gray sm:w-49">
         <span className="whitespace-nowrap text-gray">الفترة</span>
         <input

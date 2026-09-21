@@ -68,7 +68,7 @@ function EditOperatingCompany() {
                 onLogoChange={handleLogoChange}
                 register={register}
                 control={control}
-                isPlatform={company?.slug === "evshare"}
+                isPlatform
               />
               {company?.slug !== "evshare" && <div className="grid gap-5 md:grid-cols-2">
                 <label className="flex flex-col gap-2 text-sm font-medium text-secondary">بحث عن المالك<input className="h-12 rounded-xl border border-neutral-200 px-4" value={ownerSearch} onChange={(event) => setOwnerSearch(event.target.value)} placeholder="اسم أو جوال" /></label>

@@ -3,6 +3,8 @@ import { CheckCircle, XCircle } from "lucide-react";
 import Loader from "@/components/ui/loader";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import PermissionGate from "@/components/permission-gate";
+import { ADMIN_PERMISSIONS } from "@/constants";
 
 function RequestDetailsFooter({
   onApprove,
@@ -20,7 +22,8 @@ function RequestDetailsFooter({
   return (
     <footer className="shrink-0 border-t border-gray/20 px-6 pb-5 pt-6">
       <div className="grid grid-cols-2 gap-3">
-        <Button
+        <PermissionGate slug={ADMIN_PERMISSIONS.paymentRequests.approve}>
+          <Button
           type="button"
           onClick={onApprove}
           disabled={actionPending}
@@ -31,8 +34,10 @@ function RequestDetailsFooter({
         >
           {approveLoading ? <Loader /> : <CheckCircle className="size-5 shrink-0" />}
           موافقة
-        </Button>
-        <Button
+          </Button>
+        </PermissionGate>
+        <PermissionGate slug={ADMIN_PERMISSIONS.paymentRequests.reject}>
+          <Button
           type="button"
           onClick={onReject}
           disabled={actionPending}
@@ -43,7 +48,8 @@ function RequestDetailsFooter({
         >
           {rejectLoading ? <Loader /> : <XCircle className="size-5 shrink-0" />}
           رفض
-        </Button>
+          </Button>
+        </PermissionGate>
       </div>
     </footer>
   );

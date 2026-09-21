@@ -86,7 +86,9 @@ export function useEditOperatingCompanyForm() {
     if (!company || (!isDirty && !extraDirty)) return;
 
     const payload = buildChangedOperatingCompanyPayload(values, dirtyFields, countryCode);
-    if (company.slug === "evshare") payload.delete("commission_percentage");
+    // Commission has a dedicated endpoint and permission; never send it via
+    // the broad company-edit operation.
+    payload.delete("commission_percentage");
     if (ownerId && ownerId !== (company.owner?.id ?? "")) payload.set("owner_id", ownerId);
     if (status !== (company.status ?? "active")) payload.set("status", status);
     if (!hasFormDataEntries(payload)) return;

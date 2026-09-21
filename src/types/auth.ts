@@ -7,11 +7,17 @@ export type AuthResponse = {
     expires_at: string;
     kyc_verified: boolean;
     kyc_status: "not_verified" | "pending" | "verified";
+    last_kyc: unknown | null;
+    tenant: {
+      id: string;
+      code: string;
+    };
     user_data: {
       id: string;
       name: string;
-      mobile: string | number;
+      mobile: string;
       role: UserRole;
+      permissions: string[];
     };
   };
 };

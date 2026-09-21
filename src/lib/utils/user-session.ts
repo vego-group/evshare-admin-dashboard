@@ -12,8 +12,9 @@ const USER_SESSION_EVENT = "user-session-change";
 export type SessionUser = {
   id: string;
   name: string;
-  mobile: string | number;
+  mobile: string;
   role: UserRole;
+  permissions?: string[];
 };
 
 export function setUserSession(user: SessionUser): boolean {

@@ -5,6 +5,7 @@ import { useState } from "react";
 import { shipmentStatusOptions } from "@/data";
 import useDebouncedChange from "@/hooks/use-debounced-change";
 import type { OrderBy, ShipmentDirection, ShipmentStatus } from "@/types";
+import { SUPPORTED_CURRENCIES } from "@/constants";
 
 import CompanyFilterSelect from "./company-filter-select";
 import FilterSelect, { type FilterOption } from "./filter-select";
@@ -16,11 +17,13 @@ type ShipmentsToolbarProps = {
   selectedDirection?: ShipmentDirection;
   selectedCompany?: string;
   selectedSort?: OrderBy;
+  selectedCurrency?: string;
   onSearchChange?: (value: string) => void;
   onStatusChange?: (value?: ShipmentStatus) => void;
   onDirectionChange?: (value?: ShipmentDirection) => void;
   onCompanyChange?: (companyId?: string) => void;
   onSortChange?: (value: OrderBy) => void;
+  onCurrencyChange?: (value?: string) => void;
 };
 
 const statusOptions: FilterOption<ShipmentStatus | "all">[] = [
@@ -39,17 +42,24 @@ const sortOptions: FilterOption<OrderBy>[] = [
   { label: "الأقدم", value: "asc" },
 ];
 
+const currencyOptions: FilterOption<string>[] = [
+  { label: "كل العملات", value: "all" },
+  ...SUPPORTED_CURRENCIES.map((currency) => ({ label: currency, value: currency })),
+];
+
 function ShipmentsToolbar({
   searchQuery,
   selectedStatus,
   selectedDirection,
   selectedCompany,
   selectedSort,
+  selectedCurrency,
   onSearchChange,
   onStatusChange,
   onDirectionChange,
   onCompanyChange,
   onSortChange,
+  onCurrencyChange,
 }: ShipmentsToolbarProps) {
   const [internalSearchQuery, setInternalSearchQuery] = useState(
     searchQuery ?? "",
@@ -70,6 +80,12 @@ function ShipmentsToolbar({
         <CompanyFilterSelect
           value={selectedCompany}
           onChange={(companyId) => onCompanyChange?.(companyId)}
+        />
+        <FilterSelect
+          label="العملة"
+          options={currencyOptions}
+          value={selectedCurrency ?? "all"}
+          onChange={(value) => onCurrencyChange?.(value === "all" ? undefined : value)}
         />
         <FilterSelect
           label="الحالة"
