@@ -1,3 +1,7 @@
+nodeLinker: hoisted
+packageImportMethod: copy
+verifyDepsBeforeRun: false
+
 allowBuilds:
   msw: false
   sharp: false
