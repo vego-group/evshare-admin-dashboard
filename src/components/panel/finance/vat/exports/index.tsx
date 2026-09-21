@@ -1,11 +1,13 @@
 "use client";
 
-import { Download, RefreshCw } from "lucide-react";
+import { ChevronDown, Download, ListFilter, RefreshCw } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import EmptyState from "@/components/ui/empty-state";
+import TableShimmer from "@/components/ui/table-shimmer";
 import { useVatExports } from "@/hooks/api";
+import { cn } from "@/lib/utils";
 import type { VatExportStatus, VatExportType } from "@/types";
 
 type Props = {
@@ -47,49 +49,53 @@ function VatExports({ onDownload, downloadingId }: Props) {
         </Button>
       </div>
 
-      <div className="flex flex-wrap gap-3">
-        <label className="flex flex-col gap-1 text-sm text-gray">
-          نوع الملف
-          <select
-            value={type}
-            onChange={(event) => setType(event.target.value as VatExportType | "")}
-            className="h-10 rounded-xl border border-primary/30 bg-white px-3 text-dark-gray"
-          >
-            <option value="">الكل</option>
-            {Object.entries(typeLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
-          </select>
-        </label>
-        <label className="flex flex-col gap-1 text-sm text-gray">
-          الحالة
-          <select
-            value={status}
-            onChange={(event) => setStatus(event.target.value as VatExportStatus | "")}
-            className="h-10 rounded-xl border border-primary/30 bg-white px-3 text-dark-gray"
-          >
-            <option value="">الكل</option>
-            {Object.entries(statusLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
-          </select>
-        </label>
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+        <FilterSelect
+          label="نوع الملف"
+          value={type}
+          options={[
+            { label: "كل الملفات", value: "" },
+            ...Object.entries(typeLabels).map(([value, label]) => ({
+              label,
+              value: value as VatExportType,
+            })),
+          ]}
+          onChange={setType}
+        />
+        <FilterSelect
+          label="الحالة"
+          value={status}
+          options={[
+            { label: "كل الحالات", value: "" },
+            ...Object.entries(statusLabels).map(([value, label]) => ({
+              label,
+              value: value as VatExportStatus,
+            })),
+          ]}
+          onChange={setStatus}
+        />
       </div>
 
       {isError ? (
         <p role="alert" className="rounded-xl bg-red-50 p-4 text-sm text-red-700">تعذر تحميل سجل التصدير. حاول التحديث.</p>
       ) : isLoading ? (
-        <p className="py-8 text-center text-sm text-gray">جارٍ تحميل سجل التصدير...</p>
+        <div
+          className="overflow-x-auto rounded-2xl border border-primary/15"
+          aria-busy="true"
+          aria-label="جارٍ تحميل ملفات التصدير"
+        >
+          <table className="w-full min-w-190 text-right text-sm">
+            <ExportsTableHeader />
+            <TableShimmer columns={5} />
+          </table>
+          <span className="sr-only">جارٍ تحميل سجل التصدير...</span>
+        </div>
       ) : !exports.length ? (
         <EmptyState title="لا توجد ملفات تصدير" description="ستظهر ملفات التصدير هنا بعد طلبها." className="min-h-60 rounded-2xl" />
       ) : (
         <div className="overflow-x-auto rounded-2xl border border-primary/15">
           <table className="w-full min-w-190 text-right text-sm">
-            <thead className="bg-primary/8 text-dark-gray">
-              <tr>
-                <th className="px-4 py-3">الملف</th>
-                <th className="px-4 py-3">تاريخ الطلب</th>
-                <th className="px-4 py-3">الصفوف</th>
-                <th className="px-4 py-3">الحالة</th>
-                <th className="px-4 py-3">الإجراء</th>
-              </tr>
-            </thead>
+            <ExportsTableHeader />
             <tbody>
               {exports.map((item) => (
                 <tr key={item.id} className="border-b border-primary/15 last:border-0">
@@ -124,6 +130,86 @@ function VatExports({ onDownload, downloadingId }: Props) {
         </div>
       )}
     </section>
+  );
+}
+
+function ExportsTableHeader() {
+  return (
+    <thead className="bg-primary/8 text-dark-gray">
+      <tr>
+        <th className="px-4 py-3">الملف</th>
+        <th className="px-4 py-3">تاريخ الطلب</th>
+        <th className="px-4 py-3">الصفوف</th>
+        <th className="px-4 py-3">الحالة</th>
+        <th className="px-4 py-3">الإجراء</th>
+      </tr>
+    </thead>
+  );
+}
+
+type FilterOption<T extends string> = {
+  label: string;
+  value: T;
+};
+
+function FilterSelect<T extends string>({
+  label,
+  options,
+  value,
+  onChange,
+}: {
+  label: string;
+  options: FilterOption<T>[];
+  value: T;
+  onChange: (value: T) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const selectedLabel = options.find((option) => option.value === value)?.label;
+
+  return (
+    <div className="relative h-9.5 w-full text-sm font-medium leading-5 text-dark-gray sm:w-49">
+      <button
+        type="button"
+        aria-label={label}
+        aria-expanded={isOpen}
+        onClick={() => setIsOpen((current) => !current)}
+        className={cn(
+          "flex h-full w-full items-center justify-between overflow-hidden rounded-[14px]",
+          "border border-primary bg-primary/4 py-3.5 pl-2 pr-3 text-dark-gray transition hover:bg-primary/10",
+          isOpen && "bg-primary/10",
+        )}
+      >
+        <span className="flex items-center gap-1">
+          <span>{selectedLabel}</span>
+          <ListFilter className="size-3.5 shrink-0 text-primary" />
+        </span>
+        <ChevronDown
+          className={cn("size-5 shrink-0 text-primary transition", isOpen && "rotate-180")}
+        />
+      </button>
+
+      {isOpen && <div className="fixed inset-0 z-20" onClick={() => setIsOpen(false)} />}
+      {isOpen && (
+        <div className="dashboard-dropdown-scroll absolute right-0 top-[calc(100%+2px)] z-30 w-full rounded-[14px] border border-primary bg-bg-warm-ivory shadow-[0_10px_24px_rgba(16,24,40,0.12)]">
+          {options.map((option) => (
+            <button
+              key={option.value || "all"}
+              type="button"
+              onClick={() => {
+                onChange(option.value);
+                setIsOpen(false);
+              }}
+              className={cn(
+                "flex h-10 w-full items-center justify-start px-3 text-right text-sm font-medium text-dark-gray transition hover:bg-primary/10",
+                value === option.value && "bg-primary/15 text-secondary",
+              )}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 

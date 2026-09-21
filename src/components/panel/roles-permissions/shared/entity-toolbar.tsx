@@ -33,7 +33,7 @@ export default function EntityToolbar(props: Props) {
           </Button>
         )}
       </div>
-      <div className="flex flex-col gap-3 rounded-2xl border border-neutral-100/60 bg-white p-1.5 shadow-[0_2px_6px_rgba(0,0,0,0.04)] sm:flex-row">
+      <div className="flex flex-col gap-3 rounded-2xl border border-neutral-100/60 bg-white p-1.5 shadow-[0_2px_6px_rgba(0,0,0,0.04)] sm:flex-row sm:items-center">
         <label className="relative flex min-h-14 flex-1 items-center rounded-[14px] px-5 pr-14">
           <Search className="pointer-events-none absolute right-5 size-5 shrink-0 text-gray" />
           <input

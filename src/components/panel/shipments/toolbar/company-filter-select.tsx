@@ -24,7 +24,7 @@ function CompanyFilterSelect({ value, onChange }: CompanyFilterSelectProps) {
   };
 
   return (
-    <div className="relative h-9.5 w-full text-sm font-medium leading-5 text-dark-gray sm:w-49">
+    <div className="relative h-9.5 w-full text-sm font-medium leading-5 text-dark-gray sm:w-44">
       <button
         type="button"
         aria-label="شركة الشحن"

@@ -6,6 +6,7 @@ import { Download, FileBarChart2, RefreshCw } from "lucide-react";
 import toast from "react-hot-toast";
 
 import { Button } from "@/components/ui/button";
+import EmptyState from "@/components/ui/empty-state";
 import { useHasPermission } from "@/hooks";
 import { useTenantCountry } from "@/provider/currency";
 import { requestReportExport } from "@/services/mutations";
@@ -14,6 +15,8 @@ import type { ReportDefinition, ReportExport, ReportExportStatus, ReportFilterDe
 import PermissionGate from "@/components/permission-gate";
 import { ADMIN_PERMISSIONS } from "@/constants";
 import { notifyForbidden } from "@/lib/toast-events";
+import ReportsContentShimmer, { ReportsHistoryShimmer } from "./content-shimmer";
+import ReportFilterSelect from "./filter-select";
 
 const statusLabels: Record<ReportExportStatus, string> = {
   queued: "في الانتظار",
@@ -233,6 +236,10 @@ export default function ManagementReports() {
     }
   }
 
+  if (catalogQuery.isLoading) {
+    return <ReportsContentShimmer />;
+  }
+
   return (
     <div className="flex w-full flex-col gap-6" dir="rtl">
       <header>
@@ -260,9 +267,13 @@ export default function ManagementReports() {
       )}
       {tab === "catalog" ? (
         <div className="space-y-5">
-          {catalogQuery.isLoading && <p className="py-8 text-center text-sm text-gray">جارٍ تحميل كتالوج التقارير...</p>}
           {catalogQuery.isError && <p role="alert" className="rounded-xl bg-red-50 p-4 text-sm text-red-700">تعذر تحميل كتالوج التقارير. <button type="button" className="underline" onClick={() => void catalogQuery.refetch()}>إعادة المحاولة</button></p>}
-          {!catalogQuery.isLoading && !catalogQuery.isError && !reports.length && <p className="rounded-2xl bg-white p-6 text-sm text-gray">لا توجد تقارير متاحة حالياً.</p>}
+          {!catalogQuery.isLoading && !catalogQuery.isError && !reports.length && (
+            <EmptyState
+              title="لا توجد تقارير متاحة"
+              description="لا توجد تقارير متاحة حالياً في كتالوج التقارير."
+            />
+          )}
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {reports.map((report) => (
               <button key={report.key} type="button" disabled={!canGenerate} onClick={() => setSelectedKey(report.key)}
@@ -285,20 +296,36 @@ export default function ManagementReports() {
             <Button type="button" size="sm" variant="outline" onClick={() => void historyQuery.refetch()}><RefreshCw /> تحديث</Button>
           </div>
           <div className="flex flex-wrap gap-3">
-            <label className="flex flex-col gap-1 text-sm text-gray">التقرير
-              <select value={reportFilter} onChange={(event) => setReportFilter(event.target.value)} className="h-10 rounded-xl border border-primary/25 bg-white px-3 text-dark-gray">
-                <option value="">الكل</option>{reports.map((report) => <option key={report.key} value={report.key}>{report.title}</option>)}
-              </select>
-            </label>
-            <label className="flex flex-col gap-1 text-sm text-gray">الحالة
-              <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value as ReportExportStatus | "")} className="h-10 rounded-xl border border-primary/25 bg-white px-3 text-dark-gray">
-                <option value="">الكل</option>{Object.entries(statusLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
-              </select>
-            </label>
+            <ReportFilterSelect
+              label="التقرير"
+              value={reportFilter}
+              options={[
+                { value: "", label: "كل التقارير" },
+                ...reports.map((report) => ({ value: report.key, label: report.title })),
+              ]}
+              onChange={setReportFilter}
+            />
+            <ReportFilterSelect<ReportExportStatus | "">
+              label="الحالة"
+              value={statusFilter}
+              options={[
+                { value: "", label: "كل الحالات" },
+                ...Object.entries(statusLabels).map(([value, label]) => ({
+                  value: value as ReportExportStatus,
+                  label,
+                })),
+              ]}
+              onChange={setStatusFilter}
+            />
           </div>
-          {historyQuery.isLoading && <p className="py-8 text-center text-sm text-gray">جارٍ تحميل السجل...</p>}
+          {historyQuery.isLoading && <ReportsHistoryShimmer />}
           {historyQuery.isError && <p role="alert" className="rounded-xl bg-red-50 p-4 text-sm text-red-700">تعذر تحميل سجل التقارير.</p>}
-          {!historyQuery.isLoading && !historyQuery.isError && !exports.length && <p className="py-8 text-center text-sm text-gray">لا توجد تقارير مطابقة.</p>}
+          {!historyQuery.isLoading && !historyQuery.isError && !exports.length && (
+            <EmptyState
+              title="لا توجد تقارير في السجل"
+              description="لم يتم العثور على تقارير مطابقة للفلاتر المحددة."
+            />
+          )}
           {!!exports.length && <div className="overflow-x-auto rounded-xl border border-primary/15"><table className="w-full min-w-170 text-right text-sm">
             <thead className="bg-primary/8 text-dark-gray"><tr><th className="px-4 py-3">التقرير</th><th className="px-4 py-3">تاريخ الطلب</th><th className="px-4 py-3">الصفوف</th><th className="px-4 py-3">الحالة</th><th className="px-4 py-3">الإجراء</th></tr></thead>
             <tbody>{exports.map((item) => <tr key={item.id} className="border-t border-primary/15">

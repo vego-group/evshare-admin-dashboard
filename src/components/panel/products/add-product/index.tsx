@@ -1,11 +1,15 @@
 "use client";
 
+import { ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
+
 import Header from "@/components/ui/header";
 import ProductFormFields from "../modals/product-form-fields";
 import { ProductFormActions } from "../modals/product-form-modal-parts";
 import { useAddProductForm } from "./use-add-product-form";
 
 function AddProduct() {
+  const router = useRouter();
   const {
     register,
     control,
@@ -27,7 +31,17 @@ function AddProduct() {
 
   return (
     <div className="flex w-full flex-col gap-6">
-      <Header title="إضافة منتج" subtitle="إضافة منتج جديد للقائمة" />
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={() => router.push("/products")}
+          className="flex size-10 shrink-0 items-center justify-center rounded-full border border-neutral-200 bg-white text-secondary transition hover:bg-neutral-50"
+          aria-label="العودة إلى المنتجات"
+        >
+          <ArrowRight className="size-5 shrink-0" />
+        </button>
+        <Header title="إضافة منتج" subtitle="إضافة منتج جديد للقائمة" />
+      </div>
 
       <div className="rounded-2xl border border-neutral-100 bg-white p-4 shadow-sm md:p-6">
         <form

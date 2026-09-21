@@ -14,21 +14,21 @@ const cards: { id: DashboardMeasureId; title: string; icon: typeof DollarSign }[
 
 export default function StatCardsSection({ data }: Props) {
   return (
-    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+    <div className="grid min-w-0 gap-4 md:grid-cols-2 xl:grid-cols-4">
       {cards.map(({ id, title, icon: Icon }) => {
         const measure = data?.measures[id];
         return (
-          <DashboardSectionCard key={id} className="flex h-43 flex-col justify-center gap-4 rounded-[14px] border border-primary/8 px-6 py-4 shadow-[0_1px_3px_rgba(17,24,39,0.04)]">
+          <DashboardSectionCard key={id} className="flex min-h-40 min-w-0 flex-col justify-center gap-3 rounded-[14px] border border-primary/8 px-4 py-4 shadow-[0_1px_3px_rgba(17,24,39,0.04)] sm:min-h-43 sm:gap-4 sm:px-6">
             <div className="grid size-10 shrink-0 place-items-center rounded-[10px] bg-neutral-100 text-gray"><Icon className="size-4.5 shrink-0" /></div>
-            <div className="flex w-full flex-col gap-2 text-right">
+            <div className="flex min-w-0 w-full flex-col gap-2 text-right">
               <p className="text-sm leading-5 font-medium text-gray">{title}</p>
-              <div className="flex justify-between gap-3">
-                <p className="text-[30px] leading-9.5 font-semibold tracking-[-0.03em] text-dark-gray">
+              <div className="flex min-w-0 flex-wrap items-center justify-between gap-x-3 gap-y-1">
+                <p dir="ltr" className="min-w-0 break-words text-2xl leading-8 font-semibold tracking-[-0.03em] text-dark-gray sm:text-[30px] sm:leading-9.5">
                   {measure ? formatMeasure(measure.current.total, measure, measure.currency ?? data!.meta.currency) : "—"}
                 </p>
                 {measure && (measure.change.percent === null
                   ? formatChange(measure, data!.meta)
-                  : <TrendBadge value={formatChange(measure, data!.meta)} direction={measure.change.direction} className="bg-transparent px-0 py-0 text-[14px] shadow-none" />)}
+                  : <TrendBadge value={formatChange(measure, data!.meta)} direction={measure.change.direction} className="shrink-0 whitespace-nowrap bg-transparent px-0 py-0 text-xs shadow-none sm:text-[14px]" />)}
               </div>
               <p className="text-xs leading-4.5 font-medium text-gray">
                 {data?.meta.comparison.mode === "previous_year" ? "مقارنة بالعام السابق" : data?.meta.comparison.mode === "none" ? "بدون مقارنة" : "مقارنة بالفترة السابقة"}

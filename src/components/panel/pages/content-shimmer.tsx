@@ -2,12 +2,7 @@ import Shimmer from "@/components/ui/shimmer";
 
 function PagesContentShimmer() {
   return (
-    <div className="flex w-full flex-col gap-6" aria-hidden="true">
-      <div className="flex items-center justify-between gap-3">
-        <Shimmer className="h-8 w-40 rounded-md" />
-        <Shimmer className="h-10 w-32 rounded-2xl" />
-      </div>
-
+    <div className="w-full" aria-hidden="true">
       <div className="overflow-hidden rounded-2xl bg-white">
         <div className="min-w-212.5">
           <div className="grid grid-cols-5 gap-4 bg-primary/8 px-5 py-4">

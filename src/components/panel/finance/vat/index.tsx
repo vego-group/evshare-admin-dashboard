@@ -44,13 +44,20 @@ function VatFinance() {
   };
 
   const { data: summary, isLoading: isSummaryLoading } = useVatSummary(sharedFilters);
-  const { data: periods, isLoading: isPeriodsLoading } = useVatPeriods(sharedFilters);
-  const { data: records, isLoading: isRecordsLoading } = useVatRecords({
+  const { data: periods, isLoading: isPeriodsLoading } = useVatPeriods({
+    status: filters.status,
+    currency: filters.currency,
+  });
+  const { data: records, isLoading: isRecordsLoading, isFetching: isRecordsFetching } = useVatRecords({
     ...sharedFilters,
     page,
     limit: PAGE_SIZE,
   });
-  const { data: settlements, isLoading: isSettlementsLoading } = useVatSettlements({
+  const {
+    data: settlements,
+    isLoading: isSettlementsLoading,
+    isFetching: isSettlementsFetching,
+  } = useVatSettlements({
     period: filters.period,
     page: 1,
     limit: PAGE_SIZE,
@@ -114,19 +121,24 @@ function VatFinance() {
             selectedStatus={filters.status}
             selectedPeriod={filters.period}
             selectedCurrency={filters.currency}
+            periods={[...new Set((periods?.data ?? []).map((item) => item.period))]}
             onStatusChange={(status) => updateFilters({ status })}
             onPeriodChange={(period) => updateFilters({ period })}
             onCurrencyChange={(currency) => updateFilters({ currency })}
             onExport={() => void startExport({ type: "vat_records", ...sharedFilters })}
             isExporting={isExporting}
           />
-          <VatResults records={records?.data ?? []} />
+          <VatResults
+            records={records?.data ?? []}
+            isLoading={isRecordsLoading || isRecordsFetching}
+          />
           <VatPagination meta={records?.meta} onPageChange={setPage} />
           <VatSettlements
             settlements={settlements?.data ?? []}
             onAdd={() => setIsAddOpen(true)}
             onExport={() => void startExport({ type: "vat_settlements", period: filters.period })}
             isExporting={isExporting}
+            isLoading={isSettlementsLoading || isSettlementsFetching}
           />
         </div>
       )}

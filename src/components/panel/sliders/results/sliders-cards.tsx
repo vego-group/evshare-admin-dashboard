@@ -1,6 +1,5 @@
 import type { Slider } from "@/types";
 import ContentImage from "@/components/panel/content-image";
-import ContentPublicationSummary from "@/components/panel/content-publication-summary";
 
 import { DetailLine, formatDate, SliderActions, StatusBadge } from "./slider-result-parts";
 
@@ -33,7 +32,6 @@ function SlidersCards({ sliders, onEditSlider, onDeleteSlider }: SlidersCardsPro
           <div className="space-y-3 rounded-[14px] bg-background p-4 text-right">
             <DetailLine label="تاريخ الإنشاء" value={formatDate(slider.created_at)} />
             <DetailLine label="تاريخ التحديث" value={formatDate(slider.updated_at)} />
-            <ContentPublicationSummary publication={slider.publication} compact />
           </div>
 
           <div className="mt-4 border-t border-neutral-100 pt-4">

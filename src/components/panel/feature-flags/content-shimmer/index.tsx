@@ -3,13 +3,6 @@ import Shimmer from "@/components/ui/shimmer";
 function FeatureFlagsContentShimmer() {
   return (
     <div className="flex w-full flex-col gap-6" aria-hidden="true">
-      <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-        <div className="space-y-3">
-          <Shimmer className="h-8 w-44 rounded-md" />
-          <Shimmer className="h-5 w-72 max-w-full rounded-md" />
-        </div>
-        <Shimmer className="h-12 w-36 rounded-2xl" />
-      </div>
       <Shimmer className="h-14 w-full rounded-2xl" />
       <div className="w-full overflow-x-auto rounded-2xl bg-white">
         <div className="min-w-[850px] lg:min-w-full">

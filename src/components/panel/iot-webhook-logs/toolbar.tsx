@@ -43,7 +43,6 @@ export default function IotWebhookLogsToolbar({ params, onChange }: Props) {
       </div>
 
       <div className="flex flex-col gap-3.25 sm:flex-row sm:flex-wrap xl:shrink-0 xl:flex-nowrap">
-        <FilterInput label="معرف الجهاز" value={params.device_id} onChange={(device_id) => onChange({ device_id, page: 1 })} />
         <FilterInput label="نوع الحدث" value={params.kind} onChange={(kind) => onChange({ kind, page: 1 })} />
         <FilterInput label="المستأجر" value={params.tenant} onChange={(tenant) => onChange({ tenant, page: 1 })} />
         <FilterSelect

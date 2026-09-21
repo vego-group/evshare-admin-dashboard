@@ -32,20 +32,20 @@ function SeriesSparkline({ points, comparison, color }: { points: DashboardSerie
 }
 
 export default function QuickStatsSection({ data }: Props) {
-  return <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+  return <div className="grid min-w-0 gap-4 md:grid-cols-2 xl:grid-cols-4">
     {cards.map(({ id, title, icon: Icon, color }) => {
       const measure = data?.measures[id];
-      return <DashboardSectionCard key={id} className="p-6">
-        <div className="flex flex-row-reverse items-start justify-between gap-2">
+      return <DashboardSectionCard key={id} className="min-w-0 p-4 sm:p-6">
+        <div className="flex min-w-0 flex-row-reverse flex-wrap items-start justify-between gap-2">
           {measure && (measure.change.percent === null
             ? formatChange(measure, data!.meta)
             : <TrendBadge value={formatChange(measure, data!.meta)} direction={measure.change.direction} />)}
-          <div className="space-y-2 text-right">
+          <div className="min-w-0 space-y-2 text-right">
             <div className="flex flex-row-reverse items-center gap-2">
               <div className="grid size-8 place-items-center rounded-[10px] bg-neutral-100 text-gray"><Icon className="size-4 shrink-0" /></div>
               <p className="text-sm font-medium text-gray">{title}</p>
             </div>
-            <p className="text-2xl font-semibold leading-none tracking-[-0.02em] text-dark-gray">
+            <p dir="ltr" className="min-w-0 break-words text-xl font-semibold leading-none tracking-[-0.02em] text-dark-gray sm:text-2xl">
               {measure ? formatMeasure(measure.current.total, measure, measure.currency ?? data!.meta.currency) : "—"}
             </p>
           </div>

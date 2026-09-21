@@ -27,7 +27,7 @@ function FilterSelect<T extends string>({
   const selectedLabel = options.find((option) => option.value === value)?.label;
 
   return (
-    <div className="relative h-9.5 w-full text-sm font-medium leading-5 text-dark-gray sm:w-44">
+    <div className="relative h-9.5 w-full text-sm font-medium leading-5 text-dark-gray sm:w-49">
       <button
         type="button"
         aria-label={label}
@@ -39,8 +39,8 @@ function FilterSelect<T extends string>({
           isOpen && "bg-primary/10",
         )}
       >
-        <span className="flex items-center gap-1">
-          <span>{selectedLabel}</span>
+        <span className="flex min-w-0 items-center gap-1">
+          <span className="truncate">{selectedLabel}</span>
           <ListFilter className="size-3.5 shrink-0 text-primary" />
         </span>
         <ChevronDown
@@ -52,26 +52,31 @@ function FilterSelect<T extends string>({
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 z-20" onClick={() => setIsOpen(false)} />
+        <div
+          className="fixed inset-0 z-20"
+          onClick={() => setIsOpen(false)}
+        />
       )}
       {isOpen ? (
-        <div className="dashboard-dropdown-scroll absolute right-0 top-[calc(100%+2px)] z-30 w-full rounded-[14px] border border-primary bg-bg-warm-ivory shadow-[0_10px_24px_rgba(16,24,40,0.12)]">
-          {options.map((option) => (
-            <button
-              key={option.value}
-              type="button"
-              onClick={() => {
-                onChange(option.value);
-                setIsOpen(false);
-              }}
-              className={cn(
-                "flex h-10 w-full items-center justify-start px-3 text-right text-sm font-medium text-dark-gray transition hover:bg-primary/10",
-                value === option.value && "bg-primary/15 text-secondary",
-              )}
-            >
-              {option.label}
-            </button>
-          ))}
+        <div className="absolute right-0 top-[calc(100%+2px)] z-30 w-full rounded-[14px] border border-primary bg-bg-warm-ivory shadow-[0_10px_24px_rgba(16,24,40,0.12)]">
+          <div className="dashboard-dropdown-scroll">
+            {options.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => {
+                  onChange(option.value);
+                  setIsOpen(false);
+                }}
+                className={cn(
+                  "flex min-h-10 w-full items-center justify-start px-3 py-2 text-right text-sm font-medium text-dark-gray transition hover:bg-primary/10",
+                  value === option.value && "bg-primary/15 text-secondary",
+                )}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
         </div>
       ) : null}
     </div>

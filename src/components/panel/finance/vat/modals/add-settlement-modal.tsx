@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import InputErrorMessage from "@/components/ui/input-error-message";
 import Loader from "@/components/ui/loader";
 import Modal from "@/components/ui/modal";
 
@@ -20,13 +21,18 @@ function AddSettlementModal({ open, onClose, onSaved }: Props) {
       onClose={close}
       title="تسجيل تسوية ضريبية"
       description="حدّد الفترة والمبلغ وتاريخ السداد لتسجيل تسوية ضريبة القيمة المضافة."
-      contentClassName="rounded-2xl border-0 md:max-w-[680px]"
+      contentClassName="overflow-visible rounded-2xl border-0 md:max-w-[680px]"
     >
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-6 p-1 text-right md:p-4"
       >
-        <SettlementFields errors={form.formState.errors} register={form.register} />
+        <SettlementFields
+          control={form.control}
+          errors={form.formState.errors}
+          register={form.register}
+        />
+        <InputErrorMessage msg={form.formState.errors.root?.message} />
         <div className="flex justify-end gap-3">
           <Button
             type="button"

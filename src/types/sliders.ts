@@ -1,5 +1,3 @@
-import type { ContentPublication } from "./content-publication";
-
 export type SliderImage = {
   url: string;
   type: string;
@@ -14,7 +12,6 @@ export type Slider = {
   image: SliderImage;
   created_at: string;
   updated_at: string;
-  publication?: ContentPublication | null;
 };
 
 export type SlidersPaginationMeta = {
