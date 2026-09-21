@@ -50,6 +50,23 @@ export const shipmentFormObject = z.object({
   driver_phone: optionalText,
   estimated_pickup_date: optionalText,
   estimated_delivery_date: optionalText,
+  sender_name: optionalText,
+  sender_mobile: optionalText,
+  sender_email: z.union([z.literal(""), z.email()]).optional(),
+  sender_address: optionalText,
+  sender_latitude: z.preprocess(emptyToUndefined, z.coerce.number().min(-90).max(90).optional()),
+  sender_longitude: z.preprocess(emptyToUndefined, z.coerce.number().min(-180).max(180).optional()),
+  sender_city_uuid: optionalText,
+  recipient_name: optionalText,
+  recipient_mobile: optionalText,
+  recipient_email: z.union([z.literal(""), z.email()]).optional(),
+  recipient_address: optionalText,
+  recipient_district: optionalText,
+  recipient_postcode: optionalText,
+  recipient_short_address_code: optionalText,
+  recipient_latitude: z.preprocess(emptyToUndefined, z.coerce.number().min(-90).max(90).optional()),
+  recipient_longitude: z.preprocess(emptyToUndefined, z.coerce.number().min(-180).max(180).optional()),
+  recipient_city_uuid: optionalText,
   notes: z.string().max(1000, "الحد الأقصى 1000 حرف").optional().or(z.literal("")),
 });
 
@@ -73,7 +90,11 @@ export const shipmentSchema = shipmentFormObject.refine(
 
 export const shipmentAddSchema = shipmentFormObject
   .extend({ order_uuid: z.string().trim().min(1, "الطلب مطلوب") })
-  .refine(isDeliveryAfterPickup, dateOrderIssue);
+  .refine(isDeliveryAfterPickup, dateOrderIssue)
+  .refine(
+    (data) => (data.sender_latitude === undefined) === (data.sender_longitude === undefined),
+    { message: "يجب إدخال إحداثيي المرسل معاً", path: ["sender_longitude"] },
+  );
 
 export const shipmentStatusSchema = z.object({
   status: z.enum(

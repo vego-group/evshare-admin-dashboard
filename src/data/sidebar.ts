@@ -135,9 +135,9 @@ export const sidebarNavItems: SidebarNavItem[] = [
     ariaLabel: "المستخدمون",
     icon: Users,
     permission: [
+      "Admin Index Users",
       "Admin View Admins",
       "Admin View Merchants",
-      "Admin View Partners",
       "Admin View Farmers",
     ],
   },

@@ -37,53 +37,44 @@ export type SettingValueType =
   | "string";
 
 export const settingsPropagationStatuses = [
-  "pending",
+  "degraded",
+  "unpublished",
+  "lagging",
   "propagating",
   "propagated",
-  "failed",
-  "rolled_back",
-] as const;
-
-export const settingsConsumerStatuses = [
-  "pending",
-  "current",
-  "stale",
-  "failed",
-  "unknown",
 ] as const;
 
 export type SettingsPropagationStatus =
   (typeof settingsPropagationStatuses)[number];
-export type SettingsConsumerStatus =
-  (typeof settingsConsumerStatuses)[number];
-
-export type SettingsConsumer = {
-  name: string;
-  status: SettingsConsumerStatus;
-  active_version?: string | number | null;
-  expected_version?: string | number | null;
-  refreshed_at?: string | null;
-  error?: string | null;
-};
 
 export type SettingsPropagation = {
-  version: string | number;
+  tenant: string;
+  config_version: number;
+  serving_version: number;
+  checksum: string | null;
   status: SettingsPropagationStatus;
-  published_at?: string | null;
-  propagated_at?: string | null;
-  previous_version?: string | number | null;
-  tenant?: string | null;
-  can_rollback?: boolean;
-  consumers: SettingsConsumer[];
+  propagated: boolean;
+  published_at: string | null;
+  updated_at: string | null;
+  last_consumer_report_at: string | null;
+  checked_at: string;
+  propagation: {
+    sla_seconds: number;
+    seconds_since_publish: number | null;
+    deadline_at: string | null;
+    within_sla: boolean;
+  };
+  consumers: {
+    total: number;
+    live: number;
+    current: number;
+    behind: number;
+    degraded: number;
+    silent: number;
+  };
 };
 
 export type SettingsPropagationResponse = {
-  error: boolean;
-  message: string;
-  data: SettingsPropagation;
-};
-
-export type SettingsRollbackResponse = {
   error: boolean;
   message: string;
   data: SettingsPropagation;

@@ -15,6 +15,13 @@ export const featureFlagDefaultValues: FeatureFlagFormValues = {
   name_ar: "",
   name_en: "",
   is_active: true,
+  default_value: false,
+  audience: "all",
+  platforms: [],
+  min_app_version: undefined,
+  max_app_version: undefined,
+  starts_at: "",
+  ends_at: "",
 };
 
 function buildResolver(
@@ -46,17 +53,31 @@ export function buildFeatureFlagPayload(
     name_ar: values.name_ar.trim(),
     name_en: values.name_en.trim(),
     is_active: values.is_active,
+    default_value: values.default_value,
+    audience: values.audience,
+    platforms: values.platforms.length ? values.platforms : null,
+    min_app_version: values.min_app_version ?? null,
+    max_app_version: values.max_app_version ?? null,
+    starts_at: values.starts_at ? new Date(values.starts_at).toISOString() : null,
+    ends_at: values.ends_at ? new Date(values.ends_at).toISOString() : null,
   };
 }
 
 export function buildChangedFeatureFlagPayload(
   values: FeatureFlagFormValues,
-  dirtyFields: Partial<Record<keyof FeatureFlagFormValues, boolean>>,
+  dirtyFields: Partial<Record<keyof FeatureFlagFormValues, boolean | boolean[]>>,
 ): UpdateFeatureFlagPayload {
   const payload: UpdateFeatureFlagPayload = {};
   if (dirtyFields.name_ar) payload.name_ar = values.name_ar.trim();
   if (dirtyFields.name_en) payload.name_en = values.name_en.trim();
   if (dirtyFields.is_active) payload.is_active = values.is_active;
+  if (dirtyFields.default_value) payload.default_value = values.default_value;
+  if (dirtyFields.audience) payload.audience = values.audience;
+  if (dirtyFields.platforms) payload.platforms = values.platforms.length ? values.platforms : null;
+  if (dirtyFields.min_app_version) payload.min_app_version = values.min_app_version ?? null;
+  if (dirtyFields.max_app_version) payload.max_app_version = values.max_app_version ?? null;
+  if (dirtyFields.starts_at) payload.starts_at = values.starts_at ? new Date(values.starts_at).toISOString() : null;
+  if (dirtyFields.ends_at) payload.ends_at = values.ends_at ? new Date(values.ends_at).toISOString() : null;
   return payload;
 }
 

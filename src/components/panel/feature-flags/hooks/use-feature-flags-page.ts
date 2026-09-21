@@ -40,6 +40,7 @@ export function useFeatureFlagsPage() {
   async function refresh(id?: string) {
     await Promise.all([
       queryClient.refetchQueries({ queryKey: ["feature-flags"], type: "all" }),
+      queryClient.refetchQueries({ queryKey: ["evaluated-feature-flags"], type: "all" }),
       ...(id
         ? [
             queryClient.refetchQueries({

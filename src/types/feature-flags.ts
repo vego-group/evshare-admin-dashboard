@@ -51,6 +51,13 @@ export type CreateFeatureFlagPayload = {
   name_ar: string;
   name_en: string;
   is_active: boolean;
+  default_value?: boolean;
+  audience?: "admin" | "rider" | "merchant" | "backend" | "all";
+  platforms?: Array<"android" | "ios" | "web"> | null;
+  min_app_version?: number | null;
+  max_app_version?: number | null;
+  starts_at?: string | null;
+  ends_at?: string | null;
 };
 
 export type UpdateFeatureFlagPayload = Partial<{
@@ -58,6 +65,13 @@ export type UpdateFeatureFlagPayload = Partial<{
   name_ar: string;
   name_en: string;
   is_active: boolean;
+  default_value: boolean;
+  audience: "admin" | "rider" | "merchant" | "backend" | "all";
+  platforms: Array<"android" | "ios" | "web"> | null;
+  min_app_version: number | null;
+  max_app_version: number | null;
+  starts_at: string | null;
+  ends_at: string | null;
 }>;
 
 export type FeatureFlagVersion = Omit<FeatureFlag, "is_enabled"> & {
@@ -76,18 +90,27 @@ export type FeatureFlagVersionsResponse = {
  * The browser receives evaluated booleans only. Targeting rules and audience
  * attributes stay on the server and must never be included in this response.
  */
-export type EvaluatedFeatureFlags = Record<string, boolean>;
+export type EvaluatedFeatureFlag = {
+  id: string;
+  key: string;
+  name: string;
+  name_ar: string;
+  name_en: string;
+  is_enabled: boolean;
+  enabled: boolean;
+};
 
 export type FeatureFlagEvaluation = {
-  application: "admin";
-  platform: "web";
-  application_version: number;
-  tenant: string;
-  configuration_version: string;
-  published_at: string;
+  feature_flags: EvaluatedFeatureFlag[];
+  flags: Record<string, boolean>;
+  config_version: number;
+  config_published_at: string | null;
   evaluated_at: string;
-  expires_at: string;
-  flags: EvaluatedFeatureFlags;
+  evaluation_context: {
+    audience: "admin";
+    platform: "web";
+    version_code: number;
+  };
 };
 
 export type FeatureFlagEvaluationResponse = {

@@ -2,7 +2,6 @@
 
 import type {
   SettingDetailResponse,
-  SettingsRollbackResponse,
   UpdateSettingPayload,
 } from "@/types";
 
@@ -17,6 +16,3 @@ export const editSetting = async (
     `/settings/${settingId}/edit`,
     payload,
   );
-
-export const rollbackSettings = async () =>
-  await safeApi<SettingsRollbackResponse>("POST", "/settings/rollback");

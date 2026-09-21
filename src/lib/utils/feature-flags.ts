@@ -7,9 +7,7 @@ export const ADMIN_APPLICATION = "admin" as const;
 export const ADMIN_PLATFORM = "web" as const;
 
 type EvaluationContext = {
-  tenant: string;
   applicationVersion: number;
-  now?: number;
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -20,7 +18,7 @@ function validDate(value: unknown): value is string {
   return typeof value === "string" && Number.isFinite(Date.parse(value));
 }
 
-/** Fail closed if the response is malformed, expired, or belongs to another context. */
+/** Fail closed if the backend did not evaluate the dashboard's exact context. */
 export function parseFeatureFlagEvaluation(
   response: unknown,
   context: EvaluationContext,
@@ -28,50 +26,46 @@ export function parseFeatureFlagEvaluation(
   if (!isRecord(response) || !isRecord(response.data)) return null;
 
   const data = response.data;
-  if (
-    data.application !== ADMIN_APPLICATION ||
-    data.platform !== ADMIN_PLATFORM ||
-    data.application_version !== context.applicationVersion ||
-    typeof data.tenant !== "string" ||
-    data.tenant.toLowerCase() !== context.tenant.toLowerCase() ||
-    typeof data.configuration_version !== "string" ||
-    !data.configuration_version ||
-    !validDate(data.published_at) ||
-    !validDate(data.evaluated_at) ||
-    !validDate(data.expires_at) ||
-    !isRecord(data.flags)
-  ) {
+  if (!Array.isArray(data.feature_flags) ||
+    !Number.isInteger(data.config_version) || Number(data.config_version) < 0 ||
+    (data.config_published_at !== null && !validDate(data.config_published_at)) ||
+    !validDate(data.evaluated_at) || !isRecord(data.evaluation_context)) {
     return null;
   }
 
-  const now = context.now ?? Date.now();
-  const evaluatedAt = Date.parse(data.evaluated_at);
-  const publishedAt = Date.parse(data.published_at);
-  const expiresAt = Date.parse(data.expires_at);
-  if (
-    publishedAt > evaluatedAt ||
-    evaluatedAt > now + 60_000 ||
-    expiresAt <= now ||
-    expiresAt <= evaluatedAt
-  ) {
+  const evaluationContext = data.evaluation_context;
+  if (evaluationContext.audience !== ADMIN_APPLICATION ||
+    evaluationContext.platform !== ADMIN_PLATFORM ||
+    evaluationContext.version_code !== context.applicationVersion) {
     return null;
   }
 
   const flags: Record<string, boolean> = {};
-  for (const [key, value] of Object.entries(data.flags)) {
-    if (!key || typeof value !== "boolean") return null;
-    flags[key] = value;
+  const featureFlags = [];
+  for (const value of data.feature_flags) {
+    if (!isRecord(value) || typeof value.id !== "string" ||
+      typeof value.key !== "string" || !value.key ||
+      typeof value.name !== "string" || typeof value.name_ar !== "string" ||
+      typeof value.name_en !== "string" || typeof value.enabled !== "boolean" ||
+      value.is_enabled !== value.enabled) return null;
+    flags[value.key] = value.enabled;
+    featureFlags.push({
+      id: value.id, key: value.key, name: value.name,
+      name_ar: value.name_ar, name_en: value.name_en,
+      enabled: value.enabled, is_enabled: value.enabled,
+    });
   }
 
   return {
-    application: ADMIN_APPLICATION,
-    platform: ADMIN_PLATFORM,
-    application_version: data.application_version,
-    tenant: data.tenant,
-    configuration_version: data.configuration_version,
-    published_at: data.published_at,
+    feature_flags: featureFlags,
     evaluated_at: data.evaluated_at,
-    expires_at: data.expires_at,
+    config_version: Number(data.config_version),
+    config_published_at: data.config_published_at as string | null,
+    evaluation_context: {
+      audience: ADMIN_APPLICATION,
+      platform: ADMIN_PLATFORM,
+      version_code: context.applicationVersion,
+    },
     flags,
   };
 }
@@ -80,9 +74,8 @@ export function isFeatureEnabled(
   evaluation: FeatureFlagEvaluation | null,
   key: string,
   safeDefault = false,
-  now = Date.now(),
 ) {
-  if (!evaluation || Date.parse(evaluation.expires_at) <= now) return safeDefault;
+  if (!evaluation) return safeDefault;
   return evaluation.flags[key] ?? safeDefault;
 }
 

@@ -39,6 +39,7 @@ export const ADMIN_PERMISSIONS = {
   },
   reports: {
     generate: "Admin Generate Reports",
-    download: "Admin Download Reports",
+    // Downloads are served through the guarded export-details endpoint.
+    download: "Admin View Reports",
   },
 } as const;

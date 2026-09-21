@@ -28,6 +28,8 @@ function ShipmentFormModal({
     pickingType,
     pickupDate,
     deliveryDate,
+    senderCity,
+    recipientCity,
     close,
     onSubmit,
   } = useShipmentForm({ open, shipment, onClose, onSaved });
@@ -55,6 +57,8 @@ function ShipmentFormModal({
           pickingType={pickingType}
           pickupDate={pickupDate}
           deliveryDate={deliveryDate}
+          senderCity={senderCity}
+          recipientCity={recipientCity}
           errors={form.formState.errors}
           register={form.register}
           setValue={form.setValue}

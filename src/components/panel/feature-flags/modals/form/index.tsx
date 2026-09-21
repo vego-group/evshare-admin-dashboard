@@ -48,6 +48,13 @@ function FeatureFlagFormModal({ open, featureFlag, onClose, onSaved }: Props) {
         name_ar: featureFlag.name_ar,
         name_en: featureFlag.name_en,
         is_active: featureFlag.is_enabled,
+        default_value: featureFlag.default_value ?? false,
+        audience: featureFlag.audience ?? "all",
+        platforms: (featureFlag.platforms ?? []).filter((item): item is "android" | "ios" | "web" => item === "android" || item === "ios" || item === "web"),
+        min_app_version: featureFlag.min_app_version ?? undefined,
+        max_app_version: featureFlag.max_app_version ?? undefined,
+        starts_at: featureFlag.starts_at?.slice(0, 16) ?? "",
+        ends_at: featureFlag.ends_at?.slice(0, 16) ?? "",
       });
     }
   }, [featureFlag, form, open]);

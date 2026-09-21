@@ -51,6 +51,8 @@ export function useShipmentForm({ open, shipment, onClose, onSaved }: Options) {
     control: form.control,
     name: "estimated_delivery_date",
   });
+  const senderCity = useWatch({ control: form.control, name: "sender_city_uuid" });
+  const recipientCity = useWatch({ control: form.control, name: "recipient_city_uuid" });
 
   useEffect(() => {
     if (!open) {
@@ -109,6 +111,8 @@ export function useShipmentForm({ open, shipment, onClose, onSaved }: Options) {
     pickingType,
     pickupDate,
     deliveryDate,
+    senderCity,
+    recipientCity,
     close,
     onSubmit,
   };

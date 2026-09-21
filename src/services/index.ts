@@ -2,7 +2,6 @@ import axios, { AxiosError, AxiosInstance, Method } from "axios";
 import { ApiResult, ErrorBody, ExtraConfig } from "@/types";
 import { getPayloadMessage, getValidationErrors } from "@/lib/utils/helper";
 import { notifyForbidden } from "@/lib/toast-events";
-import { getFeatureFlagRuntimeHeaders } from "@/lib/feature-flag-runtime";
 import { getRetryAfterSeconds } from "@/lib/utils/api-error";
 
 export const adminApi = axios.create({
@@ -142,11 +141,18 @@ export const baseAPI = async (method: Method, url: string) => {
       method,
       headers: {
         Accept: "application/json",
-        ...getFeatureFlagRuntimeHeaders(),
       },
       credentials: "same-origin",
     });
     const contentType = response.headers.get("content-type");
+    const configVersion = response.headers
+      .get("X-Config-Version")
+      ?.match(/(?:^|;)\s*feature_flags=(\d+)(?:;|$)/)?.[1];
+    if (configVersion && !url.startsWith("/feature-flags/evaluations")) {
+      window.dispatchEvent(new CustomEvent("feature-flags-config-version", {
+        detail: Number(configVersion),
+      }));
+    }
     const data = contentType?.includes("application/json")
       ? await response.json()
       : await response.text();

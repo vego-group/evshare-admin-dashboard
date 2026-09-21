@@ -68,6 +68,42 @@ function FeatureFlagFormFields({
           })
         }
       />
+      <FeatureFlagField label="الجمهور" error={errors.audience?.message}>
+        <select className={inputClass} {...register("audience")}>
+          <option value="all">الجميع</option>
+          <option value="admin">لوحة الإدارة</option>
+          <option value="rider">الراكب</option>
+          <option value="merchant">التاجر</option>
+          <option value="backend">الخلفية</option>
+        </select>
+      </FeatureFlagField>
+      <FeatureFlagField label="القيمة الافتراضية">
+        <label className="flex h-12 items-center gap-3 rounded-xl border border-neutral-200 px-4">
+          <input type="checkbox" {...register("default_value")} />
+          تُفعّل خارج نطاق الاستهداف
+        </label>
+      </FeatureFlagField>
+      <FeatureFlagField label="المنصات" fullWidth>
+        <div className="flex h-12 items-center gap-6 rounded-xl border border-neutral-200 px-4" dir="ltr">
+          {(["web", "android", "ios"] as const).map((platform) => (
+            <label key={platform} className="flex items-center gap-2">
+              <input type="checkbox" value={platform} {...register("platforms")} /> {platform}
+            </label>
+          ))}
+        </div>
+      </FeatureFlagField>
+      <FeatureFlagField label="أقل رقم بناء" error={errors.min_app_version?.message}>
+        <input type="number" min={1} dir="ltr" className={inputClass} {...register("min_app_version")} />
+      </FeatureFlagField>
+      <FeatureFlagField label="أعلى رقم بناء" error={errors.max_app_version?.message}>
+        <input type="number" min={1} dir="ltr" className={inputClass} {...register("max_app_version")} />
+      </FeatureFlagField>
+      <FeatureFlagField label="بداية التفعيل" error={errors.starts_at?.message}>
+        <input type="datetime-local" dir="ltr" className={inputClass} {...register("starts_at")} />
+      </FeatureFlagField>
+      <FeatureFlagField label="نهاية التفعيل" error={errors.ends_at?.message}>
+        <input type="datetime-local" dir="ltr" className={inputClass} {...register("ends_at")} />
+      </FeatureFlagField>
     </div>
   );
 }

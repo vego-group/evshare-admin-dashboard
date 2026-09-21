@@ -22,7 +22,7 @@ const routeRules: RouteRule[] = [
   { pattern: /^\/products\/[^/]+$/, permission: "Admin Show Products" },
   { pattern: /^\/products$/, permission: "Admin Index Products" },
   { pattern: /^\/users\/[^/]+$/, permission: "Admin Show Users" },
-  { pattern: /^\/users$/, permission: ["Admin Index Users", "Admin View Admins", "Admin View Merchants", "Admin View Partners", "Admin View Farmers"] },
+  { pattern: /^\/users$/, permission: ["Admin Index Users", "Admin View Admins", "Admin View Merchants", "Admin View Farmers"] },
   { pattern: /^\/roles-permissions$/, permission: ["Admin Index Roles", "Admin Index Permissions", "Admin Index Permission Categories"] },
   { pattern: /^\/wallet\/[^/]+$/, permission: "Admin Show Wallet Transactions" },
   { pattern: /^\/wallet$/, permission: "Admin Index Wallet Transactions" },

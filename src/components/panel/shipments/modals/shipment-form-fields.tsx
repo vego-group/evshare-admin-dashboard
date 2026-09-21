@@ -9,6 +9,7 @@ import ShipmentCompanySelect from "./shipment-company-select";
 import ShipmentIdentifierFields from "./shipment-identifier-fields";
 import ShipmentOrderSelect from "./shipment-order-select";
 import ShipmentPackageFields from "./shipment-package-fields";
+import ShipmentPartiesFields from "./shipment-parties-fields";
 import ShipmentTrackingFields from "./shipment-tracking-fields";
 
 type ShipmentFormFieldsProps = {
@@ -18,6 +19,8 @@ type ShipmentFormFieldsProps = {
   pickingType: ShipmentPickingType;
   pickupDate?: string;
   deliveryDate?: string;
+  senderCity?: string;
+  recipientCity?: string;
   errors: FieldErrors<ShipmentFormValues>;
   register: UseFormRegister<ShipmentFormValues>;
   setValue: UseFormSetValue<ShipmentFormValues>;
@@ -30,6 +33,8 @@ function ShipmentFormFields({
   pickingType,
   pickupDate,
   deliveryDate,
+  senderCity,
+  recipientCity,
   errors,
   register,
   setValue,
@@ -98,6 +103,16 @@ function ShipmentFormFields({
 
       {isEdit ? (
         <ShipmentTrackingFields errors={errors} register={register} />
+      ) : null}
+
+      {!isEdit ? (
+        <ShipmentPartiesFields
+          errors={errors}
+          register={register}
+          senderCity={senderCity}
+          recipientCity={recipientCity}
+          onCityChange={(field, value) => setField(field, value)}
+        />
       ) : null}
 
       <Field

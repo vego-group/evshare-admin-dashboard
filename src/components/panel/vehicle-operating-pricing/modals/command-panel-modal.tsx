@@ -69,7 +69,7 @@ const lockActions: {
   {
     action: "unlock",
     label: "فتح",
-    permission: ["Admin Send Vehicle Commands", "Admin Command Vehicles", "Admin Unlock Vehicles", "Admin Unlock Scooters"],
+    permission: ["Admin Send Vehicle Commands", "Admin Command Vehicles", "Admin Unlock Vehicles"],
     icon: Unlock,
     className: "bg-green-50 text-green-600",
   },
