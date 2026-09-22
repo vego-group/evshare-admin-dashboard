@@ -1,10 +1,32 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("@/lib/toast-events", () => ({ notifyForbidden: vi.fn() }));
+const toastEventMocks = vi.hoisted(() => ({
+  notifyForbidden: vi.fn(),
+  notifyOffline: vi.fn(),
+}));
+
+vi.mock("@/lib/toast-events", () => toastEventMocks);
 describe("browser API integration", () => {
   beforeEach(() => {
     vi.resetModules();
+    vi.clearAllMocks();
     window.history.replaceState({}, "", "/");
+    Object.defineProperty(window.navigator, "onLine", {
+      configurable: true,
+      value: true,
+    });
+  });
+
+  it("announces an offline request failure", async () => {
+    Object.defineProperty(window.navigator, "onLine", {
+      configurable: true,
+      value: false,
+    });
+    vi.spyOn(globalThis, "fetch").mockRejectedValue(new TypeError("Failed to fetch"));
+    const { baseAPI } = await import("@/services");
+
+    await expect(baseAPI("GET", "/users")).rejects.toThrow("Failed to fetch");
+    expect(toastEventMocks.notifyOffline).toHaveBeenCalledOnce();
   });
 
   it("uses the same-origin admin gateway and returns JSON", async () => {

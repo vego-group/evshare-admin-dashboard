@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosInstance, Method } from "axios";
 import { ApiResult, ErrorBody, ExtraConfig } from "@/types";
 import { getPayloadMessage, getValidationErrors } from "@/lib/utils/helper";
-import { notifyForbidden } from "@/lib/toast-events";
+import { notifyForbidden, notifyOffline } from "@/lib/toast-events";
 import { getRetryAfterSeconds } from "@/lib/utils/api-error";
 
 export const adminApi = axios.create({
@@ -137,13 +137,19 @@ export const safeAuthApi = async <
 
 export const baseAPI = async (method: Method, url: string) => {
   if (typeof window !== "undefined") {
-    const response = await fetch(`/api/admin${url}`, {
-      method,
-      headers: {
-        Accept: "application/json",
-      },
-      credentials: "same-origin",
-    });
+    let response: Response;
+    try {
+      response = await fetch(`/api/admin${url}`, {
+        method,
+        headers: {
+          Accept: "application/json",
+        },
+        credentials: "same-origin",
+      });
+    } catch (error) {
+      if (!navigator.onLine) notifyOffline();
+      throw error;
+    }
     const contentType = response.headers.get("content-type");
     const configVersion = response.headers
       .get("X-Config-Version")
