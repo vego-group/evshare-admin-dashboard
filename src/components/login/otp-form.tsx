@@ -49,6 +49,9 @@ type OtpFormProps = {
   country: string;
 };
 
+const OTP_VERIFICATION_ERROR_MESSAGE =
+  "استجابة تسجيل الدخول غير مكتملة، يرجى المحاولة مرة أخرى";
+
 export default function OtpForm({ mobile, country }: OtpFormProps) {
   const [accessDeniedMessage, setAccessDeniedMessage] = useState<string>();
   const [mustResend, setMustResend] = useState(false);
@@ -100,7 +103,7 @@ export default function OtpForm({ mobile, country }: OtpFormProps) {
       ) {
         setAccessDeniedMessage(result.message);
       }
-      toast.error(result.message || "رمز التحقق غير صحيح");
+      toast.error(OTP_VERIFICATION_ERROR_MESSAGE);
       return;
     }
 
@@ -108,7 +111,7 @@ export default function OtpForm({ mobile, country }: OtpFormProps) {
     if (!authResult.success) {
       await removeToken();
       clearUserSession();
-      toast.error("استجابة تسجيل الدخول غير مكتملة، يرجى المحاولة مرة أخرى");
+      toast.error(OTP_VERIFICATION_ERROR_MESSAGE);
       return;
     }
 
