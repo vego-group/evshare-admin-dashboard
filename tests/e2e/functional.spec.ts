@@ -35,4 +35,15 @@ test.describe("login functional behavior", () => {
     expect(cookies.find((cookie) => cookie.name === "token")).toBeUndefined();
     expect(cookies.find((cookie) => cookie.name === "tenant-country")).toBeUndefined();
   });
+
+  test("authenticated users cannot remain on the login page", async ({ context, page }) => {
+    const url = new URL(page.url() || "http://127.0.0.1:3000");
+    await context.addCookies([
+      { name: "token", value: "active-session", domain: url.hostname, path: "/" },
+      { name: "tenant-country", value: "sa", domain: url.hostname, path: "/" },
+    ]);
+
+    await page.goto("/login");
+    await expect(page).toHaveURL(/\/$/);
+  });
 });
