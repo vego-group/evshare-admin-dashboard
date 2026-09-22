@@ -4,6 +4,7 @@ import { Toaster } from "react-hot-toast";
 import QueryProvider from "@/provider";
 import ToastSuccessListener from "@/provider/toast-success-listener";
 import ApiErrorListener from "@/provider/api-error-listener";
+import NetworkStatusListener from "@/provider/network-status-listener";
 
 export const metadata: Metadata = {
   title: "Admin EV Share - Electric Mobility Platform",
@@ -22,6 +23,7 @@ export default function RootLayout({
         <QueryProvider>
           <ToastSuccessListener />
           <ApiErrorListener />
+          <NetworkStatusListener />
           {children}
           <Toaster />
         </QueryProvider>
