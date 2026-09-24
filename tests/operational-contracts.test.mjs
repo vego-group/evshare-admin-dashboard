@@ -54,6 +54,41 @@ test("trip operations send reason and idempotency in the documented body", async
   ]);
 });
 
+test("vehicle control uses the synchronous command endpoint and payload", async () => {
+  const calls = [];
+  const mutations = load("src/services/mutations/vehicle-operating-pricing.ts", {
+    "..": { safeApi: async (...args) => { calls.push(args); return { ok: true }; } },
+  });
+
+  await mutations.sendVehicleCommandAPI("vehicle-1", {
+    command: "sound_alarm",
+    params: { duration: 5 },
+  });
+
+  assert.deepEqual(calls[0], [
+    "POST",
+    "/vehicles/vehicle-1/command",
+    { command: "sound_alarm", params: { duration: 5 } },
+  ]);
+});
+
+test("assigned lock controls address the lock resource directly", async () => {
+  const calls = [];
+  const mutations = load("src/services/mutations/vehicle-operating-pricing.ts", {
+    "..": { safeApi: async (...args) => { calls.push(args); return { ok: true }; } },
+  });
+
+  await mutations.lockVehicleLockAPI("lock-1");
+  await mutations.unlockVehicleLockAPI("lock-1");
+  await mutations.locateVehicleLockAPI("lock-1");
+
+  assert.deepEqual(calls, [
+    ["POST", "/locks/lock-1/lock"],
+    ["POST", "/locks/lock-1/unlock"],
+    ["POST", "/locks/lock-1/locate"],
+  ]);
+});
+
 test("feature flag mutations use the supplied add, delete, and rollback endpoints", async () => {
   const calls = [];
   const mutations = load("src/services/mutations/feature-flags.ts", {
@@ -85,7 +120,7 @@ test("settings catalog validates each value by its documented type", () => {
 
 test("high-risk service modules contain the versioned contract endpoints", () => {
   const read = (file) => fs.readFileSync(path.join(testDirectory, "..", file), "utf8");
-  assert.match(read("src/services/mutations/vehicle-operating-pricing.ts"), /\/vehicles\/\$\{vehicleId\}\/commands/);
+  assert.match(read("src/services/mutations/vehicle-operating-pricing.ts"), /\/vehicles\/\$\{vehicleId\}\/command`/);
   assert.match(read("src/services/mutations/refunds.ts"), /\/refunds\/request/);
   assert.match(read("src/services/mutations/pricing-configuration.ts"), /\/pricing-config\/rollback/);
   assert.match(read("src/services/mutations/pages.ts"), /\/pages\/\$\{uuid\}\/publish/);

@@ -8,6 +8,7 @@ import type { VehicleListItem } from "@/types";
 import { vehicleTypeLabel } from "@/lib/utils/vehicle-type";
 import StatusBadge from "../status-badge";
 import ProvisioningBadge from "../provisioning-badge";
+import VehicleDetailsShimmer from "./vehicle-details-shimmer";
 import {
   formatDate,
   formatMoney,
@@ -23,11 +24,7 @@ type Props = {
 
 export function VehicleDetailsContent({ vehicle, isLoading }: Props) {
   if (isLoading) {
-    return (
-      <div className="flex min-h-55 items-center justify-center rounded-[14px] bg-background px-4 text-center text-base text-gray">
-        جارِ التحميل...
-      </div>
-    );
+    return <VehicleDetailsShimmer />;
   }
 
   if (!vehicle) {

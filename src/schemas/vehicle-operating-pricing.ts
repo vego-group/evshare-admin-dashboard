@@ -47,8 +47,8 @@ export const vehicleZoneSchema = z
   });
 
 export const vehicleCommandSchema = z.object({
-  type: z.enum(["lock", "unlock", "locate", "ring"]),
-  idempotencyKey: z.string().trim().min(1),
+  command: z.enum(["lock", "unlock", "locate", "ring", "sound_alarm"]),
+  params: z.record(z.string(), z.unknown()).optional(),
 });
 
 export type VehiclePricingSchemaValues = z.infer<typeof vehiclePricingSchema>;

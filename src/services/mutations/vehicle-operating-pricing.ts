@@ -5,8 +5,6 @@ import type {
   CreateVehicleLockPayload,
   UpdateVehicleLockPayload,
   VehicleDeviceCommandResponse,
-  VehicleDeviceCommand,
-  ApiResult,
   VehicleLockDetailsResponse,
   VehicleDetailsResponse,
 } from "@/types";
@@ -77,34 +75,13 @@ export const deleteVehicleZoneAPI = async (vehicleId: string, zoneId: string) =>
 export const sendVehicleCommandAPI = async (
   vehicleId: string,
   payload: VehicleCommandValues,
-): Promise<ApiResult<VehicleDeviceCommand>> => {
-  const result = await safeApi<VehicleDeviceCommandResponse>(
-    "POST",
-    `/vehicles/${vehicleId}/commands`,
-    payload,
-    { headers: { "Idempotency-Key": payload.idempotencyKey } },
-  );
-  if (!result.ok || !result.data) {
-    return {
-      ok: false,
-      status: result.status,
-      error: result.error,
-      message: result.message,
-      retryAfterSeconds: result.retryAfterSeconds,
-    };
-  }
-
-  const { normalizeVehicleDeviceCommand } = await import("@/lib/utils/device-command");
-  try {
-    return { ...result, data: normalizeVehicleDeviceCommand(result.data) };
-  } catch {
-    return {
-      ok: false as const,
-      status: 502,
-      message: "Invalid vehicle command response",
-    };
-  }
-};
+) =>
+  await safeApi<{
+    status?: boolean;
+    error?: boolean;
+    message: string;
+    data?: unknown;
+  }>("POST", `/vehicles/${vehicleId}/command`, payload);
 
 export const addVehicleLockAPI = async (payload: CreateVehicleLockPayload) =>
   await safeApi<VehicleLockDetailsResponse>("POST", "/locks/add", payload);
@@ -140,33 +117,24 @@ export const unassignVehicleLockAPI = async (lockId: string) =>
 
 export const lockVehicleLockAPI = async (
   lockId: string,
-  idempotencyKey: string,
 ) =>
-  await safeApi<VehicleDeviceCommandResponse>(
+  await safeApi<VehicleLockDetailsResponse>(
     "POST",
     `/locks/${lockId}/lock`,
-    undefined,
-    { headers: { "Idempotency-Key": idempotencyKey } },
   );
 
 export const unlockVehicleLockAPI = async (
   lockId: string,
-  idempotencyKey: string,
 ) =>
-  await safeApi<VehicleDeviceCommandResponse>(
+  await safeApi<VehicleLockDetailsResponse>(
     "POST",
     `/locks/${lockId}/unlock`,
-    undefined,
-    { headers: { "Idempotency-Key": idempotencyKey } },
   );
 
 export const locateVehicleLockAPI = async (
   lockId: string,
-  idempotencyKey: string,
 ) =>
   await safeApi<VehicleDeviceCommandResponse>(
     "POST",
     `/locks/${lockId}/locate`,
-    undefined,
-    { headers: { "Idempotency-Key": idempotencyKey } },
   );
