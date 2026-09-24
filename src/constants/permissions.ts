@@ -16,17 +16,22 @@ export const ADMIN_PERMISSIONS = {
     delete: "Admin Delete Users",
   },
   vehicles: {
-    // The first slug is the current command contract; the second preserves a
-    // safe UI rollout for tenants still carrying the split-permission name.
-    sendCommand: ["Admin Send Vehicle Commands", "Admin Command Vehicles"],
+    lock: ["Admin Lock Vehicles", "Admin Command Vehicles"],
+    unlock: ["Admin Unlock Vehicles", "Admin Command Vehicles"],
+    locate: ["Admin Locate Vehicles", "Admin Command Vehicles"],
+    ring: ["Admin Ring Vehicles", "Admin Command Vehicles"],
     viewCommands: "Admin Index Vehicle Commands",
   },
   locks: {
-    assign: "Admin Assign Locks",
-    unassign: "Admin Unassign Locks",
+    assign: "Admin Edit Locks",
+    unassign: "Admin Edit Locks",
+    lock: "Admin Lock Vehicles",
+    unlock: "Admin Unlock Vehicles",
+    locate: "Admin Locate Vehicles",
+    ring: "Admin Ring Vehicles",
   },
   operationCompanies: {
-    editCommission: "Admin Edit Operation Company Commission",
+    editCommission: "Admin Edit Operation Companies",
     uploadContract: "Admin Upload Operation Company Contracts",
   },
   paymentRequests: {

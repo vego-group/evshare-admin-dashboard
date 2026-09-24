@@ -33,9 +33,9 @@ function OperatingCompaniesContentShimmer() {
       </div>
 
       <div aria-hidden="true" className="overflow-hidden rounded-lg bg-white">
-        <div className="overflow-x-auto">
-          <div className="min-w-300">
-            <div className="grid grid-cols-[22%_16%_180px_15%_19%_230px] items-center border-b border-primary/15 bg-primary/8 px-5 py-5">
+        <div className="overflow-x-auto lg:overflow-x-hidden">
+          <div className="min-w-300 lg:min-w-0">
+            <div className="grid grid-cols-[22fr_16fr_180px_15fr_19fr_230px] items-center border-b border-primary/15 bg-primary/8 px-5 py-5">
               {["w-20", "w-16", "w-16", "w-20", "w-32", "w-20"].map(
                 (width, index) => (
                   <Shimmer key={index} className={`h-5 ${width} rounded-md bg-neutral-300`} />
@@ -46,7 +46,7 @@ function OperatingCompaniesContentShimmer() {
             {Array.from({ length: 6 }).map((_, rowIndex) => (
               <div
                 key={rowIndex}
-                className="grid min-h-18 grid-cols-[22%_16%_180px_15%_19%_230px] items-center border-b border-primary/10 px-5 py-3 last:border-b-0"
+                className="grid min-h-18 grid-cols-[22fr_16fr_180px_15fr_19fr_230px] items-center border-b border-primary/10 px-5 py-3 last:border-b-0"
               >
                 <div className="space-y-2">
                   <Shimmer

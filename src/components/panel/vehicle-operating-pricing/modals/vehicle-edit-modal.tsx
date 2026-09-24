@@ -122,8 +122,8 @@ function VehicleEditModal({
         </section>
 
         <section className="grid gap-4 rounded-[18px] border border-primary/25 bg-white p-4 shadow-sm sm:grid-cols-2">
-          {vehicle.operating_type === "operation_company" && <div className="space-y-2"><label className="block text-sm font-medium text-secondary">بحث عن الشركة<input className={numberInputClassName} value={companySearch} onChange={(event) => setCompanySearch(event.target.value)} /></label><label className="block text-sm font-medium text-secondary">شركة التشغيل<select className={numberInputClassName} value={values.operation_company_id ?? ""} onChange={(event) => { setCompanyLabel(event.target.selectedOptions[0]?.text ?? ""); setValues((current) => ({ ...current, operation_company_id: event.target.value })); }}><option value="">اختر شركة نشطة</option>{values.operation_company_id && !companies?.data?.some((company) => company.id === values.operation_company_id) && <option value={values.operation_company_id}>{companyLabel}</option>}{companies?.data?.filter((company) => company.slug !== "evshare").map((company) => <option key={company.id} value={company.id}>{company.name}</option>)}</select></label></div>}
-          <label className="block text-sm font-medium text-secondary">معرف جهاز IoT<input className={numberInputClassName} dir="ltr" value={values.iot_device_id ?? ""} onChange={(event) => setValues((current) => ({ ...current, iot_device_id: event.target.value }))} /></label>
+          {vehicle.operating_type === "operation_company" && <div className="space-y-2"><label className="block text-sm font-medium text-secondary">بحث عن الشركة<input className={numberInputClassName} placeholder="ابحث باسم الشركة" value={companySearch} onChange={(event) => setCompanySearch(event.target.value)} /></label><label className="block text-sm font-medium text-secondary">شركة التشغيل<select className={numberInputClassName} value={values.operation_company_id ?? ""} onChange={(event) => { setCompanyLabel(event.target.selectedOptions[0]?.text ?? ""); setValues((current) => ({ ...current, operation_company_id: event.target.value })); }}><option value="">اختر شركة نشطة</option>{values.operation_company_id && !companies?.data?.some((company) => company.id === values.operation_company_id) && <option value={values.operation_company_id}>{companyLabel}</option>}{companies?.data?.filter((company) => company.slug !== "evshare").map((company) => <option key={company.id} value={company.id}>{company.name}</option>)}</select></label></div>}
+          <label className="block text-sm font-medium text-secondary">معرف جهاز IoT<input className={numberInputClassName} dir="ltr" placeholder="أدخل معرف جهاز IoT" value={values.iot_device_id ?? ""} onChange={(event) => setValues((current) => ({ ...current, iot_device_id: event.target.value }))} /></label>
         </section>
 
         <section className="rounded-[18px] border border-primary/25 bg-white p-4 shadow-sm">
@@ -146,6 +146,7 @@ function VehicleEditModal({
                   type="number"
                   min="0"
                   step="0.01"
+                  placeholder={`أدخل ${label}`}
                   value={values[key] ?? ""}
                   onKeyDown={(event) =>
                     preventNegativeNumberInput(event, { allowDecimal: true })

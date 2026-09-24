@@ -39,7 +39,16 @@ function VehicleActions({
         compact ? "w-full flex-wrap" : "w-max min-w-max flex-nowrap",
       )}
     >
-      <PermissionGate slug={["Admin Locate Vehicles", "Admin View Locks", "Admin Lock Vehicles", "Admin Unlock Vehicles"]}>
+      <PermissionGate
+        slug={[
+          "Admin View Locks",
+          "Admin Lock Vehicles",
+          "Admin Unlock Vehicles",
+          "Admin Locate Vehicles",
+          "Admin Ring Vehicles",
+          "Admin Command Vehicles",
+        ]}
+      >
         <button
           type="button"
           onClick={onControlPanel}
