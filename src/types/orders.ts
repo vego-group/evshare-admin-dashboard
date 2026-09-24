@@ -83,6 +83,13 @@ export type OrderItem = {
   vehicles: OrderItemVehicle[];
 };
 
+export type OrderDiscount = {
+  applied: boolean;
+  type: "promo_code" | "automatic" | null;
+  code: string | null;
+  amount: number;
+};
+
 export type OrderDetail = {
   id: string;
   currency?: string;
@@ -92,6 +99,13 @@ export type OrderDetail = {
   vat_amount: number;
   delivery_fee: number;
   total: number;
+  total_before_discount: number;
+  discount: OrderDiscount;
+  total_after_discount: number;
+  paid_amount: number;
+  /** Backwards-compatible aliases returned by the API. */
+  discount_amount: number;
+  final_total: number;
   status: OrderNewStatus;
   status_category: OrderStatusCategory;
   is_draft: boolean;

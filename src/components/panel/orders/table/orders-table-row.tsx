@@ -1,6 +1,5 @@
 "use client";
 
-import MoneyValue from "@/components/ui/money-value";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -17,6 +16,7 @@ import {
   OrderStatusDropdown,
   OrderStatusUpdateConfirmModal,
 } from "../modals";
+import OrderTotal from "../order-total";
 
 function OrdersTableRow({ order }: { order: OrderListItem }) {
   const canShow = useHasPermission("Admin Show Orders");
@@ -75,7 +75,13 @@ function OrdersTableRow({ order }: { order: OrderListItem }) {
           </span>
         </TableCell>
         <TableCell dir="ltr" className="text-right">
-          <MoneyValue value={order.total} currency={order.currency} />
+          <OrderTotal
+            total={order.total}
+            totalBeforeDiscount={order.total_before_discount}
+            totalAfterDiscount={order.total_after_discount}
+            discount={order.discount}
+            currency={order.currency}
+          />
         </TableCell>
         <TableCell className="max-w-none overflow-visible whitespace-normal">
           {canEdit ? <OrderStatusDropdown

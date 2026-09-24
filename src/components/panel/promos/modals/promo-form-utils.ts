@@ -10,7 +10,9 @@ export const promoDefaultValues: Partial<PromoFormValues> = {
   max_discount_amount: undefined,
   minimum_order_amount: undefined,
   usage_limit: undefined,
-  per_user_limit: undefined,
+  // Match the API default while still allowing an administrator to clear it
+  // explicitly when an unlimited per-user allowance is intended.
+  per_user_limit: 1,
   start_date: "",
   end_date: "",
   is_active: true,

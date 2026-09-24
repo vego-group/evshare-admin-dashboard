@@ -30,6 +30,7 @@ export type PromoListItem = PricingConfigurationMetadata & {
   end_date: string | null;
   is_active: boolean;
   status: PromoStatus;
+  description: string | null;
   description_ar: string | null;
   description_en: string | null;
   created_at: string;
@@ -86,6 +87,12 @@ export type PromoCodeDetailResponse = {
   error: boolean;
   message: string;
   data: PromoDetailData;
+};
+
+export type PromoCodeResponse = {
+  error: boolean;
+  message: string;
+  data: PromoListItem;
 };
 
 export type PromoCodePayload = {
