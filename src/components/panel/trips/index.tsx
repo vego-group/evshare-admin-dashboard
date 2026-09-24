@@ -13,12 +13,15 @@ import TripsMainContent from "./trips-main-content";
 
 function Trips() {
   const router = useRouter();
-  const [params, setParams] = useState<TripsQueryParams>({ page: 1, limit: PAGE_SIZE });
+  const [params, setParams] = useState<TripsQueryParams>({
+    page: 1,
+    limit: PAGE_SIZE,
+  });
   const { data, isLoading } = useTrips(params);
 
   return (
     <div className="flex w-full flex-col gap-6">
-      {isLoading ? (
+      {!isLoading ? (
         <TripsContentShimmer />
       ) : (
         <>
@@ -26,7 +29,9 @@ function Trips() {
           <TripsMainContent
             data={data}
             params={params}
-            onParamsChange={(next) => setParams((current) => ({ ...current, ...next }))}
+            onParamsChange={(next) =>
+              setParams((current) => ({ ...current, ...next }))
+            }
             onView={(trip) => router.push(`/trips/${trip.id}`)}
           />
         </>

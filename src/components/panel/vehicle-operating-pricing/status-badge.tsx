@@ -37,7 +37,7 @@ function StatusBadge({ status }: { status?: string }) {
   return (
     <span
       className={cn(
-        "inline-flex h-8 w-fit items-center rounded-full px-3 text-xs font-medium",
+        "inline-flex h-8 w-fit shrink-0 items-center whitespace-nowrap rounded-full px-3 text-xs font-medium",
         statusClassNames[value] || "bg-gray-100 text-dark-gray",
       )}
     >

@@ -24,7 +24,7 @@ function OperatingCompaniesCards({
   onDeleteCompany,
 }: OperatingCompaniesCardsProps) {
   return (
-    <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+    <section className="dashboard-card-grid grid gap-4">
       {companies.map((company) => (
         <article
           key={company.id}

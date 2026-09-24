@@ -17,5 +17,18 @@ export default function MoneyValue({
 }) {
   const { formatPrice } = useCurrency();
   if (!hasMoneyValue(value)) return <>-</>;
-  return <span className={cn("inline-flex whitespace-nowrap", className)} dir="ltr">{formatPrice(value!, options, currency)}</span>;
+  const formattedPrice = formatPrice(value!, options, currency);
+
+  return (
+    <span
+      className={cn(
+        "inline-block max-w-full overflow-hidden text-ellipsis whitespace-nowrap align-bottom text-left  tabular-nums [unicode-bidi:isolate]",
+        className,
+      )}
+      dir="ltr"
+      title={formattedPrice}
+    >
+      {formattedPrice}
+    </span>
+  );
 }

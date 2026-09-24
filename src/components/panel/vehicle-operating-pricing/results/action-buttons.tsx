@@ -33,13 +33,18 @@ function VehicleActions({
   onDelete,
 }: Props) {
   return (
-    <div className={cn("flex items-center gap-2", compact && "w-full flex-wrap")}>
+    <div
+      className={cn(
+        "flex items-center gap-2",
+        compact ? "w-full flex-wrap" : "w-max min-w-max flex-nowrap",
+      )}
+    >
       <PermissionGate slug={["Admin Locate Vehicles", "Admin View Locks", "Admin Lock Vehicles", "Admin Unlock Vehicles"]}>
         <button
           type="button"
           onClick={onControlPanel}
           className={cn(
-            "flex h-8 items-center gap-1.5 rounded-lg bg-teal-50 px-2.5 text-xs font-semibold text-teal-700 transition hover:bg-teal-100",
+            "flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg bg-teal-50 px-2.5 text-xs font-semibold text-teal-700 transition hover:bg-teal-100",
             compact && "w-full justify-center",
           )}
         >
@@ -52,7 +57,7 @@ function VehicleActions({
           type="button"
           onClick={onManageZone}
           className={cn(
-            "flex h-8 shrink-0 items-center gap-1.5 rounded-lg bg-indigo-50 px-2.5 text-xs font-semibold text-indigo-600 transition hover:bg-indigo-100",
+            "flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg bg-indigo-50 px-2.5 text-xs font-semibold text-indigo-600 transition hover:bg-indigo-100",
             compact && "w-full justify-center",
           )}
         >
@@ -66,7 +71,7 @@ function VehicleActions({
             type="button"
             onClick={onCommission}
             className={cn(
-              "flex h-8 shrink-0 items-center gap-1.5 rounded-lg bg-purple-50 px-2.5 text-xs font-semibold text-purple-600 transition hover:bg-purple-100",
+              "flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg bg-purple-50 px-2.5 text-xs font-semibold text-purple-600 transition hover:bg-purple-100",
               compact && "w-full justify-center",
             )}
           >
@@ -90,7 +95,7 @@ function VehicleActions({
 
 function Action({ icon: Icon, label, onClick, className }: { icon: LucideIcon; label: string; onClick: () => void; className: string }) {
   return (
-    <button type="button" aria-label={label} onClick={onClick} className={cn("grid size-8 place-items-center rounded-lg transition hover:brightness-95", className)}>
+    <button type="button" aria-label={label} onClick={onClick} className={cn("grid size-8 shrink-0 place-items-center rounded-lg transition hover:brightness-95", className)}>
       <Icon className="size-4 shrink-0" />
     </button>
   );

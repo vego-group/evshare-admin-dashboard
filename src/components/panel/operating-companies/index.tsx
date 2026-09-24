@@ -54,7 +54,12 @@ function OperatingCompanies() {
   }
 
   async function handleDeleteCompany() {
-    if (!companyPendingDelete || companyPendingDelete.slug === "evshare" || isDeleting) return;
+    if (
+      !companyPendingDelete ||
+      companyPendingDelete.slug === "evshare" ||
+      isDeleting
+    )
+      return;
 
     const currentCompany = companyPendingDelete;
     setIsDeleting(true);
@@ -116,7 +121,9 @@ function OperatingCompanies() {
         onClose={() => {
           if (!isSavingCommission) setCompanyPendingCommission(null);
         }}
-        onSaved={() => refreshOperatingCompanyQueries(companyPendingCommission?.id)}
+        onSaved={() =>
+          refreshOperatingCompanyQueries(companyPendingCommission?.id)
+        }
       />
     </div>
   );

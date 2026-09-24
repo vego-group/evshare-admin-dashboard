@@ -24,8 +24,9 @@ function ContactUsResults({ settings, onEdit }: Props) {
   }
 
   return (
-    <div className="overflow-x-auto rounded-2xl bg-white">
-      <table className="w-full min-w-212.5 text-right">
+    <div className="overflow-hidden rounded-2xl bg-white">
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-212.5 text-right">
         <thead className="bg-primary/8 text-dark-gray">
           <tr>
             <th className="px-5 py-4">البيان</th>
@@ -63,7 +64,8 @@ function ContactUsResults({ settings, onEdit }: Props) {
             </tr>
           ))}
         </tbody>
-      </table>
+        </table>
+      </div>
     </div>
   );
 }

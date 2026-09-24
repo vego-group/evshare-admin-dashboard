@@ -22,7 +22,7 @@ function CategoriesCards({
   onDeleteCategory,
 }: CategoriesCardsProps) {
   return (
-    <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+    <section className="dashboard-card-grid grid gap-4">
       {categories.map((category) => (
         <article
           key={category.id}

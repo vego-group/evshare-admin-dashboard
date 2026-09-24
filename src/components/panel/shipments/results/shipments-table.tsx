@@ -5,7 +5,6 @@ import type { ShipmentListItem } from "@/types";
 import {
   DirectionBadge,
   ShipmentActions,
-  ShipmentIcon,
   StatusBadge,
   formatDateOnly,
 } from "./shipment-result-parts";
@@ -47,8 +46,7 @@ function ShipmentsTable({
             {shipments.map((shipment) => (
               <tr key={shipment.id} className="text-dark-gray">
                 <TableCell>
-                  <div className="flex max-w-60 items-center gap-3">
-                    <ShipmentIcon />
+                  <div className="flex max-w-60 items-center">
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-base font-medium" dir="ltr">
                         {shipment.tracking_id ?? "—"}

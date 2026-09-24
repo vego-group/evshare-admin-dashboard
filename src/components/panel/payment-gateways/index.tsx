@@ -4,10 +4,7 @@ import { useState } from "react";
 
 import Header from "@/components/ui/header";
 import { useHasPermission } from "@/hooks";
-import {
-  usePaymentCheckouts,
-  usePaymentTransactions,
-} from "@/hooks/api";
+import { usePaymentCheckouts, usePaymentTransactions } from "@/hooks/api";
 import type {
   PaymentCheckoutQueryParams,
   PaymentGatewayTab,
@@ -61,7 +58,10 @@ function PaymentGateways() {
     data: transactionsData,
     isLoading: isTransactionsLoading,
     isFetching: isTransactionsFetching,
-  } = usePaymentTransactions(transactionParams, effectiveTab === "transactions");
+  } = usePaymentTransactions(
+    transactionParams,
+    effectiveTab === "transactions",
+  );
 
   const isLoading =
     effectiveTab === "checkouts" ? isCheckoutsLoading : isTransactionsLoading;
@@ -191,7 +191,9 @@ function PaymentGateways() {
               <PaymentTransactionsTable
                 transactions={transactionsData?.data ?? []}
                 isFetching={isFetching}
-                onTransactionSelect={canShowTransactions ? openTransaction : undefined}
+                onTransactionSelect={
+                  canShowTransactions ? openTransaction : undefined
+                }
               />
               <PaymentGatewaysPagination
                 meta={transactionsData?.meta}

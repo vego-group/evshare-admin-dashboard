@@ -92,11 +92,11 @@ export function CloseButtonModal({ closeButtonClassname }: ICloseButtonProps) {
       aria-label="إغلاق النافذة"
       title="إغلاق"
       className={cn(
-        "size-9 rounded-xl border flex justify-center items-center absolute left-4 top-4 border-border-subtle bg-surface-subtle text-dark-gray transition-colors hover:bg-neutral-200",
+        "absolute left-4 top-4 flex size-9 min-h-9 min-w-9 shrink-0 items-center justify-center rounded-xl border border-border-subtle bg-surface-subtle text-dark-gray transition-colors hover:bg-neutral-200",
         closeButtonClassname && closeButtonClassname,
       )}
     >
-      <X className="size-4 shrink-0" />
+      <X className="size-4 min-h-4 min-w-4 shrink-0" />
     </DialogClose>
   );
 }

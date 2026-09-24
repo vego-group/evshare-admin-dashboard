@@ -33,6 +33,11 @@ function SidebarNavLink({
     onNavigate?.();
     if (item.isDashboard) {
       onDashboardClick(event);
+      return;
+    }
+
+    if (!active) {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     }
   };
 

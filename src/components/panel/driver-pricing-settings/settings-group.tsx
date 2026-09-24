@@ -10,7 +10,7 @@ export default function SettingsGroup({ group, settings, onEdit }: Props) {
   return (
     <section className="space-y-4">
       <div><h2 className="text-xl font-bold text-secondary">{group.title}</h2><p className="mt-1 text-sm text-gray">{group.description}</p></div>
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <div className="dashboard-card-grid grid gap-4">
         {settings.map((setting) => <SettingCard key={setting.id} setting={setting} onEdit={onEdit} />)}
       </div>
     </section>

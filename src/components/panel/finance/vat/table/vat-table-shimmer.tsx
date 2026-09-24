@@ -15,7 +15,7 @@ function VatTableShimmer() {
             <tr className="bg-primary/8">
               {COLUMN_WIDTHS.map((width, index) => (
                 <th key={index} className="border-b border-primary/15 px-5 py-5">
-                  <Shimmer className={`h-5 ${width} rounded-md`} />
+                  <Shimmer className={`h-5 ${width} rounded-md bg-neutral-200`} />
                 </th>
               ))}
             </tr>
@@ -28,7 +28,7 @@ function VatTableShimmer() {
                     key={cellIndex}
                     className="h-16 border-b border-primary/15 px-5 py-3"
                   >
-                    <Shimmer className={`h-5 ${width} rounded-md`} />
+                    <Shimmer className={`h-5 ${width} rounded-md bg-neutral-200`} />
                   </td>
                 ))}
               </tr>

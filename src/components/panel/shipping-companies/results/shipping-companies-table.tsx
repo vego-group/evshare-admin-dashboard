@@ -4,7 +4,6 @@ import type { ShippingCompanyListItem } from "@/types";
 
 import {
   CompanyActions,
-  CompanyLogo,
   MoneyValue,
   ServiceTypeBadge,
   StatusBadge,
@@ -41,8 +40,7 @@ function ShippingCompaniesTable({
             {companies.map((company) => (
               <tr key={company.id} className="text-dark-gray">
                 <TableCell>
-                  <div className="flex max-w-64 items-center gap-3">
-                    <CompanyLogo company={company} />
+                  <div className="flex max-w-64 items-center">
                     <div className="min-w-0 flex-1">
                       <p
                         className="truncate text-base font-medium"

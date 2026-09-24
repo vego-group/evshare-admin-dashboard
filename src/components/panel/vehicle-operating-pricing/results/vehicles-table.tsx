@@ -114,7 +114,7 @@ function RentalAvailabilityBadge({ vehicle }: { vehicle: VehicleListItem }) {
   return (
     <span
       title={availability.reason ?? undefined}
-      className={`max-w-36 truncate rounded-full px-2 py-0.5 text-[11px] font-medium ${availability.available ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-orange-600"}`}
+      className={`w-fit whitespace-nowrap rounded-full px-2 py-0.5 text-[11px] font-medium ${availability.available ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-orange-600"}`}
     >
       {availability.message}
     </span>
@@ -130,8 +130,8 @@ function ConnectivityBadge({ vehicle }: { vehicle: VehicleListItem }) {
   }[connectivity];
 
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${config.className}`}>
-      <span className={`size-2 rounded-full ${config.dot}`} />
+    <span className={`inline-flex w-fit shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-medium ${config.className}`}>
+      <span className={`size-2 shrink-0 rounded-full ${config.dot}`} />
       {config.label}
     </span>
   );
@@ -139,7 +139,7 @@ function ConnectivityBadge({ vehicle }: { vehicle: VehicleListItem }) {
 
 function VehicleName({ vehicle }: { vehicle: VehicleListItem }) {
   return (
-    <p className="truncate font-medium text-secondary">
+    <p dir="ltr" className="truncate text-right font-medium text-secondary">
       {vehicleTitle(vehicle)}
     </p>
   );

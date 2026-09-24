@@ -97,8 +97,8 @@ function VehicleToolbar({
             ابحث عن المركبات وأجهزة IoT والأقفال
           </p>
         </div>
-        <span className="rounded-full bg-teal-50 px-3 py-1 text-xs font-medium text-teal-700">
-          فلاتر IoT
+        <span className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full bg-teal-50 px-3 py-1.5 text-xs font-medium text-teal-700">
+          فلاتر <bdi dir="ltr">IoT</bdi>
         </span>
       </div>
       <div className="grid gap-3 lg:grid-cols-2">

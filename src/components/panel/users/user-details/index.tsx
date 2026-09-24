@@ -120,7 +120,7 @@ function UserDetailsContent({ user }: { user: AdminUserDetail }) {
             value={user.email ?? EMPTY_VALUE}
             dir="ltr"
           />
-          <InfoRow label="الجوال" value={formatStoredPhone(user.mobile, countryCode)} dir="ltr" />
+          <InfoRow label="الجوال" value={formatStoredPhone(user.mobile, countryCode)} dir="ltr" align="left" />
           <InfoRow label="الدور" value={<RoleBadge role={user.role} />} />
           <InfoRow
             label="توثيق الجوال"
@@ -252,17 +252,22 @@ function InfoRow({
   label,
   value,
   dir,
+  align,
 }: {
   label: string;
   value: ReactNode;
   dir?: "ltr" | "rtl";
+  align?: "left" | "right";
 }) {
   return (
     <div className="flex items-center justify-between gap-4 rounded-[10px] bg-neutral-50 px-4 py-3">
       <span className="shrink-0 text-sm text-gray">{label}</span>
       <span
         dir={dir}
-        className="min-w-0 wrap-break-word text-right text-sm font-medium text-secondary"
+        className={cn(
+          "min-w-0 wrap-break-word text-sm font-medium text-secondary",
+          align === "left" ? "text-left" : "text-right",
+        )}
       >
         {value}
       </span>
