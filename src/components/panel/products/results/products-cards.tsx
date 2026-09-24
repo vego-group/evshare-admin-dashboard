@@ -24,7 +24,7 @@ function ProductsCards({
   onDeleteProduct,
 }: ProductsCardsProps) {
   return (
-    <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+    <section className="dashboard-card-grid grid gap-4">
       {products.map((product) => (
         <article
           key={product.id}

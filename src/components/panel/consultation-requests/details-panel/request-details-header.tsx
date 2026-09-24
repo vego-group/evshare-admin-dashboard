@@ -9,7 +9,7 @@ function RequestDetailsHeader({ requestId }: { requestId: string }) {
         </h2>
         <p className="text-sm leading-5 text-[#6a7282]">{requestId}</p>
       </div>
-      <CloseButtonPanel closeButtonClassname="static size-10 rounded-[14px] border-0 bg-primary text-secondary hover:bg-primary/90" />
+      <CloseButtonPanel closeButtonClassname="static size-10 shrink-0 rounded-[14px] border-0 bg-primary text-secondary hover:bg-primary/90" />
     </header>
   );
 }

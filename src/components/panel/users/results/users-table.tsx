@@ -13,7 +13,6 @@ import {
   getUserDisplayName,
   RoleBadge,
   UserActions,
-  UserIcon,
   VerifiedBadge,
 } from "./user-result-parts";
 
@@ -25,7 +24,13 @@ type UsersTableProps = {
   onReactivateUser: (user: UserListItem) => void;
 };
 
-function UsersTable({ users, onDeleteUser, onEditUser, onSuspendUser, onReactivateUser }: UsersTableProps) {
+function UsersTable({
+  users,
+  onDeleteUser,
+  onEditUser,
+  onSuspendUser,
+  onReactivateUser,
+}: UsersTableProps) {
   const router = useRouter();
   const countryCode = useTenantCountry();
 
@@ -60,9 +65,8 @@ function UsersTable({ users, onDeleteUser, onEditUser, onSuspendUser, onReactiva
                 }}
                 className="cursor-pointer text-dark-gray transition hover:bg-primary/5 focus-visible:bg-primary/5 focus-visible:outline-none"
               >
-                <TableCell>
-                  <div className="flex max-w-60 items-center gap-3">
-                    <UserIcon />
+                <TableCell truncate={false}>
+                  <div className="w-30">
                     <div className="min-w-0 flex-1">
                       <p
                         className="truncate text-base font-medium"
@@ -82,16 +86,24 @@ function UsersTable({ users, onDeleteUser, onEditUser, onSuspendUser, onReactiva
                     </div>
                   </div>
                 </TableCell>
-                <TableCell dir="ltr">{formatStoredPhone(user.mobile, countryCode)}</TableCell>
-                <TableCell>
+                <TableCell dir="ltr" align="left">
+                  {formatStoredPhone(user.mobile, countryCode)}
+                </TableCell>
+                <TableCell truncate={false}>
                   <RoleBadge role={user.role} />
                 </TableCell>
-                <TableCell>
+                <TableCell truncate={false}>
                   <VerifiedBadge verified={user.mobile_verified} />
                 </TableCell>
                 <TableCell dir="ltr">{formatDate(user.created_at)}</TableCell>
                 <TableCell truncate={false}>
-                  <UserActions user={user} onEdit={() => onEditUser(user)} onSuspend={() => onSuspendUser(user)} onReactivate={() => onReactivateUser(user)} onDelete={() => onDeleteUser(user)} />
+                  <UserActions
+                    user={user}
+                    onEdit={() => onEditUser(user)}
+                    onSuspend={() => onSuspendUser(user)}
+                    onReactivate={() => onReactivateUser(user)}
+                    onDelete={() => onDeleteUser(user)}
+                  />
                 </TableCell>
               </tr>
             ))}
@@ -109,20 +121,25 @@ function HeaderCell({ children }: { children: ReactNode }) {
 function TableCell({
   children,
   dir,
+  align,
   truncate = true,
 }: {
   children: ReactNode;
   dir?: "ltr" | "rtl";
+  align?: "left" | "right";
   truncate?: boolean;
 }) {
+  const alignmentClass =
+    align === "left" ? "text-left" : align === "right" ? "text-right" : "";
+
   return (
     <td
       dir={dir}
-      className={
+      className={`${
         truncate
           ? "max-w-0 overflow-hidden text-ellipsis whitespace-nowrap border-b border-primary/15 px-5 py-3"
           : "border-b border-primary/15 px-5 py-3"
-      }
+      } ${alignmentClass}`}
     >
       {children}
     </td>

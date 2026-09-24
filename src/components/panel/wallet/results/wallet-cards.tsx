@@ -16,7 +16,7 @@ function WalletCards({
   onViewTransaction: (transaction: WalletTransaction) => void;
 }) {
   return (
-    <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+    <section className="dashboard-card-grid grid gap-4">
       {transactions.map((transaction) => (
         <WalletCard
           key={transaction.id}

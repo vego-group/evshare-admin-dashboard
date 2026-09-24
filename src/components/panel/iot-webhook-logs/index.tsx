@@ -22,7 +22,12 @@ export default function IotWebhookLogs() {
 
   return (
     <div className="flex w-full flex-col gap-6">
-      <Header title="سجلات ويب هوك إنترنت الأشياء" subtitle="تدقيق ومتابعة عمليات التسليم الواردة من بوابة Vego وإعادة معالجة السجلات عند الحاجة" />
+      {!isLoading && (
+        <Header
+          title="سجلات ويب هوك إنترنت الأشياء"
+          subtitle="تدقيق ومتابعة عمليات التسليم الواردة من بوابة Vego وإعادة معالجة السجلات عند الحاجة"
+        />
+      )}
 
       {isLoading ? (
         <IotWebhookLogsContentShimmer />

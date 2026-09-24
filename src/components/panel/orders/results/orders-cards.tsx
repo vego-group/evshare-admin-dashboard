@@ -20,7 +20,7 @@ import {
 
 function OrdersCards({ orders }: { orders: OrderListItem[] }) {
   return (
-    <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+    <section className="dashboard-card-grid grid gap-4">
       {orders.map((order) => (
         <OrderCard key={order.id} order={order} />
       ))}

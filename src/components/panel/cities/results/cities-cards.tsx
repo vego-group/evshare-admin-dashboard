@@ -17,7 +17,7 @@ type CitiesCardsProps = {
 
 function CitiesCards({ cities, onEditCity, onDeleteCity }: CitiesCardsProps) {
   return (
-    <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+    <section className="dashboard-card-grid grid gap-4">
       {cities.map((city) => (
         <article
           key={city.id}

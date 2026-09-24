@@ -1,15 +1,40 @@
 import type { MouseEvent } from "react";
-import { Pencil, RotateCcw, Trash2, User, UserRoundX, type LucideIcon } from "lucide-react";
+import {
+  Pencil,
+  RotateCcw,
+  Trash2,
+  User,
+  UserRoundX,
+  type LucideIcon,
+} from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import PermissionGate from "@/components/permission-gate";
-import type { UserAccountStatus, UserKycStatus, UserListItem, UserRole } from "@/types";
+import type {
+  UserAccountStatus,
+  UserKycStatus,
+  UserListItem,
+  UserRole,
+} from "@/types";
 import { ADMIN_PERMISSIONS } from "@/constants";
 
 export function AccountStatusBadge({ status }: { status: UserAccountStatus }) {
   const labels = { active: "نشط", suspended: "معلق", deleted: "محذوف" };
-  const colors = { active: "bg-green-50 text-green-700", suspended: "bg-amber-50 text-amber-700", deleted: "bg-red-50 text-red-700" };
-  return <span className={cn("inline-flex rounded-full px-3 py-1 text-sm", colors[status])}>{labels[status]}</span>;
+  const colors = {
+    active: "bg-green-50 text-green-700",
+    suspended: "bg-amber-50 text-amber-700",
+    deleted: "bg-red-50 text-red-700",
+  };
+  return (
+    <span
+      className={cn(
+        "inline-flex w-fit min-w-max shrink-0 items-center justify-center whitespace-nowrap rounded-full px-3 py-1 text-sm",
+        colors[status],
+      )}
+    >
+      {labels[status]}
+    </span>
+  );
 }
 
 export const roleLabels: Record<string, string> = {
@@ -99,7 +124,7 @@ export function KycBadge({ status }: { status: UserKycStatus }) {
   return (
     <span
       className={cn(
-        "inline-flex h-8.5 w-fit items-center justify-center whitespace-nowrap rounded-full px-4 text-sm font-medium",
+        "inline-flex h-8.5 w-fit bg-amber-600 items-center justify-center whitespace-nowrap rounded-full px-4 text-sm font-medium",
         kycStatusClasses[status],
       )}
     >
@@ -125,18 +150,46 @@ export function UserActions({
 }) {
   return (
     <div className={cn("flex items-center gap-2", compact && "w-full")}>
-      {user.account_status !== "deleted" && <PermissionGate slug={["Admin Edit Users", "Admin Assign User Roles"]}><ActionButton icon={Pencil} onClick={onEdit} label="تعديل المستخدم" className="bg-blue-50 text-blue-600" /></PermissionGate>}
-      {user.account_status === "active" && <PermissionGate slug={ADMIN_PERMISSIONS.users.suspend}><ActionButton icon={UserRoundX} onClick={onSuspend} label="تعليق المستخدم" className="bg-amber-50 text-amber-700" /></PermissionGate>}
-      {user.account_status === "suspended" && <PermissionGate slug={ADMIN_PERMISSIONS.users.reactivate}><ActionButton icon={RotateCcw} onClick={onReactivate} label="إعادة تفعيل المستخدم" className="bg-green-50 text-green-700" /></PermissionGate>}
-      {user.account_status !== "deleted" &&
-      <PermissionGate slug={ADMIN_PERMISSIONS.users.delete}>
-        <ActionButton
-          icon={Trash2}
-          onClick={onDelete}
-          label="إزالة المستخدم"
-          className={cn("bg-red-50 text-red-500", compact && "flex-1")}
-        />
-      </PermissionGate>}
+      {user.account_status !== "deleted" && (
+        <PermissionGate slug={["Admin Edit Users", "Admin Assign User Roles"]}>
+          <ActionButton
+            icon={Pencil}
+            onClick={onEdit}
+            label="تعديل المستخدم"
+            className="bg-blue-50 text-blue-600"
+          />
+        </PermissionGate>
+      )}
+      {user.account_status === "active" && (
+        <PermissionGate slug={ADMIN_PERMISSIONS.users.suspend}>
+          <ActionButton
+            icon={UserRoundX}
+            onClick={onSuspend}
+            label="تعليق المستخدم"
+            className="bg-amber-50 text-amber-700"
+          />
+        </PermissionGate>
+      )}
+      {user.account_status === "suspended" && (
+        <PermissionGate slug={ADMIN_PERMISSIONS.users.reactivate}>
+          <ActionButton
+            icon={RotateCcw}
+            onClick={onReactivate}
+            label="إعادة تفعيل المستخدم"
+            className="bg-green-50 text-green-700"
+          />
+        </PermissionGate>
+      )}
+      {user.account_status !== "deleted" && (
+        <PermissionGate slug={ADMIN_PERMISSIONS.users.delete}>
+          <ActionButton
+            icon={Trash2}
+            onClick={onDelete}
+            label="إزالة المستخدم"
+            className={cn("bg-red-50 text-red-500", compact && "flex-1")}
+          />
+        </PermissionGate>
+      )}
     </div>
   );
 }
@@ -176,15 +229,24 @@ export function DetailLine({
   label,
   value,
   dir,
+  align,
 }: {
   label: string;
   value: string;
   dir?: "ltr" | "rtl";
+  align?: "left" | "right";
 }) {
   return (
     <div className="flex items-center justify-between gap-4">
       <span className="shrink-0 text-sm text-gray">{label}</span>
-      <span dir={dir} className="min-w-0 truncate text-sm font-medium text-secondary">
+      <span
+        dir={dir}
+        className={cn(
+          "min-w-0 truncate text-sm font-medium text-secondary",
+          align === "left" && "text-left",
+          align === "right" && "text-right",
+        )}
+      >
         {value}
       </span>
     </div>

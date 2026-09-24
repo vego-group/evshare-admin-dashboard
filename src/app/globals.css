@@ -216,7 +216,17 @@
     min-width: 0;
   }
   .dashboard-content :where(table) {
+    min-width: max(100%, 42rem);
     font-variant-numeric: tabular-nums;
+  }
+  .dashboard-card-grid {
+    grid-template-columns: repeat(
+      auto-fit,
+      minmax(min(100%, 17rem), 1fr)
+    );
+  }
+  .dashboard-card-grid > * {
+    min-width: min(100%, 17rem);
   }
   .dashboard-content :where(tbody tr) {
     transition: background-color 150ms ease;

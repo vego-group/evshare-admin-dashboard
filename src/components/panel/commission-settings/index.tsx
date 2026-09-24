@@ -20,8 +20,12 @@ import CommissionSettingsResults from "./results";
 function CommissionSettings() {
   const queryClient = useQueryClient();
   const { data, isLoading } = useCommissionSettings({});
-  const [pendingEdit, setPendingEdit] = useState<CommissionSetting | null>(null);
-  const [pendingDelete, setPendingDelete] = useState<CommissionSetting | null>(null);
+  const [pendingEdit, setPendingEdit] = useState<CommissionSetting | null>(
+    null,
+  );
+  const [pendingDelete, setPendingDelete] = useState<CommissionSetting | null>(
+    null,
+  );
   const [isDeleting, setIsDeleting] = useState(false);
 
   async function refresh() {

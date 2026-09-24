@@ -30,7 +30,7 @@ function UsersCards({ users, onDeleteUser, onEditUser, onSuspendUser, onReactiva
   const openUser = (userId: string) => router.push(`/users/${userId}`);
 
   return (
-    <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+    <section className="dashboard-card-grid grid gap-4">
       {users.map((user) => (
         <article
           key={user.id}
@@ -61,7 +61,7 @@ function UsersCards({ users, onDeleteUser, onEditUser, onSuspendUser, onReactiva
           </div>
 
           <div className="mt-5 space-y-3 rounded-[14px] bg-background p-4 text-right">
-            <DetailLine label="الجوال" value={formatStoredPhone(user.mobile, countryCode)} dir="ltr" />
+            <DetailLine label="الجوال" value={formatStoredPhone(user.mobile, countryCode)} dir="ltr" align="left" />
             <DetailLine label="التحقق" value={user.mobile_verified ? "موثّق" : "غير موثّق"} />
             <DetailLine label="تاريخ الإنشاء" value={formatDate(user.created_at)} />
           </div>

@@ -22,7 +22,9 @@ import WalletPagination from "./pagination";
 
 const WalletChart = dynamic(() => import("./chart"), {
   ssr: false,
-  loading: () => <div className="h-64 w-full animate-pulse rounded-2xl bg-primary/5" />,
+  loading: () => (
+    <div className="h-64 w-full animate-pulse rounded-2xl bg-primary/5" />
+  ),
 });
 
 type FlatParams = {
@@ -63,7 +65,9 @@ function Wallet() {
           <WalletToolbar
             selectedSort={params.order_by ?? "desc"}
             selectedStatus={params.status}
-            onSortChange={(order_by: OrderBy) => updateParams({ order_by, page: "1" })}
+            onSortChange={(order_by: OrderBy) =>
+              updateParams({ order_by, page: "1" })
+            }
             onStatusChange={(status?: WalletTransactionStatus) =>
               updateParams({ status, page: "1" })
             }

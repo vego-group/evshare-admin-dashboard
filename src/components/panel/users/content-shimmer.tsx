@@ -3,11 +3,24 @@ import Shimmer from "@/components/ui/shimmer";
 function UsersContentShimmer() {
   return (
     <section className="space-y-6" aria-hidden="true">
+      <div className="flex w-full flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="space-y-2">
+          <Shimmer className="h-8 w-36 rounded-md bg-neutral-200" />
+          <Shimmer className="h-5 w-64 max-w-full rounded-md bg-neutral-200" />
+        </div>
+
+        <div className="flex items-center gap-3 self-start sm:self-auto">
+          <Shimmer className="h-13.25 w-23 rounded-2xl bg-neutral-200" />
+          <Shimmer className="h-12 w-39 rounded-2xl bg-neutral-200" />
+        </div>
+      </div>
+
       <div className="space-y-3 lg:flex lg:items-center lg:justify-between lg:gap-3 lg:space-y-0 lg:rounded-2xl lg:border lg:border-neutral-100/60 lg:bg-white lg:p-1.5">
-        <Shimmer className="h-14 w-full rounded-[14px]" />
+        <Shimmer className="h-14 w-full rounded-[14px] bg-neutral-200 lg:bg-neutral-100" />
         <div className="flex flex-col gap-3.25 sm:flex-row sm:flex-wrap lg:shrink-0">
-          <Shimmer className="h-9.5 w-full rounded-[14px] sm:w-[196px]" />
-          <Shimmer className="h-9.5 w-full rounded-[14px] sm:w-[196px]" />
+          <Shimmer className="h-9.5 w-full rounded-[14px] bg-neutral-200 sm:w-[196px] lg:bg-neutral-100" />
+          <Shimmer className="h-9.5 w-full rounded-[14px] bg-neutral-200 sm:w-[196px] lg:bg-neutral-100" />
+          <Shimmer className="h-9.5 w-full rounded-[14px] bg-neutral-200 sm:w-[196px] lg:bg-neutral-100" />
         </div>
       </div>
 

@@ -145,6 +145,7 @@ function PaymentRequestsDetailsPanel({
       onClose={onClose}
       contentClassName="w-full gap-0 overflow-hidden bg-white p-0 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] sm:rounded-l-3xl sm:border-l-0"
       headerClassName="relative h-[101px] shrink-0 border-b border-gray/20 px-6 py-6 text-right"
+      closeButtonClassName="shrink-0"
       title="تفاصيل الطلب"
       titleClassName="text-2xl font-medium leading-8 text-secondary"
     >

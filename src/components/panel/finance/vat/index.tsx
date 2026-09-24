@@ -5,7 +5,12 @@ import { useQueryClient } from "@tanstack/react-query";
 
 import { ADMIN_PERMISSIONS, PAGE_SIZE } from "@/constants";
 import { useHasPermission } from "@/hooks";
-import { useVatPeriods, useVatRecords, useVatSettlements, useVatSummary } from "@/hooks/api";
+import {
+  useVatPeriods,
+  useVatRecords,
+  useVatSettlements,
+  useVatSummary,
+} from "@/hooks/api";
 import type { VatStatus } from "@/types";
 
 import VatContentShimmer from "./content-shimmer";
@@ -34,8 +39,12 @@ function VatFinance() {
   const [activeTab, setActiveTab] = useState<"records" | "exports">("records");
   const canExport = useHasPermission(ADMIN_PERMISSIONS.vat.export);
   const canViewExports = useHasPermission(ADMIN_PERMISSIONS.vat.viewExports);
-  const { startExport, downloadExport, isBusy: isExporting, downloadingId } =
-    useVatExportActions(canExport, canViewExports);
+  const {
+    startExport,
+    downloadExport,
+    isBusy: isExporting,
+    downloadingId,
+  } = useVatExportActions(canExport, canViewExports);
 
   const sharedFilters = {
     status: filters.status,
@@ -43,12 +52,17 @@ function VatFinance() {
     currency: filters.currency,
   };
 
-  const { data: summary, isLoading: isSummaryLoading } = useVatSummary(sharedFilters);
+  const { data: summary, isLoading: isSummaryLoading } =
+    useVatSummary(sharedFilters);
   const { data: periods, isLoading: isPeriodsLoading } = useVatPeriods({
     status: filters.status,
     currency: filters.currency,
   });
-  const { data: records, isLoading: isRecordsLoading, isFetching: isRecordsFetching } = useVatRecords({
+  const {
+    data: records,
+    isLoading: isRecordsLoading,
+    isFetching: isRecordsFetching,
+  } = useVatRecords({
     ...sharedFilters,
     page,
     limit: PAGE_SIZE,
@@ -64,7 +78,10 @@ function VatFinance() {
   });
 
   const isLoading =
-    isSummaryLoading || isPeriodsLoading || isRecordsLoading || isSettlementsLoading;
+    isSummaryLoading ||
+    isPeriodsLoading ||
+    isRecordsLoading ||
+    isSettlementsLoading;
 
   const updateFilters = (next: Partial<Filters>) => {
     setFilters((current) => ({ ...current, ...next }));
@@ -87,7 +104,11 @@ function VatFinance() {
       <VatHeader />
       <VatSummaryStats data={summary?.data} />
       {canViewExports && (
-        <div className="flex gap-2 border-b border-primary/20" role="tablist" aria-label="أقسام ضريبة القيمة المضافة">
+        <div
+          className="flex gap-2 border-b border-primary/20"
+          role="tablist"
+          aria-label="أقسام ضريبة القيمة المضافة"
+        >
           <button
             type="button"
             role="tab"
@@ -112,20 +133,31 @@ function VatFinance() {
       )}
       {activeTab === "exports" && canViewExports ? (
         <div id="vat-exports-panel" role="tabpanel">
-          <VatExports onDownload={downloadExport} downloadingId={downloadingId} />
+          <VatExports
+            onDownload={downloadExport}
+            downloadingId={downloadingId}
+          />
         </div>
       ) : (
-        <div id="vat-records-panel" role="tabpanel" className="flex flex-col gap-6">
+        <div
+          id="vat-records-panel"
+          role="tabpanel"
+          className="flex flex-col gap-6"
+        >
           <VatPeriods periods={periods?.data ?? []} />
           <VatToolbar
             selectedStatus={filters.status}
             selectedPeriod={filters.period}
             selectedCurrency={filters.currency}
-            periods={[...new Set((periods?.data ?? []).map((item) => item.period))]}
+            periods={[
+              ...new Set((periods?.data ?? []).map((item) => item.period)),
+            ]}
             onStatusChange={(status) => updateFilters({ status })}
             onPeriodChange={(period) => updateFilters({ period })}
             onCurrencyChange={(currency) => updateFilters({ currency })}
-            onExport={() => void startExport({ type: "vat_records", ...sharedFilters })}
+            onExport={() =>
+              void startExport({ type: "vat_records", ...sharedFilters })
+            }
             isExporting={isExporting}
           />
           <VatResults
@@ -136,7 +168,12 @@ function VatFinance() {
           <VatSettlements
             settlements={settlements?.data ?? []}
             onAdd={() => setIsAddOpen(true)}
-            onExport={() => void startExport({ type: "vat_settlements", period: filters.period })}
+            onExport={() =>
+              void startExport({
+                type: "vat_settlements",
+                period: filters.period,
+              })
+            }
             isExporting={isExporting}
             isLoading={isSettlementsLoading || isSettlementsFetching}
           />

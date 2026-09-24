@@ -13,15 +13,26 @@ import QueryErrorState from "@/components/ui/query-error-state";
 import SlidersMainContent from "./sliders-main-content";
 import SlidersContentShimmer from "./content-shimmer";
 import SlidersHeader, { type SlidersViewMode } from "./header";
-import { SliderAddModal, SliderDeleteConfirmModal, SliderEditModal } from "./modals";
+import {
+  SliderAddModal,
+  SliderDeleteConfirmModal,
+  SliderEditModal,
+} from "./modals";
 
 function Sliders() {
   const queryClient = useQueryClient();
   const [viewMode, setViewMode] = useState<SlidersViewMode>("table");
-  const [params, setParams] = useState<QueryParams>({ page: 1, limit: PAGE_SIZE });
+  const [params, setParams] = useState<QueryParams>({
+    page: 1,
+    limit: PAGE_SIZE,
+  });
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [sliderPendingEdit, setSliderPendingEdit] = useState<Slider | null>(null);
-  const [sliderPendingDelete, setSliderPendingDelete] = useState<Slider | null>(null);
+  const [sliderPendingEdit, setSliderPendingEdit] = useState<Slider | null>(
+    null,
+  );
+  const [sliderPendingDelete, setSliderPendingDelete] = useState<Slider | null>(
+    null,
+  );
   const [isDeleting, setIsDeleting] = useState(false);
 
   const { data, isLoading, isError, isFetching, refetch } = useSliders(params);
@@ -93,7 +104,9 @@ function Sliders() {
       <SliderDeleteConfirmModal
         open={Boolean(sliderPendingDelete)}
         isDeleting={isDeleting}
-        onClose={() => { if (!isDeleting) setSliderPendingDelete(null); }}
+        onClose={() => {
+          if (!isDeleting) setSliderPendingDelete(null);
+        }}
         onConfirm={handleDeleteSlider}
       />
     </div>

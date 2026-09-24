@@ -42,7 +42,7 @@ export type KycUser = {
 };
 
 export type KycDetail = KycListItem & {
-  user: KycUser;
+  user: KycUser | null;
   reviewer?: { id: string; name: string } | null;
 };
 

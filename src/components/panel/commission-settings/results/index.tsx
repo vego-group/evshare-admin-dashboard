@@ -60,8 +60,13 @@ function CommissionSettingsResults({
                 <TypeBadge type={commissionSetting.type} />
               </td>
               <td className="px-5 py-4">
-                {commissionSetting.amount}
-                {commissionSetting.type === "percentage" ? "%" : ""}
+                <span
+                  dir="ltr"
+                  className="inline-flex whitespace-nowrap text-left tabular-nums [unicode-bidi:isolate]"
+                >
+                  {commissionSetting.amount}
+                  {commissionSetting.type === "percentage" ? "%" : ""}
+                </span>
               </td>
               <td className="px-5 py-4">
                 <StatusBadge active={commissionSetting.is_active} />

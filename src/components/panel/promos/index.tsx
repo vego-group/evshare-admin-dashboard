@@ -19,10 +19,15 @@ import PromosMainContent from "./promos-main-content";
 function Promos() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [params, setParams] = useState<PromoCodesQueryParams>({ page: 1, limit: PAGE_SIZE });
+  const [params, setParams] = useState<PromoCodesQueryParams>({
+    page: 1,
+    limit: PAGE_SIZE,
+  });
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [promoPendingEdit, setPromoPendingEdit] = useState<PromoListItem | null>(null);
-  const [promoPendingDelete, setPromoPendingDelete] = useState<PromoListItem | null>(null);
+  const [promoPendingEdit, setPromoPendingEdit] =
+    useState<PromoListItem | null>(null);
+  const [promoPendingDelete, setPromoPendingDelete] =
+    useState<PromoListItem | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const { data, isLoading } = usePromos(params);
