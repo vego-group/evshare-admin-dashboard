@@ -208,10 +208,10 @@ export default function OtpForm({ mobile, country }: OtpFormProps) {
               >
                 <InputOTPGroup className="flex items-center">
                   {Array.from({ length: 6 }).map((_, index) => (
-                    <div key={index} className="mx-1">
+                    <div key={index} className="mx-0.5 sm:mx-1">
                       <InputOTPSlot
                         index={index}
-                        className="h-11 w-10 rounded-md border border-[#dbe4ef] bg-white text-secondary"
+                        className="h-10 w-9 rounded-md border border-[#dbe4ef] bg-white text-secondary sm:h-11 sm:w-10"
                       />
                     </div>
                   ))}

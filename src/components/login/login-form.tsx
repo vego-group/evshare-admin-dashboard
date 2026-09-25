@@ -44,7 +44,7 @@ function LoginForm() {
   } = useForm<LoginFormValues>({
     defaultValues: { mobile: "" },
     resolver: loginFormResolver,
-    mode: "onChange",
+    mode: "onSubmit",
   });
 
   const onSubmit = async (data: LoginFormValues) => {

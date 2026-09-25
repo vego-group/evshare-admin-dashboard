@@ -8,7 +8,7 @@ function AppVersionsContentShimmer() {
     <div className="flex w-full flex-col gap-6" role="status" aria-label="Loading app versions">
       <AppVersionsStatsShimmer />
       <AppVersionsToolbarShimmer />
-      <EntityTableShimmer columns={8} />
+      <EntityTableShimmer columns={8} compactHeaders />
       <span className="sr-only">Loading app versions</span>
     </div>
   );

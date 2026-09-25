@@ -7,7 +7,11 @@ import toast from "react-hot-toast";
 import { PAGE_SIZE } from "@/constants";
 import { useUserPermissions } from "@/hooks";
 import { useTestAccounts } from "@/hooks/api";
-import { deleteTestAccount, disableTestAccount, enableTestAccount } from "@/services/mutations";
+import {
+  deleteTestAccount,
+  disableTestAccount,
+  enableTestAccount,
+} from "@/services/mutations";
 import type { TestAccountListItem, TestAccountsQueryParams } from "@/types";
 
 import TestAccountsContentShimmer from "./content-shimmer";
@@ -21,14 +25,22 @@ import TestAccountsMainContent from "./test-accounts-main-content";
 
 function TestAccounts() {
   const queryClient = useQueryClient();
-  const { isLoading: isPermissionsLoading, hasAnyPermission } = useUserPermissions();
+  const { isLoading: isPermissionsLoading, hasAnyPermission } =
+    useUserPermissions();
   const canIndexTestAccounts = hasAnyPermission("Admin Index Test Accounts");
-  const [params, setParams] = useState<TestAccountsQueryParams>({ page: 1, limit: PAGE_SIZE });
+  const [params, setParams] = useState<TestAccountsQueryParams>({
+    page: 1,
+    limit: PAGE_SIZE,
+  });
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [testAccountPendingView, setTestAccountPendingView] = useState<TestAccountListItem | null>(null);
-  const [testAccountPendingEdit, setTestAccountPendingEdit] = useState<TestAccountListItem | null>(null);
-  const [testAccountPendingToggle, setTestAccountPendingToggle] = useState<TestAccountListItem | null>(null);
-  const [testAccountPendingDelete, setTestAccountPendingDelete] = useState<TestAccountListItem | null>(null);
+  const [testAccountPendingView, setTestAccountPendingView] =
+    useState<TestAccountListItem | null>(null);
+  const [testAccountPendingEdit, setTestAccountPendingEdit] =
+    useState<TestAccountListItem | null>(null);
+  const [testAccountPendingToggle, setTestAccountPendingToggle] =
+    useState<TestAccountListItem | null>(null);
+  const [testAccountPendingDelete, setTestAccountPendingDelete] =
+    useState<TestAccountListItem | null>(null);
   const [isTogglingActive, setIsTogglingActive] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -44,7 +56,9 @@ function TestAccounts() {
   async function handleToggleActive() {
     if (!testAccountPendingToggle || isTogglingActive) return;
     setIsTogglingActive(true);
-    const mutate = testAccountPendingToggle.is_active ? disableTestAccount : enableTestAccount;
+    const mutate = testAccountPendingToggle.is_active
+      ? disableTestAccount
+      : enableTestAccount;
     const result = await mutate(testAccountPendingToggle.id);
     setIsTogglingActive(false);
     if (result?.ok) {
