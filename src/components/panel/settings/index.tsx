@@ -9,8 +9,15 @@ import SettingsPropagationSummary from "./propagation-summary";
 import SettingsResults from "./results";
 
 function Settings() {
-  const { data, isLoading, setParams, pendingEdit, setPendingEdit, refresh, propagation } =
-    useSettingsPage();
+  const {
+    data,
+    isLoading,
+    setParams,
+    pendingEdit,
+    setPendingEdit,
+    refresh,
+    propagation,
+  } = useSettingsPage();
 
   if (isLoading) {
     return <SettingsContentShimmer />;

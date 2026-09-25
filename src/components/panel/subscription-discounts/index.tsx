@@ -197,15 +197,60 @@ export default function SubscriptionDiscounts() {
 
 function SubscriptionDiscountsPageShimmer() {
   return (
-    <div className="flex w-full flex-col gap-6" aria-hidden="true">
+    <div
+      className="flex w-full flex-col gap-6"
+      role="status"
+      aria-label="Loading subscription discounts"
+    >
+      <span className="sr-only">Loading subscription discounts</span>
+
+      <section
+        aria-hidden="true"
+        className="flex w-full flex-col gap-5 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <div className="min-w-0 space-y-2.5 border-s-[3px] border-primary ps-4">
+          <Shimmer className="h-8 w-72 max-w-full rounded-lg bg-neutral-200" />
+          <Shimmer className="h-4 w-112 max-w-full rounded-md bg-neutral-200" />
+        </div>
+        <div className="flex h-12 w-48 shrink-0 items-center justify-center gap-2 rounded-2xl bg-neutral-200 px-5">
+          <Shimmer className="size-5 shrink-0 bg-neutral-300" />
+          <Shimmer className="h-4 w-32 rounded-md bg-neutral-300" />
+        </div>
+      </section>
+
       <PricingSummaryShimmer />
 
-      <section className="flex gap-3 rounded-2xl border border-neutral-100/60 bg-white p-1.5">
-        <Shimmer className="h-10 w-40 rounded-xl" />
-        <Shimmer className="h-10 w-40 rounded-xl" />
+      <section
+        aria-hidden="true"
+        className="flex flex-col gap-3 rounded-2xl border border-neutral-100/60 bg-white p-1.5 shadow-[0_2px_6px_rgba(0,0,0,0.04)] sm:flex-row"
+      >
+        {Array.from({ length: 2 }).map((_, index) => (
+          <div
+            key={index}
+            className="flex h-10 w-full items-center justify-between rounded-xl border border-neutral-100 px-4 sm:w-49"
+          >
+            <Shimmer className="h-4 w-16 rounded-md bg-neutral-200" />
+            <Shimmer className="size-4 bg-neutral-200" />
+          </div>
+        ))}
       </section>
 
       <DiscountsShimmer />
+
+      <section
+        aria-hidden="true"
+        className="flex flex-col items-center justify-center gap-3 rounded-lg bg-white px-4 py-3"
+      >
+        <div className="flex items-center gap-2">
+          {Array.from({ length: 5 }).map((_, index) => (
+            <Shimmer
+              key={index}
+              className={`size-8 rounded-lg ${index === 2 ? "bg-neutral-300" : "bg-neutral-200"}`}
+            />
+          ))}
+        </div>
+        <Shimmer className="h-4 w-28 rounded-md bg-neutral-200" />
+      </section>
     </div>
   );
 }
@@ -261,23 +306,35 @@ function PricingSummary({
 
 function PricingSummaryShimmer() {
   return (
-    <section
-      className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"
-      aria-hidden="true"
-    >
-      {Array.from({ length: 4 }).map((_, index) => (
-        <div
-          key={index}
-          className="flex min-h-29 items-center gap-4 rounded-2xl bg-white p-5 shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
-        >
-          <Shimmer className="size-12 shrink-0 rounded-xl" />
-          <div className="flex-1 space-y-2">
-            <Shimmer className="h-4 w-28 max-w-full rounded-md" />
-            <Shimmer className="h-7 w-24 max-w-full rounded-md" />
+    <div className="space-y-3" aria-hidden="true">
+      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, index) => (
+          <div
+            key={index}
+            className="flex min-h-29 items-center gap-4 rounded-2xl bg-white p-5 shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
+          >
+            <Shimmer className="size-12 shrink-0 rounded-xl bg-primary/10" />
+            <div className="min-w-0 flex-1 space-y-2.5">
+              <Shimmer
+                className={`h-4 max-w-full rounded-md bg-neutral-200 ${index === 1 ? "w-36" : "w-28"}`}
+              />
+              <Shimmer
+                className={`h-7 max-w-full rounded-md bg-neutral-300 ${index === 3 ? "w-32" : "w-24"}`}
+              />
+            </div>
           </div>
-        </div>
-      ))}
-    </section>
+        ))}
+      </section>
+
+      <div className="flex flex-wrap items-center gap-2">
+        {Array.from({ length: 4 }).map((_, index) => (
+          <Shimmer
+            key={index}
+            className={`h-7 rounded-full bg-white ${index === 1 ? "w-28" : "w-24"}`}
+          />
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -354,25 +411,59 @@ function DiscountToolbar({
   );
 }
 
+const discountHeaderWidths = [
+  "w-16",
+  "w-16",
+  "w-16",
+  "w-20",
+  "w-16",
+  "w-20",
+  "w-20",
+];
+
+const discountNameWidths = ["w-28", "w-36", "w-24", "w-32", "w-28"];
+
 function DiscountsShimmer() {
   return (
     <section className="overflow-hidden rounded-lg bg-white" aria-hidden="true">
-      <div className="min-w-225">
-        <div className="grid grid-cols-7 gap-4 border-b border-neutral-100 bg-neutral-50 px-5 py-5">
-          {Array.from({ length: 7 }).map((_, index) => (
-            <Shimmer key={index} className="h-5 w-20 rounded-md" />
-          ))}
-        </div>
-        {Array.from({ length: 5 }).map((_, row) => (
-          <div
-            key={row}
-            className="grid h-16 grid-cols-7 items-center gap-4 border-b border-neutral-100 px-5 py-3"
-          >
-            {Array.from({ length: 7 }).map((_, cell) => (
-              <Shimmer key={cell} className="h-5 w-20 rounded-md" />
+      <div className="overflow-x-auto">
+        <div className="min-w-225">
+          <div className="grid grid-cols-[1.35fr_0.9fr_0.65fr_1.25fr_0.8fr_0.9fr_128px] items-center gap-4 border-b border-primary/15 bg-primary/8 px-5 py-5">
+            {discountHeaderWidths.map((width, index) => (
+              <Shimmer
+                key={index}
+                className={`h-5 ${width} rounded-md bg-neutral-300`}
+              />
             ))}
           </div>
-        ))}
+
+          {discountNameWidths.map((nameWidth, rowIndex) => (
+            <div
+              key={rowIndex}
+              className="grid min-h-18 grid-cols-[1.35fr_0.9fr_0.65fr_1.25fr_0.8fr_0.9fr_128px] items-center gap-4 border-b border-primary/15 px-5 py-3 last:border-b-0"
+            >
+              <div className="flex min-w-0 items-center gap-3">
+                <Shimmer className="size-12 shrink-0 rounded-xl bg-primary/10" />
+                <Shimmer
+                  className={`h-5 ${nameWidth} max-w-[70%] rounded-md bg-neutral-200`}
+                />
+              </div>
+              <Shimmer className="h-8.5 w-24 rounded-full bg-neutral-200" />
+              <Shimmer className="h-5 w-16 rounded-md bg-neutral-200" />
+              <Shimmer className="h-5 w-32 rounded-md bg-neutral-200" />
+              <Shimmer className="h-8.5 w-20 rounded-full bg-neutral-200" />
+              <Shimmer className="h-8.5 w-24 rounded-full bg-neutral-200" />
+              <div className="flex items-center gap-2">
+                {Array.from({ length: 3 }).map((_, actionIndex) => (
+                  <Shimmer
+                    key={actionIndex}
+                    className="size-8 rounded-lg bg-neutral-200"
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

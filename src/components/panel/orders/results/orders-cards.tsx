@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
-import MoneyValue from "@/components/ui/money-value";
 import type { ReactNode } from "react";
 
 import { updateOrderStatusAPI } from "@/services/mutations";
@@ -17,6 +16,7 @@ import {
   OrderStatusDropdown,
   OrderStatusUpdateConfirmModal,
 } from "../modals";
+import OrderTotal from "../order-total";
 
 function OrdersCards({ orders }: { orders: OrderListItem[] }) {
   return (
@@ -89,7 +89,15 @@ function OrderCard({ order }: { order: OrderListItem }) {
           <DetailLine label="العنوان" value={order.address?.address ?? "-"} />
           <DetailLine
             label="المبلغ الإجمالي"
-            value={<MoneyValue value={order.total} currency={order.currency} />}
+            value={
+              <OrderTotal
+                total={order.total}
+                totalBeforeDiscount={order.total_before_discount}
+                totalAfterDiscount={order.total_after_discount}
+                discount={order.discount}
+                currency={order.currency}
+              />
+            }
           />
           <DetailLine
             label="التاريخ"

@@ -26,9 +26,15 @@ function AppVersions() {
     type: "merchant",
   });
   const [isAddOpen, setIsAddOpen] = useState(false);
-  const [pendingView, setPendingView] = useState<AppVersionListItem | null>(null);
-  const [pendingEdit, setPendingEdit] = useState<AppVersionListItem | null>(null);
-  const [pendingDelete, setPendingDelete] = useState<AppVersionListItem | null>(null);
+  const [pendingView, setPendingView] = useState<AppVersionListItem | null>(
+    null,
+  );
+  const [pendingEdit, setPendingEdit] = useState<AppVersionListItem | null>(
+    null,
+  );
+  const [pendingDelete, setPendingDelete] = useState<AppVersionListItem | null>(
+    null,
+  );
   const [isDeleting, setIsDeleting] = useState(false);
 
   const { data, isLoading } = useAppVersions(params);
@@ -43,9 +49,15 @@ function AppVersions() {
   async function refreshQueries(appVersionId?: string) {
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: ["app-versions"] }),
-      queryClient.invalidateQueries({ queryKey: ["app-version-latest-values"] }),
+      queryClient.invalidateQueries({
+        queryKey: ["app-version-latest-values"],
+      }),
       ...(appVersionId
-        ? [queryClient.invalidateQueries({ queryKey: ["app-version", appVersionId] })]
+        ? [
+            queryClient.invalidateQueries({
+              queryKey: ["app-version", appVersionId],
+            }),
+          ]
         : []),
     ]);
   }

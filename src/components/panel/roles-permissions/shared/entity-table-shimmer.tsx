@@ -1,6 +1,14 @@
 import Shimmer from "@/components/ui/shimmer";
 
-export default function EntityTableShimmer({ columns }: { columns: number }) {
+type EntityTableShimmerProps = {
+  columns: number;
+  compactHeaders?: boolean;
+};
+
+export default function EntityTableShimmer({
+  columns,
+  compactHeaders = false,
+}: EntityTableShimmerProps) {
   return (
     <div className="overflow-hidden rounded-lg bg-white" aria-hidden="true">
       <div className="min-w-190">
@@ -9,7 +17,14 @@ export default function EntityTableShimmer({ columns }: { columns: number }) {
           style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
         >
           {Array.from({ length: columns }).map((_, index) => (
-            <Shimmer key={index} className="h-5 w-24 rounded-md" />
+            <Shimmer
+              key={index}
+              className={
+                compactHeaders
+                  ? "h-4 w-12 rounded-md sm:w-14"
+                  : "h-5 w-24 rounded-md"
+              }
+            />
           ))}
         </div>
         {Array.from({ length: 5 }).map((_, row) => (

@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import type { TestAccountListItem } from "@/types";
 import { formatStoredPhone } from "@/lib/utils/format-phone";
 
-import { Amount, StatusBadge, TestAccountActions, TestAccountIcon } from "./test-account-result-parts";
+import { Amount, StatusBadge, TestAccountActions } from "./test-account-result-parts";
 
 type TestAccountsTableProps = {
   testAccounts: TestAccountListItem[];
@@ -39,16 +39,13 @@ function TestAccountsTable({
             {testAccounts.map((testAccount) => (
               <tr key={testAccount.id} className="text-dark-gray">
                 <TableCell>
-                  <div className="flex max-w-55 items-center gap-3">
-                    <TestAccountIcon />
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-base font-medium" title={testAccount.user.name}>
-                        {testAccount.user.name}
-                      </p>
-                      <p className="truncate text-sm text-gray" dir="ltr">
-                        {formatStoredPhone(testAccount.user.mobile)}
-                      </p>
-                    </div>
+                  <div className="max-w-55 min-w-0">
+                    <p className="truncate text-base font-medium" title={testAccount.user.name}>
+                      {testAccount.user.name}
+                    </p>
+                    <p className="truncate text-sm text-gray" dir="ltr">
+                      {formatStoredPhone(testAccount.user.mobile)}
+                    </p>
                   </div>
                 </TableCell>
                 <TableCell dir="ltr">

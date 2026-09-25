@@ -23,6 +23,10 @@ function OrderInfoSection({ order }: { order: OrderDetail }) {
 
   const [pendingStatus, setPendingStatus] = useState<OrderNewStatus | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
+  const discountLabel =
+    order.discount.type === "promo_code" && order.discount.code
+      ? `الخصم (${order.discount.code})`
+      : "الخصم";
 
   async function handleConfirm() {
     if (!pendingStatus || isUpdating) return;
@@ -119,11 +123,37 @@ function OrderInfoSection({ order }: { order: OrderDetail }) {
             label="رسوم التوصيل"
             value={<MoneyValue value={order.delivery_fee} currency={order.currency} />}
           />
-          <div className="mt-2 border-t border-neutral-100 pt-2">
+          {order.discount.applied ? (
             <FinancialRow
-              label="الإجمالي"
-              value={<MoneyValue value={order.total} currency={order.currency} />}
+              label={discountLabel}
+              value={
+                <span className="text-green-600">
+                  -<MoneyValue value={order.discount.amount} currency={order.currency} />
+                </span>
+              }
+            />
+          ) : null}
+          <div className="mt-2 border-t border-neutral-100 pt-2">
+            {order.discount.applied ? (
+              <FinancialRow
+                label="الإجمالي قبل الخصم"
+                value={
+                  <MoneyValue
+                    value={order.total_before_discount}
+                    currency={order.currency}
+                    className="text-gray line-through decoration-danger/70"
+                  />
+                }
+              />
+            ) : null}
+            <FinancialRow
+              label={order.discount.applied ? "الإجمالي بعد الخصم" : "الإجمالي"}
+              value={<MoneyValue value={order.total_after_discount} currency={order.currency} />}
               bold
+            />
+            <FinancialRow
+              label="المبلغ المدفوع"
+              value={<MoneyValue value={order.paid_amount} currency={order.currency} />}
             />
           </div>
         </div>

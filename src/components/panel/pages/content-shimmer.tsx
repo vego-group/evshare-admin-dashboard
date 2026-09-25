@@ -1,28 +1,63 @@
 import Shimmer from "@/components/ui/shimmer";
 
+const headerWidths = ["w-16", "w-28", "w-28", "w-20"];
+
+const rowWidths = [
+  ["w-24", "w-36", "w-40", "w-20"],
+  ["w-32", "w-44", "w-36", "w-24"],
+  ["w-20", "w-32", "w-48", "w-20"],
+  ["w-28", "w-40", "w-44", "w-24"],
+  ["w-24", "w-36", "w-36", "w-20"],
+];
+
 function PagesContentShimmer() {
   return (
-    <div className="w-full" aria-hidden="true">
-      <div className="overflow-hidden rounded-2xl bg-white">
-        <div className="min-w-212.5">
-          <div className="grid grid-cols-5 gap-4 bg-primary/8 px-5 py-4">
-            {Array.from({ length: 5 }).map((_, index) => (
-              <Shimmer key={index} className="h-5 w-24 rounded-md" />
+    <section
+      className="w-full space-y-6"
+      role="status"
+      aria-label="Loading pages"
+    >
+      <span className="sr-only">Loading pages</span>
+
+      <div aria-hidden="true" className="space-y-2.5">
+        <Shimmer className="h-8 w-44 rounded-lg bg-neutral-200" />
+        <Shimmer className="h-4 w-80 max-w-full rounded-md bg-neutral-200" />
+      </div>
+
+      <div
+        aria-hidden="true"
+        className="overflow-hidden rounded-2xl bg-white shadow-[0_1px_2px_rgba(15,23,42,0.02)]"
+      >
+        <div className="overflow-x-auto">
+          <div className="min-w-212.5">
+            <div className="grid grid-cols-[1.05fr_1.35fr_1.35fr_0.9fr_112px] items-center gap-4 border-b border-primary/10 bg-primary/8 px-5 py-4">
+              {headerWidths.map((width, index) => (
+                <Shimmer
+                  key={index}
+                  className={`h-5 ${width} rounded-md bg-neutral-300`}
+                />
+              ))}
+              <Shimmer className="h-5 w-16 rounded-md bg-neutral-300" />
+            </div>
+
+            {rowWidths.map((widths, rowIndex) => (
+              <div
+                key={rowIndex}
+                className="grid min-h-16 grid-cols-[1.05fr_1.35fr_1.35fr_0.9fr_112px] items-center gap-4 border-b border-primary/10 px-5 py-3 last:border-b-0"
+              >
+                {widths.map((width, cellIndex) => (
+                  <Shimmer
+                    key={cellIndex}
+                    className={`h-5 max-w-[85%] ${width} rounded-md bg-neutral-200`}
+                  />
+                ))}
+                <Shimmer className="h-9 w-24 rounded-xl bg-neutral-200" />
+              </div>
             ))}
           </div>
-          {Array.from({ length: 6 }).map((_, rowIndex) => (
-            <div
-              key={rowIndex}
-              className="grid grid-cols-5 items-center gap-4 border-b border-primary/15 px-5 py-4 last:border-0"
-            >
-              {Array.from({ length: 5 }).map((_, cellIndex) => (
-                <Shimmer key={cellIndex} className="h-5 w-28 rounded-md" />
-              ))}
-            </div>
-          ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 

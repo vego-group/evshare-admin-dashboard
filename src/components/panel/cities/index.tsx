@@ -17,10 +17,16 @@ import { CityAddModal, CityDeleteConfirmModal, CityEditModal } from "./modals";
 function Cities() {
   const queryClient = useQueryClient();
   const [viewMode, setViewMode] = useState<CitiesViewMode>("table");
-  const [params, setParams] = useState<QueryParams>({ page: 1, limit: PAGE_SIZE });
+  const [params, setParams] = useState<QueryParams>({
+    page: 1,
+    limit: PAGE_SIZE,
+  });
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [cityPendingEdit, setCityPendingEdit] = useState<CityListItem | null>(null);
-  const [cityPendingDelete, setCityPendingDelete] = useState<CityListItem | null>(null);
+  const [cityPendingEdit, setCityPendingEdit] = useState<CityListItem | null>(
+    null,
+  );
+  const [cityPendingDelete, setCityPendingDelete] =
+    useState<CityListItem | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const { data, isLoading } = useCities(params);
@@ -87,7 +93,9 @@ function Cities() {
         open={Boolean(cityPendingDelete)}
         cityName={cityPendingDelete?.name}
         isDeleting={isDeleting}
-        onClose={() => { if (!isDeleting) setCityPendingDelete(null); }}
+        onClose={() => {
+          if (!isDeleting) setCityPendingDelete(null);
+        }}
         onConfirm={handleDeleteCity}
       />
     </div>
