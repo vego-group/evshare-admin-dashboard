@@ -31,12 +31,6 @@ export const operatingCompaniesAPI = async (
     limit: (params.limit || PAGE_SIZE).toString(),
     search: params.search,
     status: params.status,
-    show_in_app:
-      typeof params.show_in_app === "boolean"
-        ? params.show_in_app
-          ? "1"
-          : "0"
-        : undefined,
   });
 
   return await baseAPI("GET", `/operation-companies?${query}`);

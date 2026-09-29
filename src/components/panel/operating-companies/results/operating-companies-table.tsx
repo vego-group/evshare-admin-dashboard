@@ -4,7 +4,6 @@ import { formatStoredPhone } from "@/lib/utils/format-phone";
 import type { OperatingCompanyListItem } from "@/types";
 
 import {
-  AppVisibilityBadge,
   CommissionBadge,
   OperatingCompanyActions,
 } from "./operating-company-result-parts";
@@ -27,14 +26,13 @@ function OperatingCompaniesTable({
   return (
     <section className="overflow-hidden rounded-lg bg-white">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-340 table-fixed border-separate border-spacing-0 text-right">
+        <table className="w-full min-w-300 table-fixed border-separate border-spacing-0 text-right">
           <colgroup>
-            <col className="w-[18%]" />
-            <col className="w-[13%]" />
+            <col className="w-[22%]" />
+            <col className="w-[16%]" />
             <col className="w-45" />
-            <col className="w-40" />
-            <col className="w-[13%]" />
-            <col className="w-[17%]" />
+            <col className="w-[15%]" />
+            <col className="w-[19%]" />
             <col className="w-57.5" />
           </colgroup>
           <thead>
@@ -42,7 +40,6 @@ function OperatingCompaniesTable({
               <HeaderCell>الاسم</HeaderCell>
               <HeaderCell>المعرف</HeaderCell>
               <HeaderCell>العمولة</HeaderCell>
-              <HeaderCell>ظهور التطبيق</HeaderCell>
               <HeaderCell>الجوال</HeaderCell>
               <HeaderCell>البريد الإلكتروني</HeaderCell>
               <HeaderCell>الإجراءات</HeaderCell>
@@ -60,9 +57,6 @@ function OperatingCompaniesTable({
                 <TableCell dir="ltr">{company.slug}</TableCell>
                 <TableCell truncate={false}>
                   <CommissionBadge value={company.commission_percentage} isPlatform={company.slug === "evshare"} />
-                </TableCell>
-                <TableCell truncate={false}>
-                  <AppVisibilityBadge visible={company.show_in_app} />
                 </TableCell>
                 <TableCell dir="ltr">
                   {company.mobile ? formatStoredPhone(company.mobile) : "-"}

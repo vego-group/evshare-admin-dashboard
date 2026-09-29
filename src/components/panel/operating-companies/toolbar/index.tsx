@@ -15,21 +15,11 @@ const statusOptions: FilterOption<CompanyStatus | "all">[] = [
   { label: "غير نشطة", value: "inactive" },
 ];
 
-type AppVisibility = "shown" | "hidden";
-
-const visibilityOptions: FilterOption<AppVisibility | "all">[] = [
-  { label: "كل حالات الظهور", value: "all" },
-  { label: "ظاهرة في التطبيق", value: "shown" },
-  { label: "مخفية من التطبيق", value: "hidden" },
-];
-
 type OperatingCompaniesToolbarProps = {
   searchQuery?: string;
   onSearchChange?: (value: string) => void;
   status?: CompanyStatus;
   onStatusChange?: (value?: CompanyStatus) => void;
-  showInApp?: boolean;
-  onShowInAppChange?: (value?: boolean) => void;
 };
 
 function OperatingCompaniesToolbar({
@@ -37,8 +27,6 @@ function OperatingCompaniesToolbar({
   onSearchChange,
   status,
   onStatusChange,
-  showInApp,
-  onShowInAppChange,
 }: OperatingCompaniesToolbarProps) {
   const [internalSearchQuery, setInternalSearchQuery] = useState(
     searchQuery ?? "",
@@ -62,22 +50,6 @@ function OperatingCompaniesToolbar({
           value={status ?? "all"}
           onChange={(value) =>
             onStatusChange?.(value === "all" ? undefined : value)
-          }
-        />
-        <FilterSelect
-          label="الظهور في التطبيق"
-          options={visibilityOptions}
-          value={
-            typeof showInApp === "boolean"
-              ? showInApp
-                ? "shown"
-                : "hidden"
-              : "all"
-          }
-          onChange={(value) =>
-            onShowInAppChange?.(
-              value === "all" ? undefined : value === "shown",
-            )
           }
         />
       </div>

@@ -16,7 +16,6 @@ export const operatingCompanyDefaultValues: OperatingCompanyFormValues = {
   logo: undefined,
   conditions_ar: "",
   conditions_en: "",
-  show_in_app: true,
 };
 
 export const operatingCompanyFormResolver = (countryCode: string, unchangedPhone?: string | null): Resolver<OperatingCompanyFormValues> => async (values) => {
@@ -67,8 +66,6 @@ export function buildChangedOperatingCompanyPayload(
     formData.append("conditions_ar", values.conditions_ar);
   if (dirtyFields.conditions_en && values.conditions_en)
     formData.append("conditions_en", values.conditions_en);
-  if (dirtyFields.show_in_app)
-    formData.append("show_in_app", values.show_in_app ? "1" : "0");
 
   if (dirtyFields.logo && values.logo?.[0]) {
     formData.append("logo", values.logo[0]);

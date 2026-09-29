@@ -18,7 +18,7 @@ import FormSelectDropdown, {
   type FormSelectOption,
 } from "./form-select-dropdown";
 
-type Field = "slug" | "name_ar" | "name_en" | "owner_id" | "commission_percentage" | "mobile" | "email" | "status" | "show_in_app" | "conditions_ar" | "conditions_en" | "logo" | "contract";
+type Field = "slug" | "name_ar" | "name_en" | "owner_id" | "commission_percentage" | "mobile" | "email" | "status" | "conditions_ar" | "conditions_en" | "logo" | "contract";
 type Errors = Partial<Record<Field, string>>;
 type CompanyStatus = "active" | "inactive";
 const inputClass = "h-12 w-full rounded-xl border border-neutral-200 bg-white px-4 text-sm text-secondary outline-none focus:border-primary";
@@ -35,7 +35,6 @@ function CreateOperatingCompany() {
   const [ownerSearch, setOwnerSearch] = useState("");
   const [selectedOwner, setSelectedOwner] = useState<{ id: string; label: string } | null>(null);
   const [status, setStatus] = useState<CompanyStatus>("active");
-  const [showInApp, setShowInApp] = useState(true);
   const { data: users, isLoading: usersLoading } = useUsers({ page: 1, limit: 100, account_status: "active", search: ownerSearch || undefined });
   const [errors, setErrors] = useState<Errors>({});
   const [saving, setSaving] = useState(false);
@@ -87,7 +86,6 @@ function CreateOperatingCompany() {
   return <div className="flex w-full flex-col gap-6" dir="rtl">
     <div className="flex items-center gap-3"><Button type="button" variant="outline" size="icon" onClick={() => router.push("/operating-companies")} aria-label="العودة"><ArrowRight /></Button><Header title="إضافة شركة مشغلة" subtitle="أدخل بيانات الشركة والمالك والعقد" /></div>
     <form onSubmit={submit} className="space-y-6 rounded-2xl border border-neutral-100 bg-white p-6" noValidate>
-      <input type="hidden" name="show_in_app" value={showInApp ? "1" : "0"} />
       <div className="grid gap-5 md:grid-cols-2">
         <Field label="المعرف (Slug)" error={errors.slug}><input name="slug" required maxLength={255} dir="ltr" className={inputClass} placeholder="north-fleet" /></Field>
         <Field label="اسم الشركة بالعربية" error={errors.name_ar}><input name="name_ar" required maxLength={255} className={inputClass} placeholder="أدخل اسم الشركة بالعربية" /></Field>
@@ -97,15 +95,12 @@ function CreateOperatingCompany() {
         <Field label="عمولة المنصة (%)" error={errors.commission_percentage}><input name="commission_percentage" type="number" min="0" max="100" step="0.01" required dir="ltr" className={inputClass} placeholder="مثال: 10" /></Field>
         <Field label="رقم الجوال" error={errors.mobile}><input name="mobile" type="tel" required dir="ltr" className={inputClass} placeholder={phoneCountry?.placeholder ?? "أدخل رقم الجوال"} /></Field>
         <Field label="البريد الإلكتروني" error={errors.email}><input name="email" type="email" required maxLength={255} dir="ltr" className={inputClass} placeholder="ops@example.com" /></Field>
-        <Field label="الحالة" error={errors.status}><FormSelectDropdown name="status" label="الحالة" placeholder="اختر حالة الشركة" value={status} options={statusOptions} onChange={(option) => setStatus(option.value as CompanyStatus)} /></Field>
-        <label className="flex min-h-20 cursor-pointer items-center justify-between gap-4 rounded-xl border border-neutral-200 bg-primary/5 px-4 py-3">
-          <span className="flex flex-col gap-1"><span className="text-sm font-medium text-secondary">الظهور في تطبيق التاجر</span><span className="text-xs leading-5 text-gray">مفعّل افتراضياً، ويمكن إخفاء الشركة دون تعطيلها.</span></span>
-          <span className="relative inline-flex shrink-0">
-            <input type="checkbox" role="switch" className="peer sr-only" checked={showInApp} onChange={(event) => setShowInApp(event.target.checked)} />
-            <span className="h-7 w-12 rounded-full bg-neutral-300 transition peer-checked:bg-primary peer-focus-visible:ring-3 peer-focus-visible:ring-primary/30" />
-            <span className="pointer-events-none absolute start-1 top-1 size-5 rounded-full bg-white shadow-sm transition peer-checked:translate-x-5 rtl:peer-checked:-translate-x-5" />
+        <Field label="الحالة" error={errors.status}>
+          <FormSelectDropdown name="status" label="الحالة" placeholder="اختر حالة الشركة" value={status} options={statusOptions} onChange={(option) => setStatus(option.value as CompanyStatus)} />
+          <span className="mt-1 text-xs leading-5 text-gray">
+            الشركة غير النشطة تُخفى من التطبيق ولا يمكن إسناد مركبات جديدة إليها.
           </span>
-        </label>
+        </Field>
         <Field label="الشعار (اختياري)" error={errors.logo}><input name="logo" type="file" accept="image/jpeg,image/png,image/gif,image/svg+xml" className={inputClass} /></Field>
         <Field label="العقد PDF (اختياري)" error={errors.contract}><input name="contract" type="file" accept="application/pdf" className={inputClass} /></Field>
       </div>
