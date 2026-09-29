@@ -39,15 +39,34 @@ function SettingFormFields({
     <div className="flex flex-col gap-4">
       <SettingField label="القيمة" error={errors.value?.message}>
         {definition?.type === "boolean" ? (
-          <select
-            value={value}
-            onChange={(event) => setValue("value", event.target.value, { shouldDirty: true, shouldValidate: true })}
-            className={inputClass}
-            dir="rtl"
-          >
-            <option value="1">مفعّل</option>
-            <option value="0">غير مفعّل</option>
-          </select>
+          <label className="flex min-h-16 cursor-pointer items-center justify-between gap-4 rounded-xl border border-neutral-200 bg-primary/5 px-4 py-3">
+            <span className="flex flex-col gap-1">
+              <span className="text-sm font-medium text-secondary">
+                {value === "1" || value === "true" ? "مفعّل" : "غير مفعّل"}
+              </span>
+              <span className="text-xs text-gray">
+                {definition.scope === "tenant"
+                  ? "يسري التغيير على هذا البلد فور حفظه."
+                  : "يسري التغيير فور حفظه."}
+              </span>
+            </span>
+            <span className="relative inline-flex shrink-0">
+              <input
+                type="checkbox"
+                role="switch"
+                className="peer sr-only"
+                checked={value === "1" || value === "true"}
+                onChange={(event) =>
+                  setValue("value", event.target.checked ? "1" : "0", {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                  })
+                }
+              />
+              <span className="h-7 w-12 rounded-full bg-neutral-300 transition peer-checked:bg-primary peer-focus-visible:ring-3 peer-focus-visible:ring-primary/30" />
+              <span className="pointer-events-none absolute start-1 top-1 size-5 rounded-full bg-white shadow-sm transition peer-checked:translate-x-5 rtl:peer-checked:-translate-x-5" />
+            </span>
+          </label>
         ) : definition?.type === "enum" ? (
           settingName === "kyc_default_status" ? (
             <KycDefaultStatusDropdown value={value} setValue={setValue} />

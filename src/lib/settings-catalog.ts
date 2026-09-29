@@ -21,6 +21,7 @@ export const SETTINGS_CATALOG: Record<string, SettingDefinition> = {
   delivery_fee: decimal("Commerce", 0, 10_000),
   subscription_price: decimal("Commerce", 0, 100_000),
   maintenance_mode: { type: "boolean", owner: "Platform", scope: "environment" },
+  operating_enabled: { type: "boolean", owner: "Commerce", scope: "tenant" },
   kyc_default_status: { type: "enum", options: ["pending", "approved"], owner: "Compliance", scope: "tenant" },
   work_conditions_ar: { type: "html", max: 65_535, owner: "Legal", scope: "tenant" },
   work_conditions_en: { type: "html", max: 65_535, owner: "Legal", scope: "tenant" },

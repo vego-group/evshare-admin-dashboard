@@ -1,6 +1,7 @@
 import type { PricingConfigurationMetadata } from "./pricing-configuration";
 
 export const KYC_DEFAULT_STATUS_KEY = "kyc_default_status";
+export const OPERATING_ENABLED_KEY = "operating_enabled";
 export const WORK_CONDITIONS_AR_KEY = "work_conditions_ar";
 export const WORK_CONDITIONS_EN_KEY = "work_conditions_en";
 

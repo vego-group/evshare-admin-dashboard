@@ -38,6 +38,7 @@ export const operatingCompanyEditSchema = z.object({
     ),
   conditions_ar: optionalTrimmedString(5000, "الشروط والأحكام طويلة جدًا"),
   conditions_en: optionalTrimmedString(5000, "الشروط والأحكام طويلة جدًا"),
+  show_in_app: z.boolean().optional(),
 });
 
 export type OperatingCompanyFormValues = z.infer<

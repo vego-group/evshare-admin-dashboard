@@ -33,7 +33,7 @@ type OperatingCompanyFormFieldsProps = {
   onLogoChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   register: UseFormRegister<OperatingCompanyFormValues>;
   control: Control<OperatingCompanyFormValues>;
-  isPlatform?: boolean;
+  hideCommission?: boolean;
 };
 
 function OperatingCompanyFormFields({
@@ -42,7 +42,7 @@ function OperatingCompanyFormFields({
   onLogoChange,
   register,
   control,
-  isPlatform = false,
+  hideCommission = false,
 }: OperatingCompanyFormFieldsProps) {
   const phoneCountry = getPhoneCountry(useTenantCountry());
   return (
@@ -77,7 +77,7 @@ function OperatingCompanyFormFields({
           />
         </Field>
 
-        {!isPlatform && (
+        {!hideCommission && (
           <Field
             label="نسبة العمولة"
             error={errors.commission_percentage?.message}
@@ -105,9 +105,9 @@ function OperatingCompanyFormFields({
           </Field>
         )}
 
-        {isPlatform && (
+        {hideCommission && (
           <div className="flex flex-col justify-center rounded-[14px] border border-primary/30 bg-primary/5 p-4 text-sm text-dark-gray">
-            عمولة المنصة تُعدّل من زر العمولة في صفحة الشركات المشغلة.
+            تُعدّل العمولة من الإجراء المخصص في صفحة الشركات المشغلة.
           </div>
         )}
 
@@ -168,6 +168,35 @@ function OperatingCompanyFormFields({
             )}
           </div>
         </Field>
+
+        <Controller
+          control={control}
+          name="show_in_app"
+          render={({ field }) => (
+            <label className="flex min-h-20 cursor-pointer items-center justify-between gap-4 rounded-[14px] border border-primary/30 bg-primary/5 px-4 py-3">
+              <span className="flex flex-col gap-1 text-right">
+                <span className="text-sm font-medium text-secondary">
+                  الظهور في تطبيق التاجر
+                </span>
+                <span className="text-xs leading-5 text-gray">
+                  إخفاء الشركة لا يوقفها ولا يؤثر في المركبات أو العقود أو العمولة.
+                </span>
+              </span>
+              <span className="relative inline-flex shrink-0">
+                <input
+                  type="checkbox"
+                  role="switch"
+                  className="peer sr-only"
+                  checked={field.value !== false}
+                  onBlur={field.onBlur}
+                  onChange={(event) => field.onChange(event.target.checked)}
+                />
+                <span className="h-7 w-12 rounded-full bg-neutral-300 transition peer-checked:bg-primary peer-focus-visible:ring-3 peer-focus-visible:ring-primary/30" />
+                <span className="pointer-events-none absolute start-1 top-1 size-5 rounded-full bg-white shadow-sm transition peer-checked:translate-x-5 rtl:peer-checked:-translate-x-5" />
+              </span>
+            </label>
+          )}
+        />
       </div>
 
       <Field

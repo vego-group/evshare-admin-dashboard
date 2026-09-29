@@ -1,10 +1,14 @@
 import {
   KYC_DEFAULT_STATUS_KEY,
+  OPERATING_ENABLED_KEY,
   WORK_CONDITIONS_AR_KEY,
   WORK_CONDITIONS_EN_KEY,
 } from "@/types";
 
 export function getSettingLabel(settingName: string, fallback?: string) {
+  if (settingName === OPERATING_ENABLED_KEY) {
+    return fallback || "تفعيل شركات التشغيل";
+  }
   return fallback || settingName;
 }
 
@@ -21,6 +25,9 @@ export function isRichTextSetting(settingName: string) {
 }
 
 export function getSettingValueLabel(settingName: string, value: string) {
+  if (settingName === OPERATING_ENABLED_KEY) {
+    return value === "1" || value === "true" ? "مفعّل" : "غير مفعّل";
+  }
   if (settingName === KYC_DEFAULT_STATUS_KEY) {
     return KYC_DEFAULT_STATUS_VALUE_LABELS[value] ?? value;
   }
