@@ -93,6 +93,9 @@ function EditOperatingCompany() {
                       setStatus(option.value as "active" | "inactive")
                     }
                   />
+                  <span className="text-xs leading-5 font-normal text-gray">
+                    الشركة غير النشطة تُخفى من التطبيق ولا يمكن إسناد مركبات جديدة إليها.
+                  </span>
                   {extraErrors.status && <span className="text-xs text-red-600">{extraErrors.status}</span>}
                 </label>
               </div>}

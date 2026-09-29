@@ -36,10 +36,6 @@ function OperatingCompaniesMainContent({
         searchQuery={params.search ?? ""}
         status={params.status}
         onStatusChange={(status) => onParamsChange({ status, page: 1 })}
-        showInApp={params.show_in_app}
-        onShowInAppChange={(show_in_app) =>
-          onParamsChange({ show_in_app, page: 1 })
-        }
         onSearchChange={(search) =>
           onParamsChange({ search: search || undefined, page: 1 })
         }

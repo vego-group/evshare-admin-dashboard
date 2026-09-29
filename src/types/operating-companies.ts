@@ -6,7 +6,6 @@ export type OperatingCompaniesQueryParams = Pick<
   "page" | "limit" | "search"
 > & {
   status?: "active" | "inactive";
-  show_in_app?: boolean;
 };
 
 export type OperatingCompanyOwner = { id: string; name: string; mobile: string };
@@ -27,8 +26,7 @@ export type OperatingCompanyListItem = {
   mobile: string | null;
   email: string | null;
   logo: OperatingCompanyLogo[];
-  status?: "active" | "inactive";
-  show_in_app: boolean;
+  status: "active" | "inactive";
   owner?: OperatingCompanyOwner | null;
   contract?: ContractAttachment | null;
   conditions_ar: string | null;
