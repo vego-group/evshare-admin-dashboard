@@ -64,6 +64,22 @@ export function CommissionBadge({
   );
 }
 
+export function AppVisibilityBadge({ visible }: { visible?: boolean }) {
+  const isVisible = visible !== false;
+  return (
+    <span
+      className={cn(
+        "inline-flex w-fit rounded-full px-2.5 py-1 text-xs font-medium",
+        isVisible
+          ? "bg-green-50 text-green-700"
+          : "bg-neutral-100 text-gray",
+      )}
+    >
+      {isVisible ? "ظاهرة في التطبيق" : "مخفية من التطبيق"}
+    </span>
+  );
+}
+
 export function OperatingCompanyActions({
   compact = false,
   onView,

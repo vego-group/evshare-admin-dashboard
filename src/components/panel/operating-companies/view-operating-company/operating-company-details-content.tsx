@@ -8,6 +8,7 @@ import { formatStoredPhone } from "@/lib/utils/format-phone";
 import type { OperatingCompanyListItem } from "@/types";
 
 import OperatingCompanyDetailsShimmer from "../modals/operating-company-details-shimmer";
+import { AppVisibilityBadge } from "../results/operating-company-result-parts";
 
 type Props = {
   company?: OperatingCompanyListItem;
@@ -57,6 +58,7 @@ export function OperatingCompanyDetailsContent({ company, isLoading }: Props) {
         <DetailRow label="الاسم بالإنجليزية" value={company.name_en} />
         <DetailRow label="المعرف (Slug)" value={company.slug} />
         <DetailRow label="الحالة" value={company.status === "inactive" ? "غير نشطة" : company.status === "active" ? "نشطة" : undefined} />
+        <DetailRow label="الظهور في تطبيق التاجر" value={<AppVisibilityBadge visible={company.show_in_app} />} />
         <DetailRow label="المالك" value={company.owner ? `${company.owner.name} — ${company.owner.mobile}` : undefined} />
         <DetailRow
           label={company.slug === "evshare" ? "نسبة عمولة المنصة" : "نسبة العمولة"}

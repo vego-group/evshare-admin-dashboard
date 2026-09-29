@@ -2,6 +2,7 @@ import { formatStoredPhone } from "@/lib/utils/format-phone";
 import type { OperatingCompanyListItem } from "@/types";
 
 import {
+  AppVisibilityBadge,
   CommissionBadge,
   DetailLine,
   OperatingCompanyActions,
@@ -51,6 +52,10 @@ function OperatingCompaniesCards({
           </div>
 
           <div className="mt-5 space-y-3 rounded-[14px] bg-background p-4 text-right">
+            <DetailLine
+              label="ظهور التطبيق"
+              value={<AppVisibilityBadge visible={company.show_in_app} />}
+            />
             <DetailLine
               label="الجوال"
               value={company.mobile ? formatStoredPhone(company.mobile) : "-"}

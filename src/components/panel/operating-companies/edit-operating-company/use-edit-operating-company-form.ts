@@ -63,6 +63,7 @@ export function useEditOperatingCompanyForm() {
       email: company.email ?? undefined,
       conditions_ar: company.conditions_ar ?? "",
       conditions_en: company.conditions_en ?? "",
+      show_in_app: company.show_in_app !== false,
       logo: undefined,
     }, { keepDirtyValues: true });
   }, [company, reset]);
@@ -97,7 +98,7 @@ export function useEditOperatingCompanyForm() {
     if (!result?.ok) {
       const fieldErrors = (result.error as { errors?: Record<string, string[]> } | undefined)?.errors;
       if (fieldErrors) {
-        for (const field of ["slug", "name_ar", "name_en", "commission_percentage", "mobile", "email", "logo", "conditions_ar", "conditions_en"] as const) {
+        for (const field of ["slug", "name_ar", "name_en", "commission_percentage", "mobile", "email", "logo", "conditions_ar", "conditions_en", "show_in_app"] as const) {
           if (fieldErrors[field]?.[0]) setError(field, { type: "server", message: fieldErrors[field][0] });
         }
         setExtraErrors({ owner_id: fieldErrors.owner_id?.[0], status: fieldErrors.status?.[0] });
