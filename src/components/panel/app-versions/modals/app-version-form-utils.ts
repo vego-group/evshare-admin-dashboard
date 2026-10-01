@@ -73,6 +73,7 @@ export const createAppVersionFormResolver =
 
     if (shouldValidateAgainstLatest && validationLatestValues) {
       if (
+        isNonEmptyString(validationLatestValues.version) &&
         compareVersions(parsedValues.version, validationLatestValues.version) <=
           0 &&
         !errors.version
@@ -84,6 +85,7 @@ export const createAppVersionFormResolver =
       }
 
       if (
+        isFiniteNumber(validationLatestValues.version_code) &&
         parsedValues.version_code <= validationLatestValues.version_code &&
         !errors.version_code
       ) {
@@ -186,7 +188,7 @@ function hasIdentityChanged(
   return (
     values.platform !== currentIdentity.platform ||
     values.type !== currentIdentity.type ||
-    values.version.trim() !== currentIdentity.version.trim() ||
+    values.version.trim() !== normalizeText(currentIdentity.version) ||
     values.version_code !== currentIdentity.version_code
   );
 }
@@ -206,7 +208,13 @@ export function getLatestVersionErrorMessage(
   version: string | undefined,
   latestValues?: AppVersionLatestValues | null,
 ) {
-  if (!latestValues || !isValidAppVersionFormat(version)) return undefined;
+  if (
+    !latestValues ||
+    !isValidAppVersionFormat(version) ||
+    !isNonEmptyString(latestValues.version)
+  ) {
+    return undefined;
+  }
 
   return compareVersions(version!.trim(), latestValues.version) <= 0
     ? `Version must be greater than the latest version (${latestValues.version}).`
@@ -217,9 +225,27 @@ export function getLatestVersionCodeErrorMessage(
   versionCode: number | undefined,
   latestValues?: AppVersionLatestValues | null,
 ) {
-  if (!latestValues || !Number.isFinite(versionCode)) return undefined;
+  if (
+    !latestValues ||
+    !Number.isFinite(versionCode) ||
+    !isFiniteNumber(latestValues.version_code)
+  ) {
+    return undefined;
+  }
 
   return versionCode! <= latestValues.version_code
     ? `Version code must be greater than the latest code (${latestValues.version_code}).`
     : undefined;
+}
+
+function isNonEmptyString(value: unknown): value is string {
+  return typeof value === "string" && value.trim() !== "";
+}
+
+function isFiniteNumber(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value);
+}
+
+function normalizeText(value: unknown) {
+  return typeof value === "string" ? value.trim() : "";
 }
