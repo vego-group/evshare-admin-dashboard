@@ -78,6 +78,7 @@ export default function SubscriptionDiscounts() {
   const { data: pricing, isLoading: isPricingLoading } =
     useCurrentSubscriptionPricing();
   const isPageLoading = isLoading || isPricingLoading;
+  const discounts = Array.isArray(data?.data) ? data.data : [];
 
   const refresh = async () => invalidatePricingQueries(queryClient);
   const openForm = (discount: SubscriptionDiscount | null) => {
@@ -126,7 +127,7 @@ export default function SubscriptionDiscounts() {
         onChange={(next) => setParams({ ...params, ...next, page: 1 })}
       />
 
-      {data?.data.length ? (
+      {discounts.length ? (
         <section className="overflow-hidden rounded-lg bg-white">
           <div className="overflow-x-auto">
             <table className="w-full min-w-225 border-separate border-spacing-0 text-right">
@@ -151,7 +152,7 @@ export default function SubscriptionDiscounts() {
                 </tr>
               </thead>
               <tbody>
-                {data.data.map((discount) => (
+                {discounts.map((discount) => (
                   <DiscountRow
                     key={discount.id}
                     discount={discount}

@@ -50,7 +50,9 @@ function EditProduct() {
                 errors={errors}
                 imagePreviewUrl={previewUrl}
                 imagesPreviewUrls={imagesPreviewUrls}
-                existingImagesUrls={product?.images.map((img) => img.url)}
+                existingImagesUrls={(Array.isArray(product?.images) ? product.images : [])
+                  .map((img) => img?.url)
+                  .filter((url): url is string => typeof url === "string" && url.length > 0)}
                 onImageChange={handleImageChange}
                 onImagesChange={handleImagesChange}
                 onImageRemove={handleRemoveImage}

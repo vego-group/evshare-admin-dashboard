@@ -19,7 +19,8 @@ function Sidebar({ countryCode }: { countryCode: string }) {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isTabletSidebarExpanded, setIsTabletSidebarExpanded] = useState(false);
   const { data: countriesResponse } = useCountries();
-  const selectedCountry = countriesResponse?.data.find((item) => item.code === countryCode) ?? null;
+  const countries = Array.isArray(countriesResponse?.data) ? countriesResponse.data : [];
+  const selectedCountry = countries.find((item) => item?.code === countryCode) ?? null;
 
   const closeMobileSidebar = () => setIsMobileSidebarOpen(false);
   const closeTabletSidebar = () => setIsTabletSidebarExpanded(false);

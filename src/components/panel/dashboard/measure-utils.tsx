@@ -8,11 +8,12 @@ export function formatMeasure(value: number, measure: DashboardMeasure, currency
   return `${new Intl.NumberFormat("en-US", { maximumFractionDigits: 2, ...options }).format(value)}${measure.unit === "percent" ? "%" : measure.unit === "km" ? " km" : ""}`;
 }
 
-export function formatChange(measure: DashboardMeasure, meta: DashboardAnalyticsMeta) {
-  return measure.change.percent === null ? (
-    <span title={meta.rules.null_when} className="text-sm text-gray">n/a</span>
+export function formatChange(measure: DashboardMeasure, meta?: DashboardAnalyticsMeta | null) {
+  const percent = measure.change?.percent;
+  return typeof percent !== "number" ? (
+    <span title={meta?.rules?.null_when} className="text-sm text-gray">n/a</span>
   ) : (
-    <span>{new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(Math.abs(measure.change.percent))}%</span>
+    <span>{new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(Math.abs(percent))}%</span>
   );
 }
 
