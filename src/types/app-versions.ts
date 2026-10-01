@@ -58,8 +58,8 @@ export type AppVersionDetailResponse = {
 };
 
 export type AppVersionLatestValues = {
-  version: string;
-  version_code: number;
+  version: string | null;
+  version_code: number | null;
 };
 
 export type AppVersionLatestValuesResponse = {
