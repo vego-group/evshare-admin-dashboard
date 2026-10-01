@@ -17,8 +17,9 @@ const CurrencyContext = createContext<CurrencyContextValue | null>(null);
 
 export function CurrencyProvider({ countryCode, children }: { countryCode: string; children: ReactNode }) {
   const { data } = useCountries();
-  const country = data?.data.find(
-    (item) => item.code.toLowerCase() === countryCode.toLowerCase(),
+  const countries = Array.isArray(data?.data) ? data.data : [];
+  const country = countries.find(
+    (item) => typeof item?.code === "string" && item.code.toLowerCase() === countryCode.toLowerCase(),
   );
   const value = useMemo<CurrencyContextValue>(
     () => ({

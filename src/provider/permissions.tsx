@@ -26,7 +26,9 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
   const { data, isLoading } = useAuthPermissions();
 
   const permissions = useMemo(
-    () => (data?.data ?? []).map((permission) => permission.slug),
+    () => (Array.isArray(data?.data) ? data.data : [])
+      .map((permission) => permission?.slug)
+      .filter((slug): slug is string => typeof slug === "string" && slug.length > 0),
     [data],
   );
   const value = useMemo<PermissionsContextValue>(() => {

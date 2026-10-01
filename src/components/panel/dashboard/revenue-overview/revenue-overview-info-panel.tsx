@@ -5,9 +5,12 @@ import { formatMeasure } from "../measure-utils";
 type Props = { data?: DashboardAnalyticsData; period: DashboardPeriod; peakPoint: ChartPoint | null };
 
 export default function RevenueOverviewInfoPanel({ data, period, peakPoint }: Props) {
-  const measure = data?.measures["revenue.total"];
-  const currency = measure?.currency ?? data?.revenue_chart.currency ?? data?.meta.currency ?? "";
-  const dailyAverage = measure && data?.meta.window.days ? measure.current.total / data.meta.window.days : 0;
+  const measure = data?.measures?.["revenue.total"];
+  const total = measure?.current?.total;
+  const hasTotal = typeof total === "number" && Number.isFinite(total);
+  const days = data?.meta?.window?.days;
+  const currency = measure?.currency ?? data?.revenue_chart?.currency ?? data?.meta?.currency ?? "";
+  const dailyAverage = hasTotal && typeof days === "number" && days > 0 ? total / days : 0;
   const format = (value: number, compact = false) => measure
     ? formatMeasure(value, measure, currency, compact ? { notation: "compact", maximumFractionDigits: 1 } : undefined)
     : "—";
@@ -17,7 +20,7 @@ export default function RevenueOverviewInfoPanel({ data, period, peakPoint }: Pr
       <Bolt className="size-4 shrink-0 text-secondary" />إيرادات المنصة
     </div>
     <div className="space-y-2">
-      <p dir="ltr" className="whitespace-nowrap text-3xl font-medium leading-none tracking-[-0.03em] text-dark-gray sm:text-[3rem]">{measure ? format(measure.current.total, true) : "—"}</p>
+      <p dir="ltr" className="whitespace-nowrap text-3xl font-medium leading-none tracking-[-0.03em] text-dark-gray sm:text-[3rem]">{measure && hasTotal ? format(total, true) : "—"}</p>
       <p className="text-sm font-medium text-gray">إجمالي إيرادات آخر {period} أيام</p>
     </div>
     <div className="grid grid-cols-2 gap-3">
@@ -28,7 +31,7 @@ export default function RevenueOverviewInfoPanel({ data, period, peakPoint }: Pr
       </div>
       <div className="min-w-0 rounded-[18px] border border-primary/10 bg-neutral-50 px-3 py-3 sm:px-4">
         <p className="text-xs font-medium text-gray">متوسط يومي</p>
-        <p dir="ltr" className="mt-1 whitespace-nowrap text-xl font-semibold text-dark-gray sm:text-3xl">{measure ? format(dailyAverage, true) : "—"}</p>
+        <p dir="ltr" className="mt-1 whitespace-nowrap text-xl font-semibold text-dark-gray sm:text-3xl">{measure && hasTotal ? format(dailyAverage, true) : "—"}</p>
         <p className="mt-1 text-xs font-medium text-gray">/ يوم</p>
       </div>
     </div>

@@ -15,7 +15,7 @@ type Props = {
 
 export default function ProductVehicleTypeSelect({ categoryId, value, setValue }: Props) {
   const { data } = useCategory(categoryId || null);
-  const inheritedType = data?.data.vehicle_type;
+  const inheritedType = data?.data?.vehicle_type;
   const inheritedLabel = inheritedType
     ? `يرث من التصنيف (${vehicleTypeLabel(inheritedType)})`
     : "يرث من التصنيف";

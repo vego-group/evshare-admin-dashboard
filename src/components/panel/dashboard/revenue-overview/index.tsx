@@ -36,12 +36,16 @@ function RevenueOverviewSection({
   const isMobile = useIsMobile();
   const margins = isMobile ? revenueChartMarginsMobile : revenueChartMargins;
 
-  const measure = data?.measures["revenue.total"];
-  const chartData = (measure?.series.points ?? []).map<ChartPoint>((point, index) => ({
-    label: formatBucket(point.ts, data?.meta.timezone ?? "UTC", measure?.series.granularity ?? "day"),
+  const measure = data?.measures?.["revenue.total"];
+  const points = Array.isArray(measure?.series?.points) ? measure.series.points : [];
+  const comparisonPoints = Array.isArray(measure?.series?.comparison_points)
+    ? measure.series.comparison_points
+    : [];
+  const chartData = points.filter((point) => point && typeof point === "object").map<ChartPoint>((point, index) => ({
+    label: formatBucket(point.ts, data?.meta?.timezone ?? "UTC", measure?.series?.granularity ?? "day"),
     current: point.has_data ? point.value : null,
-    previous: measure?.series.comparison_points?.[index]?.has_data
-      ? measure.series.comparison_points[index].value : null,
+    previous: comparisonPoints[index]?.has_data
+      ? comparisonPoints[index].value : null,
   }));
   const peakPoint = chartData.filter((point) => point.current !== null)
     .reduce<ChartPoint | null>((max, point) => !max || point.current! > max.current! ? point : max, null);
@@ -60,7 +64,7 @@ function RevenueOverviewSection({
           <RevenueOverviewControls
             period={period}
             onPeriodChange={onPeriodChange}
-            hasComparison={measure?.series.comparison_points != null}
+            hasComparison={comparisonPoints.length > 0}
           />
           <RevenueOverviewChart
             chartData={chartData}
@@ -68,7 +72,7 @@ function RevenueOverviewSection({
             margins={margins}
             peakPoint={peakPoint}
             peakValue={peakPoint?.current ?? 0}
-            currency={measure?.currency ?? data?.revenue_chart.currency ?? data?.meta.currency ?? ""}
+            currency={measure?.currency ?? data?.revenue_chart?.currency ?? data?.meta?.currency ?? ""}
           />
         </div>
       </div>
