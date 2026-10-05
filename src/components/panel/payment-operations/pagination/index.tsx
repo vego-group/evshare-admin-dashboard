@@ -1,21 +1,21 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import type { PaymentGatewaysPaginationMeta } from "@/types";
+import type { PaymentOperationsPaginationMeta } from "@/types";
 
-type PaymentGatewaysPaginationProps = {
-  meta?: PaymentGatewaysPaginationMeta;
+type PaymentOperationsPaginationProps = {
+  meta?: PaymentOperationsPaginationMeta;
   currentPage?: number;
   isFetching?: boolean;
   onPageChange: (page: number) => void;
 };
 
-function PaymentGatewaysPagination({
+function PaymentOperationsPagination({
   meta,
   currentPage,
   isFetching,
   onPageChange,
-}: PaymentGatewaysPaginationProps) {
+}: PaymentOperationsPaginationProps) {
   if (!meta || meta.lastPage <= 1) return null;
 
   const activePage = currentPage ?? meta.currentPage;
@@ -83,4 +83,4 @@ function getVisiblePages(currentPage: number, lastPage: number) {
   );
 }
 
-export default PaymentGatewaysPagination;
+export default PaymentOperationsPagination;

@@ -6,10 +6,10 @@ import { ChevronDown, ListFilter, Search } from "lucide-react";
 
 import useDebounce from "@/hooks/use-debounce";
 import { cn } from "@/lib/utils";
-import type { PaymentGatewayTab, PaymentTransactionStatus } from "@/types";
+import type { PaymentOperationTab, PaymentTransactionStatus } from "@/types";
 
-type PaymentGatewaysToolbarProps = {
-  tab: PaymentGatewayTab;
+type PaymentOperationsToolbarProps = {
+  tab: PaymentOperationTab;
   payableType?: string;
   isProcessed?: boolean;
   search?: string;
@@ -39,7 +39,7 @@ const transactionStatusOptions = [
   { label: "قيد البدء", value: "initiated" },
 ] as const;
 
-function PaymentGatewaysToolbar({
+function PaymentOperationsToolbar({
   tab,
   payableType,
   isProcessed,
@@ -49,7 +49,7 @@ function PaymentGatewaysToolbar({
   onProcessedChange,
   onSearchChange,
   onTransactionStatusChange,
-}: PaymentGatewaysToolbarProps) {
+}: PaymentOperationsToolbarProps) {
   const [internalTransactionSearch, setInternalTransactionSearch] = useState(
     search ?? "",
   );
@@ -242,4 +242,4 @@ function FilterSelect<T extends string>({
   );
 }
 
-export default PaymentGatewaysToolbar;
+export default PaymentOperationsToolbar;

@@ -283,10 +283,10 @@ export const sidebarNavItems: SidebarNavItem[] = [
     permission: "Admin View Trips",
   },
   {
-    href: "/payment-gateways",
+    href: "/payment-operations",
     group: "finance",
-    label: "بوابات الدفع",
-    ariaLabel: "بوابات الدفع",
+    label: "عمليات الدفع",
+    ariaLabel: "عمليات الدفع",
     icon: CircleDollarSign,
     permission: ["Admin Index Checkouts", "Admin Index Transactions"],
   },
