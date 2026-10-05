@@ -37,7 +37,7 @@ const routeRules: RouteRule[] = [
   { pattern: /^\/shipments$/, permission: "Admin Index Shipments" },
   { pattern: /^\/shipping-companies$/, permission: "Admin Index Shipping Companies" },
   { pattern: /^\/shipping-cities$/, permission: "Admin Index Shipping Cities" },
-  { pattern: /^\/payment-requests$/, permission: "Admin View Payment Requests" },
+  { pattern: /^\/withdrawal-request$/, permission: "Admin View Payment Requests" },
   { pattern: /^\/operating-companies\/[^/]+\/edit$/, permission: "Admin Edit Operation Companies" },
   { pattern: /^\/operating-companies\/[^/]+$/, permission: "Admin View Operation Companies" },
   { pattern: /^\/operating-companies$/, permission: "Admin View Operation Companies" },

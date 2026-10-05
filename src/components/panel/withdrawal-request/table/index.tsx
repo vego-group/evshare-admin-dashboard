@@ -29,7 +29,7 @@ function PaymentRequestsTable({
       </div>
 
       {!requests.length ? (
-        <EmptyState description="لا توجد طلبات دفع." />
+        <EmptyState description="لا توجد طلبات سحب." />
       ) : null}
     </section>
   );

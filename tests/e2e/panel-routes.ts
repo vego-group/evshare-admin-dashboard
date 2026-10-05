@@ -16,7 +16,7 @@ export const panelRoutes = [
   "/pages",
   "/payment-gateways",
   "/payment-methods",
-  "/payment-requests",
+  "/withdrawal-request",
   "/payment/gateways",
   "/products",
   "/promos",

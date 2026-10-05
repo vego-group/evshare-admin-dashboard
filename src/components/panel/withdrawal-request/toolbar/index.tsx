@@ -101,7 +101,7 @@ function SearchInput({
       <Search className="pointer-events-none absolute right-3 top-1/2 size-5 shrink-0 -translate-y-1/2 text-gray sm:right-5 sm:size-[22px]" />
       <input
         type="search"
-        aria-label="بحث في طلبات الدفع"
+        aria-label="بحث في طلبات السحب"
         placeholder="ابحث باسم العميل أو رقم الجوال..."
         maxLength={255}
         value={value}

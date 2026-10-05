@@ -242,10 +242,10 @@ export const sidebarNavItems: SidebarNavItem[] = [
     permission: "Admin Index Shipping Cities",
   },
   {
-    href: "/payment-requests",
+    href: "/withdrawal-request",
     group: "requests",
-    label: "طلبات الدفع",
-    ariaLabel: "طلبات الدفع",
+    label: "طلبات السحب",
+    ariaLabel: "طلبات السحب",
     icon: CreditCard,
     permission: "Admin View Payment Requests",
   },
