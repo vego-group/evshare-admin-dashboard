@@ -2,14 +2,14 @@ import Shimmer from "@/components/ui/shimmer";
 
 const tableHeaderWidths = ["w-20", "w-24", "w-16", "w-20", "w-20", "w-24"];
 
-function PaymentGatewaysContentShimmer() {
+function PaymentOperationsContentShimmer() {
   return (
     <section
       className="space-y-6"
       role="status"
-      aria-label="Loading payment gateways"
+      aria-label="Loading payment operations"
     >
-      <span className="sr-only">Loading payment gateways</span>
+      <span className="sr-only">Loading payment operations</span>
 
       <div aria-hidden="true" className="space-y-2.5">
         <Shimmer className="h-8 w-48 max-w-full rounded-lg bg-neutral-200" />
@@ -114,4 +114,4 @@ function PaymentGatewaysContentShimmer() {
   );
 }
 
-export default PaymentGatewaysContentShimmer;
+export default PaymentOperationsContentShimmer;

@@ -8,7 +8,7 @@ import { usePaymentCheckout, usePaymentTransaction } from "@/hooks/api";
 import { formatStoredPhone } from "@/lib/utils/format-phone";
 import type {
   PaymentCheckout,
-  PaymentGatewayTab,
+  PaymentOperationTab,
   PaymentTransaction,
 } from "@/types";
 
@@ -21,21 +21,21 @@ import {
 } from "../utils";
 import { ProcessedBadge, TransactionStatusBadge } from "../table/status-badges";
 
-type PaymentGatewayDetailsPanelProps = {
-  activeTab: PaymentGatewayTab;
+type PaymentOperationDetailsPanelProps = {
+  activeTab: PaymentOperationTab;
   checkoutId: string | null;
   transactionId: string | null;
   open: boolean;
   onClose: () => void;
 };
 
-function PaymentGatewayDetailsPanel({
+function PaymentOperationDetailsPanel({
   activeTab,
   checkoutId,
   transactionId,
   open,
   onClose,
-}: PaymentGatewayDetailsPanelProps) {
+}: PaymentOperationDetailsPanelProps) {
   const checkoutQuery = usePaymentCheckout(checkoutId);
   const transactionQuery = usePaymentTransaction(transactionId);
   const isCheckout = activeTab === "checkouts";
@@ -302,4 +302,4 @@ function DetailsShimmer() {
   );
 }
 
-export default PaymentGatewayDetailsPanel;
+export default PaymentOperationDetailsPanel;

@@ -1,6 +1,6 @@
 import type React from "react";
 
-export type PaymentGatewayTab = "checkouts" | "transactions";
+export type PaymentOperationTab = "checkouts" | "transactions";
 
 export type PaymentGateway = "tamara" | (string & {});
 
@@ -17,7 +17,7 @@ export type PaymentTransactionStatus =
   | "reconciliation_required"
   | (string & {});
 
-export type PaymentGatewaysPaginationMeta = {
+export type PaymentOperationsPaginationMeta = {
   currentPage: number;
   lastPage: number;
   perPage: number;
@@ -116,7 +116,7 @@ export type PaymentCheckoutsListResponse = {
   error?: boolean;
   message?: string;
   data: PaymentCheckout[];
-  meta: PaymentGatewaysPaginationMeta;
+  meta: PaymentOperationsPaginationMeta;
 };
 
 export type PaymentCheckoutDetailResponse = {
@@ -130,7 +130,7 @@ export type PaymentTransactionsListResponse = {
   message?: string;
   data: PaymentTransaction[];
   analytics: PaymentTransactionsAnalytics;
-  meta: PaymentGatewaysPaginationMeta;
+  meta: PaymentOperationsPaginationMeta;
 };
 
 export type PaymentTransactionDetailResponse = {

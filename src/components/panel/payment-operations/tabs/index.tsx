@@ -3,16 +3,16 @@ import type { ReactNode } from "react";
 import { CreditCard, ReceiptText } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import type { PaymentGatewayTab } from "@/types";
+import type { PaymentOperationTab } from "@/types";
 
-type PaymentGatewayTabsProps = {
-  activeTab: PaymentGatewayTab;
-  availableTabs: PaymentGatewayTab[];
-  onChange: (tab: PaymentGatewayTab) => void;
+type PaymentOperationTabsProps = {
+  activeTab: PaymentOperationTab;
+  availableTabs: PaymentOperationTab[];
+  onChange: (tab: PaymentOperationTab) => void;
 };
 
-function PaymentGatewayTabs({ activeTab, availableTabs, onChange }: PaymentGatewayTabsProps) {
-  const allTabs: { label: string; value: PaymentGatewayTab; icon: ReactNode }[] = [
+function PaymentOperationTabs({ activeTab, availableTabs, onChange }: PaymentOperationTabsProps) {
+  const allTabs: { label: string; value: PaymentOperationTab; icon: ReactNode }[] = [
     {
       label: "عمليات التحقق",
       value: "checkouts",
@@ -50,4 +50,4 @@ function PaymentGatewayTabs({ activeTab, availableTabs, onChange }: PaymentGatew
   );
 }
 
-export default PaymentGatewayTabs;
+export default PaymentOperationTabs;
