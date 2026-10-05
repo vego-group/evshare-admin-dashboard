@@ -196,7 +196,7 @@ function ComplaintDetails({ complaint }: { complaint: Complaint }) {
             <div className="min-w-0 text-right">
               <p className="text-sm font-normal leading-5 text-gray">الاسم</p>
               <p className="mt-1 truncate text-base font-normal leading-6 text-secondary">
-                {complaint.user.name}
+                {complaint.user?.name ?? "-"}
               </p>
             </div>
           </div>
@@ -205,7 +205,7 @@ function ComplaintDetails({ complaint }: { complaint: Complaint }) {
             <div className="min-w-0 text-right">
               <p className="text-sm font-normal leading-5 text-gray">الدور</p>
               <p className="mt-1 truncate text-base font-normal leading-6 text-secondary">
-                {complaint.user.role}
+                {complaint.user?.role ?? "-"}
               </p>
             </div>
           </div>
