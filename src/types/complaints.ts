@@ -25,7 +25,7 @@ export type Complaint = {
   message: string;
   status: ComplaintStatus;
   admin_response: string | null;
-  user: ComplaintUser;
+  user: ComplaintUser | null;
   responder: ComplaintUser | null;
   created_at: string;
 };

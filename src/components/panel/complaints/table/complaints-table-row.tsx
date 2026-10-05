@@ -30,7 +30,7 @@ function ComplaintsTableRow({
         <span className="block truncate">{complaint.title ?? "-"}</span>
       </TableCell>
       <TableCell className="max-w-[180px]">
-        <span className="block truncate">{complaint.user.name}</span>
+        <span className="block truncate">{complaint.user?.name ?? "-"}</span>
       </TableCell>
       <TableCell className="max-w-none overflow-visible whitespace-normal">
         <ComplaintStatusBadge status={complaint.status} />
