@@ -14,7 +14,7 @@ import StatsCards from "./stats";
 import PaymentRequestsTable from "./table";
 import PaymentRequestsToolbar from "./toolbar";
 
-function PaymentRequests() {
+function WithdrawalRequests() {
   const [params, setParams] = useState<PaymentRequestsQueryParams>({
     page: 1,
     limit: PAGE_SIZE,
@@ -39,8 +39,8 @@ function PaymentRequests() {
       ) : (
         <>
           <Header
-            title="طلبات الدفع"
-            subtitle="إدارة ومتابعة طلبات الدفع"
+            title="طلبات السحب"
+            subtitle="إدارة ومتابعة طلبات السحب"
           />
           <StatsCards data={data?.analytics} />
           <PaymentRequestsToolbar
@@ -81,4 +81,4 @@ function PaymentRequests() {
   );
 }
 
-export default PaymentRequests;
+export default WithdrawalRequests;

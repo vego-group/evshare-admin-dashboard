@@ -51,7 +51,7 @@ test("launch currencies use their contract minor units", () => {
 test("sensitive UI actions use split permissions", () => {
   const files = {
     locks: fs.readFileSync(path.join(testDirectory, "..", "src/components/panel/vehicle-operating-pricing/modals/command-panel-modal.tsx"), "utf8"),
-    payouts: fs.readFileSync(path.join(testDirectory, "..", "src/components/panel/payment-requests/details-panel/request-details-footer.tsx"), "utf8"),
+    payouts: fs.readFileSync(path.join(testDirectory, "..", "src/components/panel/withdrawal-request/details-panel/request-details-footer.tsx"), "utf8"),
     companies: fs.readFileSync(path.join(testDirectory, "..", "src/components/panel/operating-companies/results/operating-company-result-parts.tsx"), "utf8"),
   };
 
