@@ -5,13 +5,30 @@ import {
   paymentTransactionsAPI,
   singlePaymentCheckoutAPI,
   singlePaymentTransactionAPI,
+  paymentGatewaysAPI,
+  singlePaymentGatewayAPI,
 } from "@/services/queries";
 import type {
   PaymentCheckoutQueryParams,
   PaymentTransactionQueryParams,
+  PaymentGatewaysQueryParams,
 } from "@/types";
 
 import { useCustomQuery } from "..";
+
+export function usePaymentGateways(params: PaymentGatewaysQueryParams = {}) {
+  return useCustomQuery(["payment-gateways", params], () => paymentGatewaysAPI(params), {
+    placeholderData: keepPreviousData,
+  });
+}
+
+export function usePaymentGateway(gatewayId: string | null) {
+  return useCustomQuery(
+    ["payment-gateway", gatewayId],
+    () => singlePaymentGatewayAPI(gatewayId!),
+    { enabled: Boolean(gatewayId) },
+  );
+}
 
 export function usePaymentCheckouts(
   params: PaymentCheckoutQueryParams,

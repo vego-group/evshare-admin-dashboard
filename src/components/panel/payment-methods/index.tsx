@@ -7,9 +7,10 @@ import { PAGE_SIZE } from "@/constants";
 import { usePaymentMethod, usePaymentMethods } from "@/hooks/api";
 import type {
   PaymentMethod,
-  PaymentMethodAllowedType,
-  PaymentMethodsAnalysis,
+  PaymentMethodAvailabilityFilter,
+  PaymentMethodStatus,
   PaymentMethodsQueryParams,
+  PaymentMethodsStatistics,
 } from "@/types";
 
 import PaymentMethodsShimmer from "./content-shimmer";
@@ -57,17 +58,17 @@ function PaymentMethods() {
   return (
     <div className="flex w-full flex-col gap-6">
       <PaymentMethodsHeader />
-      <PaymentMethodsAnalysisCards analysis={data?.analysis} />
+      <PaymentMethodsStatisticsCards statistics={data?.statistics ?? data?.analysis} />
       <PaymentMethodsToolbar
         searchValue={searchValue}
-        selectedStatus={params.is_active}
-        selectedAllowedType={params.allowed_user_type}
+        selectedStatus={params.status ?? "all"}
+        selectedAvailability={params.available_for ?? "all"}
         onSearchChange={setSearchValue}
-        onStatusChange={(is_active) =>
-          setParams((current) => ({ ...current, page: 1, is_active }))
+        onStatusChange={(status: PaymentMethodStatus) =>
+          setParams((current) => ({ ...current, page: 1, status }))
         }
-        onAllowedTypeChange={(allowed_user_type?: PaymentMethodAllowedType) =>
-          setParams((current) => ({ ...current, page: 1, allowed_user_type }))
+        onAvailabilityChange={(available_for: PaymentMethodAvailabilityFilter) =>
+          setParams((current) => ({ ...current, page: 1, available_for }))
         }
       />
       <PaymentMethodsResults
@@ -90,28 +91,20 @@ function PaymentMethods() {
   );
 }
 
-function PaymentMethodsAnalysisCards({
-  analysis,
+function PaymentMethodsStatisticsCards({
+  statistics,
 }: {
-  analysis?: PaymentMethodsAnalysis;
+  statistics?: PaymentMethodsStatistics;
 }) {
-  if (!analysis) return null;
-  const optionalCards = [
-    { label: "متاحة للتجار", value: analysis.allowed_merchant },
-    { label: "متاحة للسائقين", value: analysis.allowed_driver },
-  ].filter(
-    (card): card is { label: string; value: number } =>
-      typeof card.value === "number",
-  );
+  if (!statistics) return null;
 
   return (
     <section className="grid gap-4 md:grid-cols-3 xl:grid-cols-5">
-      <AnalysisCard label="إجمالي طرق الدفع" value={analysis.total} />
-      <AnalysisCard label="طرق الدفع النشطة" value={analysis.active} />
-      <AnalysisCard label="طرق الدفع غير النشطة" value={analysis.inactive} />
-      {optionalCards.map((card) => (
-        <AnalysisCard key={card.label} label={card.label} value={card.value} />
-      ))}
+      <AnalysisCard label="إجمالي طرق الدفع" value={statistics.total} />
+      <AnalysisCard label="طرق الدفع النشطة" value={statistics.active} />
+      <AnalysisCard label="طرق الدفع غير النشطة" value={statistics.inactive} />
+      <AnalysisCard label="متاحة للطلبات" value={statistics.available_for_orders} />
+      <AnalysisCard label="متاحة للاشتراكات" value={statistics.available_for_subscriptions} />
     </section>
   );
 }

@@ -6,6 +6,7 @@ import {
   Clock3,
   CreditCard,
   ReceiptText,
+  RotateCcw,
   XCircle,
 } from "lucide-react";
 
@@ -95,6 +96,12 @@ export function TransactionStatsCards({
           icon: <XCircle className="size-5 shrink-0 text-red" />,
           iconBg: "bg-red-50",
         },
+        {
+          label: "مسترد بالكامل",
+          value: analytics?.refunded ?? 0,
+          icon: <RotateCcw className="size-5 shrink-0 text-purple-700" />,
+          iconBg: "bg-purple-50",
+        },
       ]}
     />
   );
@@ -111,7 +118,7 @@ function StatsGrid({
   }[];
 }) {
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div className={cn("grid grid-cols-1 gap-4 sm:grid-cols-2", cards.length === 5 ? "xl:grid-cols-5" : "xl:grid-cols-4")}>
       {cards.map((card) => (
         <div
           key={card.label}

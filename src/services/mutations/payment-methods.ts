@@ -12,7 +12,7 @@ export const editPaymentMethod = async (
   payload: UpdatePaymentMethodPayload,
 ) =>
   await safeApi<PaymentMethodDetailsResponse>(
-    "POST",
-    `/payment-methods/${paymentMethodId}/edit`,
+    "PUT",
+    `/payment-methods/${paymentMethodId}`,
     payload,
   );

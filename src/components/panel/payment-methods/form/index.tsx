@@ -16,7 +16,7 @@ type Props = {
 
 function PaymentMethodFormModal(props: Props) {
   const { open, paymentMethod, isLoading = false, onClose, onSaved } = props;
-  const { form, isActive, isDefault, allowedTypes, close, onSubmit } =
+  const { form, isActive, availableFor, close, onSubmit } =
     usePaymentMethodForm({
       open,
       paymentMethod,
@@ -42,11 +42,10 @@ function PaymentMethodFormModal(props: Props) {
           <>
             <PaymentMethodFields
               isActive={isActive}
-              allowedTypes={allowedTypes ?? []}
+              availableFor={availableFor ?? []}
               errors={form.formState.errors}
               register={form.register}
               setValue={form.setValue}
-              isDefault={isDefault}
             />
             <PaymentMethodActions
               isDirty={form.formState.isDirty}

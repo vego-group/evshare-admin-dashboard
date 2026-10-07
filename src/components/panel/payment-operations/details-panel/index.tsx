@@ -6,300 +6,122 @@ import Panel from "@/components/ui/panel";
 import Shimmer from "@/components/ui/shimmer";
 import { usePaymentCheckout, usePaymentTransaction } from "@/hooks/api";
 import { formatStoredPhone } from "@/lib/utils/format-phone";
-import type {
-  PaymentCheckout,
-  PaymentOperationTab,
-  PaymentTransaction,
-} from "@/types";
+import type { PaymentCheckout, PaymentOperationTab, PaymentTransaction } from "@/types";
 
-import {
-  formatDate,
-  formatGateway,
-  formatPayableType,
-  formatPaymentMethod,
-  MoneyValue,
-} from "../utils";
+import { formatDate, formatGateway, formatPayableType, formatPaymentMethod, MoneyValue } from "../utils";
 import { ProcessedBadge, TransactionStatusBadge } from "../table/status-badges";
 
-type PaymentOperationDetailsPanelProps = {
-  activeTab: PaymentOperationTab;
-  checkoutId: string | null;
-  transactionId: string | null;
-  open: boolean;
-  onClose: () => void;
-};
+type Props = { activeTab: PaymentOperationTab; checkoutId: string | null; transactionId: string | null; open: boolean; onClose: () => void };
 
-function PaymentOperationDetailsPanel({
-  activeTab,
-  checkoutId,
-  transactionId,
-  open,
-  onClose,
-}: PaymentOperationDetailsPanelProps) {
+export default function PaymentOperationDetailsPanel({ activeTab, checkoutId, transactionId, open, onClose }: Props) {
   const checkoutQuery = usePaymentCheckout(checkoutId);
   const transactionQuery = usePaymentTransaction(transactionId);
-  const isCheckout = activeTab === "checkouts";
-  const isLoading = isCheckout
-    ? checkoutQuery.isLoading
-    : transactionQuery.isLoading;
   const checkout = checkoutQuery.data?.data;
   const transaction = transactionQuery.data?.data;
-
   if (!checkoutId && !transactionId) return null;
-
+  const isCheckout = activeTab === "checkouts";
   return (
-    <Panel
-      open={open}
-      onClose={onClose}
-      contentClassName="w-full gap-0 overflow-hidden bg-white p-0 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] sm:rounded-l-3xl sm:border-l-0"
+    <Panel open={open} onClose={onClose} contentClassName="w-full gap-0 overflow-hidden bg-white p-0 shadow-xl sm:rounded-l-3xl sm:border-l-0"
       headerClassName="relative h-[101px] shrink-0 border-b border-gray/20 px-6 py-6 text-right"
-      title={isCheckout ? "تفاصيل عملية التحقق" : "تفاصيل المعاملة"}
-      titleClassName="text-2xl font-medium leading-8 text-secondary"
-    >
-      <div className="flex h-full min-h-0 flex-col text-right">
-        <div className="min-h-0 flex-1 overflow-y-auto px-6 py-6">
-          {isLoading ? (
-            <DetailsShimmer />
-          ) : isCheckout && checkout ? (
-            <CheckoutDetails checkout={checkout} />
-          ) : !isCheckout && transaction ? (
-            <TransactionDetails transaction={transaction} />
-          ) : (
-            <div className="flex h-full min-h-80 items-center justify-center rounded-[14px] bg-background px-4 text-center text-base text-gray">
-              تعذر تحميل التفاصيل.
-            </div>
-          )}
-        </div>
+      title={isCheckout ? "تفاصيل عملية التحقق" : "تفاصيل المعاملة"} titleClassName="text-2xl font-medium leading-8 text-secondary">
+      <div className="h-full min-h-0 overflow-y-auto px-6 py-6 text-right">
+        {(isCheckout ? checkoutQuery.isLoading : transactionQuery.isLoading) ? <DetailsShimmer />
+          : isCheckout && checkout ? <CheckoutDetails checkout={checkout} />
+          : !isCheckout && transaction ? <TransactionDetails transaction={transaction} />
+          : <div className="flex min-h-80 items-center justify-center rounded-[14px] bg-background text-gray">تعذر تحميل التفاصيل.</div>}
       </div>
     </Panel>
   );
 }
 
 function CheckoutDetails({ checkout }: { checkout: PaymentCheckout }) {
-  return (
-    <div className="space-y-6">
-      <section className="space-y-4 rounded-[14px] bg-background p-5">
-        <DetailRow label="رقم العملية" value={checkout.id} valueDir="ltr" />
-        <DetailRow
-          label="المبلغ"
-          value={<MoneyValue amount={checkout.amount} currency={checkout.currency} />}
-          valueDir="ltr"
-        />
-        <DetailRow
-          label="بوابة الدفع"
-          value={formatGateway(checkout.payment_gateway)}
-        />
-        <DetailRow
-          label="حالة المعالجة"
-          value={<ProcessedBadge isProcessed={checkout.is_processed} />}
-        />
-        <DetailRow
-          label="تاريخ الإنشاء"
-          value={formatDate(checkout.created_at)}
-          valueDir="ltr"
-        />
-        <DetailRow
-          label="آخر تحديث"
-          value={formatDate(checkout.updated_at)}
-          valueDir="ltr"
-        />
-      </section>
-
-      <section className="space-y-4 rounded-[14px] bg-background p-5">
-        <PanelSectionTitle>بيانات المستخدم</PanelSectionTitle>
-        <DetailRow label="الاسم" value={checkout.user?.name ?? "-"} />
-        <DetailRow
-          label="رقم الجوال"
-          value={
-            checkout.user?.mobile
-              ? formatStoredPhone(checkout.user.mobile)
-              : "-"
-          }
-          valueDir="ltr"
-        />
-        <DetailRow
-          label="معرف المستخدم"
-          value={checkout.user?.id ?? "-"}
-          valueDir="ltr"
-        />
-      </section>
-
-      <section className="space-y-4 rounded-[14px] bg-background p-5">
-        <PanelSectionTitle>المرجع</PanelSectionTitle>
-        <DetailRow
-          label="النوع"
-          value={formatPayableType(checkout.payable?.type)}
-        />
-        <DetailRow
-          label="المعرف"
-          value={checkout.payable?.uuid ?? checkout.payable?.id ?? "-"}
-          valueDir="ltr"
-        />
-      </section>
-
-      <JsonBlock title="بيانات الطلب" value={checkout.request_body} />
-    </div>
-  );
+  return <div className="space-y-6">
+    <Section title="بيانات الدفع">
+      <Row label="رقم العملية" value={checkout.id} ltr />
+      <Row label="مرجع الدفع" value={checkout.reference ?? "-"} ltr />
+      <Row label="المبلغ" value={<MoneyValue amount={checkout.amount} currency={checkout.currency} />} ltr />
+      <Row label="بوابة الدفع" value={formatGateway(checkout.payment_gateway)} />
+      <Row label="طريقة الدفع" value={formatPaymentMethod(checkout)} />
+      <Row label="المعالجة" value={<ProcessedBadge isProcessed={checkout.is_processed} />} />
+    </Section>
+    <Section title="المستخدم">
+      <Row label="الاسم" value={checkout.user?.name ?? "-"} />
+      <Row label="رقم الجوال" value={checkout.user?.mobile ? formatStoredPhone(checkout.user.mobile) : "-"} ltr />
+      <Row label="معرف المستخدم" value={checkout.user?.id ?? "-"} ltr />
+    </Section>
+    <Section title="المرجع">
+      <Row label="النوع" value={formatPayableType(checkout.payable?.type)} />
+      <Row label="المعرف" value={checkout.payable?.uuid ?? checkout.payable?.id ?? "-"} ltr />
+    </Section>
+    <JsonBlock title="بيانات طلب الدفع" value={checkout.request_body} />
+  </div>;
 }
 
-function TransactionDetails({
-  transaction,
-}: {
-  transaction: PaymentTransaction;
-}) {
-  return (
-    <div className="space-y-6">
-      <section className="space-y-4 rounded-[14px] bg-background p-5">
-        <DetailRow label="معرف السجل" value={transaction.id} valueDir="ltr" />
-        <DetailRow
-          label="رقم المعاملة"
-          value={transaction.transaction_id}
-          valueDir="ltr"
-        />
-        <DetailRow
-          label="المبلغ"
-          value={<MoneyValue amount={transaction.amount} currency={transaction.currency} />}
-          valueDir="ltr"
-        />
-        <DetailRow
-          label="بوابة الدفع"
-          value={formatGateway(transaction.payment_gateway)}
-        />
-        <DetailRow
-          label="طريقة الدفع"
-          value={formatPaymentMethod(transaction)}
-        />
-        <DetailRow
-          label="الحالة"
-          value={<TransactionStatusBadge status={transaction.status} />}
-        />
-        <DetailRow
-          label="تاريخ الإنشاء"
-          value={formatDate(transaction.created_at)}
-          valueDir="ltr"
-        />
-        <DetailRow
-          label="آخر تحديث"
-          value={formatDate(transaction.updated_at)}
-          valueDir="ltr"
-        />
-        {transaction.is_final !== undefined ? (
-          <DetailRow
-            label="النتيجة نهائية"
-            value={transaction.is_final ? "نعم" : "لا"}
-          />
-        ) : null}
-      </section>
+function TransactionDetails({ transaction }: { transaction: PaymentTransaction }) {
+  const checkout = transaction.checkout;
+  const user = transaction.user ?? checkout?.user;
 
-      {transaction.trace_id ||
-      transaction.payment_request_id ||
-      transaction.provider_event_id ||
-      transaction.wallet_ledger_entry_id ? (
-        <section className="space-y-4 rounded-[14px] bg-background p-5">
-          <PanelSectionTitle>التتبع</PanelSectionTitle>
-          {transaction.trace_id ? (
-            <DetailRow label="معرف التتبع" value={transaction.trace_id} valueDir="ltr" />
-          ) : null}
-          {transaction.payment_request_id ? (
-            <DetailRow
-              label="طلب الدفع"
-              value={transaction.payment_request_id}
-              valueDir="ltr"
-            />
-          ) : null}
-          {transaction.provider_event_id ? (
-            <DetailRow
-              label="حدث مزود الدفع"
-              value={transaction.provider_event_id}
-              valueDir="ltr"
-            />
-          ) : null}
-          {transaction.wallet_ledger_entry_id ? (
-            <DetailRow
-              label="قيد المحفظة"
-              value={transaction.wallet_ledger_entry_id}
-              valueDir="ltr"
-            />
-          ) : null}
-        </section>
-      ) : null}
-
-      <JsonBlock
-        title="استجابة بوابة الدفع"
-        value={transaction.transaction_response}
-      />
-    </div>
-  );
+  return <div className="space-y-6">
+    <Section title="بيانات الدفع">
+      <Row label="معرف السجل" value={transaction.id} ltr />
+      <Row label="رقم المعاملة" value={transaction.transaction_id} ltr />
+      <Row label="مرجع الدفع" value={transaction.reference ?? "-"} ltr />
+      <Row label="المبلغ" value={<MoneyValue amount={transaction.amount} currency={transaction.currency} />} ltr />
+      <Row label="بوابة الدفع" value={formatGateway(transaction.payment_gateway)} />
+      <Row label="طريقة الدفع" value={formatPaymentMethod(transaction)} />
+      <Row label="الحالة" value={<TransactionStatusBadge status={transaction.status} />} />
+      <Row label="تاريخ الدفع" value={transaction.paid_at ? formatDate(transaction.paid_at) : "-"} ltr />
+    </Section>
+    <Section title="المستخدم">
+      <Row label="الاسم" value={user?.name ?? "-"} />
+      <Row label="رقم الجوال" value={user?.mobile ? formatStoredPhone(user.mobile) : "-"} ltr />
+      <Row label="معرف المستخدم" value={user?.id ?? "-"} ltr />
+    </Section>
+    {checkout ? <Section title="عملية التحقق المرتبطة">
+      <Row label="معرف عملية التحقق" value={checkout.id} ltr />
+      <Row label="المبلغ" value={<MoneyValue amount={checkout.amount} currency={checkout.currency} />} ltr />
+      <Row label="حالة المعالجة" value={<ProcessedBadge isProcessed={checkout.is_processed} />} />
+      <Row label="نوع المرجع" value={formatPayableType(checkout.payable?.type)} />
+      <Row label="معرف المرجع" value={checkout.payable?.uuid ?? checkout.payable?.id ?? "-"} ltr />
+    </Section> : null}
+    <Section title="الاسترداد">
+      <Row label="الحالة" value={transaction.refund_in_progress ? "قيد تأكيد مزود الدفع" : refundStatusLabel(transaction.refund_status)} />
+      <Row label="المبلغ المسترد" value={<MoneyValue amount={transaction.refunded_amount} currency={transaction.currency} />} ltr />
+      <Row label="المبلغ المتبقي" value={<MoneyValue amount={transaction.remaining_refundable_amount} currency={transaction.currency} />} ltr />
+      {transaction.refund ? <>
+        <Row label="مرجع الاسترداد" value={transaction.refund.reference} ltr />
+        <Row label="مرجع المزود" value={transaction.refund.provider_refund_reference ?? "-"} ltr />
+        <Row label="السبب" value={transaction.refund.reason ?? "-"} />
+        <Row label="تم بواسطة" value={transaction.refund.refunded_by?.name ?? "-"} />
+        <Row label="تاريخ الاسترداد" value={formatDate(transaction.refund.refunded_at)} ltr />
+      </> : null}
+    </Section>
+    <JsonBlock title="استجابة بوابة الدفع" value={transaction.transaction_response} />
+  </div>;
 }
 
-function DetailRow({
-  label,
-  value,
-  valueDir,
-}: {
-  label: string;
-  value: ReactNode;
-  valueDir?: "ltr" | "rtl";
-}) {
-  return (
-    <div className="flex items-center justify-between gap-4 rounded-[10px] bg-white px-4 py-3">
-      <span className="shrink-0 text-sm text-gray">{label}</span>
-      <span
-        dir={valueDir}
-        className="min-w-0 break-all text-base font-medium text-secondary"
-      >
-        {value}
-      </span>
-    </div>
-  );
+function refundStatusLabel(status: PaymentTransaction["refund_status"]) {
+  return status === "refunded" ? "مسترد بالكامل" : status === "partially_refunded" ? "مسترد جزئياً" : "لا يوجد";
 }
 
-function PanelSectionTitle({ children }: { children: ReactNode }) {
-  return (
-    <h3 className="text-base font-semibold leading-6 text-secondary">
-      {children}
-    </h3>
-  );
+function Section({ title, children }: { title: string; children: ReactNode }) {
+  return <section className="space-y-4 rounded-[14px] bg-background p-5"><h3 className="text-base font-semibold text-secondary">{title}</h3>{children}</section>;
 }
 
-function JsonBlock({
-  title,
-  value,
-}: {
-  title: string;
-  value: Record<string, unknown> | null;
-}) {
+function Row({ label, value, ltr }: { label: string; value: ReactNode; ltr?: boolean }) {
+  return <div className="flex items-center justify-between gap-4 rounded-[10px] bg-white px-4 py-3"><span className="shrink-0 text-sm text-gray">{label}</span><span dir={ltr ? "ltr" : undefined} className="min-w-0 break-all text-base font-medium text-secondary">{value}</span></div>;
+}
+
+function JsonBlock({ title, value }: { title: string; value?: Record<string, unknown> | null }) {
   if (!value || !Object.keys(value).length) return null;
-
-  return (
-    <section className="space-y-4 rounded-[14px] bg-background p-5">
-      <PanelSectionTitle>{title}</PanelSectionTitle>
-      <pre
-        dir="ltr"
-        className="max-h-72 overflow-auto rounded-[10px] bg-white p-4 text-left text-xs leading-5 text-secondary"
-      >
-        {JSON.stringify(value, null, 2)}
-      </pre>
-    </section>
-  );
+  return <section className="space-y-4 rounded-[14px] bg-background p-5">
+    <h3 className="text-base font-semibold text-secondary">{title}</h3>
+    <pre dir="ltr" className="max-h-80 overflow-auto rounded-[10px] bg-white p-4 text-left text-xs leading-5 text-secondary">
+      {JSON.stringify(value, null, 2)}
+    </pre>
+  </section>;
 }
 
 function DetailsShimmer() {
-  return (
-    <div className="space-y-6">
-      <section className="space-y-4 rounded-[14px] bg-background p-5">
-        {Array.from({ length: 6 }).map((_, index) => (
-          <div
-            key={index}
-            className="flex items-center justify-between gap-4 rounded-[10px] bg-white px-4 py-3"
-          >
-            <Shimmer className="h-4 w-24" />
-            <Shimmer className="h-5 w-40" />
-          </div>
-        ))}
-      </section>
-    </div>
-  );
+  return <section className="space-y-4 rounded-[14px] bg-background p-5">{Array.from({ length: 7 }).map((_, index) => <div key={index} className="flex justify-between rounded-[10px] bg-white px-4 py-3"><Shimmer className="h-4 w-24" /><Shimmer className="h-5 w-40" /></div>)}</section>;
 }
-
-export default PaymentOperationDetailsPanel;

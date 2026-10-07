@@ -31,8 +31,8 @@ function PaymentMethodsShimmer() {
       <div className="overflow-hidden rounded-2xl bg-white">
         <div className="overflow-x-auto">
           <div className="min-w-215">
-            <div className="grid grid-cols-5 gap-4 border-b border-neutral-100 bg-primary/8 px-5 py-4">
-              {Array.from({ length: 5 }).map((_, index) => (
+            <div className="grid grid-cols-6 gap-4 border-b border-neutral-100 bg-primary/8 px-5 py-4">
+              {Array.from({ length: 6 }).map((_, index) => (
                 <Shimmer key={index} className="h-5 w-24 rounded-md" />
               ))}
             </div>
@@ -40,9 +40,9 @@ function PaymentMethodsShimmer() {
             {Array.from({ length: 5 }).map((_, rowIndex) => (
               <div
                 key={rowIndex}
-                className="grid h-16 grid-cols-5 items-center gap-4 border-b border-primary/15 px-5 py-3 last:border-0"
+                className="grid h-16 grid-cols-6 items-center gap-4 border-b border-primary/15 px-5 py-3 last:border-0"
               >
-                {Array.from({ length: 5 }).map((_, cellIndex) => (
+                {Array.from({ length: 6 }).map((_, cellIndex) => (
                   <Shimmer
                     key={cellIndex}
                     className="h-5 w-28 rounded-md"
