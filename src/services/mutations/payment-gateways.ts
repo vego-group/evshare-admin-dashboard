@@ -1,8 +1,23 @@
 "use server";
 
-import type { PaymentRefundRequest, PaymentRefundResponse } from "@/types";
+import type {
+  PaymentGatewayDetailsResponse,
+  PaymentRefundRequest,
+  PaymentRefundResponse,
+  UpdatePaymentGatewayPayload,
+} from "@/types";
 
 import { safeApi } from "..";
+
+export const editPaymentGateway = async (
+  gatewayId: string,
+  payload: UpdatePaymentGatewayPayload,
+) =>
+  await safeApi<PaymentGatewayDetailsResponse>(
+    "POST",
+    `/payment-gateways/${gatewayId}/edit`,
+    payload,
+  );
 
 export const refundPaymentTransactionAPI = async (
   transactionId: string,

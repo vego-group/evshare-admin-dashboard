@@ -193,3 +193,55 @@ export type PaymentGatewayStatCard = {
   icon: React.ReactNode;
   iconBg: string;
 };
+
+export const paymentGatewayUserTypes = ["merchant", "driver"] as const;
+export type PaymentGatewayUserType = (typeof paymentGatewayUserTypes)[number];
+
+export type PaymentGateway = {
+  id: string;
+  key: string;
+  name: string;
+  name_ar: string;
+  name_en: string;
+  is_active: boolean;
+  is_default: boolean;
+  supported_currencies: string[];
+  allowed_user_types: PaymentGatewayUserType[];
+  allowed_driver?: boolean;
+  allowed_merchant?: boolean;
+  publishable_key?: string | null;
+  credentials: Record<string, string | null>;
+  config?: Record<string, unknown>;
+  payment_methods_count: number;
+  created_at: string;
+  updated_at?: string;
+};
+
+export type PaymentGatewaysQueryParams = {
+  page?: number;
+  per_page?: number;
+  search?: string;
+  is_active?: boolean;
+};
+
+export type PaymentGatewaysListResponse = {
+  error: boolean;
+  message: string;
+  data: PaymentGateway[];
+  meta?: PaymentOperationsPaginationMeta;
+};
+
+export type PaymentGatewayDetailsResponse = {
+  error: boolean;
+  message: string;
+  data: PaymentGateway;
+};
+
+export type UpdatePaymentGatewayPayload = Partial<{
+  is_active: boolean;
+  is_default: boolean;
+  supported_currencies: string[];
+  allowed_user_types: PaymentGatewayUserType[];
+  credentials: Record<string, string>;
+  config: Record<string, unknown>;
+}>;

@@ -18,6 +18,13 @@ function PaymentMethodFormShimmer() {
           </div>
           <Shimmer className="h-7 w-12 shrink-0 rounded-full" />
         </div>
+        <div className="space-y-3 rounded-xl border border-neutral-100 p-4 sm:col-span-2">
+          <Shimmer className="h-5 w-36 rounded-md" />
+          <div className="flex gap-3">
+            <Shimmer className="h-11 w-28 rounded-xl" />
+            <Shimmer className="h-11 w-28 rounded-xl" />
+          </div>
+        </div>
       </div>
 
       <div className="flex justify-end gap-3">

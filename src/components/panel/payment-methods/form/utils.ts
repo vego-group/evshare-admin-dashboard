@@ -3,25 +3,13 @@ import type { FieldErrors, Resolver } from "react-hook-form";
 import { paymentMethodSchema, type PaymentMethodFormValues } from "@/schemas/payment-methods";
 import type { UpdatePaymentMethodPayload } from "@/types";
 
-type PaymentMethodDirtyFields = Partial<{
-  [Key in keyof PaymentMethodFormValues]:
-    | boolean
-    | (PaymentMethodFormValues[Key] extends unknown[] ? boolean[] : never);
-}>;
+type PaymentMethodDirtyFields = Partial<Record<keyof PaymentMethodFormValues, boolean | boolean[]>>;
 
 export const paymentMethodDefaults: PaymentMethodFormValues = {
   name_ar: "",
   name_en: "",
   is_active: true,
-  allowed_user_types: [],
-  is_default: false,
-  supported_currencies: "",
-  secret_key: "",
-  publishable_key: "",
-  webhook_secret: "",
-  base_url: "",
-  gateway_currency: "",
-  config: "",
+  available_for: [],
 };
 
 export const paymentMethodResolver: Resolver<PaymentMethodFormValues> = async (values) => {
@@ -43,31 +31,12 @@ export function buildChangedPaymentMethodPayload(
   if (dirty.name_ar) payload.name_ar = values.name_ar.trim();
   if (dirty.name_en) payload.name_en = values.name_en.trim();
   if (dirty.is_active) payload.is_active = values.is_active;
-  if (isDirty(dirty.allowed_user_types)) {
-    payload.allowed_user_types = values.allowed_user_types;
-  }
-  if (dirty.is_default) payload.is_default = values.is_default;
-  if (dirty.supported_currencies) {
-    const currencies = values.supported_currencies.split(",")
-      .map((value) => value.trim().toUpperCase()).filter(Boolean);
-    payload.supported_currencies = currencies.length ? currencies : null;
-  }
-  const credentialMap = {
-    secret_key: values.secret_key, publishable_key: values.publishable_key,
-    webhook_secret: values.webhook_secret, base_url: values.base_url,
-    currency: values.gateway_currency,
-  };
-  const credentials: Record<string, string> = {};
-  for (const [key, value] of Object.entries(credentialMap)) {
-    const field = key === "currency" ? "gateway_currency" : key;
-    if (dirty[field as keyof PaymentMethodDirtyFields]) credentials[key] = value;
-  }
-  if (Object.keys(credentials).length) payload.credentials = credentials;
-  if (dirty.config) payload.config = values.config ? JSON.parse(values.config) : {};
+  if (isDirty(dirty.available_for)) payload.available_for = values.available_for;
   return payload;
 }
 
-export const hasPaymentMethodChanges = (payload: UpdatePaymentMethodPayload) => Object.keys(payload).length > 0;
+export const hasPaymentMethodChanges = (payload: UpdatePaymentMethodPayload) =>
+  Object.keys(payload).length > 0;
 
 function isDirty(value: boolean | boolean[] | undefined) {
   return Array.isArray(value) ? value.some(Boolean) : Boolean(value);

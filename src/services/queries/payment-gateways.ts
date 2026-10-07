@@ -7,9 +7,29 @@ import type {
   PaymentTransactionDetailResponse,
   PaymentTransactionQueryParams,
   PaymentTransactionsListResponse,
+  PaymentGatewayDetailsResponse,
+  PaymentGatewaysListResponse,
+  PaymentGatewaysQueryParams,
 } from "@/types";
 
 import { baseAPI } from "..";
+
+export const paymentGatewaysAPI = async (
+  params: PaymentGatewaysQueryParams = {},
+): Promise<PaymentGatewaysListResponse> => {
+  const query = buildQuery({
+    page: params.page,
+    per_page: params.per_page ?? PAGE_SIZE,
+    search: params.search,
+    is_active: params.is_active,
+  });
+  return await baseAPI("GET", `/payment-gateways${query ? `?${query}` : ""}`);
+};
+
+export const singlePaymentGatewayAPI = async (
+  gatewayId: string,
+): Promise<PaymentGatewayDetailsResponse> =>
+  await baseAPI("GET", `/payment-gateways/${gatewayId}`);
 
 export const paymentCheckoutsAPI = async (
   params: PaymentCheckoutQueryParams,

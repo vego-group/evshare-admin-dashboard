@@ -45,6 +45,11 @@ export const ADMIN_PERMISSIONS = {
     showTransactions: "Admin Show Transactions",
     refundTransactions: "Admin Refund Transactions",
   },
+  paymentGateways: {
+    index: "Admin Index Payment Gateways",
+    show: "Admin Show Payment Gateways",
+    edit: "Admin Edit Payment Gateways",
+  },
   vat: {
     export: "Admin Export VAT",
     viewExports: "Admin View VAT Exports",

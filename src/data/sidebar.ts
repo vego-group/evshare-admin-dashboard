@@ -299,6 +299,14 @@ export const sidebarNavItems: SidebarNavItem[] = [
     permission: "Admin Index Payment Methods",
   },
   {
+    href: "/payment-gateways",
+    group: "finance",
+    label: "بوابات الدفع",
+    ariaLabel: "بوابات الدفع",
+    icon: CircleDollarSign,
+    permission: "Admin Index Payment Gateways",
+  },
+  {
     href: "/webhook-logs",
     group: "finance",
     label: "سجلات الويب هوك",

@@ -13,10 +13,13 @@ export async function paymentMethodsAPI(
 ): Promise<PaymentMethodsListResponse> {
   const query = buildQuery({
     page: params.page,
-    limit: params.limit ?? PAGE_SIZE,
+    per_page: params.per_page ?? params.limit ?? PAGE_SIZE,
     search: params.search,
-    is_active: params.is_active,
-    allowed_user_type: params.allowed_user_type,
+    status: params.status && params.status !== "all" ? params.status : undefined,
+    available_for:
+      params.available_for && params.available_for !== "all"
+        ? params.available_for
+        : undefined,
   });
 
   return await baseAPI("GET", `/payment-methods${query ? `?${query}` : ""}`);

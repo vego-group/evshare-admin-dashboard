@@ -1,23 +1,14 @@
 import { z } from "zod";
 
-import { paymentMethodAllowedTypes } from "@/types";
+import { paymentMethodAvailability } from "@/types";
 
 export const paymentMethodSchema = z.object({
-  name_ar: z.string().trim().min(1, "الاسم العربي مطلوب"),
-  name_en: z.string().trim().min(1, "الاسم الإنجليزي مطلوب"),
+  name_ar: z.string().trim().min(1, "الاسم العربي مطلوب").max(255, "الحد الأقصى 255 حرفًا"),
+  name_en: z.string().trim().min(1, "الاسم الإنجليزي مطلوب").max(255, "الحد الأقصى 255 حرفًا"),
   is_active: z.boolean(),
-  allowed_user_types: z.array(z.enum(paymentMethodAllowedTypes)),
-  is_default: z.boolean(),
-  supported_currencies: z.string().trim(),
-  secret_key: z.string(),
-  publishable_key: z.string(),
-  webhook_secret: z.string(),
-  base_url: z.string(),
-  gateway_currency: z.string().trim(),
-  config: z.string().trim().refine((value) => {
-    if (!value) return true;
-    try { return typeof JSON.parse(value) === "object"; } catch { return false; }
-  }, "إعدادات التهيئة يجب أن تكون JSON صحيحاً"),
+  available_for: z
+    .array(z.enum(paymentMethodAvailability))
+    .min(1, "اختر استخدامًا واحدًا على الأقل"),
 });
 
 export type PaymentMethodFormValues = z.infer<typeof paymentMethodSchema>;
