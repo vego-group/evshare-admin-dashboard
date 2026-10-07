@@ -1,6 +1,10 @@
 import CurrencyMoneyValue from "@/components/ui/money-value";
 
-import type { PaymentCheckout, PaymentTransaction } from "@/types";
+import type {
+  PaymentCheckout,
+  PaymentPayable,
+  PaymentTransaction,
+} from "@/types";
 
 export function MoneyValue({ amount, currency }: { amount: number; currency?: string }) {
   return <CurrencyMoneyValue value={amount} currency={currency} />;
@@ -70,6 +74,22 @@ export function formatPayableType(value?: string) {
   };
 
   return labels[value] ?? value;
+}
+
+export function describePayable(payable?: PaymentPayable | null) {
+  if (!payable) {
+    return {
+      type: "المرجع غير متاح",
+      identifier: "-",
+      isMissing: true,
+    } as const;
+  }
+
+  return {
+    type: formatPayableType(payable.type),
+    identifier: String(payable.uuid ?? payable.id),
+    isMissing: false,
+  } as const;
 }
 
 export function formatTransactionStatus(value: string) {

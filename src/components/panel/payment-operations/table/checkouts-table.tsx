@@ -4,9 +4,9 @@ import { formatStoredPhone } from "@/lib/utils/format-phone";
 import type { PaymentCheckout } from "@/types";
 
 import {
+  describePayable,
   formatGateway,
   formatPaymentMethod,
-  formatPayableType,
   MoneyValue,
 } from "../utils";
 import { ProcessedBadge } from "./status-badges";
@@ -68,6 +68,8 @@ function CheckoutTableRow({
   checkout: PaymentCheckout;
   onSelect?: (checkoutId: string) => void;
 }) {
+  const payable = describePayable(checkout.payable);
+
   return (
     <tr
       tabIndex={onSelect ? 0 : undefined}
@@ -97,9 +99,11 @@ function CheckoutTableRow({
         <MoneyValue amount={checkout.amount} currency={checkout.currency} />
       </TableCell>
       <TableCell>
-        <span>{formatPayableType(checkout.payable?.type)}</span>
+        <span className={payable.isMissing ? "text-amber-700" : undefined}>
+          {payable.type}
+        </span>
         <span dir="ltr" className="mt-1 block truncate text-sm text-gray">
-          {checkout.payable?.uuid ?? checkout.payable?.id ?? "-"}
+          {payable.identifier}
         </span>
       </TableCell>
       <TableCell className="max-w-none overflow-visible whitespace-normal">

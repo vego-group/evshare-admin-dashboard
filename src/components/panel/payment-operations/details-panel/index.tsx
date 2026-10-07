@@ -8,7 +8,7 @@ import { usePaymentCheckout, usePaymentTransaction } from "@/hooks/api";
 import { formatStoredPhone } from "@/lib/utils/format-phone";
 import type { PaymentCheckout, PaymentOperationTab, PaymentTransaction } from "@/types";
 
-import { formatDate, formatGateway, formatPayableType, formatPaymentMethod, MoneyValue } from "../utils";
+import { describePayable, formatDate, formatGateway, formatPaymentMethod, MoneyValue } from "../utils";
 import { ProcessedBadge, TransactionStatusBadge } from "../table/status-badges";
 
 type Props = { activeTab: PaymentOperationTab; checkoutId: string | null; transactionId: string | null; open: boolean; onClose: () => void };
@@ -35,6 +35,8 @@ export default function PaymentOperationDetailsPanel({ activeTab, checkoutId, tr
 }
 
 function CheckoutDetails({ checkout }: { checkout: PaymentCheckout }) {
+  const payable = describePayable(checkout.payable);
+
   return <div className="space-y-6">
     <Section title="بيانات الدفع">
       <Row label="رقم العملية" value={checkout.id} ltr />
@@ -50,8 +52,9 @@ function CheckoutDetails({ checkout }: { checkout: PaymentCheckout }) {
       <Row label="معرف المستخدم" value={checkout.user?.id ?? "-"} ltr />
     </Section>
     <Section title="المرجع">
-      <Row label="النوع" value={formatPayableType(checkout.payable?.type)} />
-      <Row label="المعرف" value={checkout.payable?.uuid ?? checkout.payable?.id ?? "-"} ltr />
+      {payable.isMissing ? <MissingReferenceNotice /> : null}
+      <Row label="النوع" value={payable.type} />
+      <Row label="المعرف" value={payable.identifier} ltr />
     </Section>
     <JsonBlock title="بيانات طلب الدفع" value={checkout.request_body} />
   </div>;
@@ -60,6 +63,7 @@ function CheckoutDetails({ checkout }: { checkout: PaymentCheckout }) {
 function TransactionDetails({ transaction }: { transaction: PaymentTransaction }) {
   const checkout = transaction.checkout;
   const user = transaction.user ?? checkout?.user;
+  const payable = describePayable(checkout?.payable);
 
   return <div className="space-y-6">
     <Section title="بيانات الدفع">
@@ -81,8 +85,9 @@ function TransactionDetails({ transaction }: { transaction: PaymentTransaction }
       <Row label="معرف عملية التحقق" value={checkout.id} ltr />
       <Row label="المبلغ" value={<MoneyValue amount={checkout.amount} currency={checkout.currency} />} ltr />
       <Row label="حالة المعالجة" value={<ProcessedBadge isProcessed={checkout.is_processed} />} />
-      <Row label="نوع المرجع" value={formatPayableType(checkout.payable?.type)} />
-      <Row label="معرف المرجع" value={checkout.payable?.uuid ?? checkout.payable?.id ?? "-"} ltr />
+      {payable.isMissing ? <MissingReferenceNotice /> : null}
+      <Row label="نوع المرجع" value={payable.type} />
+      <Row label="معرف المرجع" value={payable.identifier} ltr />
     </Section> : null}
     <Section title="الاسترداد">
       <Row label="الحالة" value={transaction.refund_in_progress ? "قيد تأكيد مزود الدفع" : refundStatusLabel(transaction.refund_status)} />
@@ -102,6 +107,14 @@ function TransactionDetails({ transaction }: { transaction: PaymentTransaction }
 
 function refundStatusLabel(status: PaymentTransaction["refund_status"]) {
   return status === "refunded" ? "مسترد بالكامل" : status === "partially_refunded" ? "مسترد جزئياً" : "لا يوجد";
+}
+
+function MissingReferenceNotice() {
+  return (
+    <p className="rounded-[10px] border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-800" role="status">
+      السجل المرتبط لم يعد متاحاً. تبقى عملية الدفع وسجلها المالي صالحين للعرض والمراجعة.
+    </p>
+  );
 }
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
