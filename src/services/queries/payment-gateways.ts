@@ -34,18 +34,23 @@ export const singlePaymentGatewayAPI = async (
 export const paymentCheckoutsAPI = async (
   params: PaymentCheckoutQueryParams,
 ): Promise<PaymentCheckoutsListResponse> => {
+  const isProcessed =
+    params.status === "processed"
+      ? 1
+      : params.status === "unprocessed"
+        ? 0
+        : typeof params.is_processed === "boolean"
+          ? Number(params.is_processed)
+          : undefined;
+
   const query = buildQuery({
     page: params.page,
     per_page: params.per_page ?? params.limit ?? PAGE_SIZE,
     gateway: params.gateway,
     payment_method: params.payment_method,
     payable_type: params.payable_type,
-    status: params.status,
-    is_processed:
-      params.status === undefined && typeof params.is_processed === "boolean"
-        ? Number(params.is_processed)
-        : undefined,
-    search: params.search,
+    is_processed: isProcessed,
+    search: params.search?.trim() || undefined,
     sort_by: params.sort_by ?? "created_at",
     sort_order: params.sort_order ?? "desc",
   });
@@ -66,8 +71,8 @@ export const paymentTransactionsAPI = async (
     per_page: params.per_page ?? params.limit ?? PAGE_SIZE,
     gateway: params.gateway,
     payment_method: params.payment_method,
-    status: params.status,
-    search: params.search,
+    status: params.status === "all" ? undefined : params.status,
+    search: params.search?.trim() || undefined,
     transaction_id: params.transaction_id,
     sort_by: params.sort_by ?? "created_at",
     sort_order: params.sort_order ?? "desc",

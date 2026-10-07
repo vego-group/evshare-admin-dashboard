@@ -66,12 +66,15 @@ function PaymentOperationsToolbar({ tab, search, gateway, paymentMethod, status,
     : ["all", "initiated", "authorized", "captured", "paid", "failed", "refunded", "voided", "expired"];
   const statusOptions = (statuses.length ? statuses : fallbackStatuses)
     .map((value) => ({ label: statusLabels[value] ?? value, value }));
+  const searchPlaceholder = tab === "checkouts"
+    ? "اسم المستخدم أو الجوال أو مرجع الدفع..."
+    : "رقم المعاملة أو المعرّف أو اسم المستخدم أو الجوال...";
 
   return (
     <section className="space-y-3 rounded-2xl border border-neutral-100/60 bg-white p-1.5 shadow-[0_2px_6px_rgba(0,0,0,0.04)] lg:flex lg:items-center lg:gap-3 lg:space-y-0">
       <div className="relative flex min-h-12 min-w-56 flex-1 items-center rounded-[14px] px-3 pr-11 sm:min-h-14 sm:pr-14">
         <Search className="pointer-events-none absolute right-3 top-1/2 size-5 -translate-y-1/2 text-gray sm:right-5" />
-        <input type="search" aria-label="البحث في عمليات الدفع" placeholder="الاسم أو الجوال أو مرجع الدفع..." value={searchValue}
+        <input type="search" aria-label="البحث في عمليات الدفع" placeholder={searchPlaceholder} value={searchValue}
           onChange={(event) => setSearchValue(event.target.value)}
           className="h-full w-full bg-transparent text-right text-sm text-secondary outline-none placeholder:text-[#99a1af] sm:text-base" />
       </div>

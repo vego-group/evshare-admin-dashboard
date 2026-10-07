@@ -38,6 +38,7 @@ type SharedPaymentQueryParams = {
   limit?: number;
   gateway?: string;
   payment_method?: string;
+  /** Dashboard search term. Its matched fields depend on the active endpoint. */
   search?: string;
   sort_by?: "created_at";
   sort_order?: PaymentSortOrder;
@@ -45,13 +46,15 @@ type SharedPaymentQueryParams = {
 
 export type PaymentCheckoutQueryParams = SharedPaymentQueryParams & {
   payable_type?: string;
+  /** UI-friendly alias mapped to the API's is_processed query parameter. */
   status?: PaymentCheckoutStatus;
-  /** Legacy checkout filter. Prefer status in new callers. */
+  /** Wire-level checkout processing filter. */
   is_processed?: boolean;
 };
 
 export type PaymentTransactionQueryParams = SharedPaymentQueryParams & {
   status?: PaymentTransactionStatus;
+  /** Legacy exact gateway transaction id filter; use search for dashboard search. */
   transaction_id?: string;
 };
 
