@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import toast from "react-hot-toast";
+import { TriangleAlert } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import VehicleTypeDropdown from "@/components/ui/vehicle-type-dropdown";
@@ -119,6 +120,12 @@ function VehicleEditModal({
               setValues((current) => ({ ...current, vehicle_type: value ?? "" }))
             }
           />
+          {vehicle.vehicle_type_source === "inferred" && !values.vehicle_type && (
+            <p className="mt-3 flex items-start gap-2 rounded-xl bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-800">
+              <TriangleAlert className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+              النوع الحالي مخمّن من وجود جهاز IoT. اختر نوعاً هنا لتثبيته على هذه المركبة، أو عدّل المنتج أو التصنيف لإصلاح جميع المركبات التابعة له.
+            </p>
+          )}
         </section>
 
         <section className="grid gap-4 rounded-[18px] border border-primary/25 bg-white p-4 shadow-sm sm:grid-cols-2">

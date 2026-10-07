@@ -4,6 +4,7 @@ import type { VehicleType } from "./categories";
 import type { PricingConfigurationMetadata } from "./pricing-configuration";
 
 export type VehicleOperatingType = "evshare" | "operation_company";
+export type VehicleTypeSource = "vehicle" | "product" | "category" | "inferred";
 export type VehicleStatus =
   | "new"
   | "active"
@@ -192,6 +193,8 @@ export type VehicleListItem = PricingConfigurationMetadata & VehiclePricing & {
   battery_percentage: number | null;
   commission_percentage?: number | string | null;
   vehicle_type: VehicleType;
+  vehicle_type_source: VehicleTypeSource;
+  /** The explicit value stored on the vehicle, before backend fallback resolution. */
   vehicle_type_override: VehicleType | null;
   lock_id: string | null;
   current_location: VehicleCurrentLocation | null;

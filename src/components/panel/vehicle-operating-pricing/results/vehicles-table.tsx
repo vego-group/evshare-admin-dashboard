@@ -4,6 +4,7 @@ import type { VehicleListItem } from "@/types";
 import { isGatewayDeviceId } from "@/lib/utils/device-id";
 import StatusBadge from "../status-badge";
 import ProvisioningBadge from "../provisioning-badge";
+import VehicleTypeIndicator from "../vehicle-type-indicator";
 import { vehicleTitle } from "../utils";
 import VehicleActions from "./action-buttons";
 
@@ -28,9 +29,17 @@ const headers = [
 
 function VehiclesTable(props: Props) {
   return (
-    <section className="overflow-hidden rounded-lg bg-white">
+    <section className="overflow-hidden rounded-xl border border-primary/10 bg-white shadow-sm">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-260 border-separate border-spacing-0 text-right">
+        <table className="w-full min-w-360 table-fixed border-separate border-spacing-0 text-right">
+          <colgroup>
+            <col className="w-[12%]" />
+            <col className="w-[13%]" />
+            <col className="w-[14%]" />
+            <col className="w-[18%]" />
+            <col className="w-[9%]" />
+            <col className="w-[34%]" />
+          </colgroup>
           <thead>
             <tr className="bg-primary/8 text-base font-semibold text-dark-gray">
               {headers.map((h) => (
@@ -40,7 +49,10 @@ function VehiclesTable(props: Props) {
           </thead>
           <tbody>
             {props.vehicles.map((vehicle) => (
-              <tr key={vehicle.id} className="text-dark-gray">
+              <tr
+                key={vehicle.id}
+                className="text-dark-gray transition-colors hover:bg-primary/3"
+              >
                 <TableCell>
                   <VehicleName vehicle={vehicle} />
                 </TableCell>
@@ -139,14 +151,21 @@ function ConnectivityBadge({ vehicle }: { vehicle: VehicleListItem }) {
 
 function VehicleName({ vehicle }: { vehicle: VehicleListItem }) {
   return (
-    <p dir="ltr" className="truncate text-right font-medium text-secondary">
-      {vehicleTitle(vehicle)}
-    </p>
+    <div className="min-w-36 space-y-1.5">
+      <p dir="ltr" className="truncate text-right font-medium text-secondary">
+        {vehicleTitle(vehicle)}
+      </p>
+      <VehicleTypeIndicator
+        type={vehicle.vehicle_type}
+        source={vehicle.vehicle_type_source}
+        showSource={vehicle.vehicle_type_source === "inferred"}
+      />
+    </div>
   );
 }
 
 function HeaderCell({ children }: { children: ReactNode }) {
-  return <th className="border-b border-primary/15 px-5 py-5">{children}</th>;
+  return <th className="border-b border-primary/15 px-4 py-4">{children}</th>;
 }
 
 function TableCell({
@@ -163,8 +182,8 @@ function TableCell({
       dir={dir}
       className={
         truncate
-          ? "max-w-0 overflow-hidden text-ellipsis whitespace-nowrap border-b border-primary/15 px-5 py-3"
-          : "border-b border-primary/15 px-5 py-3"
+          ? "max-w-0 overflow-hidden text-ellipsis whitespace-nowrap border-b border-primary/10 px-4 py-3.5 align-middle"
+          : "border-b border-primary/10 px-4 py-3.5 align-middle"
       }
     >
       {children}

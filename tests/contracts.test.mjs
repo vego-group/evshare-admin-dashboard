@@ -60,3 +60,14 @@ test("sensitive UI actions use split permissions", () => {
   assert.match(files.payouts, /ADMIN_PERMISSIONS\.paymentRequests\.reject/);
   assert.match(files.companies, /ADMIN_PERMISSIONS\.operationCompanies\.editCommission/);
 });
+
+test("vehicle type source is modeled and inferred vehicles are surfaced", () => {
+  const types = fs.readFileSync(path.join(testDirectory, "..", "src/types/vehicle-operating-pricing.ts"), "utf8");
+  const details = fs.readFileSync(path.join(testDirectory, "..", "src/components/panel/vehicle-operating-pricing/view-vehicle/vehicle-details-content.tsx"), "utf8");
+  const list = fs.readFileSync(path.join(testDirectory, "..", "src/components/panel/vehicle-operating-pricing/results/vehicles-table.tsx"), "utf8");
+
+  assert.match(types, /VehicleTypeSource\s*=\s*"vehicle"\s*\|\s*"product"\s*\|\s*"category"\s*\|\s*"inferred"/);
+  assert.match(types, /vehicle_type_source:\s*VehicleTypeSource/);
+  assert.match(details, /vehicle\.vehicle_type_source\s*===\s*"inferred"/);
+  assert.match(list, /source=\{vehicle\.vehicle_type_source\}/);
+});

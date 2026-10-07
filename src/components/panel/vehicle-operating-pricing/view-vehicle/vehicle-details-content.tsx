@@ -1,13 +1,15 @@
 "use client";
 
+import { TriangleAlert } from "lucide-react";
 import type { ReactNode } from "react";
 
 import MoneyValue from "@/components/ui/money-value";
 import { PricingConfigurationMeta } from "@/components/ui/pricing-configuration-meta";
 import type { VehicleListItem } from "@/types";
-import { vehicleTypeLabel } from "@/lib/utils/vehicle-type";
+import { vehicleTypeSourceLabel } from "@/lib/utils/vehicle-type";
 import StatusBadge from "../status-badge";
 import ProvisioningBadge from "../provisioning-badge";
+import VehicleTypeIndicator from "../vehicle-type-indicator";
 import VehicleDetailsShimmer from "./vehicle-details-shimmer";
 import {
   formatDate,
@@ -42,13 +44,36 @@ export function VehicleDetailsContent({ vehicle, isLoading }: Props) {
 
   return (
     <div className="flex min-w-0 flex-col gap-6 text-right">
+      {vehicle.vehicle_type_source === "inferred" && (
+        <div className="flex items-start gap-3 rounded-[14px] border border-amber-200 bg-amber-50 px-4 py-3 text-amber-900" role="alert">
+          <TriangleAlert className="mt-0.5 size-5 shrink-0" aria-hidden="true" />
+          <div>
+            <p className="text-sm font-semibold">نوع المركبة مستنتج تلقائياً</p>
+            <p className="mt-1 text-xs leading-5 text-amber-800">
+              لم يُحدد النوع على المركبة أو المنتج أو التصنيف. حدده على التصنيف لإصلاح جميع مركباته، أو على المنتج أو هذه المركبة لتجاوز القيمة الموروثة.
+            </p>
+          </div>
+        </div>
+      )}
       <section className="space-y-3 rounded-[14px] bg-background p-4">
         <h4 className="text-sm font-semibold text-secondary">البيانات الأساسية</h4>
         <div className="grid gap-2 sm:grid-cols-2">
           <DetailRow label="معرف المركبة" value={<span dir="ltr">{vehicle.id}</span>} />
           <DetailRow label="الحالة" value={<StatusBadge status={vehicle.status} />} />
           <DetailRow label="حالة التجهيز" value={<ProvisioningBadge vehicle={vehicle} />} />
-          <DetailRow label="نوع المركبة" value={vehicleTypeLabel(vehicle.vehicle_type)} />
+          <DetailRow
+            label="نوع المركبة"
+            value={
+              <VehicleTypeIndicator
+                type={vehicle.vehicle_type}
+                source={vehicle.vehicle_type_source}
+              />
+            }
+          />
+          <DetailRow
+            label="مصدر نوع المركبة"
+            value={vehicleTypeSourceLabel(vehicle.vehicle_type_source)}
+          />
           <DetailRow
             label="توفر الإيجار"
             value={
