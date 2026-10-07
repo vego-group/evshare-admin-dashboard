@@ -1,6 +1,6 @@
 import CurrencyMoneyValue from "@/components/ui/money-value";
 
-import type { PaymentTransaction } from "@/types";
+import type { PaymentCheckout, PaymentTransaction } from "@/types";
 
 export function MoneyValue({ amount, currency }: { amount: number; currency?: string }) {
   return <CurrencyMoneyValue value={amount} currency={currency} />;
@@ -19,21 +19,19 @@ export function formatDate(value: string) {
 
 export function formatGateway(value?: string) {
   if (!value) return "-";
-  if (value.toLowerCase() === "tamara") return "Tamara";
-  if (value.toLowerCase() === "moyasar") return "Moyasar";
-  return value;
+  const labels: Record<string, string> = {
+    moyasar: "Moyasar",
+    tamara: "Tamara",
+    myfatoorah: "MyFatoorah",
+  };
+  return labels[value.toLowerCase()] ?? humanizePaymentKey(value);
 }
 
-export function formatPaymentMethod(transaction: PaymentTransaction) {
-  const source = transaction.transaction_response?.data?.source;
-  const method = formatPaymentMethodLabel(source?.type);
-  const company = formatPaymentMethodLabel(source?.company);
-
-  if (method && company) return `${method} - ${company}`;
-  return method || company || "-";
+export function formatPaymentMethod(payment: PaymentTransaction | PaymentCheckout) {
+  return formatPaymentMethodLabel(payment.payment_method) || "-";
 }
 
-function formatPaymentMethodLabel(value?: string | null) {
+export function formatPaymentMethodLabel(value?: string | null) {
   if (!value) return "";
 
   const labels: Record<string, string> = {
@@ -44,12 +42,19 @@ function formatPaymentMethodLabel(value?: string | null) {
     mada: "Mada",
     amex: "American Express",
     stcpay: "STC Pay",
+    stc_pay: "STC Pay",
     creditcard: "Credit Card",
     credit_card: "Credit Card",
   };
 
   const normalized = value.toLowerCase();
-  return labels[normalized] ?? value;
+  return labels[normalized] ?? humanizePaymentKey(value);
+}
+
+function humanizePaymentKey(value: string) {
+  return value
+    .replace(/[_-]+/g, " ")
+    .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
 export function formatPayableType(value?: string) {
@@ -57,7 +62,11 @@ export function formatPayableType(value?: string) {
 
   const labels: Record<string, string> = {
     order: "طلب",
+    "App\\Models\\Order": "طلب",
     subscription: "اشتراك",
+    "App\\Models\\Subscription": "اشتراك",
+    wallet_top_up: "شحن محفظة",
+    "App\\Models\\WalletTopUp": "شحن محفظة",
   };
 
   return labels[value] ?? value;
@@ -69,10 +78,11 @@ export function formatTransactionStatus(value: string) {
     succeeded: "نجحت مالياً",
     failed: "فشل",
     initiated: "قيد البدء",
-    pending: "بانتظار المعالجة",
-    processing: "قيد المعالجة",
-    timed_out: "انتهت مهلة المعالجة",
-    reconciliation_required: "تحتاج إلى تسوية",
+    authorized: "مصرح",
+    captured: "محصل",
+    refunded: "مسترد بالكامل",
+    voided: "ملغي",
+    expired: "منتهي",
   };
 
   return labels[value] ?? value;

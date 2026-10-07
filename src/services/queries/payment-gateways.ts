@@ -16,14 +16,18 @@ export const paymentCheckoutsAPI = async (
 ): Promise<PaymentCheckoutsListResponse> => {
   const query = buildQuery({
     page: params.page,
-    limit: PAGE_SIZE,
+    per_page: params.per_page ?? params.limit ?? PAGE_SIZE,
     gateway: params.gateway,
+    payment_method: params.payment_method,
     payable_type: params.payable_type,
+    status: params.status,
     is_processed:
-      typeof params.is_processed === "boolean"
+      params.status === undefined && typeof params.is_processed === "boolean"
         ? Number(params.is_processed)
         : undefined,
     search: params.search,
+    sort_by: params.sort_by ?? "created_at",
+    sort_order: params.sort_order ?? "desc",
   });
 
   return await baseAPI("GET", `/payment/checkouts?${query}`);
@@ -39,11 +43,14 @@ export const paymentTransactionsAPI = async (
 ): Promise<PaymentTransactionsListResponse> => {
   const query = buildQuery({
     page: params.page,
-    limit: PAGE_SIZE,
+    per_page: params.per_page ?? params.limit ?? PAGE_SIZE,
     gateway: params.gateway,
+    payment_method: params.payment_method,
     status: params.status,
     search: params.search,
     transaction_id: params.transaction_id,
+    sort_by: params.sort_by ?? "created_at",
+    sort_order: params.sort_order ?? "desc",
   });
 
   return await baseAPI("GET", `/payment/transactions?${query}`);

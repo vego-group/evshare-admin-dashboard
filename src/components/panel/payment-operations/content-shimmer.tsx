@@ -64,7 +64,7 @@ function PaymentOperationsContentShimmer() {
         className="max-w-full overflow-hidden rounded-lg border border-neutral-200 bg-white"
       >
         <div className="overflow-x-auto">
-          <div className="min-w-280">
+          <div className="w-full">
             <div className="grid grid-cols-6 items-center border-b border-neutral-200 bg-neutral-100 px-5 py-5">
               {tableHeaderWidths.map((width, index) => (
                 <Shimmer

@@ -38,6 +38,13 @@ export const ADMIN_PERMISSIONS = {
     approve: "Admin Approve Payment Requests",
     reject: "Admin Reject Payment Requests",
   },
+  paymentOperations: {
+    indexCheckouts: "Admin Index Checkouts",
+    showCheckouts: "Admin Show Checkouts",
+    indexTransactions: "Admin Index Transactions",
+    showTransactions: "Admin Show Transactions",
+    refundTransactions: "Admin Refund Transactions",
+  },
   vat: {
     export: "Admin Export VAT",
     viewExports: "Admin View VAT Exports",

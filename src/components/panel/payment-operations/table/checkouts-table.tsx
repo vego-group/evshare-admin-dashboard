@@ -4,8 +4,8 @@ import { formatStoredPhone } from "@/lib/utils/format-phone";
 import type { PaymentCheckout } from "@/types";
 
 import {
-  formatDate,
   formatGateway,
+  formatPaymentMethod,
   formatPayableType,
   MoneyValue,
 } from "../utils";
@@ -31,15 +31,15 @@ function PaymentCheckoutsTable({
           isFetching && "opacity-60",
         )}
       >
-        <table className="w-full min-w-280 border-separate border-spacing-0 text-right">
+        <table className="w-full table-fixed border-separate border-spacing-0 text-right">
           <thead>
             <tr className="bg-primary/8 text-base font-semibold leading-6 text-dark-gray">
               <TableHead className="w-47.5">المستخدم</TableHead>
               <TableHead className="w-40">بوابة الدفع</TableHead>
+              <TableHead className="w-40">طريقة الدفع</TableHead>
               <TableHead className="w-37.5">المبلغ</TableHead>
               <TableHead className="w-40">المرجع</TableHead>
               <TableHead className="w-35">المعالجة</TableHead>
-              <TableHead className="w-47.5">تاريخ الإنشاء</TableHead>
             </tr>
           </thead>
           <tbody>
@@ -92,6 +92,7 @@ function CheckoutTableRow({
         </span>
       </TableCell>
       <TableCell>{formatGateway(checkout.payment_gateway)}</TableCell>
+      <TableCell>{formatPaymentMethod(checkout)}</TableCell>
       <TableCell dir="ltr">
         <MoneyValue amount={checkout.amount} currency={checkout.currency} />
       </TableCell>
@@ -104,7 +105,6 @@ function CheckoutTableRow({
       <TableCell className="max-w-none overflow-visible whitespace-normal">
         <ProcessedBadge isProcessed={checkout.is_processed} />
       </TableCell>
-      <TableCell dir="ltr">{formatDate(checkout.created_at)}</TableCell>
     </tr>
   );
 }

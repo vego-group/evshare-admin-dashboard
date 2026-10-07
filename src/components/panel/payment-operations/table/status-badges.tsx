@@ -26,10 +26,11 @@ export function TransactionStatusBadge({
     succeeded: "bg-green-50 text-green",
     failed: "bg-red-50 text-red",
     initiated: "bg-amber-50 text-orange-500",
-    pending: "bg-amber-50 text-orange-500",
-    processing: "bg-blue/10 text-blue",
-    timed_out: "bg-amber-50 text-orange-500",
-    reconciliation_required: "bg-red-50 text-red",
+    authorized: "bg-blue/10 text-blue",
+    captured: "bg-green-50 text-green",
+    refunded: "bg-purple-50 text-purple-700",
+    voided: "bg-neutral-100 text-gray",
+    expired: "bg-neutral-100 text-gray",
   };
 
   return (

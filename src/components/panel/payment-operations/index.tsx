@@ -1,18 +1,23 @@
 "use client";
 
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import Header from "@/components/ui/header";
+import { ADMIN_PERMISSIONS } from "@/constants";
 import { useHasPermission } from "@/hooks";
 import { usePaymentCheckouts, usePaymentTransactions } from "@/hooks/api";
 import type {
   PaymentCheckoutQueryParams,
   PaymentOperationTab,
+  PaymentTransaction,
   PaymentTransactionQueryParams,
+  PaymentTransactionsListResponse,
 } from "@/types";
 
 import PaymentOperationsContentShimmer from "./content-shimmer";
 import PaymentOperationDetailsPanel from "./details-panel";
+import PaymentRefundModal from "./refund-modal";
 import PaymentOperationsPagination from "./pagination";
 import { CheckoutStatsCards, TransactionStatsCards } from "./stats";
 import PaymentOperationTabs from "./tabs";
@@ -21,10 +26,12 @@ import PaymentTransactionsTable from "./table/transactions-table";
 import PaymentOperationsToolbar from "./toolbar";
 
 function PaymentOperations() {
-  const canIndexCheckouts = useHasPermission("Admin Index Checkouts");
-  const canIndexTransactions = useHasPermission("Admin Index Transactions");
-  const canShowCheckouts = useHasPermission("Admin Show Checkouts");
-  const canShowTransactions = useHasPermission("Admin Show Transactions");
+  const queryClient = useQueryClient();
+  const canIndexCheckouts = useHasPermission(ADMIN_PERMISSIONS.paymentOperations.indexCheckouts);
+  const canIndexTransactions = useHasPermission(ADMIN_PERMISSIONS.paymentOperations.indexTransactions);
+  const canRefundTransactions = useHasPermission(ADMIN_PERMISSIONS.paymentOperations.refundTransactions);
+  const canShowCheckouts = useHasPermission(ADMIN_PERMISSIONS.paymentOperations.showCheckouts);
+  const canShowTransactions = useHasPermission(ADMIN_PERMISSIONS.paymentOperations.showTransactions);
   const availableTabs: PaymentOperationTab[] = [
     ...(canIndexCheckouts ? (["checkouts"] as const) : []),
     ...(canIndexTransactions ? (["transactions"] as const) : []),
@@ -48,6 +55,7 @@ function PaymentOperations() {
   const [selectedTransactionId, setSelectedTransactionId] = useState<
     string | null
   >(null);
+  const [refundTransaction, setRefundTransaction] = useState<PaymentTransaction | null>(null);
 
   const {
     data: checkoutsData,
@@ -147,19 +155,18 @@ function PaymentOperations() {
             <>
               <CheckoutStatsCards checkouts={checkoutsData?.data ?? []} />
               <PaymentOperationsToolbar
+                key="checkouts-toolbar"
                 tab="checkouts"
                 payableType={checkoutParams.payable_type}
-                isProcessed={checkoutParams.is_processed}
+                status={checkoutParams.status}
                 search={checkoutParams.search}
-                onPayableTypeChange={(payable_type) =>
-                  updateCheckoutParams({ payable_type, page: 1 })
-                }
-                onProcessedChange={(is_processed) =>
-                  updateCheckoutParams({ is_processed, page: 1 })
-                }
-                onSearchChange={(search) =>
-                  updateCheckoutParams({ search, page: 1 })
-                }
+                gateway={checkoutParams.gateway}
+                paymentMethod={checkoutParams.payment_method}
+                sortOrder={checkoutParams.sort_order}
+                gateways={checkoutsData?.filters?.gateways}
+                paymentMethods={checkoutsData?.filters?.payment_methods}
+                statuses={checkoutsData?.filters?.statuses}
+                onChange={(values) => updateCheckoutParams({ ...values, status: values.status as PaymentCheckoutQueryParams["status"], page: 1 })}
               />
               <PaymentCheckoutsTable
                 checkouts={checkoutsData?.data ?? []}
@@ -177,15 +184,17 @@ function PaymentOperations() {
             <>
               <TransactionStatsCards analytics={transactionsData?.analytics} />
               <PaymentOperationsToolbar
+                key="transactions-toolbar"
                 tab="transactions"
-                transactionStatus={transactionParams.status}
+                status={transactionParams.status}
                 search={transactionParams.search}
-                onTransactionStatusChange={(status) =>
-                  updateTransactionParams({ status, page: 1 })
-                }
-                onSearchChange={(search) =>
-                  updateTransactionParams({ search, page: 1 })
-                }
+                gateway={transactionParams.gateway}
+                paymentMethod={transactionParams.payment_method}
+                sortOrder={transactionParams.sort_order}
+                gateways={transactionsData?.filters?.gateways}
+                paymentMethods={transactionsData?.filters?.payment_methods}
+                statuses={transactionsData?.filters?.statuses}
+                onChange={(values) => updateTransactionParams({ ...values, status: values.status as PaymentTransactionQueryParams["status"], page: 1 })}
               />
 
               <PaymentTransactionsTable
@@ -194,6 +203,7 @@ function PaymentOperations() {
                 onTransactionSelect={
                   canShowTransactions ? openTransaction : undefined
                 }
+                onRefund={canRefundTransactions ? setRefundTransaction : undefined}
               />
               <PaymentOperationsPagination
                 meta={transactionsData?.meta}
@@ -216,6 +226,22 @@ function PaymentOperations() {
           setSelectedTransactionId(null);
         }}
       />
+      {refundTransaction ? <PaymentRefundModal
+          transaction={refundTransaction}
+          open
+          onClose={() => {
+            setRefundTransaction(null);
+            void queryClient.invalidateQueries({ queryKey: ["payment-transactions"] });
+          }}
+          onRefunded={(updatedTransaction) => {
+            queryClient.setQueriesData<PaymentTransactionsListResponse>(
+              { queryKey: ["payment-transactions"] },
+              (current) => current ? { ...current, data: current.data.map((item) => item.id === updatedTransaction.id ? updatedTransaction : item) } : current,
+            );
+            void queryClient.invalidateQueries({ queryKey: ["payment-transactions"] });
+            if (selectedTransactionId) void queryClient.invalidateQueries({ queryKey: ["payment-transaction", selectedTransactionId] });
+          }}
+        /> : null}
     </div>
   );
 }
