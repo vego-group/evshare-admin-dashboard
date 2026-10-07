@@ -9,7 +9,10 @@ export type UserListItem = {
   email: string | null;
   active: boolean;
   account_status: UserAccountStatus;
+  status?: UserAccountStatus;
   role: UserRole | null;
+  verification_status?: "verified" | "unverified";
+  subscription_status?: UserSubscriptionStatus | null;
   mobile_verified: boolean;
   mobile_verified_at: string | null;
   created_at: string;
@@ -43,6 +46,38 @@ export type UserBankAccount = {
   bank_name: string;
   account_number: string;
   iban: string;
+};
+
+export type UserSubscriptionStatus = "subscribed" | "unsubscribed";
+
+export type UserRoleSummary = {
+  id: string;
+  key: string;
+  name: string;
+};
+
+export type UserRoleDistribution = UserRoleSummary & {
+  count: number;
+  percentage: number;
+};
+
+export type UsersStatisticsResponse = {
+  error: boolean;
+  message: string;
+  data: {
+    statistics: {
+      total_users: { count: number };
+      active_users: { count: number; percentage: number };
+      suspended_users: { count: number; percentage: number };
+      unverified_users: { count: number };
+      new_users_this_month: { count: number };
+    };
+    role_distribution: {
+      total_users: number;
+      roles: UserRoleDistribution[];
+    };
+    roles: UserRoleSummary[];
+  };
 };
 
 export type UserSubscription = {
@@ -79,9 +114,17 @@ export type AdminUserDetailResponse = {
 
 export type UsersQueryParams = {
   page: number;
-  limit: number;
+  per_page?: number;
+  /** Kept for consumers that still use the legacy API contract. */
+  limit?: number;
   role?: UserRole;
+  status?: UserAccountStatus;
+  /** Kept for consumers that still use the legacy API contract. */
   account_status?: UserAccountStatus;
+  subscription_status?: UserSubscriptionStatus;
+  sort_by?: "created_at";
+  sort_order?: "asc" | "desc";
+  /** Kept for consumers that still use the legacy API contract. */
   order_by?: "asc" | "desc";
   search?: string;
 };

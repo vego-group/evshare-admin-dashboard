@@ -131,6 +131,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
     headers: {
       Accept: "application/json",
       "Accept-Language": "ar",
+      "app-language": "ar",
       Authorization: `Bearer ${token}`,
       "X-Tenant-Id": country,
     },

@@ -1,9 +1,15 @@
 import type { UsersQueryParams } from "@/types";
 import { useCustomQuery } from "..";
-import { singleUserAPI, usersAPI } from "@/services/queries";
+import { singleUserAPI, usersAPI, usersStatisticsAPI } from "@/services/queries";
 
 export function useUsers(params: UsersQueryParams) {
   return useCustomQuery(["users", params], async () => usersAPI(params));
+}
+
+export function useUsersStatistics() {
+  return useCustomQuery(["users-statistics"], usersStatisticsAPI, {
+    staleTime: 5 * 60 * 1000,
+  });
 }
 
 export function useUser(userId: string | null) {

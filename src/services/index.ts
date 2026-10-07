@@ -6,7 +6,7 @@ import { getRetryAfterSeconds } from "@/lib/utils/api-error";
 
 export const adminApi = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_ADMIN_BASE_URL,
-  headers: { "Accept-Language": "ar" },
+  headers: { "Accept-Language": "ar", "app-language": "ar" },
 });
 
 export const authApi = axios.create({
@@ -143,6 +143,7 @@ export const baseAPI = async (method: Method, url: string) => {
         method,
         headers: {
           Accept: "application/json",
+          "app-language": "ar",
         },
         credentials: "same-origin",
       });

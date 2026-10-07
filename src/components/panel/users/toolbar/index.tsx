@@ -1,9 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { LayoutGrid, List, Plus } from "lucide-react";
 
+import PermissionGate from "@/components/permission-gate";
+import { Button } from "@/components/ui/button";
 import useDebouncedChange from "@/hooks/use-debounced-change";
-import type { UserAccountStatus, UserRole } from "@/types";
+import { cn } from "@/lib/utils";
+import type { UserAccountStatus, UserRole, UserRoleSummary, UserSubscriptionStatus } from "@/types";
+
+import type { UsersViewMode } from "../header";
 
 import FilterSelect, { type FilterOption } from "./filter-select";
 import SearchInput from "./search-input";
@@ -12,26 +18,22 @@ type UsersToolbarProps = {
   searchQuery?: string;
   selectedRole?: UserRole;
   selectedStatus?: UserAccountStatus;
+  selectedSubscriptionStatus?: UserSubscriptionStatus;
   selectedSort?: "asc" | "desc";
+  roles?: UserRoleSummary[];
+  viewMode: UsersViewMode;
   onSearchChange?: (value: string) => void;
   onRoleChange?: (value?: UserRole) => void;
   onStatusChange?: (value?: UserAccountStatus) => void;
+  onSubscriptionStatusChange?: (value?: UserSubscriptionStatus) => void;
   onSortChange?: (value: "asc" | "desc") => void;
+  onViewModeChange: (viewMode: UsersViewMode) => void;
+  onAddUser: () => void;
 };
 
 const sortOptions: FilterOption<"asc" | "desc">[] = [
   { label: "الأحدث", value: "desc" },
   { label: "الأقدم", value: "asc" },
-];
-
-const roleOptions: FilterOption<UserRole | "all">[] = [
-  { label: "الكل", value: "all" },
-  { label: "مستخدم", value: "user" },
-  { label: "تاجر", value: "merchant" },
-  { label: "سائق", value: "driver" },
-  { label: "مدير", value: "root" },
-  { label: "مسؤول", value: "admin" },
-  { label: "مبيعات", value: "sales" },
 ];
 
 const statusOptions: FilterOption<UserAccountStatus | "all">[] = [
@@ -41,29 +43,68 @@ const statusOptions: FilterOption<UserAccountStatus | "all">[] = [
   { label: "محذوف", value: "deleted" },
 ];
 
+const subscriptionOptions: FilterOption<UserSubscriptionStatus | "all">[] = [
+  { label: "كل الاشتراكات", value: "all" },
+  { label: "مشترك", value: "subscribed" },
+  { label: "غير مشترك", value: "unsubscribed" },
+];
+
 function UsersToolbar({
   searchQuery,
   selectedRole,
   selectedStatus,
+  selectedSubscriptionStatus,
   selectedSort,
+  roles = [],
+  viewMode,
   onSearchChange,
   onRoleChange,
   onStatusChange,
+  onSubscriptionStatusChange,
   onSortChange,
+  onViewModeChange,
+  onAddUser,
 }: UsersToolbarProps) {
   const [internalSearch, setInternalSearch] = useState(searchQuery ?? "");
-  const [internalSort, setInternalSort] = useState<"asc" | "desc">("desc");
-  const [internalRole, setInternalRole] = useState<UserRole | "all">("all");
 
   useDebouncedChange(internalSearch, onSearchChange, 500);
 
+  const roleOptions: FilterOption<string>[] = [
+    { label: "كل الأدوار", value: "all" },
+    ...roles.map((role) => ({ label: role.name, value: role.key })),
+  ];
+
   return (
-    <section className="space-y-3 lg:flex lg:items-center lg:justify-between lg:gap-3 lg:space-y-0 lg:rounded-2xl lg:border lg:border-neutral-100/60 lg:bg-white lg:p-1.5 lg:shadow-[0_2px_6px_rgba(0,0,0,0.04)]">
-      <div className="rounded-2xl border border-neutral-100/60 bg-white p-1.5 shadow-[0_2px_6px_rgba(0,0,0,0.04)] lg:flex-1 lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none">
-        <SearchInput value={internalSearch} onChange={setInternalSearch} />
+    <section className="space-y-3">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="w-full rounded-2xl border border-slate-100 bg-white shadow-[0_2px_8px_rgba(15,23,42,0.04)] sm:max-w-xl sm:flex-1">
+          <SearchInput value={internalSearch} onChange={setInternalSearch} />
+        </div>
+
+        <div className="flex shrink-0 items-center gap-3">
+          <div className="flex h-12 items-center gap-1 rounded-2xl border border-slate-100 bg-white p-1 shadow-sm">
+            <Button type="button" size="icon" variant="ghost" aria-label="عرض كروت" aria-pressed={viewMode === "card"}
+              onClick={() => onViewModeChange("card")}
+              className={cn("size-10 rounded-xl text-slate-500", viewMode === "card" && "bg-primary text-slate-900 hover:bg-primary/90")}>
+              <LayoutGrid className="size-5" />
+            </Button>
+            <Button type="button" size="icon" variant="ghost" aria-label="عرض الجدول" aria-pressed={viewMode === "table"}
+              onClick={() => onViewModeChange("table")}
+              className={cn("size-10 rounded-xl text-slate-500", viewMode === "table" && "bg-primary text-slate-900 hover:bg-primary/90")}>
+              <List className="size-5" />
+            </Button>
+          </div>
+          <PermissionGate slug="Admin Add Users">
+            <Button type="button" onClick={onAddUser}
+              className="h-12 rounded-2xl bg-primary px-5 text-sm font-semibold text-secondary shadow-[0_5px_16px_rgba(255,206,39,0.28)] hover:bg-primary/90 sm:text-base">
+              <Plus className="size-5" />
+              إضافة مستخدم
+            </Button>
+          </PermissionGate>
+        </div>
       </div>
 
-      <div className="flex flex-col gap-3.25 sm:flex-row sm:flex-wrap lg:shrink-0">
+      <div className="flex flex-col gap-3 rounded-2xl border border-slate-100 bg-white p-2 shadow-[0_2px_8px_rgba(15,23,42,0.04)] sm:flex-row sm:flex-wrap">
         <FilterSelect
           label="حالة الحساب"
           options={statusOptions}
@@ -73,17 +114,24 @@ function UsersToolbar({
         <FilterSelect
           label="الدور"
           options={roleOptions}
-          value={selectedRole ?? internalRole}
+          value={selectedRole ?? "all"}
           onChange={(value) => {
-            setInternalRole(value);
             onRoleChange?.(value === "all" ? undefined : (value as UserRole));
           }}
         />
+        {selectedRole === "merchant" ? (
+          <FilterSelect
+            label="حالة الاشتراك"
+            options={subscriptionOptions}
+            value={selectedSubscriptionStatus ?? "all"}
+            onChange={(value) => onSubscriptionStatusChange?.(value === "all" ? undefined : value)}
+          />
+        ) : null}
         <FilterSelect
           label="الترتيب"
           options={sortOptions}
-          value={selectedSort ?? internalSort}
-          onChange={(value) => { setInternalSort(value); onSortChange?.(value); }}
+          value={selectedSort ?? "desc"}
+          onChange={(value) => onSortChange?.(value)}
         />
       </div>
     </section>
