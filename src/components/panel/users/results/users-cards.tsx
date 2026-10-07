@@ -21,9 +21,10 @@ type UsersCardsProps = {
   onEditUser: (user: UserListItem) => void;
   onSuspendUser: (user: UserListItem) => void;
   onReactivateUser: (user: UserListItem) => void;
+  roleNames: Record<string, string>;
 };
 
-function UsersCards({ users, onDeleteUser, onEditUser, onSuspendUser, onReactivateUser }: UsersCardsProps) {
+function UsersCards({ users, onDeleteUser, onEditUser, onSuspendUser, onReactivateUser, roleNames }: UsersCardsProps) {
   const router = useRouter();
   const countryCode = useTenantCountry();
 
@@ -56,13 +57,16 @@ function UsersCards({ users, onDeleteUser, onEditUser, onSuspendUser, onReactiva
               )}
             </div>
             <div className="shrink-0">
-              <div className="flex flex-col gap-2"><RoleBadge role={user.role} /><AccountStatusBadge status={user.account_status} /></div>
+              <div className="flex flex-col gap-2"><RoleBadge role={user.role} name={user.role ? (roleNames[user.role] ?? user.role) : undefined} /><AccountStatusBadge status={user.account_status} /></div>
             </div>
           </div>
 
           <div className="mt-5 space-y-3 rounded-[14px] bg-background p-4 text-right">
             <DetailLine label="الجوال" value={formatStoredPhone(user.mobile, countryCode)} dir="ltr" align="left" />
-            <DetailLine label="التحقق" value={user.mobile_verified ? "موثّق" : "غير موثّق"} />
+            <DetailLine label="التحقق" value={(user.verification_status ? user.verification_status === "verified" : user.mobile_verified) ? "موثّق" : "غير موثّق"} />
+            {user.role === "merchant" && user.subscription_status ? (
+              <DetailLine label="الاشتراك" value={user.subscription_status === "subscribed" ? "مشترك" : "غير مشترك"} />
+            ) : null}
             <DetailLine label="تاريخ الإنشاء" value={formatDate(user.created_at)} />
           </div>
 

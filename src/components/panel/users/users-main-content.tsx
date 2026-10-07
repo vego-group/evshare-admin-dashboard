@@ -1,4 +1,4 @@
-import type { UserListItem, UsersListResponse, UsersQueryParams } from "@/types";
+import type { UserListItem, UserRoleSummary, UsersListResponse, UsersQueryParams } from "@/types";
 
 import type { UsersViewMode } from "./header";
 import UsersPagination from "./pagination";
@@ -14,6 +14,10 @@ type UsersMainContentProps = {
   onEditUser: (user: UserListItem) => void;
   onSuspendUser: (user: UserListItem) => void;
   onReactivateUser: (user: UserListItem) => void;
+  roles?: UserRoleSummary[];
+  onViewModeChange: (viewMode: UsersViewMode) => void;
+  onAddUser: () => void;
+  roleNames: Record<string, string>;
 };
 
 function UsersMainContent({
@@ -25,22 +29,33 @@ function UsersMainContent({
   onEditUser,
   onSuspendUser,
   onReactivateUser,
+  roles,
+  onViewModeChange,
+  onAddUser,
+  roleNames,
 }: UsersMainContentProps) {
   return (
     <>
       <UsersToolbar
         searchQuery={params.search ?? ""}
         selectedRole={params.role}
-        selectedStatus={params.account_status}
-        selectedSort={params.order_by ?? "desc"}
+        selectedStatus={params.status}
+        selectedSubscriptionStatus={params.subscription_status}
+        selectedSort={params.sort_order ?? "desc"}
+        roles={roles}
+        viewMode={viewMode}
+        onViewModeChange={onViewModeChange}
+        onAddUser={onAddUser}
         onSearchChange={(search) => onParamsChange({ search: search || undefined, page: 1 })}
-        onRoleChange={(role) => onParamsChange({ role, page: 1 })}
-        onStatusChange={(account_status) => onParamsChange({ account_status, page: 1 })}
-        onSortChange={(order_by) => onParamsChange({ order_by, page: 1 })}
+        onRoleChange={(role) => onParamsChange({ role, subscription_status: undefined, page: 1 })}
+        onStatusChange={(status) => onParamsChange({ status, page: 1 })}
+        onSubscriptionStatusChange={(subscription_status) => onParamsChange({ subscription_status, page: 1 })}
+        onSortChange={(sort_order) => onParamsChange({ sort_order, page: 1 })}
       />
       <UsersResults
         users={data?.data ?? []}
         viewMode={viewMode}
+        roleNames={roleNames}
         onDeleteUser={onDeleteUser}
         onEditUser={onEditUser}
         onSuspendUser={onSuspendUser}

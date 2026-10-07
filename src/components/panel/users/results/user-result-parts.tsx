@@ -15,6 +15,7 @@ import type {
   UserKycStatus,
   UserListItem,
   UserRole,
+  UserSubscriptionStatus,
 } from "@/types";
 import { ADMIN_PERMISSIONS } from "@/constants";
 
@@ -80,7 +81,7 @@ export function UserIcon({ className }: { className?: string }) {
   );
 }
 
-export function RoleBadge({ role }: { role: UserRole | null }) {
+export function RoleBadge({ role, name }: { role: UserRole | null; name?: string }) {
   if (!role) {
     return (
       <span className="inline-flex h-8.5 w-fit items-center justify-center whitespace-nowrap rounded-full bg-gray-100 px-4 text-sm font-medium text-dark-gray">
@@ -96,7 +97,19 @@ export function RoleBadge({ role }: { role: UserRole | null }) {
         roleBadgeClass[role] ?? "bg-gray-100 text-dark-gray",
       )}
     >
-      {roleLabels[role] ?? role}
+      {name ?? roleLabels[role] ?? role}
+    </span>
+  );
+}
+
+export function SubscriptionBadge({ status }: { status?: UserSubscriptionStatus | null }) {
+  if (!status) return <span className="text-sm text-slate-400">—</span>;
+  return (
+    <span className={cn(
+      "inline-flex h-8 items-center rounded-full px-3 text-sm font-medium",
+      status === "subscribed" ? "bg-emerald-50 text-emerald-700" : "bg-rose-50 text-rose-700",
+    )}>
+      {status === "subscribed" ? "مشترك" : "غير مشترك"}
     </span>
   );
 }

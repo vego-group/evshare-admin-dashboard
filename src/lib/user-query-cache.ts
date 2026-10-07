@@ -30,7 +30,8 @@ export async function syncUserMutationResponse(
 
     const params = getUsersQueryParams(queryKey);
     const stillMatchesStatus =
-      !params?.account_status || params.account_status === user.account_status;
+      !(params?.status ?? params?.account_status) ||
+      (params.status ?? params.account_status) === user.account_status;
 
     if (!stillMatchesStatus) {
       queryClient.setQueryData<UsersListResponse>(queryKey, {
@@ -68,7 +69,10 @@ function toListItem(user: UserListItem): UserListItem {
     email: user.email,
     active: user.active,
     account_status: user.account_status,
+    status: user.status,
     role: user.role,
+    verification_status: user.verification_status,
+    subscription_status: user.subscription_status,
     mobile_verified: user.mobile_verified,
     mobile_verified_at: user.mobile_verified_at,
     created_at: user.created_at,

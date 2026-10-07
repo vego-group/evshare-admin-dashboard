@@ -14,6 +14,7 @@ import {
   RoleBadge,
   UserActions,
   VerifiedBadge,
+  SubscriptionBadge,
 } from "./user-result-parts";
 
 type UsersTableProps = {
@@ -22,6 +23,7 @@ type UsersTableProps = {
   onEditUser: (user: UserListItem) => void;
   onSuspendUser: (user: UserListItem) => void;
   onReactivateUser: (user: UserListItem) => void;
+  roleNames: Record<string, string>;
 };
 
 function UsersTable({
@@ -30,6 +32,7 @@ function UsersTable({
   onEditUser,
   onSuspendUser,
   onReactivateUser,
+  roleNames,
 }: UsersTableProps) {
   const router = useRouter();
   const countryCode = useTenantCountry();
@@ -46,6 +49,7 @@ function UsersTable({
               <HeaderCell>الجوال</HeaderCell>
               <HeaderCell>الدور</HeaderCell>
               <HeaderCell>التحقق</HeaderCell>
+              <HeaderCell>الاشتراك</HeaderCell>
               <HeaderCell>تاريخ الإنشاء</HeaderCell>
               <HeaderCell>الإجراءات</HeaderCell>
             </tr>
@@ -90,10 +94,13 @@ function UsersTable({
                   {formatStoredPhone(user.mobile, countryCode)}
                 </TableCell>
                 <TableCell truncate={false}>
-                  <RoleBadge role={user.role} />
+                  <RoleBadge role={user.role} name={user.role ? (roleNames[user.role] ?? user.role) : undefined} />
                 </TableCell>
                 <TableCell truncate={false}>
-                  <VerifiedBadge verified={user.mobile_verified} />
+                  <VerifiedBadge verified={user.verification_status ? user.verification_status === "verified" : user.mobile_verified} />
+                </TableCell>
+                <TableCell truncate={false}>
+                  <SubscriptionBadge status={user.subscription_status} />
                 </TableCell>
                 <TableCell dir="ltr">{formatDate(user.created_at)}</TableCell>
                 <TableCell truncate={false}>
