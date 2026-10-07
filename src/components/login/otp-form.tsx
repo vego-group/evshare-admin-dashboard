@@ -221,14 +221,10 @@ export default function OtpForm({ mobile, country }: OtpFormProps) {
           />
         </div>
         <InputErrorMessage msg={errors.otp?.message} />
-        {mustResend && (
-          <p className="text-xs text-red-600">
-            انتهت صلاحية الرمز أو استُنفدت المحاولات. اطلب رمزاً جديداً.
-          </p>
-        )}
-        {accessDeniedMessage && (
-          <p className="text-xs text-red-600">{accessDeniedMessage}</p>
-        )}
+        <InputErrorMessage
+          msg={mustResend ? "انتهت صلاحية الرمز أو استُنفدت المحاولات. اطلب رمزاً جديداً." : undefined}
+        />
+        <InputErrorMessage msg={accessDeniedMessage} />
       </div>
 
       <motion.div whileTap={{ scale: 0.99 }}>

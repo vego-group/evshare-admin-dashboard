@@ -11,6 +11,7 @@ import {
   MapPin,
   MapPinned,
   MessageSquareWarning,
+  Megaphone,
   Navigation,
   Package,
   PackageCheck,
@@ -361,6 +362,14 @@ export const sidebarNavItems: SidebarNavItem[] = [
     ariaLabel: "أكواد الخصم",
     icon: Ticket,
     permission: "Admin Index Promos",
+  },
+  {
+    href: "/communications",
+    group: "content",
+    label: "الرسائل التسويقية",
+    ariaLabel: "الرسائل التسويقية",
+    icon: Megaphone,
+    permission: "Admin Index Communications",
   },
   {
     href: "/subscription-discounts",

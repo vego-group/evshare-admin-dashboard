@@ -56,6 +56,7 @@ const routeRules: RouteRule[] = [
   { pattern: /^\/complaints$/, permission: "Admin Index Complaints" },
   { pattern: /^\/promos\/[^/]+$/, permission: "Admin View Promos" },
   { pattern: /^\/promos$/, permission: "Admin Index Promos" },
+  { pattern: /^\/communications$/, permission: "Admin Index Communications" },
   { pattern: /^\/subscription-discounts$/, permission: "Admin Index Subscription Discounts" },
   { pattern: /^\/test-accounts$/, permission: "Admin Index Test Accounts" },
   { pattern: /^\/(?:settings|contact-us|driver-pricing-settings)$/, permission: "Admin Index Settings" },

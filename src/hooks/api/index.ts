@@ -33,3 +33,4 @@ export * from "./finance";
 export * from "./driver-pricing-settings";
 export * from "./countries";
 export * from "./subscription-discounts";
+export * from "./communications";

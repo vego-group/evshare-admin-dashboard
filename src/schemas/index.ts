@@ -23,3 +23,4 @@ export * from "./shipping-companies";
 export * from "./shipping-cities";
 export * from "./driver-pricing-settings";
 export * from "./subscription-discounts";
+export * from "./communications";

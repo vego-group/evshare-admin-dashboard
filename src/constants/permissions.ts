@@ -59,4 +59,9 @@ export const ADMIN_PERMISSIONS = {
     // Downloads are served through the guarded export-details endpoint.
     download: "Admin View Reports",
   },
+  communications: {
+    index: "Admin Index Communications",
+    show: "Admin Show Communications",
+    send: "Admin Send Communications",
+  },
 } as const;

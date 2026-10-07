@@ -5,6 +5,7 @@ import { useState, type FormEvent } from "react";
 import toast from "react-hot-toast";
 
 import { Button } from "@/components/ui/button";
+import InputErrorMessage from "@/components/ui/input-error-message";
 import Loader from "@/components/ui/loader";
 import Modal from "@/components/ui/modal";
 import MoneyValue from "@/components/ui/money-value";
@@ -80,7 +81,7 @@ export default function PaymentRefundModal({ transaction, open, onClose, onRefun
           <input type="number" min="0.01" step="0.01" max={transaction.remaining_refundable_amount} value={amount}
             disabled={submitting || outcomeUnknown} onChange={(event) => setAmount(event.target.value)}
             className="h-12 w-full rounded-[14px] border border-primary bg-primary/4 px-3 text-left outline-none" dir="ltr" />
-          {invalidAmount ? <span className="mt-1 block text-xs text-red">أدخل مبلغاً أكبر من صفر ولا يتجاوز المبلغ المتاح.</span> : null}
+          <InputErrorMessage msg={invalidAmount ? "أدخل مبلغاً أكبر من صفر ولا يتجاوز المبلغ المتاح." : undefined} />
         </label>
         <label className="block text-sm text-dark-gray">
           <span className="mb-2 block">سبب الاسترداد (اختياري)</span>
