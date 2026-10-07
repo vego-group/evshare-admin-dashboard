@@ -11,11 +11,11 @@ describe("payment operations API contract", () => {
     serviceMocks.baseAPI.mockResolvedValue({ data: [], filters: {}, meta: {} });
   });
 
-  it("maps verification filters to the documented checkout query", async () => {
+  it("maps checkout search and the UI status to the documented query", async () => {
     await paymentCheckoutsAPI({
       page: 2,
       per_page: 25,
-      search: "pay_123",
+      search: "  Khaled  ",
       payment_method: "mada",
       status: "unprocessed",
       gateway: "moyasar",
@@ -25,16 +25,35 @@ describe("payment operations API contract", () => {
 
     expect(serviceMocks.baseAPI).toHaveBeenCalledWith(
       "GET",
-      "/payment/checkouts?page=2&per_page=25&gateway=moyasar&payment_method=mada&payable_type=order&status=unprocessed&search=pay_123&sort_by=created_at&sort_order=asc",
+      "/payment/checkouts?page=2&per_page=25&gateway=moyasar&payment_method=mada&payable_type=order&is_processed=0&search=Khaled&sort_by=created_at&sort_order=asc",
     );
   });
 
   it("maps transaction filters and applies safe pagination and sorting defaults", async () => {
-    await paymentTransactionsAPI({ page: 1, payment_method: "apple_pay", status: "refunded" });
+    await paymentTransactionsAPI({
+      page: 1,
+      payment_method: "apple_pay",
+      status: "refunded",
+      search: "  1779167b  ",
+    });
 
     expect(serviceMocks.baseAPI).toHaveBeenCalledWith(
       "GET",
-      "/payment/transactions?page=1&per_page=10&payment_method=apple_pay&status=refunded&sort_by=created_at&sort_order=desc",
+      "/payment/transactions?page=1&per_page=10&payment_method=apple_pay&status=refunded&search=1779167b&sort_by=created_at&sort_order=desc",
+    );
+  });
+
+  it("omits empty searches and UI-only all statuses", async () => {
+    await paymentCheckoutsAPI({ page: 1, status: "all", search: "   " });
+    expect(serviceMocks.baseAPI).toHaveBeenLastCalledWith(
+      "GET",
+      "/payment/checkouts?page=1&per_page=10&sort_by=created_at&sort_order=desc",
+    );
+
+    await paymentTransactionsAPI({ page: 1, status: "all", search: "   " });
+    expect(serviceMocks.baseAPI).toHaveBeenLastCalledWith(
+      "GET",
+      "/payment/transactions?page=1&per_page=10&sort_by=created_at&sort_order=desc",
     );
   });
 
