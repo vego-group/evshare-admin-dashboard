@@ -28,6 +28,9 @@ healthy.
   policy.
 - Money rendering respects the record currency and configured minor units rather than a
   hard-coded tenant currency.
+- The October 2026 cleanup is treated as a backend operation, not a dashboard command. Empty
+  module responses remain valid and retained payment operations render safely when their deleted
+  order leaves `payable: null`. See [the cleanup integration note](./data-cleanup-2026-10.md).
 
 ## Verification boundary
 
