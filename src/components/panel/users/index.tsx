@@ -29,7 +29,13 @@ function Users() {
   const [userPendingSuspend, setUserPendingSuspend] = useState<UserListItem | null>(null);
   const [editingUserId, setEditingUserId] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { data, isLoading } = useUsers(params);
+  const {
+    data,
+    isLoading,
+    isError: isUsersError,
+    isFetching: isUsersFetching,
+    refetch: refetchUsers,
+  } = useUsers(params);
   const {
     data: statisticsResponse,
     isLoading: isStatisticsLoading,
@@ -111,7 +117,9 @@ function Users() {
       <UsersMainContent data={data} params={params} viewMode={viewMode} onParamsChange={updateParams}
         roles={statisticsData?.roles} onViewModeChange={setViewMode} onAddUser={() => setIsAddModalOpen(true)}
         onDeleteUser={setUserPendingDelete} onEditUser={user => setEditingUserId(user.id)}
-        onSuspendUser={setUserPendingSuspend} onReactivateUser={handleReactivateUser} roleNames={roleNames} />
+        onSuspendUser={setUserPendingSuspend} onReactivateUser={handleReactivateUser} roleNames={roleNames}
+        isError={isUsersError && !data} isRetrying={isUsersFetching}
+        onRetry={() => { void refetchUsers(); }} />
     </>}
     <UserAddModal open={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} onSaved={refreshUserQueries} />
     <UserDeleteConfirmModal key={userPendingDelete?.id ?? "closed"} open={Boolean(userPendingDelete)} userName={userPendingDelete?.name} isDeleting={isSubmitting}

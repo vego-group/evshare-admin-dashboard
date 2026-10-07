@@ -18,6 +18,9 @@ type UsersMainContentProps = {
   onViewModeChange: (viewMode: UsersViewMode) => void;
   onAddUser: () => void;
   roleNames: Record<string, string>;
+  isError?: boolean;
+  isRetrying?: boolean;
+  onRetry: () => void;
 };
 
 function UsersMainContent({
@@ -33,6 +36,9 @@ function UsersMainContent({
   onViewModeChange,
   onAddUser,
   roleNames,
+  isError,
+  isRetrying,
+  onRetry,
 }: UsersMainContentProps) {
   return (
     <>
@@ -60,11 +66,16 @@ function UsersMainContent({
         onEditUser={onEditUser}
         onSuspendUser={onSuspendUser}
         onReactivateUser={onReactivateUser}
+        isError={isError}
+        isRetrying={isRetrying}
+        onRetry={onRetry}
       />
-      <UsersPagination
-        meta={data?.meta}
-        onPageChange={(page) => onParamsChange({ page })}
-      />
+      {!isError ? (
+        <UsersPagination
+          meta={data?.meta}
+          onPageChange={(page) => onParamsChange({ page })}
+        />
+      ) : null}
     </>
   );
 }

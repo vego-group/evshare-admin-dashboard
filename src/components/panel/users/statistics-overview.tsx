@@ -88,8 +88,8 @@ export default function StatisticsOverview({
         >
           {isLoading || !statistics ? (
             <div className="space-y-4">
-              <Shimmer className="size-11 rounded-xl bg-slate-200" />
-              <Shimmer className="h-7 w-20 rounded bg-slate-200" />
+              <Shimmer className="size-11 rounded-xl bg-neutral-100" />
+              <Shimmer className="h-7 w-20 rounded bg-neutral-100" />
             </div>
           ) : (
             <>
