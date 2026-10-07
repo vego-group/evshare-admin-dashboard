@@ -61,7 +61,7 @@ export default function RolesDistribution({
           ? Array.from({ length: 4 }).map((_, index) => (
               <Shimmer
                 key={index}
-                className="h-5 w-full rounded-full bg-slate-100"
+                className="h-5 w-full rounded-full bg-neutral-100"
               />
             ))
           : (roles ?? []).map((role, index) => {
