@@ -60,7 +60,7 @@ export default function PermissionFormModal({ open, permission, onClose, onSaved
       return toast.error(result.message || "تعذر حفظ الصلاحية");
     }
     toast.success(result.message || "تم حفظ الصلاحية");
-    onSaved(); onClose();
+    onSaved();
   }
 
   return (

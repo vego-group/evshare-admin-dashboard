@@ -89,7 +89,6 @@ function SliderEditModal({ open, slider, onClose, onSaved }: SliderEditModalProp
     if (result?.ok) {
       toast.success(result.message || "تم تعديل السلايدر بنجاح");
       await onSaved();
-      handleClose();
       return;
     }
     toast.error(result?.message || "فشل تعديل السلايدر");

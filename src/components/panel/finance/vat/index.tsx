@@ -180,11 +180,11 @@ function VatFinance() {
         </div>
       )}
 
-      <AddSettlementModal
+      {isAddOpen && <AddSettlementModal
         open={isAddOpen}
         onClose={() => setIsAddOpen(false)}
         onSaved={refresh}
-      />
+      />}
     </div>
   );
 }

@@ -68,7 +68,6 @@ function OperatingCompanies() {
 
     if (result?.ok) {
       toast.success(result.message || "تم حذف الشركة بنجاح");
-      setCompanyPendingDelete(null);
       await refreshOperatingCompanyQueries(currentCompany.id);
       return;
     }

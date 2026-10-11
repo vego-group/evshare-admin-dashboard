@@ -64,7 +64,6 @@ export function useFeatureFlagsPage() {
       return;
     }
     toast.success(result.message || "تم حذف الميزة بنجاح");
-    setPendingDelete(null);
     await refresh(id);
   }
 

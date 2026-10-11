@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import { sidebarNavItems } from "@/data";
 
 import { useUserSession } from "@/lib/utils/user-session";
-import { roleLabels } from "@/components/panel/users/results/user-result-parts";
 import type { Country } from "@/types";
 import CountryBadge from "./country-badge";
 
@@ -49,7 +48,7 @@ function SidebarTopbar({ onOpenMobileSidebar, country, onSwitchCountry }: Sideba
                 {user?.name || "admin"}
               </p>
               <p className="text-[10px] font-semibold text-emerald-600">
-                {user?.role ? roleLabels[user.role] : "مدير النظام"}
+                {user?.role || "admin"}
               </p>
             </div>
           </div>

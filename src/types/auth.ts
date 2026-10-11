@@ -6,7 +6,7 @@ export type AuthResponse = {
     mobile_verified: boolean;
     expires_at: string;
     kyc_verified: boolean;
-    kyc_status: "not_verified" | "pending" | "verified";
+    kyc_status: "not_verified" | "pending" | "approved";
     last_kyc: unknown | null;
     tenant: {
       id: string;

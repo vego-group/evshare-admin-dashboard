@@ -106,7 +106,6 @@ function CategoryEditModal({
     if (result?.ok) {
       toast.success(result.message || "تم تعديل التصنيف بنجاح");
       await onSaved();
-      handleClose();
       return;
     }
 

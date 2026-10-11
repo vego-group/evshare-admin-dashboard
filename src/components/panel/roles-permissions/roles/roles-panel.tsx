@@ -49,7 +49,6 @@ export default function RolesPanel() {
     const result = await deleteMutation.mutateAsync(pendingDelete.id);
     if (!result.ok) return toast.error(result.message || "تعذر حذف الدور");
     toast.success(result.message || "تم حذف الدور");
-    setPendingDelete(null);
     refresh();
   }
 

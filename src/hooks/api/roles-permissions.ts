@@ -44,8 +44,10 @@ export const rolesPermissionsKeys = {
   authPermissions: ["auth-permissions"] as const,
 };
 
-export const useRoles = (params: RolesPermissionsQueryParams) =>
-  useCustomQuery(["roles", params], () => rolesAPI(params));
+export const useRoles = (
+  params: RolesPermissionsQueryParams,
+  options?: { enabled?: boolean },
+) => useCustomQuery(["roles", params], () => rolesAPI(params), options);
 
 export const useRole = (roleId: string | null) =>
   useCustomQuery(["role", roleId], () => roleDetailsAPI(roleId!), {

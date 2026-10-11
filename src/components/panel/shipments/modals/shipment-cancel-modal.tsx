@@ -47,7 +47,6 @@ function ShipmentCancelModal({
     }
 
     toast.success(result.message || "تم إلغاء الشحنة بنجاح");
-    onClose();
     await onSaved();
   };
 

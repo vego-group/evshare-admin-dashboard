@@ -71,7 +71,6 @@ function AppVersions() {
 
     if (result?.ok) {
       toast.success(result.message || "تم حذف الإصدار بنجاح");
-      setPendingDelete(null);
       await refreshQueries(current.id);
       return;
     }
@@ -102,19 +101,19 @@ function AppVersions() {
         open={Boolean(pendingView)}
         onClose={() => setPendingView(null)}
       />
-      <AppVersionAddModal
+      {isAddOpen && <AppVersionAddModal
         open={isAddOpen}
         onClose={() => setIsAddOpen(false)}
         onSaved={() => refreshQueries()}
-      />
-      <AppVersionEditModal
+      />}
+      {pendingEdit && <AppVersionEditModal
         key={pendingEdit?.id ?? "edit-app-version"}
         open={Boolean(pendingEdit)}
         appVersion={editData?.data}
         isLoading={isEditLoading}
         onClose={() => setPendingEdit(null)}
         onSaved={() => refreshQueries(pendingEdit?.id)}
-      />
+      />}
       <AppVersionDeleteConfirmModal
         appVersion={pendingDelete}
         open={Boolean(pendingDelete)}

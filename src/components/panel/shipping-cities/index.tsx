@@ -44,7 +44,6 @@ function ShippingCities() {
 
     if (result?.ok) {
       toast.success(result.message || "تم حذف مدينة الشحن بنجاح");
-      setCityPendingDelete(null);
       await refreshShippingCityQueries();
       return;
     }
@@ -77,13 +76,13 @@ function ShippingCities() {
         </>
       )}
 
-      <ShippingCityFormModal
+      {isFormOpen && <ShippingCityFormModal
         key={cityPendingEdit?.id ?? "add-shipping-city"}
         open={isFormOpen}
         shippingCity={cityPendingEdit}
         onClose={() => setIsFormOpen(false)}
         onSaved={refreshShippingCityQueries}
-      />
+      />}
 
       <ShippingCityDeleteConfirmModal
         open={Boolean(cityPendingDelete)}

@@ -46,7 +46,7 @@ export default function Communications() {
         <CommunicationsHistory items={query.data?.data ?? []} meta={query.data?.meta} isFetching={query.isFetching} canShowDetails={canShowDetails} onSelect={setSelectedId} onPageChange={(page) => updateParams({ page })} />
       )}
 
-      <SendCommunicationModal open={sendOpen} canSelectRecipients={canSelectRecipients} onClose={() => setSendOpen(false)} onSent={async (id) => { await refresh(); if (canShowDetails) setSelectedId(id); }} />
+      {sendOpen && <SendCommunicationModal open canSelectRecipients={canSelectRecipients} onClose={() => setSendOpen(false)} onSent={async (id) => { await refresh(); if (canShowDetails) setSelectedId(id); }} />}
       <CommunicationDetailsPanel id={selectedId} open={Boolean(selectedId)} onClose={() => setSelectedId(null)} />
     </div>
   );

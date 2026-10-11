@@ -19,6 +19,9 @@ import { useCountries } from "@/hooks";
 import { countryCodeSchema } from "@/schemas";
 import CountrySelect from "./country-select";
 import { useState } from "react";
+import { removeCountry, removeToken } from "@/lib";
+import { API_ERROR_CODES, getApiErrorCode } from "@/lib/utils/api-error";
+import { clearUserSession } from "@/lib/utils/user-session";
 
 const loginFormResolver: Resolver<LoginFormValues> = async (values) => {
   const result = loginSchema.safeParse(values);
@@ -35,7 +38,7 @@ function LoginForm() {
   const router = useRouter();
   const { data: countriesResponse, isLoading: countriesLoading } =
     useCountries();
-  const [country, setCountry] = useState("");
+  const [country, setCountry] = useState("sa");
   const [countryError, setCountryError] = useState<string>();
   const {
     handleSubmit,
@@ -62,6 +65,13 @@ function LoginForm() {
     }
 
     toast.error(result?.message || "حدث خطأ، حاول مرة أخرى");
+    if (getApiErrorCode(result?.error) === API_ERROR_CODES.roleForbidden) {
+      await Promise.all([removeToken(), removeCountry()]);
+      clearUserSession();
+      window.location.replace(
+        `/access-denied?reason=${API_ERROR_CODES.roleForbidden}`,
+      );
+    }
   };
 
   return (

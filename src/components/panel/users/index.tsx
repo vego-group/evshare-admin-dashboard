@@ -67,7 +67,6 @@ function Users() {
       if (result.ok && result.data) {
         await updateUser(userPendingDelete.id, result.data);
         toast.success(result.message || "تمت إزالة المستخدم");
-        setUserPendingDelete(null);
       } else toast.error(result.error?.message || result.message || "تعذرت إزالة المستخدم");
     } catch {
       toast.error("تعذرت إزالة المستخدم");
@@ -84,7 +83,6 @@ function Users() {
       if (result.ok && result.data) {
         await updateUser(userPendingSuspend.id, result.data);
         toast.success(result.message || "تم تعليق المستخدم");
-        setUserPendingSuspend(null);
       } else toast.error(result.error?.message || result.message || "تعذر تعليق المستخدم");
     } catch {
       toast.error("تعذر تعليق المستخدم");
@@ -121,12 +119,12 @@ function Users() {
         isError={isUsersError && !data} isRetrying={isUsersFetching}
         onRetry={() => { void refetchUsers(); }} />
     </>}
-    <UserAddModal open={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} onSaved={refreshUserQueries} />
+    {isAddModalOpen && <UserAddModal open onClose={() => setIsAddModalOpen(false)} onSaved={refreshUserQueries} />}
     <UserDeleteConfirmModal key={userPendingDelete?.id ?? "closed"} open={Boolean(userPendingDelete)} userName={userPendingDelete?.name} isDeleting={isSubmitting}
       onClose={() => { if (!isSubmitting) setUserPendingDelete(null); }} onConfirm={handleDeleteUser} />
     <UserSuspendModal key={userPendingSuspend?.id ?? "closed"} open={Boolean(userPendingSuspend)} userName={userPendingSuspend?.name} isSubmitting={isSubmitting}
       onClose={() => { if (!isSubmitting) setUserPendingSuspend(null); }} onConfirm={handleSuspendUser} />
-    <UserEditModal userId={editingUserId} onClose={() => setEditingUserId(null)} onSaved={updateUser} />
+    {editingUserId && <UserEditModal userId={editingUserId} onClose={() => setEditingUserId(null)} onSaved={updateUser} />}
   </div>;
 }
 

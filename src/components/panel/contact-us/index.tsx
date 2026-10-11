@@ -19,12 +19,12 @@ function ContactUs() {
       <ContactUsHeader />
       <ContactUsResults settings={data?.data ?? []} onEdit={setPendingEdit} />
 
-      <ContactUsFormModal
+      {pendingEdit && <ContactUsFormModal
         open={Boolean(pendingEdit)}
         setting={pendingEdit}
         onClose={() => setPendingEdit(null)}
         onSaved={refresh}
-      />
+      />}
     </div>
   );
 }

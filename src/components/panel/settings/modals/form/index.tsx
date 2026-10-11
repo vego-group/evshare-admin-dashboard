@@ -63,7 +63,6 @@ function SettingFormModal({ open, setting, onClose, onSaved }: Props) {
     toast.success(result.message || "تم تعديل الإعداد بنجاح");
 
     form.reset({ value: "" });
-    onClose();
     await onSaved();
   };
 

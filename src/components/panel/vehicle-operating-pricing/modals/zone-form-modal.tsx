@@ -83,7 +83,6 @@ function ZoneFormModal({ vehicle, zone, isSaving, open, onClose, onSaved, setIsS
     if (result?.ok) {
       toast.success(result.message || "تم حفظ المنطقة");
       await onSaved();
-      onClose();
       return;
     }
     if (result?.error?.error_code === "INVALID_ZONE_LOCATION") {

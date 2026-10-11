@@ -79,14 +79,14 @@ function PaymentMethods() {
         meta={data?.meta}
         onPageChange={(page) => setParams((current) => ({ ...current, page }))}
       />
-      <PaymentMethodFormModal
+      {pendingEdit && <PaymentMethodFormModal
         key={pendingEdit?.id ?? "edit-payment-method"}
         open={Boolean(pendingEdit)}
         paymentMethod={details?.data}
         isLoading={isDetailsLoading}
         onClose={() => setPendingEdit(null)}
         onSaved={refresh}
-      />
+      />}
     </div>
   );
 }

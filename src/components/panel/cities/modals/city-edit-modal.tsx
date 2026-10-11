@@ -58,7 +58,6 @@ function CityEditModal({ open, city, onClose, onSaved }: CityEditModalProps) {
     if (result?.ok) {
       toast.success(result.message || "تم تعديل المدينة بنجاح");
       await onSaved();
-      handleClose();
       return;
     }
     toast.error(result?.message || "فشل تعديل المدينة");

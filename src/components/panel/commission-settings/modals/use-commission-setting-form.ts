@@ -70,7 +70,6 @@ export function useCommissionSettingForm(options: Options) {
 
     toast.success(result.message || "تم حفظ إعداد العمولة بنجاح");
     form.reset(commissionSettingDefaults);
-    onClose();
     await onSaved();
   };
 

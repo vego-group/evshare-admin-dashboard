@@ -44,7 +44,6 @@ export default function EditSettingModal({ setting, onClose, onSaved }: Props) {
     const result = await editDriverPricingSettingAPI(setting.id, values);
     if (!result.ok) return toast.error(result.message || "تعذر حفظ الإعداد");
     toast.success(result.message || "تم حفظ الإعداد بنجاح");
-    onClose();
     await onSaved();
   }
 

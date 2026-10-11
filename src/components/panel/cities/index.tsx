@@ -46,7 +46,6 @@ function Cities() {
     setIsDeleting(false);
     if (result?.ok) {
       toast.success(result.message || "تم حذف المدينة بنجاح");
-      setCityPendingDelete(null);
       await refreshCityQueries();
       return;
     }
@@ -75,19 +74,19 @@ function Cities() {
         </>
       )}
 
-      <CityAddModal
+      {isAddModalOpen && <CityAddModal
         open={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         onSaved={refreshCityQueries}
-      />
+      />}
 
-      <CityEditModal
+      {cityPendingEdit && <CityEditModal
         key={cityPendingEdit?.id ?? "edit-city"}
         open={Boolean(cityPendingEdit)}
         city={cityPendingEdit ?? undefined}
         onClose={() => setCityPendingEdit(null)}
         onSaved={refreshCityQueries}
-      />
+      />}
 
       <CityDeleteConfirmModal
         open={Boolean(cityPendingDelete)}

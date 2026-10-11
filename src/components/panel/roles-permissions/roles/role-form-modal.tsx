@@ -69,7 +69,6 @@ export default function RoleFormModal({ open, role, onClose, onSaved }: Props) {
     }
     toast.success(result.message || "تم حفظ الدور بنجاح");
     onSaved();
-    onClose();
   }
 
   return (

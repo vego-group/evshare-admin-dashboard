@@ -61,7 +61,6 @@ export function usePromoForm({ open, promo, onClose, onSaved }: Options) {
       : await addPromo(buildAddPromoPayload(values));
 
     if (!result) {
-      close();
       return;
     }
 
@@ -72,7 +71,6 @@ export function usePromoForm({ open, promo, onClose, onSaved }: Options) {
 
     toast.success(result.message || "تم حفظ كود الخصم بنجاح");
     form.reset(promoDefaultValues);
-    onClose();
     await onSaved();
   };
 

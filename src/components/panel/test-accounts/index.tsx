@@ -63,7 +63,6 @@ function TestAccounts() {
     setIsTogglingActive(false);
     if (result?.ok) {
       toast.success(result.message || "تم تحديث حالة حساب الاختبار بنجاح");
-      setTestAccountPendingToggle(null);
       await refreshTestAccountQueries();
       return;
     }
@@ -77,7 +76,6 @@ function TestAccounts() {
     setIsDeleting(false);
     if (result?.ok) {
       toast.success(result.message || "تم حذف حساب الاختبار بنجاح");
-      setTestAccountPendingDelete(null);
       await refreshTestAccountQueries();
       return;
     }
@@ -123,13 +121,13 @@ function TestAccounts() {
         onClose={() => setTestAccountPendingView(null)}
       />
 
-      <TestAccountFormModal
+      {isFormOpen && <TestAccountFormModal
         key={testAccountPendingEdit?.id ?? "add-test-account"}
         open={isFormOpen}
         testAccount={testAccountPendingEdit}
         onClose={() => setIsFormOpen(false)}
         onSaved={refreshTestAccountQueries}
-      />
+      />}
 
       <TestAccountConfirmModal
         open={Boolean(testAccountPendingToggle)}

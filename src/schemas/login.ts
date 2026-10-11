@@ -42,7 +42,7 @@ export const authResponseSchema = z.object({
     }),
     mobile_verified: z.boolean(),
     kyc_verified: z.boolean(),
-    kyc_status: z.enum(["not_verified", "pending", "verified"]),
+    kyc_status: z.enum(["not_verified", "pending", "approved"]),
     last_kyc: z.unknown().nullable(),
     user_data: authUserSchema,
   }),

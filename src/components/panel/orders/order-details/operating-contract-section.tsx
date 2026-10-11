@@ -41,7 +41,6 @@ export default function OperatingContractSection({ orderId }: { orderId: string 
         return;
       }
       toast.success(result.message || "تمت مراجعة عقد التشغيل");
-      setDecision(null);
       setReason("");
       await Promise.all([
         ["order-operating-contract", orderId], ["order ", orderId], ["orders"],

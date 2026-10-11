@@ -66,7 +66,6 @@ function OperatingCompanyCommissionModal({
     if (result?.ok) {
       toast.success(result.message || "تم تحديث العمولة بنجاح");
       await onSaved();
-      onClose();
       return;
     }
     toast.error(result?.message || "فشل تحديث العمولة");

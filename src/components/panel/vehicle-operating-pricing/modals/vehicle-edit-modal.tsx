@@ -72,7 +72,6 @@ function VehicleEditModal({
     if (result?.ok) {
       toast.success(result.message || "تم تعديل المركبة بنجاح");
       await onSaved();
-      onClose();
       return;
     }
     toast.error(result?.message || "فشل تعديل المركبة");

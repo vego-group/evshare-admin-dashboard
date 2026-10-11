@@ -44,7 +44,6 @@ function CommissionSettings() {
     }
 
     toast.success(result.message || "تم حذف إعداد العمولة بنجاح");
-    setPendingDelete(null);
     await refresh();
   }
 
@@ -59,13 +58,13 @@ function CommissionSettings() {
         onDelete={setPendingDelete}
       />
 
-      <CommissionSettingFormModal
+      {pendingEdit && <CommissionSettingFormModal
         key={pendingEdit?.id ?? "commission-setting-form"}
         open={Boolean(pendingEdit)}
         commissionSetting={pendingEdit}
         onClose={() => setPendingEdit(null)}
         onSaved={refresh}
-      />
+      />}
 
       <CommissionSettingDeleteConfirmModal
         open={Boolean(pendingDelete)}

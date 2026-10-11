@@ -52,7 +52,6 @@ function Sliders() {
     setIsDeleting(false);
     if (result?.ok) {
       toast.success(result.message || "تم حذف السلايدر بنجاح");
-      setSliderPendingDelete(null);
       await refreshSliderQueries();
       return;
     }
@@ -87,19 +86,19 @@ function Sliders() {
         </>
       )}
 
-      <SliderAddModal
+      {isAddModalOpen && <SliderAddModal
         open={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         onSaved={refreshSliderQueries}
-      />
+      />}
 
-      <SliderEditModal
+      {sliderPendingEdit && <SliderEditModal
         key={sliderPendingEdit?.id ?? "edit-slider"}
         open={Boolean(sliderPendingEdit)}
         slider={sliderPendingEdit ?? undefined}
         onClose={() => setSliderPendingEdit(null)}
         onSaved={refreshSliderQueries}
-      />
+      />}
 
       <SliderDeleteConfirmModal
         open={Boolean(sliderPendingDelete)}

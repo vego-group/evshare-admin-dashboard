@@ -59,7 +59,6 @@ export function useTestAccountForm({ open, testAccount, onClose, onSaved }: Opti
       : await addTestAccount(buildAddTestAccountPayload(values, countryCode));
 
     if (!result) {
-      close();
       return;
     }
 
@@ -70,7 +69,6 @@ export function useTestAccountForm({ open, testAccount, onClose, onSaved }: Opti
 
     toast.success(result.message || "تم حفظ حساب الاختبار بنجاح");
     form.reset(testAccountDefaultValues);
-    onClose();
     await onSaved();
   };
 

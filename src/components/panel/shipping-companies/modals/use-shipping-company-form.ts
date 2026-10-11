@@ -69,7 +69,6 @@ export function useShippingCompanyForm({
         form.formState.dirtyFields,
       );
       if (!hasPayloadEntries(payload)) {
-        close();
         return;
       }
       result = await editShippingCompany(company.id, payload);
@@ -84,7 +83,6 @@ export function useShippingCompanyForm({
 
     toast.success(result.message || "تم حفظ شركة الشحن بنجاح");
     form.reset(shippingCompanyDefaultValues);
-    onClose();
     await onSaved();
   };
 
