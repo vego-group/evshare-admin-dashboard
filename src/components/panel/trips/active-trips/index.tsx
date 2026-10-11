@@ -94,8 +94,6 @@ function ActiveTrips() {
             ? "اكتمل إنهاء الرحلة وتسويتها بنجاح"
             : "اكتمل إلغاء الرحلة بنجاح",
         );
-        setPendingTrip(null);
-        setPendingAction(null);
         await queryClient.invalidateQueries({ queryKey: ["trips"] });
         return;
       }
@@ -109,8 +107,6 @@ function ActiveTrips() {
           tripOperationStatusMessage(result.data.state) + reference,
           { icon: result.data.needs_attention ? "⚠️" : "⏳" },
         );
-        setPendingTrip(null);
-        setPendingAction(null);
         await queryClient.invalidateQueries({ queryKey: ["trips"] });
         return;
       }

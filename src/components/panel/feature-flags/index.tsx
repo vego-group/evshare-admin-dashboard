@@ -67,12 +67,12 @@ function FeatureFlags() {
         open={Boolean(pendingView)}
         onClose={() => setPendingView(null)}
       />
-      <FeatureFlagFormModal
+      {isAddOpen && <FeatureFlagFormModal
         open={isAddOpen}
         onClose={() => setIsAddOpen(false)}
         onSaved={(id) => refresh(id)}
-      />
-      <FeatureFlagFormModal
+      />}
+      {pendingEdit && <FeatureFlagFormModal
         key={pendingEdit ? getFeatureFlagId(pendingEdit) : "edit-feature-flag"}
         open={Boolean(pendingEdit)}
         featureFlag={pendingEdit ?? undefined}
@@ -82,7 +82,7 @@ function FeatureFlags() {
             id ?? (pendingEdit ? getFeatureFlagId(pendingEdit) : undefined),
           )
         }
-      />
+      />}
       <FeatureFlagDeleteModal
         featureFlag={pendingDelete}
         open={Boolean(pendingDelete)}

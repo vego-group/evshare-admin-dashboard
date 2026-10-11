@@ -69,7 +69,7 @@ export default function SendCommunicationModal({ open, canSelectRecipients, onCl
     }
     toast.success(result.data.replayed ? "هذه الرسالة موجودة بالفعل ولم تُرسل مرتين" : "تمت إضافة الرسالة إلى قائمة الإرسال");
     const id = result.data.data.id;
-    form.reset(defaults); setAttempt(null); onClose(); await onSent(id);
+    form.reset(defaults); setAttempt(null); await onSent(id);
   };
 
   return (

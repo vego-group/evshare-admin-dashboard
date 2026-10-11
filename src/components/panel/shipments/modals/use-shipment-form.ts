@@ -80,7 +80,6 @@ export function useShipmentForm({ open, shipment, onClose, onSaved }: Options) {
         countryCode,
       );
       if (!hasPayloadEntries(payload)) {
-        close();
         return;
       }
       result = await editShipment(shipment.id, payload);
@@ -99,7 +98,6 @@ export function useShipmentForm({ open, shipment, onClose, onSaved }: Options) {
 
     toast.success(result.message || "تم حفظ الشحنة بنجاح");
     form.reset(defaultValues);
-    onClose();
     await onSaved();
   };
 

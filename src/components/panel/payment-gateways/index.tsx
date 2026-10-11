@@ -118,7 +118,6 @@ function GatewayEditModal({ open, gateway, isLoading, onClose, onSaved }: { open
     setIsSubmitting(false);
     if (!result?.ok) { toast.error(result?.message || "فشل تعديل بوابة الدفع"); return; }
     toast.success(result.message || "تم تعديل بوابة الدفع بنجاح");
-    onClose();
     await onSaved(gateway.id);
   };
 

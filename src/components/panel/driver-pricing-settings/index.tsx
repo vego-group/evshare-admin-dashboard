@@ -62,13 +62,13 @@ export default function DriverPricingSettings() {
           onEdit={setEditing}
         />
       ))}
-      <EditSettingModal
+      {editing && <EditSettingModal
         setting={editing}
         onClose={() => setEditing(null)}
         onSaved={async () => {
           await invalidatePricingQueries(queryClient);
         }}
-      />
+      />}
     </div>
   );
 }

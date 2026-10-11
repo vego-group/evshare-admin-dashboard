@@ -93,7 +93,6 @@ function FeatureFlagFormModal({ open, featureFlag, onClose, onSaved }: Props) {
     }
 
     form.reset(featureFlagDefaultValues);
-    onClose();
     await onSaved(savedId);
   };
 

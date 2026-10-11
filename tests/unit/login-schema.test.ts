@@ -61,4 +61,29 @@ describe("authentication validation", () => {
 
     expect(result.success).toBe(true);
   });
+
+  it("accepts the approved KYC status returned by the login API", () => {
+    const response = {
+      error: false,
+      message: "تم تسجيل الدخول بنجاح",
+      data: {
+        access_token: "token",
+        expires_at: new Date(Date.now() + 60_000).toISOString(),
+        tenant: { id: "1", code: "sa" },
+        mobile_verified: true,
+        kyc_verified: true,
+        kyc_status: "approved",
+        last_kyc: { id: "kyc-1", status: "approved" },
+        user_data: {
+          id: "user-1",
+          name: "Merchant",
+          mobile: "966520000000",
+          role: "merchant",
+          is_subscribed: false,
+        },
+      },
+    };
+
+    expect(authResponseSchema.safeParse(response).success).toBe(true);
+  });
 });

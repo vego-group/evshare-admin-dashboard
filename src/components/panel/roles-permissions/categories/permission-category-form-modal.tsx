@@ -77,7 +77,6 @@ export default function PermissionCategoryFormModal({
     }
     toast.success(result.message || "تم حفظ التصنيف");
     onSaved();
-    onClose();
   }
   return (
     <Modal

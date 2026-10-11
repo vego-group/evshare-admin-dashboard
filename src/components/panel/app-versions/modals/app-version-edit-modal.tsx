@@ -139,7 +139,6 @@ function AppVersionEditModal({
     if (result?.ok) {
       toast.success(result.message || "تم تعديل الإصدار بنجاح");
       await onSaved();
-      onClose();
       return;
     }
 

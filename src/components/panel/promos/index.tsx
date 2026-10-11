@@ -46,7 +46,6 @@ function Promos() {
     setIsDeleting(false);
     if (result?.ok) {
       toast.success(result.message || "تم حذف كود الخصم بنجاح");
-      setPromoPendingDelete(null);
       await refreshPromoQueries();
       return;
     }
@@ -79,13 +78,13 @@ function Promos() {
         </>
       )}
 
-      <PromoFormModal
+      {isFormOpen && <PromoFormModal
         key={promoPendingEdit?.id ?? "add-promo"}
         open={isFormOpen}
         promo={promoPendingEdit}
         onClose={() => setIsFormOpen(false)}
         onSaved={refreshPromoQueries}
-      />
+      />}
 
       <PromoDeleteConfirmModal
         open={Boolean(promoPendingDelete)}

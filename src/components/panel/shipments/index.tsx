@@ -58,13 +58,13 @@ function Shipments() {
         </>
       )}
 
-      <ShipmentFormModal
+      {isFormOpen && <ShipmentFormModal
         key={shipmentPendingEdit?.id ?? "add-shipment"}
         open={isFormOpen}
         shipment={shipmentPendingEdit}
         onClose={() => setIsFormOpen(false)}
         onSaved={() => refreshShipmentQueries(shipmentPendingEdit?.id)}
-      />
+      />}
 
       <ShipmentStatusModal
         key={`status-${shipmentPendingStatus?.id ?? "none"}`}

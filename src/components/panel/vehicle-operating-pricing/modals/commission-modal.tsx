@@ -70,7 +70,6 @@ function CommissionModal({
     if (result?.ok) {
       toast.success(result.message || "تم تحديث العمولة");
       await onSaved();
-      onClose();
       return;
     }
     toast.error(result?.message || "فشل تحديث العمولة");

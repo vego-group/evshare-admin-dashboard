@@ -132,7 +132,6 @@ function OrderReceiptSection({
 
     if (result?.ok) {
       toast.success(result.message || "تم رفض سند الاستلام");
-      setRejectModalOpen(false);
       await refresh();
       return;
     }

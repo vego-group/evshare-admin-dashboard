@@ -50,7 +50,6 @@ function ShippingCompanies() {
 
     if (result?.ok) {
       toast.success(result.message || "تم حذف شركة الشحن بنجاح");
-      setCompanyPendingDelete(null);
       await refreshShippingCompanyQueries();
       return;
     }
@@ -83,13 +82,13 @@ function ShippingCompanies() {
         </>
       )}
 
-      <ShippingCompanyFormModal
+      {isFormOpen && <ShippingCompanyFormModal
         key={companyPendingEdit?.id ?? "add-shipping-company"}
         open={isFormOpen}
         company={companyPendingEdit}
         onClose={() => setIsFormOpen(false)}
         onSaved={refreshShippingCompanyQueries}
-      />
+      />}
 
       <ShippingCompanyDeleteConfirmModal
         open={Boolean(companyPendingDelete)}

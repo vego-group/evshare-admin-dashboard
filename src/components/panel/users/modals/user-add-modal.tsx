@@ -45,7 +45,6 @@ function UserAddModal({ open, onClose, onSaved }: UserAddModalProps) {
       if (result.ok) {
         toast.success(result.message || "تم إضافة المستخدم بنجاح");
         await onSaved();
-        handleClose();
         return;
       }
 

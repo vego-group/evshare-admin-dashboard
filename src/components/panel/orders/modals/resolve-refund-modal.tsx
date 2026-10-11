@@ -98,7 +98,6 @@ function ResolveRefundModal({
     setIsRefreshing(true);
     await onSaved();
     setIsRefreshing(false);
-    onClose();
   }
 
   async function submit(values: ResolveOrderRefundValues) {
@@ -142,7 +141,6 @@ function ResolveRefundModal({
       reset();
       setAmountText("");
       await onSaved();
-      onClose();
       return;
     }
 

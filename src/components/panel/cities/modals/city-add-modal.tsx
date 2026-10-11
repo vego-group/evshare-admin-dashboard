@@ -43,7 +43,6 @@ function CityAddModal({ open, onClose, onSaved }: CityAddModalProps) {
     if (result?.ok) {
       toast.success(result.message || "تم إضافة المدينة بنجاح");
       await onSaved();
-      handleClose();
       return;
     }
     toast.error(result?.message || "فشل إضافة المدينة");

@@ -26,7 +26,6 @@ export default function UserDetailActions({ user }: { user: AdminUserDetail }) {
       if (result.ok && result.data) {
         await saved(user.id, result.data);
         toast.success(result.message || "تم تحديث الحساب");
-        setAction(null);
       } else toast.error(result.error?.message || result.message || fallback);
     } catch {
       toast.error(fallback);
@@ -41,7 +40,7 @@ export default function UserDetailActions({ user }: { user: AdminUserDetail }) {
       {user.account_status === "suspended" && <PermissionGate slug={ADMIN_PERMISSIONS.users.reactivate}><Button type="button" variant="outline" disabled={submitting} onClick={() => run(() => reactivateUser(user.id), "تعذرت إعادة التفعيل")}>إعادة التفعيل</Button></PermissionGate>}
       <PermissionGate slug={ADMIN_PERMISSIONS.users.delete}><Button type="button" variant="outline" onClick={() => setAction("remove")}>إزالة الحساب</Button></PermissionGate>
     </div>}
-    <UserEditModal userId={action === "edit" ? user.id : null} onClose={() => setAction(null)} onSaved={saved} />
+    {action === "edit" && <UserEditModal userId={user.id} onClose={() => setAction(null)} onSaved={saved} />}
     <UserSuspendModal key={action === "suspend" ? user.id : "closed"} open={action === "suspend"} userName={user.name} isSubmitting={submitting} onClose={() => { if (!submitting) setAction(null); }} onConfirm={reason => run(() => suspendUser(user.id, reason), "تعذر تعليق الحساب")} />
     <UserDeleteConfirmModal key={action === "remove" ? user.id : "closed"} open={action === "remove"} userName={user.name} isDeleting={submitting} onClose={() => { if (!submitting) setAction(null); }} onConfirm={reason => run(() => removeUser(user.id, reason), "تعذرت إزالة الحساب")} />
   </>;

@@ -72,7 +72,6 @@ function CategoryAddModal({ open, onClose, onSaved }: CategoryAddModalProps) {
     if (result?.ok) {
       toast.success(result.message || "تم إضافة التصنيف بنجاح");
       await onSaved();
-      handleClose();
       return;
     }
 

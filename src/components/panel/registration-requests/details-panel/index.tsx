@@ -97,7 +97,6 @@ function RegistrationRequestsDetailsPanel({
     if (result?.ok) {
       toast.success(result.message || "تم رفض الطلب بنجاح");
       await refreshKycQueries(currentKycId);
-      setRejectOpen(false);
       setActionLoading(null);
       return;
     }
@@ -105,7 +104,6 @@ function RegistrationRequestsDetailsPanel({
     if (result?.status === 409) {
       setConflictedKycId(currentKycId);
       await refreshKycQueries(currentKycId);
-      setRejectOpen(false);
     } else if (result?.status === 422) {
       setRejectError(result.error?.errors?.reason?.[0] ?? result.message);
     }

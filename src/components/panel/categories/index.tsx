@@ -67,7 +67,6 @@ function Categories() {
 
     if (result?.ok) {
       toast.success(result.message || "تم حذف التصنيف بنجاح");
-      setCategoryPendingDelete(null);
       await refreshCategoryQueries(currentCategory.id);
       return;
     }
@@ -104,20 +103,20 @@ function Categories() {
         onClose={() => setCategoryPendingView(null)}
       />
 
-      <CategoryAddModal
+      {isAddModalOpen && <CategoryAddModal
         open={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         onSaved={() => refreshCategoryQueries()}
-      />
+      />}
 
-      <CategoryEditModal
+      {categoryPendingEdit && <CategoryEditModal
         key={categoryPendingEdit?.id ?? "edit-category"}
         open={Boolean(categoryPendingEdit)}
         category={editCategoryData?.data}
         isLoading={isEditCategoryLoading}
         onClose={() => setCategoryPendingEdit(null)}
         onSaved={() => refreshCategoryQueries(categoryPendingEdit?.id)}
-      />
+      />}
 
       <CategoryDeleteConfirmModal
         open={Boolean(categoryPendingDelete)}

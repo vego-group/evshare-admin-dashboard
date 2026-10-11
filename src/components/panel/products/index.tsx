@@ -50,7 +50,6 @@ function Products() {
 
     if (result?.ok) {
       toast.success(result.message || "تم حذف المنتج بنجاح");
-      setProductPendingDelete(null);
       await refreshProductQueries(currentProduct.id);
       return;
     }

@@ -93,7 +93,6 @@ export default function SubscriptionDiscounts() {
     setIsDeleting(false);
     if (!result.ok) return toast.error(result.message || "تعذر حذف الخصم");
     toast.success(result.message || "تم حذف الخصم بنجاح");
-    setPendingDelete(null);
     await refresh();
   }
 
@@ -174,13 +173,13 @@ export default function SubscriptionDiscounts() {
         onPageChange={(page) => setParams({ ...params, page })}
       />
 
-      <DiscountForm
+      {formOpen && <DiscountForm
         key={editing?.id ?? "new"}
         open={formOpen}
         discount={editing}
         onClose={() => setFormOpen(false)}
         onSaved={refresh}
-      />
+      />}
       <DiscountDetails
         open={Boolean(viewingId)}
         discountId={viewingId}
@@ -843,7 +842,6 @@ function DiscountForm({
       : await addSubscriptionDiscount(payload);
     if (!result.ok) return toast.error(result.message || "تعذر حفظ الخصم");
     toast.success(result.message || "تم حفظ الخصم بنجاح");
-    onClose();
     await onSaved();
   }
   return (

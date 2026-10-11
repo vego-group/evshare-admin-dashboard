@@ -72,7 +72,6 @@ export function usePaymentMethodForm(options: Options) {
 
     toast.success(result.message || "تم تعديل طريقة الدفع بنجاح");
     form.reset(paymentMethodDefaults);
-    onClose();
     await onSaved(paymentMethod.id);
   };
 

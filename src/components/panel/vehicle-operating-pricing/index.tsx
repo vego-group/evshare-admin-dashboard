@@ -80,7 +80,6 @@ function VehicleOperatingPricing() {
     setIsSaving(false);
     if (result?.ok) {
       toast.success(result.message || "تم حذف المركبة");
-      setModal(null);
       await refresh();
       return;
     }
@@ -120,7 +119,7 @@ function VehicleOperatingPricing() {
           />
         </>
       )}
-      <VehicleEditModal
+      {modal === "edit" && <VehicleEditModal
         key={`edit-${selectedVehicle?.id ?? "none"}`}
         open={modal === "edit"}
         vehicle={selectedVehicle}
@@ -128,8 +127,8 @@ function VehicleOperatingPricing() {
         setIsSaving={setIsSaving}
         onSaved={refresh}
         onClose={() => setModal(null)}
-      />
-      <CommissionModal
+      />}
+      {modal === "commission" && <CommissionModal
         key={`commission-${modal === "commission" ? "open" : "closed"}-${selectedVehicle?.operation_company?.id ?? selectedVehicle?.id ?? "none"}`}
         open={modal === "commission"}
         vehicle={selectedVehicle}
@@ -137,8 +136,8 @@ function VehicleOperatingPricing() {
         setIsSaving={setIsSaving}
         onSaved={refresh}
         onClose={() => setModal(null)}
-      />
-      <ZonesModal
+      />}
+      {modal === "zones" && <ZonesModal
         key={`zones-${selectedVehicle?.id ?? "none"}`}
         open={modal === "zones"}
         vehicle={selectedVehicle}
@@ -146,7 +145,7 @@ function VehicleOperatingPricing() {
         setIsSaving={setIsSaving}
         onSaved={refresh}
         onClose={() => setModal(null)}
-      />
+      />}
       <CommandPanelModal
         open={modal === "command"}
         vehicle={selectedVehicle}

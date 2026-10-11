@@ -38,7 +38,6 @@ function OrdersTableRow({ order }: { order: OrderListItem }) {
 
     if (result?.ok) {
       toast.success(result.message || "تم تحديث حالة الطلب بنجاح");
-      setPendingStatus(null);
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["orders"] }),
         queryClient.invalidateQueries({ queryKey: ["order ", order.id] }),

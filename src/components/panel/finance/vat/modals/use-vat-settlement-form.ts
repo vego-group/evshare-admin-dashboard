@@ -54,7 +54,6 @@ export function useVatSettlementForm(options: Options) {
 
     toast.success(result.message || "تم تسجيل التسوية الضريبية بنجاح");
     form.reset(vatSettlementDefaults);
-    onClose();
     await onSaved();
   };
 

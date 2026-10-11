@@ -51,7 +51,6 @@ export function useShipmentsPage() {
 
     if (result?.ok) {
       toast.success(result.message || "تم حذف الشحنة بنجاح");
-      setShipmentPendingDelete(null);
       await refreshShipmentQueries(current.id);
       return;
     }

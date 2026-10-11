@@ -36,7 +36,6 @@ function ZonesModal({ vehicle, open, isSaving, setIsSaving, onClose, onSaved }: 
     setIsSaving(false);
     if (result?.ok) {
       toast.success(result.message || "تم حذف المنطقة");
-      setDeleteTarget(null);
       await onSaved();
       return;
     }
@@ -104,7 +103,7 @@ function ZonesModal({ vehicle, open, isSaving, setIsSaving, onClose, onSaved }: 
         </div>
       </Modal>
 
-      <ZoneFormModal
+      {isFormOpen && <ZoneFormModal
         key={`zone-form-${formZone?.id ?? "new"}`}
         vehicle={vehicle}
         zone={formZone}
@@ -113,7 +112,7 @@ function ZonesModal({ vehicle, open, isSaving, setIsSaving, onClose, onSaved }: 
         open={isFormOpen}
         onClose={() => setIsFormOpen(false)}
         onSaved={onSaved}
-      />
+      />}
 
       <ZoneDeleteConfirmModal
         open={Boolean(deleteTarget)}

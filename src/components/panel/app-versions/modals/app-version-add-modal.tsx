@@ -145,7 +145,6 @@ function AppVersionAddModal({
     if (result?.ok) {
       toast.success(result.message || "تم إضافة الإصدار بنجاح");
       await onSaved();
-      handleClose();
       return;
     }
     console.log(result);

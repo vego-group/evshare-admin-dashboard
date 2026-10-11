@@ -44,7 +44,6 @@ function ContactUsForm({ setting, onClose, onSaved }: FormProps) {
     }
     toast.success(result.message || "تم تعديل بيانات التواصل بنجاح");
 
-    onClose();
     await onSaved();
   };
 

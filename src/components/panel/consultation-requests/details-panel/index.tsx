@@ -51,7 +51,6 @@ function ConsultationRequestDetailsPanel({
 
     if (result?.ok) {
       toast.success(result.message || "تم تحديث حالة طلب الاستشارة بنجاح");
-      setPendingStatus(null);
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["consultations-requests"] }),
         queryClient.invalidateQueries({

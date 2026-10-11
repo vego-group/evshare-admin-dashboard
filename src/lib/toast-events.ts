@@ -1,4 +1,3 @@
-export const TOAST_SUCCESS_EVENT = "evshare:toast-success";
 export const FORBIDDEN_EVENT = "evshare:forbidden";
 export const NETWORK_OFFLINE_EVENT = "evshare:network-offline";
 

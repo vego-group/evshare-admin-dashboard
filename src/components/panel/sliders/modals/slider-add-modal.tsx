@@ -63,7 +63,6 @@ function SliderAddModal({ open, onClose, onSaved }: SliderAddModalProps) {
     if (result?.ok) {
       toast.success(result.message || "تم إضافة السلايدر بنجاح");
       await onSaved();
-      handleClose();
       return;
     }
     toast.error(result?.message || "فشل إضافة السلايدر");

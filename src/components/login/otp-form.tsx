@@ -21,7 +21,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import Loader from "@/components/ui/loader";
-import { removeToken, setCountry, setToken } from "@/lib";
+import { removeCountry, removeToken, setCountry, setToken } from "@/lib";
 import { API_ERROR_CODES, getApiErrorCode } from "@/lib/utils/api-error";
 import { clearUserSession, setUserSession } from "@/lib/utils/user-session";
 import {
@@ -51,6 +51,7 @@ type OtpFormProps = {
 
 const OTP_VERIFICATION_ERROR_MESSAGE =
   "استجابة تسجيل الدخول غير مكتملة، يرجى المحاولة مرة أخرى";
+const DASHBOARD_FORBIDDEN_ROLES = new Set(["driver", "merchant"]);
 
 export default function OtpForm({ mobile, country }: OtpFormProps) {
   const [accessDeniedMessage, setAccessDeniedMessage] = useState<string>();
@@ -103,7 +104,14 @@ export default function OtpForm({ mobile, country }: OtpFormProps) {
       ) {
         setAccessDeniedMessage(result.message);
       }
-      toast.error(OTP_VERIFICATION_ERROR_MESSAGE);
+      toast.error(result.message || OTP_VERIFICATION_ERROR_MESSAGE);
+      if (code === API_ERROR_CODES.roleForbidden) {
+        await Promise.all([removeToken(), removeCountry()]);
+        clearUserSession();
+        window.location.replace(
+          `/access-denied?reason=${API_ERROR_CODES.roleForbidden}`,
+        );
+      }
       return;
     }
 
@@ -127,6 +135,16 @@ export default function OtpForm({ mobile, country }: OtpFormProps) {
       clearUserSession();
       setAccessDeniedMessage(
         "الجلسة تخص دولة أخرى. سجّل الدخول للدولة المحددة من جديد.",
+      );
+      return;
+    }
+
+    const normalizedRole = userData.role.trim().toLowerCase();
+    if (DASHBOARD_FORBIDDEN_ROLES.has(normalizedRole)) {
+      await Promise.all([removeToken(), removeCountry()]);
+      clearUserSession();
+      window.location.replace(
+        `/access-denied?reason=${API_ERROR_CODES.roleForbidden}&role=${encodeURIComponent(normalizedRole)}`,
       );
       return;
     }
@@ -222,7 +240,11 @@ export default function OtpForm({ mobile, country }: OtpFormProps) {
         </div>
         <InputErrorMessage msg={errors.otp?.message} />
         <InputErrorMessage
-          msg={mustResend ? "انتهت صلاحية الرمز أو استُنفدت المحاولات. اطلب رمزاً جديداً." : undefined}
+          msg={
+            mustResend
+              ? "انتهت صلاحية الرمز أو استُنفدت المحاولات. اطلب رمزاً جديداً."
+              : undefined
+          }
         />
         <InputErrorMessage msg={accessDeniedMessage} />
       </div>

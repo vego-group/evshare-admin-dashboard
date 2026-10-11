@@ -76,7 +76,6 @@ export function useShippingCityForm({
         form.formState.dirtyFields,
       );
       if (!hasPayloadEntries(payload)) {
-        close();
         return;
       }
       result = await editShippingCity(shippingCity.id, payload);
@@ -91,7 +90,6 @@ export function useShippingCityForm({
 
     toast.success(result.message || "تم حفظ مدينة الشحن بنجاح");
     form.reset(shippingCityDefaultValues);
-    onClose();
     await onSaved();
   };
 

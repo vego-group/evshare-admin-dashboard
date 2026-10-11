@@ -40,12 +40,12 @@ function Settings() {
         onPageChange={(page) => setParams((current) => ({ ...current, page }))}
       />
 
-      <SettingFormModal
+      {pendingEdit && <SettingFormModal
         open={Boolean(pendingEdit)}
         setting={pendingEdit}
         onClose={() => setPendingEdit(null)}
         onSaved={refresh}
-      />
+      />}
     </div>
   );
 }
