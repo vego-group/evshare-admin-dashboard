@@ -25,7 +25,7 @@ type AddUserPayload = {
 };
 
 export const addUser = async (payload: AddUserPayload) =>
-  await safeApi("POST", "/users/add", payload);
+  await safeApi<unknown, UserMutationError>("POST", "/users/add", payload);
 
 export const editUser = async (id: string, payload: EditUserPayload) =>
   safeApi<AdminUserDetailResponse, UserMutationError>("POST", `/users/${id}/edit`, payload);

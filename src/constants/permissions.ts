@@ -11,6 +11,7 @@ export const ADMIN_PERMISSIONS = {
     end: "Admin End Trips",
   },
   users: {
+    export: "Admin Export Users",
     suspend: "Admin Suspend Users",
     reactivate: "Admin Reactivate Users",
     delete: "Admin Delete Users",
@@ -35,10 +36,13 @@ export const ADMIN_PERMISSIONS = {
     uploadContract: "Admin Upload Operation Company Contracts",
   },
   paymentRequests: {
+    export: "Admin Export Payment Requests",
     approve: "Admin Approve Payment Requests",
     reject: "Admin Reject Payment Requests",
   },
   paymentOperations: {
+    exportCheckouts: "Admin Export Checkouts",
+    exportTransactions: "Admin Export Transactions",
     indexCheckouts: "Admin Index Checkouts",
     showCheckouts: "Admin Show Checkouts",
     indexTransactions: "Admin Index Transactions",
@@ -63,5 +67,15 @@ export const ADMIN_PERMISSIONS = {
     index: "Admin Index Communications",
     show: "Admin Show Communications",
     send: "Admin Send Communications",
+    indexRecipients: "Admin Index Communication Recipients",
+  },
+  consultations: {
+    export: "Admin Export Consultations",
+  },
+  kycs: {
+    export: "Admin Export KYC",
+  },
+  complaints: {
+    export: "Admin Export Complaints",
   },
 } as const;

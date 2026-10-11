@@ -31,9 +31,7 @@ export const singlePaymentGatewayAPI = async (
 ): Promise<PaymentGatewayDetailsResponse> =>
   await baseAPI("GET", `/payment-gateways/${gatewayId}`);
 
-export const paymentCheckoutsAPI = async (
-  params: PaymentCheckoutQueryParams,
-): Promise<PaymentCheckoutsListResponse> => {
+export const buildPaymentCheckoutsQuery = (params: PaymentCheckoutQueryParams) => {
   const isProcessed =
     params.status === "processed"
       ? 1
@@ -43,7 +41,7 @@ export const paymentCheckoutsAPI = async (
           ? Number(params.is_processed)
           : undefined;
 
-  const query = buildQuery({
+  return buildQuery({
     page: params.page,
     per_page: params.per_page ?? params.limit ?? PAGE_SIZE,
     gateway: params.gateway,
@@ -54,6 +52,12 @@ export const paymentCheckoutsAPI = async (
     sort_by: params.sort_by ?? "created_at",
     sort_order: params.sort_order ?? "desc",
   });
+};
+
+export const paymentCheckoutsAPI = async (
+  params: PaymentCheckoutQueryParams,
+): Promise<PaymentCheckoutsListResponse> => {
+  const query = buildPaymentCheckoutsQuery(params);
 
   return await baseAPI("GET", `/payment/checkouts?${query}`);
 };
@@ -63,10 +67,7 @@ export const singlePaymentCheckoutAPI = async (
 ): Promise<PaymentCheckoutDetailResponse> =>
   await baseAPI("GET", `/payment/checkouts/${checkoutId}`);
 
-export const paymentTransactionsAPI = async (
-  params: PaymentTransactionQueryParams,
-): Promise<PaymentTransactionsListResponse> => {
-  const query = buildQuery({
+export const buildPaymentTransactionsQuery = (params: PaymentTransactionQueryParams) => buildQuery({
     page: params.page,
     per_page: params.per_page ?? params.limit ?? PAGE_SIZE,
     gateway: params.gateway,
@@ -77,6 +78,11 @@ export const paymentTransactionsAPI = async (
     sort_by: params.sort_by ?? "created_at",
     sort_order: params.sort_order ?? "desc",
   });
+
+export const paymentTransactionsAPI = async (
+  params: PaymentTransactionQueryParams,
+): Promise<PaymentTransactionsListResponse> => {
+  const query = buildPaymentTransactionsQuery(params);
 
   return await baseAPI("GET", `/payment/transactions?${query}`);
 };

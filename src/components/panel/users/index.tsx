@@ -110,7 +110,7 @@ function Users() {
   }
 
   return <div className="flex w-full flex-col gap-5">
-    <UsersHeader />
+    <UsersHeader params={params} />
     <StatisticsOverview statistics={statisticsData?.statistics} isLoading={isStatisticsLoading} isError={isStatisticsError} />
     <RolesDistribution roles={statisticsData?.role_distribution.roles} isLoading={isStatisticsLoading} isError={isStatisticsError} />
     {isLoading ? <UsersContentShimmer /> : <>

@@ -14,6 +14,7 @@ function SearchInput({
         type="search"
         aria-label="بحث في المستخدمين"
         placeholder="ابحث بالاسم أو الجوال أو البريد..."
+        maxLength={100}
         value={value}
         onChange={(event) => onChange(event.target.value)}
         className="h-full w-full bg-transparent text-right text-sm font-normal text-secondary placeholder:text-[#99a1af] sm:text-base"

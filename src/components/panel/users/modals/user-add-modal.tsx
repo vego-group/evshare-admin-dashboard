@@ -24,6 +24,7 @@ function UserAddModal({ open, onClose, onSaved }: UserAddModalProps) {
     register,
     handleSubmit,
     reset,
+    setError,
     setValue,
     watch,
     formState: { errors, isSubmitting },
@@ -39,14 +40,26 @@ function UserAddModal({ open, onClose, onSaved }: UserAddModalProps) {
   };
 
   const onSubmit = async (values: AddUserFormValues) => {
-    const result = await addUser(buildAddUserPayload(values, countryCode));
-    if (result?.ok) {
-      toast.success(result.message || "تم إضافة المستخدم بنجاح");
-      await onSaved();
-      handleClose();
-      return;
+    try {
+      const result = await addUser(buildAddUserPayload(values, countryCode));
+      if (result.ok) {
+        toast.success(result.message || "تم إضافة المستخدم بنجاح");
+        await onSaved();
+        handleClose();
+        return;
+      }
+
+      const fieldErrors = result.error?.errors;
+      if ((result.status === 400 || result.status === 422) && fieldErrors) {
+        for (const field of Object.keys(addUserDefaultValues) as Array<keyof AddUserFormValues>) {
+          const message = fieldErrors[field]?.[0];
+          if (message) setError(field, { type: "server", message });
+        }
+      }
+      toast.error(result.error?.message || result.message || "فشل إضافة المستخدم");
+    } catch {
+      toast.error("تعذرت إضافة المستخدم. يرجى المحاولة مرة أخرى");
     }
-    toast.error(result?.message || "فشل إضافة المستخدم");
   };
 
   return (

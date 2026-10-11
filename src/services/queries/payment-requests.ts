@@ -6,16 +6,18 @@ import {
   PaymentRequestsQueryParams,
 } from "@/types";
 
-export const paymentRequestsAPI = async (
-  params: PaymentRequestsQueryParams,
-): Promise<PaymentRequestsListResponse> => {
-  const query = buildQuery({
+export const buildPaymentRequestsQuery = (params: PaymentRequestsQueryParams) => buildQuery({
     page: params.page.toString(),
     limit: params.limit.toString(),
     status: params.status,
     order_by: params.order_by,
     search: params.search,
   });
+
+export const paymentRequestsAPI = async (
+  params: PaymentRequestsQueryParams,
+): Promise<PaymentRequestsListResponse> => {
+  const query = buildPaymentRequestsQuery(params);
 
   return await baseAPI("GET", `/payment-requests?${query}`);
 };

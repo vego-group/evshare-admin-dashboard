@@ -7,16 +7,18 @@ import {
 import { baseAPI } from "..";
 import { buildQuery } from "@/lib/utils/build-query";
 
-export const complaintsAPI = async (
-  params: ComplaintsQueryParams,
-): Promise<ComplaintsListResponse> => {
-  const query = buildQuery({
+export const buildComplaintsQuery = (params: ComplaintsQueryParams) => buildQuery({
     page: params.page,
     limit: params.limit ?? PAGE_SIZE,
     status: params.status,
     order_by: params.order_by,
     search: params.search,
   });
+
+export const complaintsAPI = async (
+  params: ComplaintsQueryParams,
+): Promise<ComplaintsListResponse> => {
+  const query = buildComplaintsQuery(params);
 
   return await baseAPI("GET", `/complaints?${query}`);
 };

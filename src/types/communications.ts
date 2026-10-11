@@ -1,5 +1,6 @@
 export type CommunicationChannel = "push" | "sms";
 export type CommunicationTargetApp = "merchant" | "rider";
+export type CommunicationSelectionType = "all" | "specific";
 export type CommunicationStatus =
   | "pending"
   | "processing"
@@ -19,11 +20,19 @@ export type CommunicationQueryParams = {
 
 export type CommunicationAuthor = { id: string; name: string };
 
+export type CommunicationTarget = {
+  application: CommunicationTargetApp;
+  selection_type: CommunicationSelectionType;
+  user_ids: string[];
+  users_count?: number | null;
+};
+
 export type CommunicationListItem = {
   id: string;
   title: string | null;
   channels: CommunicationChannel[];
   target_apps: CommunicationTargetApp[];
+  targets?: CommunicationTarget[];
   status: CommunicationStatus;
   created_by: CommunicationAuthor;
   created_at: string;
@@ -59,7 +68,30 @@ export type CommunicationPayload = {
   notification_body?: string;
   sms_body?: string;
   channels: CommunicationChannel[];
-  target_apps: CommunicationTargetApp[];
+  targets: CommunicationTarget[];
+};
+
+export type CommunicationRecipient = {
+  id: string;
+  name: string;
+  mobile: string;
+  push_available: boolean;
+  sms_available: boolean;
+};
+
+export type CommunicationRecipientsQueryParams = {
+  application: CommunicationTargetApp;
+  search?: string;
+  ids?: string[];
+  page: number;
+  per_page: number;
+};
+
+export type CommunicationRecipientsResponse = {
+  error: boolean;
+  message: string;
+  data: CommunicationRecipient[];
+  meta: CommunicationsListResponse["meta"];
 };
 
 export type CommunicationsListResponse = {

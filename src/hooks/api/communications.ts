@@ -1,7 +1,7 @@
 import { keepPreviousData } from "@tanstack/react-query";
 
-import { communicationAPI, communicationsAPI } from "@/services/queries";
-import type { CommunicationQueryParams } from "@/types";
+import { communicationAPI, communicationRecipientsAPI, communicationsAPI } from "@/services/queries";
+import type { CommunicationQueryParams, CommunicationRecipientsQueryParams } from "@/types";
 
 import { useCustomQuery } from "..";
 
@@ -10,6 +10,17 @@ export function useCommunications(params: CommunicationQueryParams) {
     ["communications", params],
     () => communicationsAPI(params),
     { placeholderData: keepPreviousData },
+  );
+}
+
+export function useCommunicationRecipients(
+  params: CommunicationRecipientsQueryParams,
+  enabled = true,
+) {
+  return useCustomQuery(
+    ["communication-recipients", params],
+    () => communicationRecipientsAPI(params),
+    { enabled, placeholderData: keepPreviousData },
   );
 }
 

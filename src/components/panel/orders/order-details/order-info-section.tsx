@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 
 import MoneyValue from "@/components/ui/money-value";
 import { useHasPermission } from "@/hooks";
+import { formatStoredPhone } from "@/lib/utils/format-phone";
 
 import { updateOrderStatusAPI } from "@/services/mutations";
 import type { OrderDetail, OrderNewStatus } from "@/types";
@@ -75,7 +76,7 @@ function OrderInfoSection({ order }: { order: OrderDetail }) {
           />
           <InfoCard
             label="جوال المستلم"
-            value={order.address ? `+${order.address.recipient_mobile}` : "-"}
+            value={order.address ? formatStoredPhone(order.address.recipient_mobile) : "-"}
             dir="ltr"
           />
           <InfoCard

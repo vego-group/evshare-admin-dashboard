@@ -1,6 +1,6 @@
 "use client";
 
-import { BellRing, MessageSquareText, UsersRound } from "lucide-react";
+import { BellRing, MessageSquareText, Store, Truck, UsersRound } from "lucide-react";
 
 import Panel from "@/components/ui/panel";
 import Shimmer from "@/components/ui/shimmer";
@@ -29,6 +29,8 @@ export default function CommunicationDetailsPanel({ id, open, onClose }: { id: s
 
             {item.notification_body ? <ContentBlock title="الإشعار الفوري" icon={BellRing} text={item.notification_body} /> : null}
             {item.sms_body ? <ContentBlock title="الرسالة النصية" icon={MessageSquareText} text={item.sms_body} /> : null}
+
+            <section className="rounded-2xl border border-neutral-100 p-5"><h3 className="mb-4 flex items-center gap-2 font-semibold text-secondary"><UsersRound className="size-5 text-primary" />اختيار المستلمين</h3><div className="space-y-2">{(item.targets?.length ? item.targets : item.target_apps.map((application) => ({ application, selection_type: "all" as const, user_ids: [] }))).map((target) => { const Icon = target.application === "merchant" ? Store : Truck; return <div key={target.application} className="flex items-center justify-between gap-3 rounded-xl bg-background p-3 text-sm"><span className="flex items-center gap-2 font-medium text-secondary"><Icon className="size-4 text-primary" />{target.application === "merchant" ? "التجار" : "السائقون"}</span><span className="text-gray">{target.selection_type === "specific" ? `${target.users_count ?? target.user_ids.length} مستخدم محدد` : "كل المستخدمين"}</span></div>; })}</div></section>
 
             {item.delivery.audience ? (
               <section className="rounded-2xl border border-neutral-100 p-5"><h3 className="mb-4 flex items-center gap-2 font-semibold text-secondary"><UsersRound className="size-5 text-primary" />الجمهور المستهدف</h3><div className="grid grid-cols-3 gap-2"><Metric label="الإجمالي" value={item.delivery.audience.total_users} /><Metric label="التجار" value={item.delivery.audience.merchant_users} /><Metric label="السائقون" value={item.delivery.audience.rider_users} /></div></section>

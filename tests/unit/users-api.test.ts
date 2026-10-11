@@ -20,6 +20,7 @@ describe("users API contract", () => {
       per_page: 25,
       role: "merchant",
       status: "active",
+      verification_status: "verified",
       subscription_status: "subscribed",
       sort_by: "created_at",
       sort_order: "asc",
@@ -28,7 +29,20 @@ describe("users API contract", () => {
 
     expect(serviceMocks.baseAPI).toHaveBeenCalledWith(
       "GET",
-      "/users?page=2&per_page=25&role=merchant&status=active&subscription_status=subscribed&sort_by=created_at&sort_order=asc&search=Ahmed+Ali",
+      "/users?page=2&per_page=25&role=merchant&status=active&verification_status=verified&subscription_status=subscribed&sort_by=created_at&sort_order=asc&search=Ahmed+Ali",
+    );
+  });
+
+  it("does not send the merchant-only subscription filter for another role", async () => {
+    await usersAPI({
+      page: 1,
+      role: "driver",
+      subscription_status: "subscribed",
+    });
+
+    expect(serviceMocks.baseAPI).toHaveBeenCalledWith(
+      "GET",
+      "/users?page=1&per_page=10&role=driver&sort_by=created_at",
     );
   });
 

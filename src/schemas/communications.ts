@@ -6,7 +6,11 @@ export const communicationSchema = z
     notification_body: z.string().trim().max(1000, "نص الإشعار لا يمكن أن يتجاوز 1000 حرف"),
     sms_body: z.string().trim().max(1000, "نص الرسالة لا يمكن أن يتجاوز 1000 حرف"),
     channels: z.array(z.enum(["push", "sms"])).min(1, "اختر قناة إرسال واحدة على الأقل"),
-    target_apps: z.array(z.enum(["merchant", "rider"])).min(1, "اختر تطبيقًا مستهدفًا واحدًا على الأقل"),
+    targets: z.array(z.object({
+      application: z.enum(["merchant", "rider"]),
+      selection_type: z.enum(["all", "specific"]),
+      user_ids: z.array(z.string()).max(1000, "لا يمكن اختيار أكثر من 1000 مستخدم"),
+    })).min(1, "اختر تطبيقًا مستهدفًا واحدًا على الأقل"),
   })
   .superRefine((values, context) => {
     if (values.channels.includes("push") && !values.title) {
@@ -18,6 +22,11 @@ export const communicationSchema = z
     if (values.channels.includes("sms") && !values.sms_body) {
       context.addIssue({ code: "custom", path: ["sms_body"], message: "نص الرسالة النصية مطلوب" });
     }
+    values.targets.forEach((target, index) => {
+      if (target.selection_type === "specific" && target.user_ids.length === 0) {
+        context.addIssue({ code: "custom", path: ["targets", index, "user_ids"], message: "اختر مستخدمًا واحدًا على الأقل" });
+      }
+    });
   });
 
 export type CommunicationFormValues = z.infer<typeof communicationSchema>;

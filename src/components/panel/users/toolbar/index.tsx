@@ -7,7 +7,13 @@ import PermissionGate from "@/components/permission-gate";
 import { Button } from "@/components/ui/button";
 import useDebouncedChange from "@/hooks/use-debounced-change";
 import { cn } from "@/lib/utils";
-import type { UserAccountStatus, UserRole, UserRoleSummary, UserSubscriptionStatus } from "@/types";
+import type {
+  UserAccountStatus,
+  UserRole,
+  UserRoleSummary,
+  UserSubscriptionStatus,
+  UserVerificationStatus,
+} from "@/types";
 
 import type { UsersViewMode } from "../header";
 
@@ -18,6 +24,7 @@ type UsersToolbarProps = {
   searchQuery?: string;
   selectedRole?: UserRole;
   selectedStatus?: UserAccountStatus;
+  selectedVerificationStatus?: UserVerificationStatus;
   selectedSubscriptionStatus?: UserSubscriptionStatus;
   selectedSort?: "asc" | "desc";
   roles?: UserRoleSummary[];
@@ -25,6 +32,7 @@ type UsersToolbarProps = {
   onSearchChange?: (value: string) => void;
   onRoleChange?: (value?: UserRole) => void;
   onStatusChange?: (value?: UserAccountStatus) => void;
+  onVerificationStatusChange?: (value?: UserVerificationStatus) => void;
   onSubscriptionStatusChange?: (value?: UserSubscriptionStatus) => void;
   onSortChange?: (value: "asc" | "desc") => void;
   onViewModeChange: (viewMode: UsersViewMode) => void;
@@ -49,10 +57,17 @@ const subscriptionOptions: FilterOption<UserSubscriptionStatus | "all">[] = [
   { label: "غير مشترك", value: "unsubscribed" },
 ];
 
+const verificationOptions: FilterOption<UserVerificationStatus | "all">[] = [
+  { label: "كل حالات التحقق", value: "all" },
+  { label: "موثّق", value: "verified" },
+  { label: "غير موثّق", value: "unverified" },
+];
+
 function UsersToolbar({
   searchQuery,
   selectedRole,
   selectedStatus,
+  selectedVerificationStatus,
   selectedSubscriptionStatus,
   selectedSort,
   roles = [],
@@ -60,6 +75,7 @@ function UsersToolbar({
   onSearchChange,
   onRoleChange,
   onStatusChange,
+  onVerificationStatusChange,
   onSubscriptionStatusChange,
   onSortChange,
   onViewModeChange,
@@ -118,6 +134,14 @@ function UsersToolbar({
           onChange={(value) => {
             onRoleChange?.(value === "all" ? undefined : (value as UserRole));
           }}
+        />
+        <FilterSelect
+          label="حالة التحقق"
+          options={verificationOptions}
+          value={selectedVerificationStatus ?? "all"}
+          onChange={(value) =>
+            onVerificationStatusChange?.(value === "all" ? undefined : value)
+          }
         />
         {selectedRole === "merchant" ? (
           <FilterSelect

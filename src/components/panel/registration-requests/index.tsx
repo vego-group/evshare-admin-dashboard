@@ -3,10 +3,12 @@
 import { useState } from "react";
 
 import Header from "@/components/ui/header";
-import { PAGE_SIZE } from "@/constants";
+import ExportListButton from "@/components/ui/export-list-button";
+import { ADMIN_PERMISSIONS, PAGE_SIZE } from "@/constants";
 import { useHasPermission } from "@/hooks";
 import { useRegistrationRequests } from "@/hooks/api";
 import type { KycsQueryParams, RequestStatus, OrderBy } from "@/types";
+import { buildKycsQuery } from "@/services/queries/registration-requests";
 
 import RegistrationRequestsContentShimmer from "./content-shimmer";
 import RegistrationRequestsDetailsPanel from "./details-panel";
@@ -41,6 +43,10 @@ function RegistrationRequests() {
             title="طلبات التسجيل"
             subtitle="إدارة ومتابعة طلبات التسجيل"
           />
+          <div className="flex justify-end">
+            <ExportListButton permission={ADMIN_PERMISSIONS.kycs.export} path="kycs"
+              query={buildKycsQuery(params)} fallbackFileName="registration_requests.xlsx" />
+          </div>
           <StatsCards data={data?.analytics} />
           <RegistrationRequestsToolbar
             searchQuery={params.search ?? ""}

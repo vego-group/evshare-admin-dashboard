@@ -1,6 +1,7 @@
 export type UserRole = string;
 export type UserKycStatus = "not_verified" | "pending" | "approved";
 export type UserAccountStatus = "active" | "suspended" | "deleted";
+export type UserVerificationStatus = "verified" | "unverified";
 
 export type UserListItem = {
   id: string;
@@ -11,7 +12,7 @@ export type UserListItem = {
   account_status: UserAccountStatus;
   status?: UserAccountStatus;
   role: UserRole | null;
-  verification_status?: "verified" | "unverified";
+  verification_status?: UserVerificationStatus;
   subscription_status?: UserSubscriptionStatus | null;
   mobile_verified: boolean;
   mobile_verified_at: string | null;
@@ -121,6 +122,7 @@ export type UsersQueryParams = {
   status?: UserAccountStatus;
   /** Kept for consumers that still use the legacy API contract. */
   account_status?: UserAccountStatus;
+  verification_status?: UserVerificationStatus;
   subscription_status?: UserSubscriptionStatus;
   sort_by?: "created_at";
   sort_order?: "asc" | "desc";

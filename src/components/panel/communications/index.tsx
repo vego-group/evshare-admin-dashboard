@@ -24,6 +24,7 @@ export default function Communications() {
   const [sendOpen, setSendOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const canShowDetails = useHasPermission("Admin Show Communications");
+  const canSelectRecipients = useHasPermission("Admin Index Communication Recipients");
   const query = useCommunications(params);
 
   const updateParams = (next: Partial<CommunicationQueryParams>) => setParams((current) => ({ ...current, ...next, page: next.page ?? 1 }));
@@ -45,7 +46,7 @@ export default function Communications() {
         <CommunicationsHistory items={query.data?.data ?? []} meta={query.data?.meta} isFetching={query.isFetching} canShowDetails={canShowDetails} onSelect={setSelectedId} onPageChange={(page) => updateParams({ page })} />
       )}
 
-      <SendCommunicationModal open={sendOpen} onClose={() => setSendOpen(false)} onSent={async (id) => { await refresh(); if (canShowDetails) setSelectedId(id); }} />
+      <SendCommunicationModal open={sendOpen} canSelectRecipients={canSelectRecipients} onClose={() => setSendOpen(false)} onSent={async (id) => { await refresh(); if (canShowDetails) setSelectedId(id); }} />
       <CommunicationDetailsPanel id={selectedId} open={Boolean(selectedId)} onClose={() => setSelectedId(null)} />
     </div>
   );
