@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 import Header from "@/components/ui/header";
+import ExportListButton from "@/components/ui/export-list-button";
 import { ADMIN_PERMISSIONS } from "@/constants";
 import { useHasPermission } from "@/hooks";
 import { usePaymentCheckouts, usePaymentTransactions } from "@/hooks/api";
@@ -14,6 +15,7 @@ import type {
   PaymentTransactionQueryParams,
   PaymentTransactionsListResponse,
 } from "@/types";
+import { buildPaymentCheckoutsQuery, buildPaymentTransactionsQuery } from "@/services/queries/payment-gateways";
 
 import PaymentOperationsContentShimmer from "./content-shimmer";
 import PaymentOperationDetailsPanel from "./details-panel";
@@ -144,6 +146,18 @@ function PaymentOperations() {
             title="عمليات الدفع"
             subtitle="متابعة عمليات الدفع، روابط التحقق، وحالة المعاملات"
           />
+
+          <div className="flex justify-end">
+            {effectiveTab === "checkouts" ? (
+              <ExportListButton permission={ADMIN_PERMISSIONS.paymentOperations.exportCheckouts}
+                path="payment/checkouts" query={buildPaymentCheckoutsQuery(checkoutParams)}
+                fallbackFileName="payment_verification_operations.xlsx" />
+            ) : (
+              <ExportListButton permission={ADMIN_PERMISSIONS.paymentOperations.exportTransactions}
+                path="payment/transactions" query={buildPaymentTransactionsQuery(transactionParams)}
+                fallbackFileName="payment_transactions.xlsx" />
+            )}
+          </div>
 
           <PaymentOperationTabs
             activeTab={effectiveTab}

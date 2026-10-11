@@ -3,10 +3,12 @@
 import { useState } from "react";
 
 import Header from "@/components/ui/header";
-import { PAGE_SIZE } from "@/constants";
+import ExportListButton from "@/components/ui/export-list-button";
+import { ADMIN_PERMISSIONS, PAGE_SIZE } from "@/constants";
 import { useConsultationRequests } from "@/hooks/api";
 import { useHasPermission } from "@/hooks";
 import type { ConsultationStatus, ConsultationsQueryParams, OrderBy } from "@/types";
+import { buildConsultationsQuery } from "@/services/queries/consultation-requests";
 
 import ConsultationRequestsContentShimmer from "./content-shimmer";
 import ConsultationRequestDetailsPanel from "./details-panel";
@@ -44,6 +46,10 @@ function ConsultationRequests() {
             title="طلبات الاستشارة"
             subtitle="إدارة ومتابعة طلبات الاستشارة"
           />
+          <div className="flex justify-end">
+            <ExportListButton permission={ADMIN_PERMISSIONS.consultations.export} path="consultations"
+              query={buildConsultationsQuery(params)} fallbackFileName="consultation_requests.xlsx" />
+          </div>
           <ConsultationRequestsStats analytics={data?.analytics} />
           <ConsultationRequestsToolbar
             searchQuery={params.search ?? ""}

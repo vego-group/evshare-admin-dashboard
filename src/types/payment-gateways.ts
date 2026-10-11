@@ -208,8 +208,8 @@ export type PaymentGateway = {
   name_en: string;
   is_active: boolean;
   is_default: boolean;
-  supported_currencies: string[];
-  allowed_user_types: PaymentGatewayUserType[];
+  supported_currencies: string[] | null;
+  allowed_user_types: PaymentGatewayUserType[] | null;
   allowed_driver?: boolean;
   allowed_merchant?: boolean;
   publishable_key?: string | null;

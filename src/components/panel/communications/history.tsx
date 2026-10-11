@@ -27,7 +27,7 @@ export default function CommunicationsHistory({ items, meta, isFetching, canShow
               <tr key={item.id} tabIndex={canShowDetails ? 0 : undefined} role={canShowDetails ? "button" : undefined} onClick={() => canShowDetails && onSelect(item.id)} onKeyDown={(event) => { if (canShowDetails && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); onSelect(item.id); } }} className={cn("text-dark-gray", canShowDetails && "cursor-pointer hover:bg-primary/5 focus-visible:bg-primary/5 focus-visible:outline-none")}>
                 <Td><span className="block max-w-72 truncate font-semibold text-secondary" title={item.title ?? undefined}>{item.title || "رسالة نصية بدون عنوان"}</span><span dir="ltr" className="mt-1 block max-w-48 truncate text-xs text-gray">{item.id}</span></Td>
                 <Td><div className="flex gap-1.5">{item.channels.includes("push") ? <IconPill label="Push" icon={BellRing} /> : null}{item.channels.includes("sms") ? <IconPill label="SMS" icon={MessageSquareText} /> : null}</div></Td>
-                <Td><div className="flex gap-1.5">{item.target_apps.includes("merchant") ? <IconPill label="التاجر" icon={Store} /> : null}{item.target_apps.includes("rider") ? <IconPill label="السائق" icon={Truck} /> : null}</div></Td>
+                <Td><div className="flex flex-col items-start gap-1.5">{item.target_apps.includes("merchant") ? <IconPill label={targetLabel(item, "merchant", "التاجر")} icon={Store} /> : null}{item.target_apps.includes("rider") ? <IconPill label={targetLabel(item, "rider", "السائق")} icon={Truck} /> : null}</div></Td>
                 <Td><CommunicationStatusBadge status={item.status} /></Td>
                 <Td>{item.created_by?.name || "—"}</Td>
                 <Td dir="ltr" className="text-right">{formatCommunicationDate(item.created_at)}</Td>
@@ -50,3 +50,7 @@ export default function CommunicationsHistory({ items, meta, isFetching, canShow
 function Th({ children }: { children: React.ReactNode }) { return <th className="whitespace-nowrap px-4 py-4 font-semibold">{children}</th>; }
 function Td({ children, ...props }: React.TdHTMLAttributes<HTMLTableCellElement>) { return <td {...props} className={cn("whitespace-nowrap px-4 py-4", props.className)}>{children}</td>; }
 function IconPill({ label, icon: Icon }: { label: string; icon: typeof BellRing }) { return <span className="inline-flex items-center gap-1 rounded-lg bg-neutral-100 px-2 py-1 text-xs"><Icon className="size-3.5" />{label}</span>; }
+function targetLabel(item: CommunicationListItem, application: "merchant" | "rider", label: string) {
+  const target = item.targets?.find((candidate) => candidate.application === application);
+  return target?.selection_type === "specific" ? `${label} · ${target.users_count ?? target.user_ids.length} محدد` : `${label} · الكل`;
+}

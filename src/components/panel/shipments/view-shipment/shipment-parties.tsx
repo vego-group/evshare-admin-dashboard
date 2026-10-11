@@ -1,4 +1,5 @@
 import type { ShipmentDetail } from "@/types";
+import { formatStoredPhone } from "@/lib/utils/format-phone";
 
 import { DetailRow, DetailSection } from "./shipment-detail-parts";
 
@@ -14,7 +15,7 @@ function ShipmentParties({ shipment }: ShipmentPartiesProps) {
     <>
       <DetailSection title="المُرسِل">
         <DetailRow label="الاسم" value={sender?.name} />
-        <DetailRow label="الجوال" value={sender?.mobile} dir="ltr" />
+        <DetailRow label="الجوال" value={formatStoredPhone(sender?.mobile)} dir="ltr" />
         <DetailRow label="البريد الإلكتروني" value={sender?.email} dir="ltr" />
         <DetailRow label="العنوان" value={sender?.location?.address} />
         <DetailRow label="المدينة" value={sender?.location?.city?.name} />
@@ -22,7 +23,7 @@ function ShipmentParties({ shipment }: ShipmentPartiesProps) {
 
       <DetailSection title="المستلِم">
         <DetailRow label="الاسم" value={recipient?.name} />
-        <DetailRow label="الجوال" value={recipient?.mobile} dir="ltr" />
+        <DetailRow label="الجوال" value={formatStoredPhone(recipient?.mobile)} dir="ltr" />
         <DetailRow
           label="البريد الإلكتروني"
           value={recipient?.email}

@@ -3,10 +3,12 @@
 import { useState } from "react";
 
 import Header from "@/components/ui/header";
-import { PAGE_SIZE } from "@/constants";
+import ExportListButton from "@/components/ui/export-list-button";
+import { ADMIN_PERMISSIONS, PAGE_SIZE } from "@/constants";
 import { useComplaints } from "@/hooks/api";
 import { useHasPermission } from "@/hooks";
 import type { ComplaintsQueryParams, ComplaintStatus, OrderBy } from "@/types";
+import { buildComplaintsQuery } from "@/services/queries/complaints";
 
 import ComplaintsContentShimmer from "./content-shimmer";
 import ComplaintsDetailsPanel from "./details-panel";
@@ -43,6 +45,10 @@ function Complaints() {
             title="الشكاوى"
             subtitle="إدارة ومتابعة شكاوى المستخدمين"
           />
+          <div className="flex justify-end">
+            <ExportListButton permission={ADMIN_PERMISSIONS.complaints.export} path="complaints"
+              query={buildComplaintsQuery(params)} fallbackFileName="complaints.xlsx" />
+          </div>
           <ComplaintsStatsCards data={data?.analytics} />
           <ComplaintsToolbar
             searchQuery={params.search ?? ""}

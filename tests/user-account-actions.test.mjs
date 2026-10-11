@@ -42,6 +42,35 @@ test("suspend and reactivate use the documented endpoints and bodies", async () 
   ]);
 });
 
+test("add-user payload sends an international mobile as digits only", () => {
+  const formUtils = load("src/components/panel/users/modals/user-form-utils.ts", {
+    "@/schemas/users": load("src/schemas/users.ts"),
+    "@/lib/utils/tenant-phone": {
+      normalizeTenantPhone: () => "+966580660247",
+      PHONE_VALIDATION_MESSAGE: "invalid phone",
+    },
+  });
+
+  assert.deepEqual(
+    formUtils.buildAddUserPayload(
+      {
+        first_name: "سارة",
+        last_name: "العتيبي",
+        mobile: "580660247",
+        role: "marketing",
+        email: "",
+      },
+      "sa",
+    ),
+    {
+      first_name: "سارة",
+      last_name: "العتيبي",
+      mobile: "966580660247",
+      role: "marketing",
+    },
+  );
+});
+
 test("a persisted status change updates detail and list caches before refetch", async () => {
   const { syncUserMutationResponse } = load("src/lib/user-query-cache.ts");
   const queryClient = createFakeQueryClient([

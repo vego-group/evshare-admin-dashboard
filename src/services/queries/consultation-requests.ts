@@ -7,16 +7,18 @@ import type {
   ConsultationsQueryParams,
 } from "@/types";
 
-export const consultationsRequestsAPI = async (
-  params: ConsultationsQueryParams,
-): Promise<ConsultationListResponse> => {
-  const query = buildQuery({
+export const buildConsultationsQuery = (params: ConsultationsQueryParams) => buildQuery({
     page: params.page.toString(),
     limit: PAGE_SIZE.toString(),
     status: params.status,
     order_by: params.order_by,
     search: params.search,
   });
+
+export const consultationsRequestsAPI = async (
+  params: ConsultationsQueryParams,
+): Promise<ConsultationListResponse> => {
+  const query = buildConsultationsQuery(params);
 
   return await baseAPI("GET", `/consultations?${query}`);
 };

@@ -33,10 +33,12 @@ export const addUserFormResolver = (countryCode: string): Resolver<AddUserFormVa
 };
 
 export function buildAddUserPayload(values: AddUserFormValues, countryCode: string) {
+  const normalizedMobile = normalizeTenantPhone(values.mobile, countryCode)!;
+
   return {
     first_name: values.first_name,
     last_name: values.last_name,
-    mobile: normalizeTenantPhone(values.mobile, countryCode)!,
+    mobile: normalizedMobile.replace(/^\+/, ""),
     role: values.role,
     ...(values.email ? { email: values.email } : {}),
   };

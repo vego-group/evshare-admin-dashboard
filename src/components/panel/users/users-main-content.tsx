@@ -46,6 +46,7 @@ function UsersMainContent({
         searchQuery={params.search ?? ""}
         selectedRole={params.role}
         selectedStatus={params.status}
+        selectedVerificationStatus={params.verification_status}
         selectedSubscriptionStatus={params.subscription_status}
         selectedSort={params.sort_order ?? "desc"}
         roles={roles}
@@ -55,6 +56,9 @@ function UsersMainContent({
         onSearchChange={(search) => onParamsChange({ search: search || undefined, page: 1 })}
         onRoleChange={(role) => onParamsChange({ role, subscription_status: undefined, page: 1 })}
         onStatusChange={(status) => onParamsChange({ status, page: 1 })}
+        onVerificationStatusChange={(verification_status) =>
+          onParamsChange({ verification_status, page: 1 })
+        }
         onSubscriptionStatusChange={(subscription_status) => onParamsChange({ subscription_status, page: 1 })}
         onSortChange={(sort_order) => onParamsChange({ sort_order, page: 1 })}
       />

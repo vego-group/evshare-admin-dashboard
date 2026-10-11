@@ -10,6 +10,7 @@ import type { OperatingCompanyFormValues } from "@/schemas/operating-companies";
 import { editOperatingCompanyAPI } from "@/services/mutations";
 import { useOperatingCompany, useUsers } from "@/hooks/api";
 import { useTenantCountry } from "@/provider/currency";
+import { formatStoredPhone } from "@/lib/utils/format-phone";
 
 import {
   buildChangedOperatingCompanyPayload,
@@ -52,7 +53,7 @@ export function useEditOperatingCompanyForm() {
   useEffect(() => {
     if (!company) return;
     setOwnerId(company.owner?.id ?? "");
-    setOwnerLabel(company.owner ? `${company.owner.name} — ${company.owner.mobile}` : "");
+    setOwnerLabel(company.owner ? `${company.owner.name} — ${formatStoredPhone(company.owner.mobile)}` : "");
     setStatus(company.status ?? "active");
     reset({
       slug: company.slug,

@@ -3,9 +3,11 @@
 import { useState } from "react";
 
 import Header from "@/components/ui/header";
-import { PAGE_SIZE } from "@/constants";
+import ExportListButton from "@/components/ui/export-list-button";
+import { ADMIN_PERMISSIONS, PAGE_SIZE } from "@/constants";
 import { usePaymentRequests } from "@/hooks/api";
 import type { PaymentRequestsQueryParams, RequestStatus, OrderBy } from "@/types";
+import { buildPaymentRequestsQuery } from "@/services/queries/payment-requests";
 
 import PaymentRequestsContentShimmer from "./content-shimmer";
 import PaymentRequestsDetailsPanel from "./details-panel";
@@ -42,6 +44,10 @@ function WithdrawalRequests() {
             title="طلبات السحب"
             subtitle="إدارة ومتابعة طلبات السحب"
           />
+          <div className="flex justify-end">
+            <ExportListButton permission={ADMIN_PERMISSIONS.paymentRequests.export} path="payment-requests"
+              query={buildPaymentRequestsQuery(params)} fallbackFileName="withdrawal_requests.xlsx" />
+          </div>
           <StatsCards data={data?.analytics} />
           <PaymentRequestsToolbar
             searchQuery={params.search ?? ""}

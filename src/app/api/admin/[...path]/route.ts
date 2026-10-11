@@ -138,10 +138,9 @@ export async function GET(request: NextRequest, context: RouteContext) {
     cache: "no-store",
   });
 
-  const body = await upstreamResponse.text();
   const contentType = upstreamResponse.headers.get("content-type");
 
-  const response = new NextResponse(body, {
+  const response = new NextResponse(upstreamResponse.body, {
     status: upstreamResponse.status,
     headers: contentType ? { "content-type": contentType } : undefined,
   });
@@ -162,5 +161,9 @@ export async function GET(request: NextRequest, context: RouteContext) {
   );
   const configVersion = upstreamResponse.headers.get("X-Config-Version");
   if (configVersion) response.headers.set("X-Config-Version", configVersion);
+  const contentDisposition = upstreamResponse.headers.get("Content-Disposition");
+  if (contentDisposition) response.headers.set("Content-Disposition", contentDisposition);
+  const exportRows = upstreamResponse.headers.get("X-Export-Rows");
+  if (exportRows) response.headers.set("X-Export-Rows", exportRows);
   return response;
 }

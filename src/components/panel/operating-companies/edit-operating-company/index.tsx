@@ -6,6 +6,7 @@ import CompanyContractSection from "../company-contract-section";
 
 import Header from "@/components/ui/header";
 import InputErrorMessage from "@/components/ui/input-error-message";
+import { formatStoredPhone } from "@/lib/utils/format-phone";
 import OperatingCompanyFormFields, {
   OperatingCompanyFormShimmer,
 } from "../modals/operating-company-form-fields";
@@ -81,7 +82,7 @@ function EditOperatingCompany() {
               />
               {company?.slug !== "evshare" && <div className="grid gap-5 md:grid-cols-2">
                 <label className="flex flex-col gap-2 text-sm font-medium text-secondary">بحث عن المالك<input className="h-12 rounded-xl border border-neutral-200 px-4" value={ownerSearch} onChange={(event) => setOwnerSearch(event.target.value)} placeholder="اسم أو جوال" /></label>
-                <label className="flex flex-col gap-2 text-sm font-medium text-secondary">المالك<select className="h-12 rounded-xl border border-neutral-200 px-4" value={ownerId} onChange={(event) => { setOwnerId(event.target.value); setOwnerLabel(event.target.selectedOptions[0]?.text ?? ""); }}><option value="">اختر المالك</option>{ownerId && !owners.some((owner) => owner.id === ownerId) && <option value={ownerId}>{ownerLabel}</option>}{owners.map((owner) => <option key={owner.id} value={owner.id}>{owner.name} — {owner.mobile}</option>)}</select><InputErrorMessage msg={extraErrors.owner_id} /></label>
+                <label className="flex flex-col gap-2 text-sm font-medium text-secondary">المالك<select className="h-12 rounded-xl border border-neutral-200 px-4" value={ownerId} onChange={(event) => { setOwnerId(event.target.value); setOwnerLabel(event.target.selectedOptions[0]?.text ?? ""); }}><option value="">اختر المالك</option>{ownerId && !owners.some((owner) => owner.id === ownerId) && <option value={ownerId}>{ownerLabel}</option>}{owners.map((owner) => <option key={owner.id} value={owner.id}>{owner.name} — {formatStoredPhone(owner.mobile)}</option>)}</select><InputErrorMessage msg={extraErrors.owner_id} /></label>
                 <label className="flex flex-col gap-2 text-sm font-medium text-secondary">
                   الحالة
                   <FormSelectDropdown
