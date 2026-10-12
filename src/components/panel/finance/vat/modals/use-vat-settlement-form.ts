@@ -1,8 +1,9 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
 
 import type { VatSettlementFormValues } from "@/schemas/finance";
 import { addVatSettlement } from "@/services/mutations";
@@ -52,7 +53,7 @@ export function useVatSettlementForm(options: Options) {
       return;
     }
 
-    toast.success(result.message || "تم تسجيل التسوية الضريبية بنجاح");
+    showSuccessModal(result.message || "تم تسجيل التسوية الضريبية بنجاح");
     form.reset(vatSettlementDefaults);
     await onSaved();
   };

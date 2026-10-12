@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
@@ -70,7 +72,7 @@ function RegistrationRequestsDetailsPanel({
     const result = await approveKycAPI(currentKycId);
 
     if (result?.ok) {
-      toast.success(result.message || "تمت الموافقة على الطلب بنجاح");
+      showSuccessModal(result.message || "تمت الموافقة على الطلب بنجاح");
       await refreshKycQueries(currentKycId);
       setActionLoading(null);
       return;
@@ -95,7 +97,7 @@ function RegistrationRequestsDetailsPanel({
     const result = await rejectKycAPI(currentKycId, reason);
 
     if (result?.ok) {
-      toast.success(result.message || "تم رفض الطلب بنجاح");
+      showSuccessModal(result.message || "تم رفض الطلب بنجاح");
       await refreshKycQueries(currentKycId);
       setActionLoading(null);
       return;

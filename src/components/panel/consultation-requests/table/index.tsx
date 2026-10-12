@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import {
   useState,
   type MouseEvent as ReactMouseEvent,
@@ -79,7 +81,7 @@ function ConsultationRequestTableRow({
     setIsUpdating(false);
 
     if (result?.ok) {
-      toast.success(result.message || "تم تحديث حالة طلب الاستشارة بنجاح");
+      showSuccessModal(result.message || "تم تحديث حالة طلب الاستشارة بنجاح");
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["consultations-requests"] }),
         queryClient.invalidateQueries({

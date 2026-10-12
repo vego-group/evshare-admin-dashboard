@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -46,7 +48,7 @@ function ShipmentCancelModal({
       return;
     }
 
-    toast.success(result.message || "تم إلغاء الشحنة بنجاح");
+    showSuccessModal(result.message || "تم إلغاء الشحنة بنجاح");
     await onSaved();
   };
 

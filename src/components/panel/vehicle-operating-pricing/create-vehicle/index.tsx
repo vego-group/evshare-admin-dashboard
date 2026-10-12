@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
@@ -194,7 +196,7 @@ function CreateVehicle() {
       return;
     }
     await queryClient.invalidateQueries({ queryKey: ["vehicles"] });
-    toast.success(result.message || "تم إنشاء المركبة");
+    showSuccessModal(result.message || "تم إنشاء المركبة");
     router.push(
       result.data?.data?.id
         ? `/vehicle-operating-pricing/${result.data.data.id}`

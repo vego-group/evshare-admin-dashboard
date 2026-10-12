@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useForm, useWatch } from "react-hook-form";
 import toast from "react-hot-toast";
 
@@ -41,7 +43,7 @@ function CityAddModal({ open, onClose, onSaved }: CityAddModalProps) {
   const onSubmit = async (values: CityFormValues) => {
     const result = await addCity(buildCityPayload(values));
     if (result?.ok) {
-      toast.success(result.message || "تم إضافة المدينة بنجاح");
+      showSuccessModal(result.message || "تم إضافة المدينة بنجاح");
       await onSaved();
       return;
     }

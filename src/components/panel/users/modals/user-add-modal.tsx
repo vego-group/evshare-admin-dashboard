@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
@@ -43,7 +45,7 @@ function UserAddModal({ open, onClose, onSaved }: UserAddModalProps) {
     try {
       const result = await addUser(buildAddUserPayload(values, countryCode));
       if (result.ok) {
-        toast.success(result.message || "تم إضافة المستخدم بنجاح");
+        showSuccessModal(result.message || "تم إضافة المستخدم بنجاح");
         await onSaved();
         return;
       }

@@ -8,6 +8,7 @@ import { getCountry } from "@/lib/utils/auth";
 import PanelPermissionGuard from "@/components/panel-permission-guard";
 import { CurrencyProvider } from "@/provider/currency";
 import { redirect } from "next/navigation";
+import SuccessModalHost from "@/components/ui/success-modal";
 
 type AdminLayoutProps = {
   children: ReactNode;
@@ -22,6 +23,7 @@ async function AdminLayout({ children }: AdminLayoutProps) {
     <FeatureFlagsProvider tenant={country}>
     <PermissionsProvider>
       <SearchDirectionController />
+      <SuccessModalHost />
       <div className="min-h-svh">
         <a href="#dashboard-main" className="sr-only fixed start-4 top-4 z-[100] rounded-xl bg-secondary px-5 py-3 text-white focus:not-sr-only">انتقل إلى المحتوى</a>
         <Sidebar countryCode={country} />

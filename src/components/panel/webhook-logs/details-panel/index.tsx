@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useState, type ReactNode } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
@@ -45,7 +47,7 @@ function WebhookLogDetailsPanel({
     setIsRetrying(false);
 
     if (result?.ok) {
-      toast.success(result.message || "تمت إعادة إرسال السجل بنجاح");
+      showSuccessModal(result.message || "تمت إعادة إرسال السجل بنجاح");
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["webhook-logs"] }),
         queryClient.invalidateQueries({

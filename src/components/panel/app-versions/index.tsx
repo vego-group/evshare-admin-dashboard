@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -70,7 +72,7 @@ function AppVersions() {
     setIsDeleting(false);
 
     if (result?.ok) {
-      toast.success(result.message || "تم حذف الإصدار بنجاح");
+      showSuccessModal(result.message || "تم حذف الإصدار بنجاح");
       await refreshQueries(current.id);
       return;
     }

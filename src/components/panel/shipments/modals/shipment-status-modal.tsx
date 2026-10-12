@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -55,7 +57,7 @@ function ShipmentStatusModal({
       return;
     }
 
-    toast.success(result.message || "تم تحديث حالة الشحنة بنجاح");
+    showSuccessModal(result.message || "تم تحديث حالة الشحنة بنجاح");
     await onSaved();
   };
 

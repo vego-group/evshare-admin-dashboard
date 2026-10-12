@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -144,7 +146,7 @@ export default function UserEditModal({ userId, onClose, onSaved }: {
       toast.error(result.error?.message || result.message || "تعذر تحديث المستخدم");
       return;
     }
-    toast.success(result.message || "تم تحديث المستخدم");
+    showSuccessModal(result.message || "تم تحديث المستخدم");
     await onSaved(userId, result.data!);
   }
 
@@ -166,7 +168,7 @@ export default function UserEditModal({ userId, onClose, onSaved }: {
         return;
       }
       await onSaved(userId, result.data);
-      toast.success(result.message || "تم تعيين الدور");
+      showSuccessModal(result.message || "تم تعيين الدور");
     } finally {
       setIsAssigningRole(false);
     }

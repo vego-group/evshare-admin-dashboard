@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useEffect, useRef, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { useRouter } from "next/navigation";
@@ -83,7 +85,7 @@ export function useAddProductForm() {
   const onSubmit = async (values: ProductFormValues) => {
     const result = await addProductAPI(buildProductPayload(values));
     if (result?.ok) {
-      toast.success(result.message || "تم إضافة المنتج بنجاح");
+      showSuccessModal(result.message || "تم إضافة المنتج بنجاح");
       await queryClient.invalidateQueries({ queryKey: ["products"] });
       router.push("/products");
       return;

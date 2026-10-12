@@ -12,6 +12,7 @@ export type Permission = {
   name_ar: string;
   name_en: string;
   permission_category_id: string | number | null;
+  permission_category: PermissionCategorySummary | null;
   dashboard_permissions: boolean;
   created_at: string;
   updated_at: string;
@@ -20,8 +21,16 @@ export type Permission = {
 export type Role = {
   id: string;
   name: string;
-  allowed_user: boolean;
+  /** Public-registration flag returned by the API; dashboard forms must not edit it. */
+  allowed_user?: boolean | 0 | 1;
   permissions?: Permission[];
+};
+
+export type PermissionCategorySummary = {
+  id: string;
+  name: string;
+  name_ar: string | null;
+  name_en: string | null;
 };
 
 export type PermissionCategory = {

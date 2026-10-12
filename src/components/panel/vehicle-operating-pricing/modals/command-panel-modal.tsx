@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -136,7 +138,7 @@ function CommandPanelModal({
     setPendingAction(null);
 
     if (result?.ok) {
-      toast.success(result.message || "تم ربط القفل بالمركبة بنجاح");
+      showSuccessModal(result.message || "تم ربط القفل بالمركبة بنجاح");
       setSelectedLockId("");
       await refreshLockState();
       return;
@@ -162,7 +164,7 @@ function CommandPanelModal({
     setPendingAction(null);
 
     if (result?.ok) {
-      toast.success(result.message || "تم إنشاء القفل وربطه بالمركبة بنجاح");
+      showSuccessModal(result.message || "تم إنشاء القفل وربطه بالمركبة بنجاح");
       setNewLockDeviceId("");
       setDeviceIdError(false);
       setNewLockNotes("");
@@ -180,7 +182,7 @@ function CommandPanelModal({
     setPendingAction(null);
 
     if (result?.ok) {
-      toast.success(result.message || "تم فك ربط القفل من المركبة");
+      showSuccessModal(result.message || "تم فك ربط القفل من المركبة");
       await refreshLockState();
       return;
     }
@@ -198,7 +200,7 @@ function CommandPanelModal({
     setPendingAction(null);
     console.log("dispatchLock result:", result);
     if (result?.ok) {
-      toast.success(result.message || commandSuccessMessage(action));
+      showSuccessModal(result.message || commandSuccessMessage(action));
       await refreshLockState();
       return;
     }
@@ -213,7 +215,7 @@ function CommandPanelModal({
     setPendingAction(null);
 
     if (result?.ok) {
-      toast.success(result.message || commandSuccessMessage("locate"));
+      showSuccessModal(result.message || commandSuccessMessage("locate"));
       await refreshLockState();
       return;
     }
@@ -231,7 +233,7 @@ function CommandPanelModal({
     setPendingAction(null);
 
     if (result?.ok) {
-      toast.success(result.message || commandSuccessMessage("sound_alarm"));
+      showSuccessModal(result.message || commandSuccessMessage("sound_alarm"));
       await refreshLockState();
       return;
     }

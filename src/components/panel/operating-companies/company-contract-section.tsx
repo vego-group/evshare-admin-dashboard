@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -32,7 +34,7 @@ export default function CompanyContractSection({ companyId }: { companyId: strin
       form.set("contract", file);
       const result = await uploadOperatingCompanyContractAPI(companyId, form);
       if (!result.ok) { toast.error(result.message || "تعذر رفع العقد"); return; }
-      toast.success(result.message || "تم حفظ عقد التشغيل");
+      showSuccessModal(result.message || "تم حفظ عقد التشغيل");
       setFile(null);
       if (input.current) input.current.value = "";
       await Promise.all([

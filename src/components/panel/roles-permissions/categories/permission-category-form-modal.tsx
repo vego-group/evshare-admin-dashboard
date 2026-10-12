@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -75,7 +77,7 @@ export default function PermissionCategoryFormModal({
       if (result.status === 404) return setSubmitError({ status: 404 });
       return toast.error(result.message || "تعذر حفظ التصنيف");
     }
-    toast.success(result.message || "تم حفظ التصنيف");
+    showSuccessModal(result.message || "تم حفظ التصنيف");
     onSaved();
   }
   return (

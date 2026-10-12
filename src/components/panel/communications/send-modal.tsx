@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BellRing, MessageSquareText, Send, Smartphone, Store, Truck } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -67,7 +69,7 @@ export default function SendCommunicationModal({ open, canSelectRecipients, onCl
       const message = result.message || "تعذر إرسال الرسالة. حاول مرة أخرى.";
       form.setError("root", { type: "server", message }); toast.error(message); return;
     }
-    toast.success(result.data.replayed ? "هذه الرسالة موجودة بالفعل ولم تُرسل مرتين" : "تمت إضافة الرسالة إلى قائمة الإرسال");
+    showSuccessModal(result.data.replayed ? "هذه الرسالة موجودة بالفعل ولم تُرسل مرتين" : "تمت إضافة الرسالة إلى قائمة الإرسال");
     const id = result.data.data.id;
     form.reset(defaults); setAttempt(null); await onSent(id);
   };

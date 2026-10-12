@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -92,7 +94,7 @@ export default function SubscriptionDiscounts() {
     const result = await deleteSubscriptionDiscount(pendingDelete.id);
     setIsDeleting(false);
     if (!result.ok) return toast.error(result.message || "تعذر حذف الخصم");
-    toast.success(result.message || "تم حذف الخصم بنجاح");
+    showSuccessModal(result.message || "تم حذف الخصم بنجاح");
     await refresh();
   }
 
@@ -841,7 +843,7 @@ function DiscountForm({
       ? await editSubscriptionDiscount(discount.id, payload)
       : await addSubscriptionDiscount(payload);
     if (!result.ok) return toast.error(result.message || "تعذر حفظ الخصم");
-    toast.success(result.message || "تم حفظ الخصم بنجاح");
+    showSuccessModal(result.message || "تم حفظ الخصم بنجاح");
     await onSaved();
   }
   return (

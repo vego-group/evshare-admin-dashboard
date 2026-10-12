@@ -1,3 +1,4 @@
+import { showSuccessModal } from "@/components/ui/success-modal";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -88,7 +89,7 @@ export function useShippingCityForm({
       return;
     }
 
-    toast.success(result.message || "تم حفظ مدينة الشحن بنجاح");
+    showSuccessModal(result.message || "تم حفظ مدينة الشحن بنجاح");
     form.reset(shippingCityDefaultValues);
     await onSaved();
   };

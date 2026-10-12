@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -60,7 +62,7 @@ function SettingFormModal({ open, setting, onClose, onSaved }: Props) {
       toast.error(result?.message || "فشل تعديل الإعداد");
       return;
     }
-    toast.success(result.message || "تم تعديل الإعداد بنجاح");
+    showSuccessModal(result.message || "تم تعديل الإعداد بنجاح");
 
     form.reset({ value: "" });
     await onSaved();

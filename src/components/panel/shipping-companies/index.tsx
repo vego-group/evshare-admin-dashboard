@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -49,7 +51,7 @@ function ShippingCompanies() {
     setIsDeleting(false);
 
     if (result?.ok) {
-      toast.success(result.message || "تم حذف شركة الشحن بنجاح");
+      showSuccessModal(result.message || "تم حذف شركة الشحن بنجاح");
       await refreshShippingCompanyQueries();
       return;
     }

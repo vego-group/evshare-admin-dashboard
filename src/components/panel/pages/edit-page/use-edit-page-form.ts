@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useParams, useRouter } from "next/navigation";
@@ -57,7 +59,7 @@ export function useEditPageForm() {
 
     const result = await editPageAPI(page.uuid, payload);
     if (result?.ok) {
-      toast.success(result.message || "تم تعديل الصفحة بنجاح");
+      showSuccessModal(result.message || "تم تعديل الصفحة بنجاح");
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["pages"] }),
         queryClient.invalidateQueries({ queryKey: ["page", page.uuid] }),

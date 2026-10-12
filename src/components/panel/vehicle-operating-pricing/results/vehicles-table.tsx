@@ -29,9 +29,9 @@ const headers = [
 
 function VehiclesTable(props: Props) {
   return (
-    <section className="overflow-hidden rounded-xl border border-primary/10 bg-white shadow-sm">
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-360 table-fixed border-separate border-spacing-0 text-right">
+    <section className="min-w-0 overflow-hidden rounded-xl border border-primary/10 bg-white shadow-sm">
+      <div className="min-w-0 overflow-hidden">
+        <table className="w-full table-fixed border-separate border-spacing-0 text-right">
           <colgroup>
             <col className="w-[12%]" />
             <col className="w-[13%]" />
@@ -92,7 +92,7 @@ function VehiclesTable(props: Props) {
 
 function DeviceCell({ vehicle }: { vehicle: VehicleListItem }) {
   return (
-    <div dir="rtl" className="min-w-40 space-y-1 text-right text-xs">
+    <div dir="rtl" className="min-w-0 space-y-1 text-right text-xs">
       <p className="flex items-center gap-1.5">
         <span className="shrink-0 text-gray">جهاز IoT:</span>
         <bdi dir="ltr" className="truncate font-medium text-secondary">
@@ -151,7 +151,7 @@ function ConnectivityBadge({ vehicle }: { vehicle: VehicleListItem }) {
 
 function VehicleName({ vehicle }: { vehicle: VehicleListItem }) {
   return (
-    <div className="min-w-36 space-y-1.5">
+    <div className="min-w-0 space-y-1.5">
       <p dir="ltr" className="truncate text-right font-medium text-secondary">
         {vehicleTitle(vehicle)}
       </p>

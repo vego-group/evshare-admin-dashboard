@@ -1,3 +1,4 @@
+import { showSuccessModal } from "@/components/ui/success-modal";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -67,7 +68,7 @@ export function useTestAccountForm({ open, testAccount, onClose, onSaved }: Opti
       return;
     }
 
-    toast.success(result.message || "تم حفظ حساب الاختبار بنجاح");
+    showSuccessModal(result.message || "تم حفظ حساب الاختبار بنجاح");
     form.reset(testAccountDefaultValues);
     await onSaved();
   };

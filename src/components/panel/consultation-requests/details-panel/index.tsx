@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -50,7 +52,7 @@ function ConsultationRequestDetailsPanel({
     setIsUpdating(false);
 
     if (result?.ok) {
-      toast.success(result.message || "تم تحديث حالة طلب الاستشارة بنجاح");
+      showSuccessModal(result.message || "تم تحديث حالة طلب الاستشارة بنجاح");
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["consultations-requests"] }),
         queryClient.invalidateQueries({

@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -45,7 +47,7 @@ function Cities() {
     const result = await deleteCity(current.id);
     setIsDeleting(false);
     if (result?.ok) {
-      toast.success(result.message || "تم حذف المدينة بنجاح");
+      showSuccessModal(result.message || "تم حذف المدينة بنجاح");
       await refreshCityQueries();
       return;
     }

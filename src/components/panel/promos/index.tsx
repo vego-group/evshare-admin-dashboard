@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
@@ -45,7 +47,7 @@ function Promos() {
     const result = await deletePromo(promoPendingDelete.id);
     setIsDeleting(false);
     if (result?.ok) {
-      toast.success(result.message || "تم حذف كود الخصم بنجاح");
+      showSuccessModal(result.message || "تم حذف كود الخصم بنجاح");
       await refreshPromoQueries();
       return;
     }

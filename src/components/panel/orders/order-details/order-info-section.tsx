@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useState } from "react";
 import type { ReactNode } from "react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -37,7 +39,7 @@ function OrderInfoSection({ order }: { order: OrderDetail }) {
     setIsUpdating(false);
 
     if (result?.ok) {
-      toast.success(result.message || "تم تحديث حالة الطلب بنجاح");
+      showSuccessModal(result.message || "تم تحديث حالة الطلب بنجاح");
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["orders"] }),
         queryClient.invalidateQueries({ queryKey: ["order ", order.id] }),

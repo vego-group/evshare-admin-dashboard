@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useEffect, useRef, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { useParams, useRouter } from "next/navigation";
@@ -129,7 +131,7 @@ export function useEditProductForm() {
       }
     }
 
-    toast.success("تم تعديل المنتج بنجاح");
+    showSuccessModal("تم تعديل المنتج بنجاح");
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: ["products"] }),
       queryClient.invalidateQueries({ queryKey: ["product", product.id] }),

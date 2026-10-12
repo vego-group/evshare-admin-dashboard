@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
@@ -80,7 +82,7 @@ function CreateOperatingCompany() {
       return;
     }
     await queryClient.invalidateQueries({ queryKey: ["operating-companies"] });
-    toast.success(result.message || "تم إنشاء الشركة");
+    showSuccessModal(result.message || "تم إنشاء الشركة");
     router.push(result.data?.data?.id ? `/operating-companies/${result.data.data.id}` : "/operating-companies");
   }
 

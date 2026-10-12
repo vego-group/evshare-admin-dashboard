@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -43,7 +45,7 @@ export default function EditSettingModal({ setting, onClose, onSaved }: Props) {
     if (!confirmPricingChange("سيؤثر هذا التغيير في التسعير أو حدود المحفظة للعمليات الجديدة. هل تريد المتابعة؟")) return;
     const result = await editDriverPricingSettingAPI(setting.id, values);
     if (!result.ok) return toast.error(result.message || "تعذر حفظ الإعداد");
-    toast.success(result.message || "تم حفظ الإعداد بنجاح");
+    showSuccessModal(result.message || "تم حفظ الإعداد بنجاح");
     await onSaved();
   }
 

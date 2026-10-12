@@ -93,7 +93,14 @@ export default function PermissionsPanel() {
           { label: "الاسم البرمجي", value: item?.name },
           { label: "الاسم العربي", value: item?.name_ar },
           { label: "الاسم الإنجليزي", value: item?.name_en },
-          { label: "معرّف التصنيف", value: item?.permission_category_id },
+          {
+            label: "التصنيف",
+            value: item?.permission_category
+              ? item.permission_category.name_ar ||
+                item.permission_category.name_en ||
+                item.permission_category.name
+              : "غير مصنّف",
+          },
           {
             label: "لوحة التحكم",
             value: item?.dashboard_permissions ? "نعم" : "لا",

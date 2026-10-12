@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -56,7 +58,7 @@ function CityEditModal({ open, city, onClose, onSaved }: CityEditModalProps) {
     if (!hasPayloadEntries(payload)) return;
     const result = await editCity(city.id, payload);
     if (result?.ok) {
-      toast.success(result.message || "تم تعديل المدينة بنجاح");
+      showSuccessModal(result.message || "تم تعديل المدينة بنجاح");
       await onSaved();
       return;
     }

@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -35,7 +37,7 @@ function ZonesModal({ vehicle, open, isSaving, setIsSaving, onClose, onSaved }: 
     const result = await deleteVehicleZoneAPI(vehicle.id, deleteTarget.id);
     setIsSaving(false);
     if (result?.ok) {
-      toast.success(result.message || "تم حذف المنطقة");
+      showSuccessModal(result.message || "تم حذف المنطقة");
       await onSaved();
       return;
     }

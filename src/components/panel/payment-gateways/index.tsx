@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useEffect, useState } from "react";
 import { Pencil, Search } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -117,7 +119,7 @@ function GatewayEditModal({ open, gateway, isLoading, onClose, onSaved }: { open
     const result = await editPaymentGateway(gateway.id, payload);
     setIsSubmitting(false);
     if (!result?.ok) { toast.error(result?.message || "فشل تعديل بوابة الدفع"); return; }
-    toast.success(result.message || "تم تعديل بوابة الدفع بنجاح");
+    showSuccessModal(result.message || "تم تعديل بوابة الدفع بنجاح");
     await onSaved(gateway.id);
   };
 

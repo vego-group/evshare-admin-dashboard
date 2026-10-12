@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -62,7 +64,7 @@ function TestAccounts() {
     const result = await mutate(testAccountPendingToggle.id);
     setIsTogglingActive(false);
     if (result?.ok) {
-      toast.success(result.message || "تم تحديث حالة حساب الاختبار بنجاح");
+      showSuccessModal(result.message || "تم تحديث حالة حساب الاختبار بنجاح");
       await refreshTestAccountQueries();
       return;
     }
@@ -75,7 +77,7 @@ function TestAccounts() {
     const result = await deleteTestAccount(testAccountPendingDelete.id);
     setIsDeleting(false);
     if (result?.ok) {
-      toast.success(result.message || "تم حذف حساب الاختبار بنجاح");
+      showSuccessModal(result.message || "تم حذف حساب الاختبار بنجاح");
       await refreshTestAccountQueries();
       return;
     }

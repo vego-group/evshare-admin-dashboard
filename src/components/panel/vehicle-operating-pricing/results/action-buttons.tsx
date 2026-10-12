@@ -34,10 +34,7 @@ function VehicleActions({
 }: Props) {
   return (
     <div
-      className={cn(
-        "flex items-center gap-2",
-        compact ? "w-full flex-wrap" : "w-max min-w-max flex-nowrap",
-      )}
+      className="flex w-full flex-wrap items-center gap-2"
     >
       <PermissionGate
         slug={[

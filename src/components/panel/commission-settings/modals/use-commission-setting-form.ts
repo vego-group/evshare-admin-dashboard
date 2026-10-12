@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -68,7 +70,7 @@ export function useCommissionSettingForm(options: Options) {
       return;
     }
 
-    toast.success(result.message || "تم حفظ إعداد العمولة بنجاح");
+    showSuccessModal(result.message || "تم حفظ إعداد العمولة بنجاح");
     form.reset(commissionSettingDefaults);
     await onSaved();
   };
