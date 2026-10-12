@@ -13,7 +13,7 @@ import {
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib";
 import { ScrollArea } from "./scroll-area";
-import { DASHBOARD_SUCCESS_EVENT } from "@/lib/success-feedback";
+import { DASHBOARD_CLOSE_MODALS_EVENT } from "@/lib/success-feedback";
 
 interface IProps {
   open: boolean;
@@ -26,7 +26,6 @@ interface IProps {
   titleClassName?: string;
   descriptionClassName?: string;
   closeButtonClassname?: string;
-  closeOnSuccess?: boolean;
 }
 
 function Modal({
@@ -40,7 +39,6 @@ function Modal({
   titleClassName,
   descriptionClassName,
   closeButtonClassname,
-  closeOnSuccess = true,
 }: IProps) {
   const [successDismissal, setSuccessDismissal] = useState({
     open,
@@ -56,7 +54,7 @@ function Modal({
   }, [onClose]);
 
   useEffect(() => {
-    if (!open || !closeOnSuccess) return;
+    if (!open) return;
 
     function closeForSuccess() {
       // Hide synchronously so the success confirmation is never stacked over
@@ -67,14 +65,19 @@ function Modal({
       window.setTimeout(() => onCloseRef.current(), 0);
     }
 
-    window.addEventListener(DASHBOARD_SUCCESS_EVENT, closeForSuccess);
+    window.addEventListener(DASHBOARD_CLOSE_MODALS_EVENT, closeForSuccess);
     return () =>
-      window.removeEventListener(DASHBOARD_SUCCESS_EVENT, closeForSuccess);
-  }, [closeOnSuccess, open]);
+      window.removeEventListener(DASHBOARD_CLOSE_MODALS_EVENT, closeForSuccess);
+  }, [open]);
+
+  // Radix keeps a closed dialog mounted while its exit animation runs. When a
+  // success dialog is opening, that would leave the previous panel visible
+  // underneath it for a short time. Unmount it immediately instead.
+  if (successDismissal.dismissed) return null;
 
   return (
     <Dialog
-      open={open && !successDismissal.dismissed}
+      open={open}
       onOpenChange={(nextOpen) => {
         if (!nextOpen) onClose();
       }}
