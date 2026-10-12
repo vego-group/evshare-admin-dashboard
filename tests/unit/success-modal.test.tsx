@@ -46,6 +46,16 @@ describe("SuccessModalHost", () => {
     act(() => showSuccessModal("Item updated"));
 
     expect(onClose).toHaveBeenCalledTimes(1);
+    expect(screen.getAllByRole("dialog")).toHaveLength(1);
     expect(screen.getByText("Item updated")).toBeInTheDocument();
+  });
+
+  it("uses the green success treatment for the confirmation icon", () => {
+    render(<SuccessModalHost />);
+
+    act(() => showSuccessModal("Saved"));
+
+    expect(document.querySelector(".lucide-circle-check-big")?.parentElement)
+      .toHaveClass("bg-emerald-600", "text-white");
   });
 });

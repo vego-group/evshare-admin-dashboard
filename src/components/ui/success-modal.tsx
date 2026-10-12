@@ -59,8 +59,8 @@ export default function SuccessModalHost() {
             className="absolute right-8 top-7 size-5 text-secondary/55"
             aria-hidden="true"
           />
-          <div className="relative flex size-24 items-center justify-center rounded-full bg-white/30 ring-1 ring-secondary/15 backdrop-blur-sm">
-            <div className="flex size-19 items-center justify-center rounded-full bg-secondary text-primary shadow-lg shadow-secondary/20">
+          <div className="relative flex size-24 items-center justify-center rounded-full bg-emerald-50/90 ring-1 ring-emerald-700/20 backdrop-blur-sm">
+            <div className="flex size-19 items-center justify-center rounded-full bg-emerald-600 text-white shadow-lg shadow-emerald-900/20">
               <CircleCheckBig
                 className="size-11"
                 strokeWidth={2.25}
