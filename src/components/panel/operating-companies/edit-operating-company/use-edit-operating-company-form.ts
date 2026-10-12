@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useParams, useRouter } from "next/navigation";
@@ -107,7 +109,7 @@ export function useEditOperatingCompanyForm() {
       return;
     }
 
-    toast.success(result.message || "تم تعديل الشركة بنجاح");
+    showSuccessModal(result.message || "تم تعديل الشركة بنجاح");
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: ["operating-companies"] }),
       queryClient.invalidateQueries({

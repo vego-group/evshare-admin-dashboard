@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import React, { useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
@@ -100,7 +102,7 @@ function PaymentRequestsDetailsPanel({
 
       if (result?.ok) {
         approvalKeys.current.delete(currentId);
-        toast.success("تم قبول طلب الموافقة للمعالجة. النتيجة المالية لم تُحسم بعد.");
+        showSuccessModal("تم قبول طلب الموافقة للمعالجة. النتيجة المالية لم تُحسم بعد.");
         await refreshQueries(currentId);
         return;
       }
@@ -127,7 +129,7 @@ function PaymentRequestsDetailsPanel({
       const result = await rejectPaymentRequestAPI(currentId);
 
       if (result?.ok) {
-        toast.success(result.message || "تم رفض الطلب بنجاح");
+        showSuccessModal(result.message || "تم رفض الطلب بنجاح");
         await refreshQueries(currentId);
         return;
       }

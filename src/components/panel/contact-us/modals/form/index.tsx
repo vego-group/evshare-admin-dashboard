@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
@@ -42,7 +44,7 @@ function ContactUsForm({ setting, onClose, onSaved }: FormProps) {
       toast.error(result?.message || "فشل تعديل بيانات التواصل");
       return;
     }
-    toast.success(result.message || "تم تعديل بيانات التواصل بنجاح");
+    showSuccessModal(result.message || "تم تعديل بيانات التواصل بنجاح");
 
     await onSaved();
   };

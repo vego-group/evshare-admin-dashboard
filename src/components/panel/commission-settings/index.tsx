@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -43,7 +45,7 @@ function CommissionSettings() {
       return;
     }
 
-    toast.success(result.message || "تم حذف إعداد العمولة بنجاح");
+    showSuccessModal(result.message || "تم حذف إعداد العمولة بنجاح");
     await refresh();
   }
 

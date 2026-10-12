@@ -1,3 +1,4 @@
+import { showSuccessModal } from "@/components/ui/success-modal";
 import { useEffect, useMemo } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -96,7 +97,7 @@ export function useShipmentForm({ open, shipment, onClose, onSaved }: Options) {
       return;
     }
 
-    toast.success(result.message || "تم حفظ الشحنة بنجاح");
+    showSuccessModal(result.message || "تم حفظ الشحنة بنجاح");
     form.reset(defaultValues);
     await onSaved();
   };

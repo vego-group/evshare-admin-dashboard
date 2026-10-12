@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -79,7 +81,7 @@ function VehicleOperatingPricing() {
     const result = await deleteVehicleAPI(activeVehicle.id);
     setIsSaving(false);
     if (result?.ok) {
-      toast.success(result.message || "تم حذف المركبة");
+      showSuccessModal(result.message || "تم حذف المركبة");
       await refresh();
       return;
     }

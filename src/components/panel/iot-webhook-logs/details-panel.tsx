@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useState, type ReactNode } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { RotateCw } from "lucide-react";
@@ -30,7 +32,7 @@ export default function IotWebhookLogDetailsPanel({ logId, open, onClose }: { lo
     const result = await retryIotWebhookLogAPI(logId!);
     setIsRetrying(false);
     if (!result.ok) { toast.error(result.message || "فشلت إعادة معالجة السجل"); return; }
-    toast.success(result.message || "تمت إعادة معالجة السجل بنجاح");
+    showSuccessModal(result.message || "تمت إعادة معالجة السجل بنجاح");
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: ["iot-webhook-logs"] }),
       queryClient.invalidateQueries({ queryKey: ["iot-webhook-log", logId] }),

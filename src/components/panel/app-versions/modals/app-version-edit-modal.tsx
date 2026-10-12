@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -137,7 +139,7 @@ function AppVersionEditModal({
     const result = await editAppVersion(appVersion.id, payload);
 
     if (result?.ok) {
-      toast.success(result.message || "تم تعديل الإصدار بنجاح");
+      showSuccessModal(result.message || "تم تعديل الإصدار بنجاح");
       await onSaved();
       return;
     }

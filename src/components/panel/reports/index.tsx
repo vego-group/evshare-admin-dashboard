@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Download, FileBarChart2, RefreshCw } from "lucide-react";
@@ -138,7 +140,7 @@ function ReportForm({
       }
       const item = unwrap(result.data);
       if (!item.id) throw new Error("استجابة طلب التقرير غير مكتملة");
-      toast.success("تم طلب التقرير. جارٍ تجهيزه.");
+      showSuccessModal("تم طلب التقرير. جارٍ تجهيزه.");
       onRequested(item);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "تعذر طلب التقرير");
@@ -344,7 +346,7 @@ export default function ManagementReports() {
     ) {
       autoDownloadedId.current = active.id;
       void downloadReport(active.id).then(
-        () => toast.success("تم تنزيل التقرير"),
+        () => showSuccessModal("تم تنزيل التقرير"),
         (error) =>
           toast.error(
             error instanceof Error ? error.message : "تعذر تنزيل التقرير",
@@ -358,7 +360,7 @@ export default function ManagementReports() {
     setDownloadingId(id);
     try {
       await downloadReport(id);
-      toast.success("تم تنزيل التقرير");
+      showSuccessModal("تم تنزيل التقرير");
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "تعذر تنزيل التقرير",

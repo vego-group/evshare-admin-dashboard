@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
@@ -65,7 +67,7 @@ function ComplaintsDetailsPanel({
     setAnswerLoading(false);
 
     if (result?.ok) {
-      toast.success(result.message || "تم الرد على الشكوى بنجاح");
+      showSuccessModal(result.message || "تم الرد على الشكوى بنجاح");
       setShowAnswerForm(false);
       setAdminResponse("");
       await refreshComplaintQueries(currentComplaintId);

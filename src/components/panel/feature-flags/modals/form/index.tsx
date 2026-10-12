@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -80,7 +82,7 @@ function FeatureFlagFormModal({ open, featureFlag, onClose, onSaved }: Props) {
         toast.error(result?.message || "فشل تعديل الميزة");
         return;
       }
-      toast.success(result.message || "تم تعديل الميزة بنجاح");
+      showSuccessModal(result.message || "تم تعديل الميزة بنجاح");
       savedId = getFeatureFlagId(featureFlag);
     } else {
       const result = await addFeatureFlag(buildFeatureFlagPayload(values));
@@ -88,7 +90,7 @@ function FeatureFlagFormModal({ open, featureFlag, onClose, onSaved }: Props) {
         toast.error(result?.message || "فشل إضافة الميزة");
         return;
       }
-      toast.success(result.message || "تمت إضافة الميزة بنجاح");
+      showSuccessModal(result.message || "تمت إضافة الميزة بنجاح");
       if (result.data?.data) savedId = getFeatureFlagId(result.data.data);
     }
 

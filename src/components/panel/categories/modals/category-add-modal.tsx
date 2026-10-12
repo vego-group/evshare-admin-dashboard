@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -70,7 +72,7 @@ function CategoryAddModal({ open, onClose, onSaved }: CategoryAddModalProps) {
     const result = await addCategory(buildCategoryPayload(values));
 
     if (result?.ok) {
-      toast.success(result.message || "تم إضافة التصنيف بنجاح");
+      showSuccessModal(result.message || "تم إضافة التصنيف بنجاح");
       await onSaved();
       return;
     }

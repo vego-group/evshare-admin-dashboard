@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -89,7 +91,7 @@ function ActiveTrips() {
       if (result?.ok && result.data?.state === "COMPLETED" && result.data.succeeded) {
         actionAttemptRef.current = null;
         setActionError(null);
-        toast.success(
+        showSuccessModal(
           pendingAction === "end"
             ? "اكتمل إنهاء الرحلة وتسويتها بنجاح"
             : "اكتمل إلغاء الرحلة بنجاح",

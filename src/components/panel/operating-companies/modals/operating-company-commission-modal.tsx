@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useEffect } from "react";
 import { useForm, type FieldErrors, type Resolver } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -64,7 +66,7 @@ function OperatingCompanyCommissionModal({
     const result = await updateOperationCompanyCommissionAPI(company.id, values);
     setIsSaving(false);
     if (result?.ok) {
-      toast.success(result.message || "تم تحديث العمولة بنجاح");
+      showSuccessModal(result.message || "تم تحديث العمولة بنجاح");
       await onSaved();
       return;
     }

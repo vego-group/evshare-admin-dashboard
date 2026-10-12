@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useState, type FormEvent } from "react";
 import toast from "react-hot-toast";
 import { TriangleAlert } from "lucide-react";
@@ -70,7 +72,7 @@ function VehicleEditModal({
     const result = await editVehicleAPI(vehicle.id, payload);
     setIsSaving(false);
     if (result?.ok) {
-      toast.success(result.message || "تم تعديل المركبة بنجاح");
+      showSuccessModal(result.message || "تم تعديل المركبة بنجاح");
       await onSaved();
       return;
     }

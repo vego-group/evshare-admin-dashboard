@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -49,7 +51,7 @@ function Products() {
     setIsDeleting(false);
 
     if (result?.ok) {
-      toast.success(result.message || "تم حذف المنتج بنجاح");
+      showSuccessModal(result.message || "تم حذف المنتج بنجاح");
       await refreshProductQueries(currentProduct.id);
       return;
     }

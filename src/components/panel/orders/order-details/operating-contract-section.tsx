@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -40,7 +42,7 @@ export default function OperatingContractSection({ orderId }: { orderId: string 
         toast.error(result.message || "تعذر مراجعة عقد التشغيل");
         return;
       }
-      toast.success(result.message || "تمت مراجعة عقد التشغيل");
+      showSuccessModal(result.message || "تمت مراجعة عقد التشغيل");
       setReason("");
       await Promise.all([
         ["order-operating-contract", orderId], ["order ", orderId], ["orders"],

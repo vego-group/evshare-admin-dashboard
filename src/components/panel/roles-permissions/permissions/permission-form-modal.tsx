@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -59,7 +61,7 @@ export default function PermissionFormModal({ open, permission, onClose, onSaved
       if (result.status === 404) return setSubmitError({ status: 404 });
       return toast.error(result.message || "تعذر حفظ الصلاحية");
     }
-    toast.success(result.message || "تم حفظ الصلاحية");
+    showSuccessModal(result.message || "تم حفظ الصلاحية");
     onSaved();
   }
 

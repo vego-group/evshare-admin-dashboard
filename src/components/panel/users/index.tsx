@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -66,7 +68,7 @@ function Users() {
       const result = await removeUser(userPendingDelete.id, reason);
       if (result.ok && result.data) {
         await updateUser(userPendingDelete.id, result.data);
-        toast.success(result.message || "تمت إزالة المستخدم");
+        showSuccessModal(result.message || "تمت إزالة المستخدم");
       } else toast.error(result.error?.message || result.message || "تعذرت إزالة المستخدم");
     } catch {
       toast.error("تعذرت إزالة المستخدم");
@@ -82,7 +84,7 @@ function Users() {
       const result = await suspendUser(userPendingSuspend.id, reason);
       if (result.ok && result.data) {
         await updateUser(userPendingSuspend.id, result.data);
-        toast.success(result.message || "تم تعليق المستخدم");
+        showSuccessModal(result.message || "تم تعليق المستخدم");
       } else toast.error(result.error?.message || result.message || "تعذر تعليق المستخدم");
     } catch {
       toast.error("تعذر تعليق المستخدم");
@@ -98,7 +100,7 @@ function Users() {
       const result = await reactivateUser(user.id);
       if (result.ok && result.data) {
         await updateUser(user.id, result.data);
-        toast.success(result.message || "تمت إعادة تفعيل المستخدم");
+        showSuccessModal(result.message || "تمت إعادة تفعيل المستخدم");
       } else toast.error(result.error?.message || result.message || "تعذرت إعادة تفعيل المستخدم");
     } catch {
       toast.error("تعذرت إعادة تفعيل المستخدم");

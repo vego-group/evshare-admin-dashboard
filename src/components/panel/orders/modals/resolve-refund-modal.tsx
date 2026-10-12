@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { AlertTriangle, Phone, Wallet } from "lucide-react";
 import { useState } from "react";
 import {
@@ -137,7 +139,7 @@ function ResolveRefundModal({
     );
 
     if (result?.ok) {
-      toast.success(result.message || "تم إرسال قرار الاسترداد بنجاح");
+      showSuccessModal(result.message || "تم إرسال قرار الاسترداد بنجاح");
       reset();
       setAmountText("");
       await onSaved();

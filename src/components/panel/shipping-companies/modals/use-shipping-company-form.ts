@@ -1,3 +1,4 @@
+import { showSuccessModal } from "@/components/ui/success-modal";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -81,7 +82,7 @@ export function useShippingCompanyForm({
       return;
     }
 
-    toast.success(result.message || "تم حفظ شركة الشحن بنجاح");
+    showSuccessModal(result.message || "تم حفظ شركة الشحن بنجاح");
     form.reset(shippingCompanyDefaultValues);
     await onSaved();
   };

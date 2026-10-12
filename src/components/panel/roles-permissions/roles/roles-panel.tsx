@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -13,12 +15,10 @@ import EntityTable, { type TableColumn } from "../shared/entity-table";
 import EntityToolbar from "../shared/entity-toolbar";
 import RoleFormModal from "./role-form-modal";
 import RolePermissionsModal from "./role-permissions-modal";
-import BooleanBadge from "../shared/boolean-badge";
 import { useUserPermissions } from "@/hooks";
 
 const columns: TableColumn<Role>[] = [
   { key: "name", label: "الدور", render: (item) => item.name },
-  { key: "allowed", label: "السماح للمستخدم", render: (item) => <BooleanBadge value={item.allowed_user} /> },
 ];
 
 const protectedRoleNames = new Set(["merchant", "root", "driver"]);
@@ -48,7 +48,7 @@ export default function RolesPanel() {
     if (!pendingDelete) return;
     const result = await deleteMutation.mutateAsync(pendingDelete.id);
     if (!result.ok) return toast.error(result.message || "تعذر حذف الدور");
-    toast.success(result.message || "تم حذف الدور");
+    showSuccessModal(result.message || "تم حذف الدور");
     refresh();
   }
 
@@ -58,10 +58,16 @@ export default function RolesPanel() {
       <EntityTable rows={Array.isArray(data?.data) ? data.data : []} columns={columns} isLoading={isLoading} onView={hasPermission("Admin Details Roles") ? setView : undefined} onEdit={hasPermission("Admin Edit Roles") ? setForm : undefined} onDelete={hasPermission("Admin Delete Roles") ? setPendingDelete : undefined} onPermissions={hasAnyPermission(["Admin Sync Roles Permissions", "Admin Assign Roles Permissions By Category"]) ? setPermissionsRole : undefined} canEdit={canModifyRole} canDelete={canModifyRole} />
       <EntityPagination meta={data?.meta} onChange={setPage} />
       {form && <RoleFormModal open role={form === "new" ? null : form} onClose={() => setForm(null)} onSaved={refresh} />}
-      <RolePermissionsModal role={permissionsRole} onClose={() => setPermissionsRole(null)} onSaved={refresh} />
+      {permissionsRole && (
+        <RolePermissionsModal
+          key={permissionsRole.id}
+          role={permissionsRole}
+          onClose={() => setPermissionsRole(null)}
+          onSaved={refresh}
+        />
+      )}
       <DetailsModal open={Boolean(view)} title="تفاصيل الدور" loading={detailLoading} error={detailError} onClose={() => setView(null)} fields={[
         { label: "المعرّف", value: detail?.data.id }, { label: "الاسم", value: detail?.data.name },
-        { label: "السماح للمستخدم", value: detail?.data.allowed_user ? "نعم" : "لا" },
         {
           label: "الصلاحيات",
           fullWidth: true,

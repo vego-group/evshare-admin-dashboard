@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -61,7 +63,7 @@ function SliderAddModal({ open, onClose, onSaved }: SliderAddModalProps) {
   const onSubmit = async (values: SliderFormValues) => {
     const result = await addSlider(buildSliderPayload(values));
     if (result?.ok) {
-      toast.success(result.message || "تم إضافة السلايدر بنجاح");
+      showSuccessModal(result.message || "تم إضافة السلايدر بنجاح");
       await onSaved();
       return;
     }

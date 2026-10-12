@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useCallback, useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -85,7 +87,7 @@ export function useVatExportActions(canExport: boolean, canViewExports: boolean)
       toast.loading("جارٍ تنزيل ملف التصدير", { id: progressToastId });
       void downloadFile(vatExport.id)
         .then(() =>
-          toast.success("تم تنزيل ملف التصدير", { id: progressToastId }),
+          showSuccessModal("تم تنزيل ملف التصدير", { id: progressToastId }),
         )
         .catch((error) =>
           toast.error(
@@ -148,7 +150,7 @@ export function useVatExportActions(canExport: boolean, canViewExports: boolean)
       setDownloadingId(id);
       try {
         await downloadFile(id);
-        toast.success("تم تنزيل ملف التصدير");
+        showSuccessModal("تم تنزيل ملف التصدير");
       } catch (error) {
         toast.error(
           error instanceof Error ? error.message : "تعذر تنزيل الملف",

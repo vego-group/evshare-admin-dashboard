@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -37,7 +39,7 @@ function OrdersTableRow({ order }: { order: OrderListItem }) {
     setIsUpdating(false);
 
     if (result?.ok) {
-      toast.success(result.message || "تم تحديث حالة الطلب بنجاح");
+      showSuccessModal(result.message || "تم تحديث حالة الطلب بنجاح");
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["orders"] }),
         queryClient.invalidateQueries({ queryKey: ["order ", order.id] }),

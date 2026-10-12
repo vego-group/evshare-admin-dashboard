@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -63,7 +65,7 @@ export function useFeatureFlagsPage() {
       toast.error(result?.message || "فشل حذف الميزة");
       return;
     }
-    toast.success(result.message || "تم حذف الميزة بنجاح");
+    showSuccessModal(result.message || "تم حذف الميزة بنجاح");
     await refresh(id);
   }
 

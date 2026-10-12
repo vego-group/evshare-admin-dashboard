@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -115,7 +117,7 @@ function OrderReceiptSection({
     setReviewLoading(null);
 
     if (result?.ok) {
-      toast.success(result.message || "تمت الموافقة على سند الاستلام");
+      showSuccessModal(result.message || "تمت الموافقة على سند الاستلام");
       await refresh();
       return;
     }
@@ -131,7 +133,7 @@ function OrderReceiptSection({
     setReviewLoading(null);
 
     if (result?.ok) {
-      toast.success(result.message || "تم رفض سند الاستلام");
+      showSuccessModal(result.message || "تم رفض سند الاستلام");
       await refresh();
       return;
     }

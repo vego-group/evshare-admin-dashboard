@@ -10,7 +10,6 @@ const optionalText = z
 
 export const roleSchema = z.object({
   name: requiredName,
-  allowed_user: z.boolean(),
   permissions: z.array(z.string()).optional(),
 });
 

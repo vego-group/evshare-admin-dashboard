@@ -1,3 +1,4 @@
+import { showSuccessModal } from "@/components/ui/success-modal";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -69,7 +70,7 @@ export function usePromoForm({ open, promo, onClose, onSaved }: Options) {
       return;
     }
 
-    toast.success(result.message || "تم حفظ كود الخصم بنجاح");
+    showSuccessModal(result.message || "تم حفظ كود الخصم بنجاح");
     form.reset(promoDefaultValues);
     await onSaved();
   };

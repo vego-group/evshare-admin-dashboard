@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -87,7 +89,7 @@ function SliderEditModal({ open, slider, onClose, onSaved }: SliderEditModalProp
     if (!hasFormDataEntries(payload)) return;
     const result = await editSlider(slider.id, payload);
     if (result?.ok) {
-      toast.success(result.message || "تم تعديل السلايدر بنجاح");
+      showSuccessModal(result.message || "تم تعديل السلايدر بنجاح");
       await onSaved();
       return;
     }

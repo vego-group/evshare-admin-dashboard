@@ -10,9 +10,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { cn } from "@/lib";
 import { ScrollArea } from "./scroll-area";
+import { DASHBOARD_SUCCESS_EVENT } from "@/lib/success-feedback";
 
 interface IProps {
   open: boolean;
@@ -25,6 +26,7 @@ interface IProps {
   titleClassName?: string;
   descriptionClassName?: string;
   closeButtonClassname?: string;
+  closeOnSuccess?: boolean;
 }
 
 function Modal({
@@ -38,9 +40,22 @@ function Modal({
   titleClassName,
   descriptionClassName,
   closeButtonClassname,
+  closeOnSuccess = true,
 }: IProps) {
+  useEffect(() => {
+    if (!open || !closeOnSuccess) return;
+
+    window.addEventListener(DASHBOARD_SUCCESS_EVENT, onClose);
+    return () => window.removeEventListener(DASHBOARD_SUCCESS_EVENT, onClose);
+  }, [closeOnSuccess, onClose, open]);
+
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog
+      open={open}
+      onOpenChange={(nextOpen) => {
+        if (!nextOpen) onClose();
+      }}
+    >
       <DialogContent
         className={cn("max-h-[calc(100svh-2rem)] grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden rounded-2xl bg-white shadow-2xl", contentClassName)}
         showCloseButton={false}

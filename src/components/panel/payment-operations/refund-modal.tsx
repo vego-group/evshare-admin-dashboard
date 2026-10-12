@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { AlertTriangle } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import toast from "react-hot-toast";
@@ -52,7 +54,7 @@ export default function PaymentRefundModal({ transaction, open, onClose, onRefun
 
     if (result.ok && result.data?.data.transaction) {
       await onRefunded(result.data.data.transaction);
-      toast.success(result.status === 202 ? "تم إرسال طلب الاسترداد وهو قيد تأكيد مزود الدفع." : result.message || "تم استرداد المعاملة بنجاح.");
+      showSuccessModal(result.status === 202 ? "تم إرسال طلب الاسترداد وهو قيد تأكيد مزود الدفع." : result.message || "تم استرداد المعاملة بنجاح.");
       return;
     }
     if (result && UNKNOWN_OUTCOME_STATUSES.has(result.status)) {

@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -104,7 +106,7 @@ function CategoryEditModal({
     const result = await editCategory(category.id, payload);
 
     if (result?.ok) {
-      toast.success(result.message || "تم تعديل التصنيف بنجاح");
+      showSuccessModal(result.message || "تم تعديل التصنيف بنجاح");
       await onSaved();
       return;
     }

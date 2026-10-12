@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -25,7 +27,7 @@ export default function UserDetailActions({ user }: { user: AdminUserDetail }) {
       const result = await request();
       if (result.ok && result.data) {
         await saved(user.id, result.data);
-        toast.success(result.message || "تم تحديث الحساب");
+        showSuccessModal(result.message || "تم تحديث الحساب");
       } else toast.error(result.error?.message || result.message || fallback);
     } catch {
       toast.error(fallback);

@@ -1,7 +1,9 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import Modal from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
@@ -15,7 +17,6 @@ import FormField from "../shared/form-field";
 import { inputClass } from "../shared/form-controls";
 import FormShimmer from "../shared/form-shimmer";
 import { roleFormResolver } from "../shared/form-resolvers";
-import ToggleField from "../shared/toggle-field";
 
 type Props = {
   open: boolean;
@@ -31,7 +32,6 @@ export default function RoleFormModal({ open, role, onClose, onSaved }: Props) {
   );
   const {
     register,
-    control,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting, isDirty },
@@ -39,7 +39,6 @@ export default function RoleFormModal({ open, role, onClose, onSaved }: Props) {
     resolver: roleFormResolver,
     defaultValues: {
       name: role?.name ?? "",
-      allowed_user: role?.allowed_user ?? false,
     },
     mode: "onChange",
   });
@@ -49,12 +48,11 @@ export default function RoleFormModal({ open, role, onClose, onSaved }: Props) {
   // every time it opens (and clear stale values when it closes).
   useEffect(() => {
     if (!open) {
-      reset({ name: "", allowed_user: false });
+      reset({ name: "" });
       return;
     }
     reset({
       name: role?.name ?? "",
-      allowed_user: role?.allowed_user ?? false,
     });
   }, [open, role, reset]);
 
@@ -67,7 +65,7 @@ export default function RoleFormModal({ open, role, onClose, onSaved }: Props) {
       if (result.status === 404) return setSubmitError({ status: 404 });
       return toast.error(result.message || "تعذر حفظ الدور");
     }
-    toast.success(result.message || "تم حفظ الدور بنجاح");
+    showSuccessModal(result.message || "تم حفظ الدور بنجاح");
     onSaved();
   }
 
@@ -89,21 +87,9 @@ export default function RoleFormModal({ open, role, onClose, onSaved }: Props) {
           <FormField
             label="اسم الدور"
             error={errors.name?.message}
-            gapClassName="space-y-2"
           >
             <input className={inputClass} {...register("name")} />
           </FormField>
-          <Controller
-            control={control}
-            name="allowed_user"
-            render={({ field }) => (
-              <ToggleField
-                label="السماح للمستخدم"
-                checked={field.value}
-                onChange={field.onChange}
-              />
-            )}
-          />
           <div className="grid grid-cols-2 gap-3 pt-2">
             <Button
               type="button"

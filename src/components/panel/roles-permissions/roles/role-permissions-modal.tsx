@@ -1,7 +1,10 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { Search } from "lucide-react";
 import Modal from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
 import Loader from "@/components/ui/loader";
@@ -18,6 +21,8 @@ import EntityPagination from "../shared/entity-pagination";
 import RolePermissionsShimmer from "./role-permissions-shimmer";
 import Dropdown from "../shared/dropdown";
 import PermissionGate from "@/components/permission-gate";
+import { PAGE_SIZE } from "@/constants";
+import useDebouncedChange from "@/hooks/use-debounced-change";
 
 type Props = { role: Role | null; onClose: () => void; onSaved: () => void };
 const categoriesParams = { page: 1, limit: 200 };
@@ -28,16 +33,23 @@ export default function RolePermissionsModal({
   onSaved,
 }: Props) {
   const [permissionsPage, setPermissionsPage] = useState(1);
+  const [searchInput, setSearchInput] = useState("");
+  const [permissionsSearch, setPermissionsSearch] = useState("");
   const {
     data: roleData,
     isLoading,
     error: roleError,
   } = useRole(role?.id ?? null);
-  const { data: permissions, isLoading: permissionsLoading } = usePermissions({
+  const {
+    data: permissions,
+    isLoading: permissionsLoading,
+    error: permissionsError,
+  } = usePermissions({
     page: permissionsPage,
-    limit: 200,
+    limit: PAGE_SIZE,
+    search: permissionsSearch,
   });
-  const { data: categories, isLoading: categoriesLoading } =
+  const { data: categories, isLoading: categoriesLoading, error: categoriesError } =
     usePermissionCategories(categoriesParams);
   const syncMutation = useSyncRolePermissions();
   const assignMutation = useAssignRolePermissionsByCategory();
@@ -48,6 +60,11 @@ export default function RolePermissionsModal({
   const permissionItems = Array.isArray(permissions?.data)
     ? permissions.data
     : [];
+
+  useDebouncedChange(searchInput, (value) => {
+    setPermissionsSearch(value.trim());
+    setPermissionsPage(1);
+  }, 400);
 
   const original = roleData?.data.permissions?.map((item) => item.name) ?? [];
   const selected = selection ?? original;
@@ -70,7 +87,7 @@ export default function RolePermissionsModal({
     });
     if (!result.ok)
       return toast.error(result.message || "تعذر مزامنة الصلاحيات");
-    toast.success(result.message || "تمت مزامنة الصلاحيات");
+    showSuccessModal(result.message || "تمت مزامنة الصلاحيات");
     onSaved();
   }
 
@@ -81,7 +98,7 @@ export default function RolePermissionsModal({
       payload: { permission_category_id: categoryId },
     });
     if (!result.ok) return toast.error(result.message || "تعذر إسناد التصنيف");
-    toast.success(result.message || "تم إسناد صلاحيات التصنيف");
+    showSuccessModal(result.message || "تم إسناد صلاحيات التصنيف");
     setSelection(null);
     setCategoryId("");
     onSaved();
@@ -98,8 +115,8 @@ export default function RolePermissionsModal({
       <div className="space-y-5 p-5">
         {isLoading || permissionsLoading || categoriesLoading ? (
           <RolePermissionsShimmer />
-        ) : roleError ? (
-          <EntityError error={roleError} />
+        ) : roleError || permissionsError || categoriesError ? (
+          <EntityError error={roleError ?? permissionsError ?? categoriesError} />
         ) : (
           <>
             <PermissionGate slug="Admin Assign Roles Permissions By Category">
@@ -123,8 +140,18 @@ export default function RolePermissionsModal({
                 </Button>
               </div>
             </PermissionGate>
+            <label className="relative flex h-12 items-center rounded-[14px] border border-neutral-200 bg-white px-4 pr-12 transition focus-within:border-primary focus-within:ring-3 focus-within:ring-primary/15">
+              <Search className="pointer-events-none absolute right-4 size-5 text-gray" />
+              <input
+                type="search"
+                value={searchInput}
+                onChange={(event) => setSearchInput(event.target.value)}
+                placeholder="ابحث في الصلاحيات..."
+                className="h-full w-full bg-transparent text-sm text-secondary outline-none placeholder:text-[#99a1af]"
+              />
+            </label>
             <div className="grid max-h-96 gap-3 overflow-y-auto rounded-3xl bg-neutral-50/70 p-2 [scrollbar-color:color-mix(in_srgb,var(--color-primary)_70%,transparent)_transparent] [scrollbar-gutter:stable] [scrollbar-width:thin] sm:grid-cols-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-button]:hidden [&::-webkit-scrollbar-thumb]:min-h-12 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:border-2 [&::-webkit-scrollbar-thumb]:border-solid [&::-webkit-scrollbar-thumb]:border-transparent [&::-webkit-scrollbar-thumb]:bg-primary/60 [&::-webkit-scrollbar-thumb]:bg-clip-padding hover:[&::-webkit-scrollbar-thumb]:bg-primary [&::-webkit-scrollbar-track]:my-2 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-neutral-200/60">
-              {permissionItems.map((permission) => (
+              {permissionItems.length ? permissionItems.map((permission) => (
                 <label
                   key={permission.id}
                   className="flex cursor-pointer items-center gap-3 rounded-[14px] border border-neutral-100 bg-white p-4 text-sm text-secondary transition hover:border-primary/70 hover:bg-primary/5"
@@ -139,7 +166,11 @@ export default function RolePermissionsModal({
                     {permission.slug}
                   </span>
                 </label>
-              ))}
+              )) : (
+                <p className="py-8 text-center text-sm text-gray sm:col-span-2">
+                  لا توجد صلاحيات مطابقة
+                </p>
+              )}
             </div>
             <EntityPagination
               meta={permissions?.meta}

@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -70,7 +72,7 @@ export function usePaymentMethodForm(options: Options) {
       return;
     }
 
-    toast.success(result.message || "تم تعديل طريقة الدفع بنجاح");
+    showSuccessModal(result.message || "تم تعديل طريقة الدفع بنجاح");
     form.reset(paymentMethodDefaults);
     await onSaved(paymentMethod.id);
   };

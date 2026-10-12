@@ -1,5 +1,7 @@
 "use client";
 
+import { showSuccessModal } from "@/components/ui/success-modal";
+
 import { useEffect, useRef } from "react";
 import { Controller, useForm, type FieldErrors } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -81,7 +83,7 @@ function ZoneFormModal({ vehicle, zone, isSaving, open, onClose, onSaved, setIsS
       : await addVehicleZoneAPI(vehicle.id, values);
     setIsSaving(false);
     if (result?.ok) {
-      toast.success(result.message || "تم حفظ المنطقة");
+      showSuccessModal(result.message || "تم حفظ المنطقة");
       await onSaved();
       return;
     }
