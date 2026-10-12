@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib";
 import { ScrollArea } from "./scroll-area";
 import { DASHBOARD_SUCCESS_EVENT } from "@/lib/success-feedback";
@@ -42,16 +42,39 @@ function Modal({
   closeButtonClassname,
   closeOnSuccess = true,
 }: IProps) {
+  const [successDismissal, setSuccessDismissal] = useState({
+    open,
+    dismissed: false,
+  });
+  if (successDismissal.open !== open) {
+    setSuccessDismissal({ open, dismissed: false });
+  }
+  const onCloseRef = useRef(onClose);
+
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
   useEffect(() => {
     if (!open || !closeOnSuccess) return;
 
-    window.addEventListener(DASHBOARD_SUCCESS_EVENT, onClose);
-    return () => window.removeEventListener(DASHBOARD_SUCCESS_EVENT, onClose);
-  }, [closeOnSuccess, onClose, open]);
+    function closeForSuccess() {
+      // Hide synchronously so the success confirmation is never stacked over
+      // the action dialog. Some callers ignore onClose while their mutation is
+      // still settling, so retry the parent-state synchronization next tick.
+      setSuccessDismissal((current) => ({ ...current, dismissed: true }));
+      onCloseRef.current();
+      window.setTimeout(() => onCloseRef.current(), 0);
+    }
+
+    window.addEventListener(DASHBOARD_SUCCESS_EVENT, closeForSuccess);
+    return () =>
+      window.removeEventListener(DASHBOARD_SUCCESS_EVENT, closeForSuccess);
+  }, [closeOnSuccess, open]);
 
   return (
     <Dialog
-      open={open}
+      open={open && !successDismissal.dismissed}
       onOpenChange={(nextOpen) => {
         if (!nextOpen) onClose();
       }}
