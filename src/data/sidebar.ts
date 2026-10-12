@@ -3,6 +3,7 @@ import {
   ClipboardList,
   CircleDollarSign,
   CreditCard,
+  DatabaseZap,
   FileText,
   Flag,
   FlaskConical,
@@ -394,6 +395,14 @@ export const sidebarNavItems: SidebarNavItem[] = [
     ariaLabel: "الإعدادات",
     icon: Settings,
     permission: "Admin Index Settings",
+  },
+  {
+    href: "/data-cleanups",
+    group: "system",
+    label: "تنظيف البيانات",
+    ariaLabel: "تنظيف البيانات",
+    icon: DatabaseZap,
+    permission: "Admin Index Data Cleanups",
   },
   {
     href: "/driver-pricing-settings",

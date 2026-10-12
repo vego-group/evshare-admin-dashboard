@@ -1,8 +1,9 @@
 # October 2026 data cleanup: dashboard integration
 
-The supplied cleanup document describes a one-off backend operation. It is not a dashboard
-endpoint and the dashboard must not attempt to start, schedule, or validate the deletion.
-The backend team runs it per country database after a dry run, review, and backup.
+The one-off command and the dashboard now use the same backend cleanup engine. Authorized admins
+can configure and preview a cleanup at `/data-cleanups`, review exact counts and warnings, type the
+server-provided confirmation phrase, then execute the backup, deletion, and validation workflow.
+Each request still applies only to the currently selected country.
 
 ## Expected post-cleanup state
 
@@ -37,8 +38,9 @@ The cutoff is inclusive and uses the timezone in which backend records are store
 ## Operational boundary
 
 Before production execution, operators still need to decide whether approved KYC records before
-the cutoff may be removed and whether payments for deleted orders should also be removed. Those
-are backend run parameters, not frontend feature flags.
+the cutoff may be removed and whether payments for deleted orders should also be removed. The
+dashboard surfaces both decisions in the preview and sends them as run rules; the backend remains
+authoritative for authorization, backup, deletion, and validation.
 
 Production readiness requires the backend dry-run report, backup/snapshot evidence, automatic
 validation, and a manual load check of Orders, Complaints, Consultations, Withdrawal Requests,

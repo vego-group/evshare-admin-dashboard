@@ -78,4 +78,10 @@ export const ADMIN_PERMISSIONS = {
   complaints: {
     export: "Admin Export Complaints",
   },
+  dataCleanups: {
+    index: "Admin Index Data Cleanups",
+    details: "Admin Details Data Cleanups",
+    preview: "Admin Preview Data Cleanups",
+    execute: "Admin Execute Data Cleanups",
+  },
 } as const;
