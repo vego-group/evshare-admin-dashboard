@@ -287,7 +287,6 @@ export default function DataCleanups() {
         onClose={() => { if (!isExecuting) setExecuteOpen(false); }}
         title="تأكيد حذف البيانات"
         description="هذا الإجراء لا يمكن التراجع عنه من لوحة التحكم. سيأخذ الخادم نسخة احتياطية أولاً."
-        closeOnSuccess={false}
         contentClassName="sm:max-w-lg"
         footer={
           <div className="flex w-full flex-row-reverse gap-3">
