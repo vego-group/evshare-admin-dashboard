@@ -3,7 +3,7 @@
 import type { UserListItem } from "@/types";
 import { useRouter } from "next/navigation";
 
-import { formatStoredPhone } from "@/lib/utils/format-phone";
+import { formatUserMobile } from "@/lib/utils/format-phone";
 import { useTenantCountry } from "@/provider/currency";
 import {
   AccountStatusBadge,
@@ -62,7 +62,7 @@ function UsersCards({ users, onDeleteUser, onEditUser, onSuspendUser, onReactiva
           </div>
 
           <div className="mt-5 space-y-3 rounded-[14px] bg-background p-4 text-right">
-            <DetailLine label="الجوال" value={formatStoredPhone(user.mobile, countryCode)} dir="ltr" align="left" />
+            <DetailLine label="الجوال" value={formatUserMobile(user.mobile, countryCode)} dir="ltr" align="left" />
             <DetailLine label="التحقق" value={(user.verification_status ? user.verification_status === "verified" : user.mobile_verified) ? "موثّق" : "غير موثّق"} />
             {user.role === "merchant" && user.subscription_status ? (
               <DetailLine label="الاشتراك" value={user.subscription_status === "subscribed" ? "مشترك" : "غير مشترك"} />

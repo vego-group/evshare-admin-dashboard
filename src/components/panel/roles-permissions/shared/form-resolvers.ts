@@ -2,10 +2,10 @@ import type { FieldErrors, FieldValues, Resolver } from "react-hook-form";
 import {
   permissionCategorySchema,
   permissionSchema,
-  roleEditSchema,
+  roleSchema,
   type PermissionCategoryFormInput,
   type PermissionFormInput,
-  type RoleEditFormValues,
+  type RoleFormInput,
 } from "@/schemas/roles-permissions";
 
 type Issue = { path: PropertyKey[]; code: string; message: string };
@@ -21,9 +21,9 @@ function errorsFrom<T extends FieldValues>(issues: Issue[]) {
   return errors;
 }
 
-export const roleFormResolver: Resolver<RoleEditFormValues> = async (values) => {
-  const result = roleEditSchema.safeParse(values);
-  return result.success ? { values: result.data, errors: {} } : { values: {}, errors: errorsFrom<RoleEditFormValues>(result.error.issues) };
+export const roleFormResolver: Resolver<RoleFormInput> = async (values) => {
+  const result = roleSchema.safeParse(values);
+  return result.success ? { values: result.data, errors: {} } : { values: {}, errors: errorsFrom<RoleFormInput>(result.error.issues) };
 };
 
 export const permissionFormResolver: Resolver<PermissionFormInput> = async (values) => {

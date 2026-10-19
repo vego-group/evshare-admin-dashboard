@@ -2,7 +2,7 @@
 
 import { showSuccessModal } from "@/components/ui/success-modal";
 
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { Info, Pencil, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -50,6 +50,12 @@ function ZonesModal({ vehicle, open, isSaving, setIsSaving, onClose, onSaved }: 
     <>
       <Modal open={open && !isFormOpen} onClose={onClose} title="مناطق التشغيل" contentClassName="max-w-2xl">
         <div className="space-y-4 p-1">
+          <div className="flex items-start gap-2 rounded-xl border border-blue-100 bg-blue-50 px-3 py-2.5 text-sm text-blue-700">
+            <Info className="mt-0.5 size-4 shrink-0" />
+            <p>
+              أثناء الرحلة تظهر للسائق مناطق هذه المركبة فقط. أضف المنطقة إلى كل مركبة يجب أن تطبق عليها؛ المناطق غير المرتبطة بالمركبة لا تظهر أثناء الرحلة.
+            </p>
+          </div>
           <div className="flex justify-end">
             <PermissionGate slug="Admin Add Zones"><Button
               type="button"

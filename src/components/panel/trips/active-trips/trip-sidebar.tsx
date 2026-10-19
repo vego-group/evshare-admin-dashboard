@@ -6,6 +6,7 @@ import { ADMIN_PERMISSIONS } from "@/constants";
 import { batteryBarClass, batteryTextClass } from "@/lib/utils/battery";
 import type { TripListItem } from "@/types";
 import TripStatusBadge from "../results/trip-status-badge";
+import TripZoneStatus from "../trip-zone-status";
 import { tripDriverName, tripVehicleTitle } from "../utils";
 
 type Props = {
@@ -62,6 +63,8 @@ function TripSidebar({
             <p className="mt-1 truncate text-xs text-gray">
               {tripDriverName(trip.driver)}
             </p>
+
+            <TripZoneStatus trip={trip} compact className="mt-2" />
 
             {battery != null && (
               <div className="mt-2 flex items-center gap-1.5">

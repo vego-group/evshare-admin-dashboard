@@ -53,7 +53,7 @@ export type PromoCodesListResponse = {
 export type PromoRedemptionUser = {
   id: string;
   name: string;
-  mobile: string;
+  mobile: string | null;
   role: string;
 };
 

@@ -30,8 +30,8 @@ const headers = [
 function VehiclesTable(props: Props) {
   return (
     <section className="min-w-0 overflow-hidden rounded-xl border border-primary/10 bg-white shadow-sm">
-      <div className="min-w-0 overflow-hidden">
-        <table className="w-full table-fixed border-separate border-spacing-0 text-right">
+      <div className="min-w-0 overflow-x-auto">
+        <table className="w-full min-w-260 table-fixed border-separate border-spacing-0 text-right">
           <colgroup>
             <col className="w-[12%]" />
             <col className="w-[13%]" />

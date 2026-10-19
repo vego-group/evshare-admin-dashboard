@@ -44,6 +44,10 @@ export default function RolesPanel() {
       client.invalidateQueries({ queryKey: ["role"] }),
     ]);
   };
+  async function roleSaved() {
+    await refresh();
+    setForm(null);
+  }
   async function remove() {
     if (!pendingDelete) return;
     const result = await deleteMutation.mutateAsync(pendingDelete.id);
@@ -57,7 +61,7 @@ export default function RolesPanel() {
       <EntityToolbar title="الأدوار" description="إدارة الأدوار والصلاحيات المرتبطة بها" addLabel="إضافة دور" search={search} orderBy={orderBy} onSort={(value) => { setOrderBy(value); setPage(1); }} onSearch={(value) => { setSearch(value); setPage(1); }} onAdd={hasPermission("Admin Add Roles") ? () => setForm("new") : undefined} />
       <EntityTable rows={Array.isArray(data?.data) ? data.data : []} columns={columns} isLoading={isLoading} onView={hasPermission("Admin Details Roles") ? setView : undefined} onEdit={hasPermission("Admin Edit Roles") ? setForm : undefined} onDelete={hasPermission("Admin Delete Roles") ? setPendingDelete : undefined} onPermissions={hasAnyPermission(["Admin Sync Roles Permissions", "Admin Assign Roles Permissions By Category"]) ? setPermissionsRole : undefined} canEdit={canModifyRole} canDelete={canModifyRole} />
       <EntityPagination meta={data?.meta} onChange={setPage} />
-      {form && <RoleFormModal open role={form === "new" ? null : form} onClose={() => setForm(null)} onSaved={refresh} />}
+      {form && <RoleFormModal open role={form === "new" ? null : form} onClose={() => setForm(null)} onSaved={roleSaved} />}
       {permissionsRole && (
         <RolePermissionsModal
           key={permissionsRole.id}

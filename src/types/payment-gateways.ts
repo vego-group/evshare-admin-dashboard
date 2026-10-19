@@ -67,7 +67,7 @@ export type PaymentPayable = {
 export type PaymentGatewayUser = {
   id: string;
   name: string;
-  mobile: string;
+  mobile: string | null;
 };
 
 export type PaymentRefundActor = { id: string; name: string };

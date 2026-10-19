@@ -3,6 +3,16 @@ import type { QueryParams } from ".";
 
 export type TripStatus = "started" | "in_progress" | "completed" | "cancelled";
 
+export type TripZoneType = "normal" | "slow" | "restricted";
+
+export type TripEndSource =
+  | "rider"
+  | "lock_closed"
+  | "lock_reconciliation"
+  | "auto_stop"
+  | "admin"
+  | (string & {});
+
 export type Coordinate = {
   latitude: number | string;
   longitude: number | string;
@@ -16,6 +26,11 @@ export type RoutePoint = Coordinate & {
   label?: string;
   timestamp?: string;
   created_at?: string;
+  /**
+   * Rejected GPS points remain available for route diagnostics but are not
+   * included by the backend in the authoritative trip distance.
+   */
+  discarded?: boolean;
 };
 
 export type TripDateTime = {
@@ -63,7 +78,7 @@ export type TripLockVerification = {
 export type TripDriver = {
   id: string;
   name?: string;
-  mobile?: string;
+  mobile?: string | null;
   email?: string;
   avatar?: string | null;
   role?: string;
@@ -98,6 +113,7 @@ export type TripListItem = {
   status: TripStatus;
   price: number | string | null;
   commission?: number | string | null;
+  /** Server-calculated travelled distance in kilometres. Never derive this from `route`. */
   distance?: number | string | null;
   vehicle_type: "bike" | "scooter" | "car";
   remaining_balance?: number | string | null;
@@ -105,6 +121,19 @@ export type TripListItem = {
   auto_stop_attempts?: number;
   auto_stop_last_attempt_at?: string | null;
   auto_stop_last_error?: string | null;
+  /** Present when the backend trip resource exposes completion provenance. */
+  end_source?: TripEndSource | null;
+  /** Device/server-normalized instant at which the vehicle lock closed. */
+  lock_closed_at?: string | null;
+  /**
+   * Server-authoritative zone state. These fields are optional until the admin
+   * Trips API exposes the zone state stored on the trip.
+   */
+  zone_id?: string | null;
+  zone_type?: TripZoneType | null;
+  zone_entered_at?: string | null;
+  zone_changed_at?: string | null;
+  zone_state_version?: number | string | null;
   pickup_location: Coordinate;
   drop_off_location: Coordinate | null;
   live_location: Coordinate | null;

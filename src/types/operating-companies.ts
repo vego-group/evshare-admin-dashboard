@@ -8,7 +8,7 @@ export type OperatingCompaniesQueryParams = Pick<
   status?: "active" | "inactive";
 };
 
-export type OperatingCompanyOwner = { id: string; name: string; mobile: string };
+export type OperatingCompanyOwner = { id: string; name: string; mobile: string | null };
 
 export type OperatingCompanyLogo = {
   id: string;

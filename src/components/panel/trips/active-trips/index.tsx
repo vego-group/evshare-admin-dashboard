@@ -2,7 +2,7 @@
 
 import { showSuccessModal } from "@/components/ui/success-modal";
 
-import { useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import dynamic from "next/dynamic";
@@ -34,7 +34,7 @@ function ActiveTrips() {
     isLoading,
     refetch,
   } = useActiveTrips();
-  const trips = data ?? [];
+  const trips = useMemo(() => data ?? [], [data]);
   const hasLoadedData = data !== undefined;
   const [selectedTripId, setSelectedTripId] = useState<string | null>(null);
   const [pendingTrip, setPendingTrip] = useState<TripListItem | null>(null);
@@ -49,6 +49,33 @@ function ActiveTrips() {
     idempotencyKey: string;
   } | null>(null);
   const isActionSubmittingRef = useRef(false);
+
+  useEffect(() => {
+    if (!hasLoadedData) return;
+
+    const activeTripIds = new Set(trips.map((trip) => trip.id));
+
+    if (selectedTripId && !activeTripIds.has(selectedTripId)) {
+      setSelectedTripId(null);
+    }
+
+    if (
+      !pendingTrip ||
+      !pendingAction ||
+      isSubmitting ||
+      activeTripIds.has(pendingTrip.id)
+    ) {
+      return;
+    }
+
+    actionAttemptRef.current = null;
+    setPendingTrip(null);
+    setPendingAction(null);
+    setActionError(null);
+    toast("لم تعد الرحلة نشطة؛ ربما اكتملت تلقائياً بعد إغلاق القفل.", {
+      icon: "🔒",
+    });
+  }, [hasLoadedData, isSubmitting, pendingAction, pendingTrip, selectedTripId, trips]);
 
   function requestAction(action: "cancel" | "end") {
     return (trip: TripListItem) => {
@@ -91,6 +118,8 @@ function ActiveTrips() {
       if (result?.ok && result.data?.state === "COMPLETED" && result.data.succeeded) {
         actionAttemptRef.current = null;
         setActionError(null);
+        setPendingTrip(null);
+        setPendingAction(null);
         showSuccessModal(
           pendingAction === "end"
             ? "اكتمل إنهاء الرحلة وتسويتها بنجاح"

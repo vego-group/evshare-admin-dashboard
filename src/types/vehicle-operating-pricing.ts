@@ -159,7 +159,7 @@ export type VehiclePricing = {
 export type VehicleMerchant = {
   id: string;
   name: string;
-  mobile: string;
+  mobile: string | null;
   role: string;
 };
 

@@ -32,7 +32,7 @@ export type KycListItem = {
 export type KycUser = {
   id: string;
   name: string;
-  mobile: number | string;
+  mobile: number | string | null;
   role: string;
   has_rated?: boolean;
   is_mobile_verified?: boolean;

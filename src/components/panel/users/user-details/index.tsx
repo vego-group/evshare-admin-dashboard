@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import {
   ArrowRight,
   Banknote,
+  BellRing,
   type LucideIcon,
   MapPin,
   ShieldCheck,
@@ -14,7 +15,7 @@ import { useParams, useRouter } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 import MoneyValue from "@/components/ui/money-value";
-import { formatStoredPhone } from "@/lib/utils/format-phone";
+import { formatUserMobile } from "@/lib/utils/format-phone";
 import { useTenantCountry } from "@/provider/currency";
 import { useUser } from "@/hooks/api";
 import type { AdminUserDetail } from "@/types";
@@ -120,7 +121,7 @@ function UserDetailsContent({ user }: { user: AdminUserDetail }) {
             value={user.email ?? EMPTY_VALUE}
             dir="ltr"
           />
-          <InfoRow label="الجوال" value={formatStoredPhone(user.mobile, countryCode)} dir="ltr" align="left" />
+          <InfoRow label="الجوال" value={formatUserMobile(user.mobile, countryCode, EMPTY_VALUE)} dir="ltr" align="left" />
           <InfoRow label="الدور" value={<RoleBadge role={user.role} />} />
           <InfoRow
             label="توثيق الجوال"
@@ -136,6 +137,13 @@ function UserDetailsContent({ user }: { user: AdminUserDetail }) {
             value={formatDateTime(user.created_at)}
             dir="ltr"
           />
+          {user.account_status === "deleted" ? (
+            <InfoRow
+              label="تاريخ إزالة الحساب"
+              value={formatDateTime(user.deleted_at)}
+              dir="ltr"
+            />
+          ) : null}
         </Section>
 
         <Section title="الموقع">
@@ -204,6 +212,23 @@ function UserDetailsContent({ user }: { user: AdminUserDetail }) {
             label="الاشتراكات"
             value={formatNumber(user.subscriptions_count)}
           />
+        </Section>
+
+        <Section title="الإشعارات">
+          <InfoRow
+            label="إشعارات الدفع"
+            value={
+              <BooleanBadge
+                active={user.notifications_enabled}
+                activeLabel="مفعلة"
+                inactiveLabel="متوقفة"
+              />
+            }
+          />
+          <div className="flex items-start gap-2 rounded-[10px] bg-blue-50 px-4 py-3 text-sm leading-6 text-blue-900">
+            <BellRing className="mt-1 size-4 shrink-0" />
+            <span>إيقاف الدفع لا يحذف الإشعارات؛ تظل الأحداث محفوظة في مركز الإشعارات داخل تطبيق المستخدم.</span>
+          </div>
         </Section>
       </div>
     </div>

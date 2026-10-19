@@ -4,7 +4,7 @@ import { ImageIcon, Percent } from "lucide-react";
 import Image from "next/image";
 import type { ReactNode } from "react";
 
-import { formatStoredPhone } from "@/lib/utils/format-phone";
+import { formatStoredPhone, formatUserMobile } from "@/lib/utils/format-phone";
 import type { OperatingCompanyListItem } from "@/types";
 
 import OperatingCompanyDetailsShimmer from "../modals/operating-company-details-shimmer";
@@ -57,7 +57,7 @@ export function OperatingCompanyDetailsContent({ company, isLoading }: Props) {
         <DetailRow label="الاسم بالإنجليزية" value={company.name_en} />
         <DetailRow label="المعرف (Slug)" value={company.slug} />
         <DetailRow label="الحالة" value={company.status === "inactive" ? "غير نشطة" : company.status === "active" ? "نشطة" : undefined} />
-        <DetailRow label="المالك" value={company.owner ? `${company.owner.name} — ${formatStoredPhone(company.owner.mobile)}` : undefined} />
+        <DetailRow label="المالك" value={company.owner ? `${company.owner.name} — ${formatUserMobile(company.owner.mobile)}` : undefined} />
         <DetailRow
           label={company.slug === "evshare" ? "نسبة عمولة المنصة" : "نسبة العمولة"}
           value={

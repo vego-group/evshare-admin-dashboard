@@ -235,7 +235,10 @@ export default function UserEditModal({ userId, onClose, onSaved }: {
           <InputErrorMessage msg={errors.language?.message} />
         </div>
         <label className="flex items-center gap-2"><input type="checkbox" className="size-4 accent-primary" {...register("active")} />الحساب نشط</label>
-        <label className="flex items-center gap-2"><input type="checkbox" className="size-4 accent-primary" {...register("notifications_enabled")} />الإشعارات مفعلة</label>
+        <label className="flex items-center gap-2"><input type="checkbox" className="size-4 accent-primary" aria-describedby="notifications-enabled-help" {...register("notifications_enabled")} />إشعارات الدفع مفعلة</label>
+        <p id="notifications-enabled-help" className="text-xs leading-5 text-gray sm:col-span-2">
+          إيقاف هذا الخيار يمنع إرسال الإشعارات إلى أجهزة المستخدم فقط؛ وتبقى الإشعارات محفوظة في مركز الإشعارات داخل التطبيق.
+        </p>
         <div className="sm:col-span-2"><UserFormActions submitLabel="حفظ التغييرات" isSubmitting={isSubmitting || isAssigningRole} onClose={handleClose} /></div>
       </form>}
       {canAssignRole && <div className="border-t border-primary/15 pt-4">

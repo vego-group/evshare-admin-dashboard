@@ -68,6 +68,7 @@ function Users() {
       const result = await removeUser(userPendingDelete.id, reason);
       if (result.ok && result.data) {
         await updateUser(userPendingDelete.id, result.data);
+        setUserPendingDelete(null);
         showSuccessModal(result.message || "تمت إزالة المستخدم");
       } else toast.error(result.error?.message || result.message || "تعذرت إزالة المستخدم");
     } catch {

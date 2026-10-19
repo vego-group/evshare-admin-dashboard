@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
 import type { TestAccountListItem } from "@/types";
-import { formatStoredPhone } from "@/lib/utils/format-phone";
+import { formatUserMobile } from "@/lib/utils/format-phone";
 
 import { Amount, StatusBadge, TestAccountActions } from "./test-account-result-parts";
 
@@ -44,7 +44,7 @@ function TestAccountsTable({
                       {testAccount.user.name}
                     </p>
                     <p className="truncate text-sm text-gray" dir="ltr">
-                      {formatStoredPhone(testAccount.user.mobile)}
+                      {formatUserMobile(testAccount.user.mobile)}
                     </p>
                   </div>
                 </TableCell>

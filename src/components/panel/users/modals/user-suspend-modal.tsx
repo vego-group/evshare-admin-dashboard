@@ -11,7 +11,7 @@ export default function UserSuspendModal({ open, userName, isSubmitting, onClose
   const [reason, setReason] = useState("");
   return <Modal open={open} onClose={onClose} title="تعليق المستخدم" contentClassName="md:max-w-[480px]">
     <div className="space-y-5 p-2 text-right">
-      <p className="text-sm text-dark-gray">تعليق حساب {userName ?? "هذا المستخدم"} سيمنع تسجيل الدخول واستخدام الحساب حتى إعادة تفعيله.</p>
+      <p className="text-sm leading-6 text-dark-gray">تعليق حساب {userName ?? "هذا المستخدم"} سيمنع تسجيل الدخول واستخدام الحساب حتى إعادة تفعيله. بعد نجاح العملية، يحفظ الخادم إشعار تعليق الحساب للمستخدم ويرسله إلى أجهزته إذا كانت إشعارات الدفع مفعلة.</p>
       <label className="block text-sm text-dark-gray">سبب التعليق (اختياري)
         <textarea value={reason} onChange={e => setReason(e.target.value)} maxLength={1000} rows={3} className="mt-2 w-full rounded-xl border border-primary bg-primary/4 p-3" />
       </label>

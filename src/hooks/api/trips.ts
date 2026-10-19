@@ -16,7 +16,15 @@ export function useTrip(tripId: string | null) {
   return useCustomQuery(
     ["trip", tripId],
     async () => singleTripAPI(tripId!),
-    { enabled: Boolean(tripId) },
+    {
+      enabled: Boolean(tripId),
+      // A trip can now complete asynchronously when its physical lock closes.
+      // Keep an open active-trip page live, then stop polling once it is final.
+      refetchInterval: (query) => {
+        const status = query.state.data?.data.status;
+        return status === "started" || status === "in_progress" ? 5_000 : false;
+      },
+    },
   );
 }
 

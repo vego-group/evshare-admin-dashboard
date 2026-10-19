@@ -1,18 +1,17 @@
-import { formatStoredPhone } from "@/lib/utils/format-phone";
+import { formatUserMobile } from "@/lib/utils/format-phone";
 import type { TripListItem } from "@/types";
 import MoneyValue from "../money-value";
 import TripStatusBadge from "../results/trip-status-badge";
-import { formatDate, tripDriverName, tripVehicleTitle } from "../utils";
+import {
+  formatDate,
+  formatTripDistance,
+  tripDriverName,
+  tripEndSourceLabel,
+  tripVehicleTitle,
+} from "../utils";
 import DetailRow from "./detail-row";
 import { vehicleTypeLabel } from "@/lib/utils/vehicle-type";
-
-function formatDistance(value?: number | string | null) {
-  if (value == null || value === "") return "-";
-  const distance = Number(value);
-  if (!Number.isFinite(distance)) return String(value);
-  if (distance < 0.01) return `${Math.round(distance * 1000)} متر`;
-  return `${new Intl.NumberFormat("ar-EG", { maximumFractionDigits: 2 }).format(distance)} كم`;
-}
+import TripZoneStatus from "../trip-zone-status";
 
 function TripBasicInfo({ trip }: { trip: TripListItem }) {
   const hasAutoStopError =
@@ -22,11 +21,19 @@ function TripBasicInfo({ trip }: { trip: TripListItem }) {
     trip.vehicle_type !== "scooter" &&
     trip.remaining_balance != null &&
     Number(trip.remaining_balance) < 0;
+  const wasCompletedByLock =
+    trip.end_source === "lock_closed" ||
+    trip.end_source === "lock_reconciliation";
 
   return (
     <>
-      {(trip.auto_stopped_at || hasAutoStopError || isNegativeNonScooter) && (
+      {(wasCompletedByLock || trip.auto_stopped_at || hasAutoStopError || isNegativeNonScooter) && (
         <section className="space-y-2">
+          {wasCompletedByLock && (
+            <p className="rounded-xl bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
+              اكتملت الرحلة تلقائياً بعد تأكيد إغلاق قفل المركبة، وتوقفت الفوترة عند وقت الإغلاق.
+            </p>
+          )}
           {trip.auto_stopped_at && (
             <p className="rounded-xl bg-amber-50 px-4 py-3 text-sm font-medium text-orange-600">
               تم الإيقاف تلقائياً بسبب عدم كفاية الرصيد
@@ -44,9 +51,19 @@ function TripBasicInfo({ trip }: { trip: TripListItem }) {
           )}
         </section>
       )}
+      <TripZoneStatus trip={trip} />
       <section className="grid gap-2 sm:grid-cols-2">
         <DetailRow label="رقم الرحلة" value={<span dir="ltr">{trip.id}</span>} />
         <DetailRow label="الحالة" value={<TripStatusBadge status={trip.status} />} />
+        {(trip.status === "completed" || trip.status === "cancelled") && trip.end_source && (
+          <DetailRow label="مصدر إنهاء الرحلة" value={tripEndSourceLabel(trip.end_source)} />
+        )}
+        {trip.status === "completed" && trip.lock_closed_at && (
+          <DetailRow
+            label="وقت إغلاق القفل"
+            value={<span dir="ltr">{formatDate(trip.lock_closed_at)}</span>}
+          />
+        )}
         {trip.status === "completed" && trip.lock_verification && (
           <>
             <DetailRow label="التحقق من القفل" value={lockVerificationLabel(trip.lock_verification.status)} />
@@ -54,7 +71,7 @@ function TripBasicInfo({ trip }: { trip: TripListItem }) {
           </>
         )}
         <DetailRow label="نوع المركبة" value={vehicleTypeLabel(trip.vehicle_type)} />
-        <DetailRow label="المسافة" value={formatDistance(trip.distance)} />
+        <DetailRow label="المسافة" value={formatTripDistance(trip.distance)} />
         <DetailRow label="تاريخ إنشاء الرحلة" value={<span dir="ltr">{formatDate(trip.created_at)}</span>} />
         {trip.auto_stop_attempts != null && (
           <DetailRow label="محاولات الإيقاف التلقائي" value={trip.auto_stop_attempts} />
@@ -74,7 +91,7 @@ function TripBasicInfo({ trip }: { trip: TripListItem }) {
           <DetailRow label="الاسم" value={tripDriverName(trip.driver)} />
           <DetailRow
             label="رقم الجوال"
-            value={<span dir="ltr">{trip.driver.mobile ? formatStoredPhone(trip.driver.mobile) : "-"}</span>}
+            value={<span dir="ltr">{formatUserMobile(trip.driver.mobile)}</span>}
           />
           <DetailRow label="البريد الإلكتروني" value={trip.driver.email ?? "-"} />
           <DetailRow label="حالة الحساب" value={trip.driver.active == null ? "-" : trip.driver.active ? "نشط" : "غير نشط"} />

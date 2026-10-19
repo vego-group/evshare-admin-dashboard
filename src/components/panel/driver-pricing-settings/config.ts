@@ -7,7 +7,7 @@ export type SettingMeta = {
 
 export const SETTING_META: Record<DriverPricingSettingKey, SettingMeta> = {
   trip_min_start_balance: { label: "الحد الأدنى لبدء الرحلة", description: "البوابة الفعلية هي القيمة الأكبر بين هذا الحد ورسوم الفتح.", unit: "currency", group: "billing", critical: true },
-  wallet_low_balance_threshold: { label: "تنبيه الرصيد المنخفض", description: "يظهر عنده تنبيه يمكن للسائق إغلاقه.", unit: "currency", group: "wallet" },
+  wallet_low_balance_threshold: { label: "حد إشعار الرصيد المنخفض", description: "يرسل الخادم إشعاراً تلقائياً للسائق عندما ينخفض الرصيد دون هذا الحد أثناء الرحلة أو بعد الخصم.", unit: "currency", group: "wallet" },
   wallet_critical_balance_threshold: { label: "تنبيه الرصيد الحرج", description: "يظهر عنده تنبيه حرج غير قابل للإغلاق.", unit: "currency", group: "wallet" },
   wallet_min_top_up_amount: { label: "أقل مبلغ شحن", description: "الحد الأدنى المفروض أيضاً عند التحقق في الخادم.", unit: "currency", group: "wallet" },
   wallet_max_top_up_amount: { label: "أقصى مبلغ شحن", description: "الحد الأقصى المفروض أيضاً عند التحقق في الخادم.", unit: "currency", group: "wallet" },

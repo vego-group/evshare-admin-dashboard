@@ -11,7 +11,7 @@ export type Permission = {
   slug?: string;
   name_ar: string;
   name_en: string;
-  permission_category_id: string | number | null;
+  permission_category_id: string | null;
   permission_category: PermissionCategorySummary | null;
   dashboard_permissions: boolean;
   created_at: string;
@@ -24,6 +24,11 @@ export type Role = {
   /** Public-registration flag returned by the API; dashboard forms must not edit it. */
   allowed_user?: boolean | 0 | 1;
   permissions?: Permission[];
+};
+
+export type CreatedRole = Role & {
+  /** Informational only: copied roles do not retain a relationship to the source. */
+  copied_from?: Pick<Role, "id" | "name">;
 };
 
 export type PermissionCategorySummary = {
@@ -80,5 +85,6 @@ export type RolesListResponse = PaginatedResponse<Role>;
 export type PermissionsListResponse = PaginatedResponse<Permission>;
 export type PermissionCategoriesListResponse = PaginatedResponse<PermissionCategory>;
 export type RoleDetailResponse = DetailResponse<Role>;
+export type CreateRoleResponse = DetailResponse<CreatedRole>;
 export type PermissionDetailResponse = DetailResponse<Permission>;
 export type PermissionCategoryDetailResponse = DetailResponse<PermissionCategory>;

@@ -29,6 +29,7 @@ test("suspend and reactivate use the documented endpoints and bodies", async () 
         return { ok: true, status: 200, data: {} };
       },
     },
+    "@/lib/user-removal": load("src/lib/user-removal.ts"),
   });
 
   await mutations.suspendUser("user-1", "Chargeback review");
@@ -40,6 +41,30 @@ test("suspend and reactivate use the documented endpoints and bodies", async () 
     ["POST", "/users/user-2/suspend", {}],
     ["POST", "/users/user-3/reactivate"],
   ]);
+});
+
+test("account removal uses DELETE and sends the required audit reason", async () => {
+  const calls = [];
+  const mutations = load("src/services/mutations/users.ts", {
+    "..": {
+      safeApi: async (...args) => {
+        calls.push(args);
+        return { ok: true, status: 200, data: {} };
+      },
+    },
+    "@/lib/user-removal": load("src/lib/user-removal.ts"),
+  });
+
+  await mutations.removeUser(
+    "user-to-remove",
+    "  Fraudulent activity confirmed by the risk team  ",
+  );
+
+  assert.deepEqual(calls, [[
+    "DELETE",
+    "/users/user-to-remove/delete",
+    { reason: "Fraudulent activity confirmed by the risk team" },
+  ]]);
 });
 
 test("add-user payload sends an international mobile as digits only", () => {
@@ -93,6 +118,33 @@ test("a persisted status change updates detail and list caches before refetch", 
   assert.deepEqual(activePage.data, []);
   assert.equal(activePage.meta.total, 0);
   assert.deepEqual(queryClient.invalidations, [["users"]]);
+});
+
+test("a removed user keeps the persisted deleted representation in unfiltered caches", async () => {
+  const { syncUserMutationResponse } = load("src/lib/user-query-cache.ts");
+  const queryClient = createFakeQueryClient([
+    [["users", { page: 1, limit: 10 }], usersResponse([user("user-1", "active")])],
+    [["users", { page: 1, limit: 10, account_status: "active" }], usersResponse([user("user-1", "active")])],
+  ]);
+  const removed = {
+    ...user("user-1", "deleted"),
+    name: "Deleted User",
+    mobile: null,
+    deleted_at: "2026-10-18 14:00:00",
+  };
+  const response = { error: false, message: "removed", data: removed };
+
+  await syncUserMutationResponse(queryClient, response);
+
+  assert.deepEqual(queryClient.read(["user", "user-1"]), response);
+  const cachedListUser = queryClient.read(["users", { page: 1, limit: 10 }]).data[0];
+  assert.equal(cachedListUser.account_status, "deleted");
+  assert.equal(cachedListUser.name, "Deleted User");
+  assert.equal(cachedListUser.mobile, null);
+  assert.deepEqual(
+    queryClient.read(["users", { page: 1, limit: 10, account_status: "active" }]).data,
+    [],
+  );
 });
 
 function user(id, accountStatus) {

@@ -23,7 +23,7 @@ export type PaymentRequest = {
   user: {
     id: string;
     name: string;
-    mobile: string;
+    mobile: string | null;
   };
 };
 
@@ -69,7 +69,7 @@ export type BankAccount = {
 export type PaymentRequestUser = {
   id: string;
   name: string;
-  mobile: string;
+  mobile: string | null;
   role: string;
   is_subscribed: boolean;
   language: string;

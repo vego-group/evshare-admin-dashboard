@@ -20,7 +20,7 @@ function EndTripConfirmModal({ open, isSubmitting, error, onClose, onConfirm }: 
           <CheckCircle2 className="size-7 shrink-0" />
         </span>
         <p className="text-sm leading-6 text-dark-gray">
-          هل تريد إنهاء هذه الرحلة؟ سيحسب الخادم السعر النهائي ويسوي المحفظة مرة واحدة. يمكن إعادة المحاولة بأمان.
+          هل تريد إنهاء هذه الرحلة؟ سيحسب الخادم السعر النهائي ويسوي المحفظة مرة واحدة، ثم يحفظ للسائق إشعار إيقاف الرحلة ويرسله إلى أجهزته إذا كانت إشعارات الدفع مفعلة. يمكن إعادة المحاولة بأمان.
         </p>
         <p className="text-sm leading-6 text-dark-gray">يجب أن يكون القفل مغلقًا ومتصلاً حتى تنتهي الرحلة. إذا بقي مفتوحًا، أغلقه ثم حاول مرة أخرى.</p>
         {error && <p role="alert" className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</p>}

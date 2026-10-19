@@ -25,7 +25,7 @@ const countries = load("src/data/countries.ts");
 const { normalizeTenantPhone, displayTenantPhone } = load("src/lib/utils/tenant-phone.ts", {
   "@/data/countries": countries,
 });
-const { formatStoredPhone, normalizePhoneForLink } = load("src/lib/utils/format-phone.ts", {
+const { formatStoredPhone, formatUserMobile, normalizePhoneForLink } = load("src/lib/utils/format-phone.ts", {
   "./tenant-phone": { normalizeTenantPhone },
   "@/data/countries": countries,
 });
@@ -48,6 +48,13 @@ for (const [country, national, trunk, e164] of [
     }
   });
 }
+
+test("deleted-user mobiles use the API value and never decode storage tombstones", () => {
+  assert.equal(formatUserMobile("966537486167", "sa"), "+966537486167");
+  assert.equal(formatUserMobile(null, "sa"), "-");
+  assert.equal(formatUserMobile("deleted_11_1783948551_966537486167", "sa"), "-");
+  assert.equal(formatUserMobile("deleted-11", "sa", "unavailable"), "unavailable");
+});
 
 test("unknown tenant fails closed and legacy display stays unchanged", () => {
   assert.equal(normalizeTenantPhone("512345678", "xx"), null);

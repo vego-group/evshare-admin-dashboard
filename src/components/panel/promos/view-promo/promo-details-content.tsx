@@ -3,7 +3,7 @@
 import { Users } from "lucide-react";
 import type { ReactNode } from "react";
 
-import { formatStoredPhone } from "@/lib/utils/format-phone";
+import { formatUserMobile } from "@/lib/utils/format-phone";
 import CurrencyMoneyValue from "@/components/ui/money-value";
 import type { PromoDetailData, PromoRedeemableType } from "@/types";
 import { PricingConfigurationMeta } from "@/components/ui/pricing-configuration-meta";
@@ -140,7 +140,7 @@ export function PromoDetailsContent({ detail, isLoading }: Props) {
                       </span>
                     </RedemptionCell>
                     <RedemptionCell dir="ltr">
-                      {formatStoredPhone(redemption.user.mobile)}
+                      {formatUserMobile(redemption.user.mobile)}
                     </RedemptionCell>
                     <RedemptionCell>
                       {redemption.redeemable_type

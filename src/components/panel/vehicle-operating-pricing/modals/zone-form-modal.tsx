@@ -108,6 +108,11 @@ function ZoneFormModal({ vehicle, zone, isSaving, open, onClose, onSaved, setIsS
   const type = watch("type");
   const speedLimitField = register("speed_limit");
   const coordinates = watch("coordinates");
+  const typeHelp = type === "slow"
+    ? "يظهر للسائق تنبيه برتقالي مستمر بحد السرعة المحدد."
+    : type === "restricted"
+      ? "يظهر للسائق تنبيه أحمر بأن القيادة غير مسموح بها، وله الأولوية عند تداخل المناطق."
+      : "منطقة تشغيل عادية ولا يظهر فيها تحذير للسائق.";
 
   return (
     <Modal open={open} onClose={onClose} title={isEdit ? "تعديل المنطقة" : "إضافة منطقة"} contentClassName="max-w-2xl">
@@ -131,6 +136,7 @@ function ZoneFormModal({ vehicle, zone, isSaving, open, onClose, onSaved, setIsS
               render={({ field }) => <ZoneTypeDropdown value={field.value} onChange={field.onChange} />}
             />
             <InputErrorMessage msg={errors.type?.message} />
+            <span className="mt-1.5 block text-xs text-gray">{typeHelp}</span>
           </label>
           {type === "slow" && (
             <label className="block">

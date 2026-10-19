@@ -31,7 +31,7 @@ export type WalletTransactionDetails = WalletTransaction & {
   user?: {
     id: string;
     name: string;
-    mobile: string;
+    mobile: string | null;
     bank_account: string | null;
     role: string;
   } | null;

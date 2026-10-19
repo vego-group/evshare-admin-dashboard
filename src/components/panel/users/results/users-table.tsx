@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 
-import { formatStoredPhone } from "@/lib/utils/format-phone";
+import { formatUserMobile } from "@/lib/utils/format-phone";
 import { useTenantCountry } from "@/provider/currency";
 import type { UserListItem } from "@/types";
 
@@ -91,7 +91,7 @@ function UsersTable({
                   </div>
                 </TableCell>
                 <TableCell dir="ltr" align="left">
-                  {formatStoredPhone(user.mobile, countryCode)}
+                  {formatUserMobile(user.mobile, countryCode)}
                 </TableCell>
                 <TableCell truncate={false}>
                   <RoleBadge role={user.role} name={user.role ? (roleNames[user.role] ?? user.role) : undefined} />

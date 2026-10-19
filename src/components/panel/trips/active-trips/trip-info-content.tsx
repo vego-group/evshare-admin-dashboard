@@ -14,6 +14,7 @@ import { formatDistanceParts, haversineDistanceKm } from "@/lib/utils/geo";
 import type { TripListItem } from "@/types";
 import MoneyValue from "../money-value";
 import TripStatusBadge from "../results/trip-status-badge";
+import TripZoneStatus from "../trip-zone-status";
 import {
   formatDate,
   tripDriverName,
@@ -54,6 +55,7 @@ function TripInfoContent({
       </div>
 
       <div className="space-y-2 px-3 py-2.5 text-xs">
+        <TripZoneStatus trip={trip} compact />
         <p className="flex items-center gap-1.5 text-gray">
           <User className="size-3.5 shrink-0 text-primary" />
           <span className="min-w-0 truncate">
