@@ -6,7 +6,12 @@ export type UserVerificationStatus = "verified" | "unverified";
 export type UserListItem = {
   id: string;
   name: string;
-  mobile: string;
+  /**
+   * Deleted accounts normally expose the original number from
+   * `deleted_mobile`. Older removals whose number cannot be recovered return
+   * null, so list and detail consumers must tolerate that state.
+   */
+  mobile: string | null;
   email: string | null;
   active: boolean;
   account_status: UserAccountStatus;

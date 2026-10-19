@@ -21,7 +21,7 @@ export type AppVersionReleaseNotes = {
 export type AppVersionCreatedBy = {
   id: string;
   name: string;
-  mobile: string;
+  mobile: string | null;
   avatar: string;
 };
 

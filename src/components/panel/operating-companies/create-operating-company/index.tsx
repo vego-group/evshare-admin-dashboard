@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import InputErrorMessage from "@/components/ui/input-error-message";
 import { useUsers } from "@/hooks/api";
 import { getPhoneCountry, normalizeTenantPhone } from "@/lib/utils/tenant-phone";
-import { formatStoredPhone } from "@/lib/utils/format-phone";
+import { formatUserMobile } from "@/lib/utils/format-phone";
 import { useTenantCountry } from "@/provider/currency";
 import { createOperatingCompanyAPI } from "@/services/mutations";
 
@@ -94,7 +94,7 @@ function CreateOperatingCompany() {
         <Field label="اسم الشركة بالعربية" error={errors.name_ar}><input name="name_ar" required maxLength={255} className={inputClass} placeholder="أدخل اسم الشركة بالعربية" /></Field>
         <Field label="اسم الشركة بالإنجليزية" error={errors.name_en}><input name="name_en" required maxLength={255} dir="ltr" className={inputClass} placeholder="Enter company name in English" /></Field>
         <Field label="بحث عن المالك" ><input value={ownerSearch} onChange={(e) => setOwnerSearch(e.target.value)} className={inputClass} placeholder="ابحث بالاسم أو الجوال" /></Field>
-        <Field label="المالك" error={errors.owner_id}><FormSelectDropdown name="owner_id" label="المالك" placeholder={usersLoading ? "جار التحميل..." : "اختر مستخدماً نشطاً"} value={selectedOwner?.id ?? ""} options={[...(selectedOwner && !users?.data?.some((user) => user.id === selectedOwner.id) ? [{ value: selectedOwner.id, label: selectedOwner.label }] : []), ...(users?.data?.map((user) => ({ value: user.id, label: `${user.name} — ${formatStoredPhone(user.mobile)}` })) ?? [])]} onChange={(option) => setSelectedOwner({ id: option.value, label: option.label })} emptyMessage={ownerSearch ? "لا توجد نتائج مطابقة" : "لا يوجد مستخدمون نشطون"} disabled={usersLoading} /></Field>
+        <Field label="المالك" error={errors.owner_id}><FormSelectDropdown name="owner_id" label="المالك" placeholder={usersLoading ? "جار التحميل..." : "اختر مستخدماً نشطاً"} value={selectedOwner?.id ?? ""} options={[...(selectedOwner && !users?.data?.some((user) => user.id === selectedOwner.id) ? [{ value: selectedOwner.id, label: selectedOwner.label }] : []), ...(users?.data?.map((user) => ({ value: user.id, label: `${user.name} — ${formatUserMobile(user.mobile)}` })) ?? [])]} onChange={(option) => setSelectedOwner({ id: option.value, label: option.label })} emptyMessage={ownerSearch ? "لا توجد نتائج مطابقة" : "لا يوجد مستخدمون نشطون"} disabled={usersLoading} /></Field>
         <Field label="عمولة المنصة (%)" error={errors.commission_percentage}><input name="commission_percentage" type="number" min="0" max="100" step="0.01" required dir="ltr" className={inputClass} placeholder="مثال: 10" /></Field>
         <Field label="رقم الجوال" error={errors.mobile}><input name="mobile" type="tel" required dir="ltr" className={inputClass} placeholder={phoneCountry?.placeholder ?? "أدخل رقم الجوال"} /></Field>
         <Field label="البريد الإلكتروني" error={errors.email}><input name="email" type="email" required maxLength={255} dir="ltr" className={inputClass} placeholder="ops@example.com" /></Field>

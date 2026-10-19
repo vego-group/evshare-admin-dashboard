@@ -11,7 +11,7 @@ import { ArrowRight } from "lucide-react";
 import Header from "@/components/ui/header";
 import { Button } from "@/components/ui/button";
 import InputErrorMessage from "@/components/ui/input-error-message";
-import { formatStoredPhone } from "@/lib/utils/format-phone";
+import { formatUserMobile } from "@/lib/utils/format-phone";
 import {
   useOperatingCompanies,
   useProducts,
@@ -221,7 +221,7 @@ function CreateVehicle() {
       : []),
     ...(users?.data?.map((user) => ({
       value: user.id,
-      label: `${user.name} — ${formatStoredPhone(user.mobile)}`,
+      label: `${user.name} — ${formatUserMobile(user.mobile)}`,
     })) ?? []),
   ];
   const productOptions: FormSelectOption[] = [

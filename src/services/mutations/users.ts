@@ -2,6 +2,7 @@
 
 import { safeApi } from "..";
 import type { AdminUserDetailResponse } from "@/types";
+import { normalizeUserRemovalReason } from "@/lib/user-removal";
 
 type UserMutationError = { message: string; errors?: Record<string, string[]>; error_code?: string };
 
@@ -40,4 +41,6 @@ export const reactivateUser = async (id: string) =>
   safeApi<AdminUserDetailResponse, UserMutationError>("POST", `/users/${id}/reactivate`);
 
 export const removeUser = async (id: string, reason: string) =>
-  safeApi<AdminUserDetailResponse, UserMutationError>("DELETE", `/users/${id}/delete`, { reason });
+  safeApi<AdminUserDetailResponse, UserMutationError>("DELETE", `/users/${id}/delete`, {
+    reason: normalizeUserRemovalReason(reason),
+  });

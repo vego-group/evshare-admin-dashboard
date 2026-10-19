@@ -4,7 +4,7 @@ import Modal from "@/components/ui/modal";
 import Shimmer from "@/components/ui/shimmer";
 import { useTestAccount } from "@/hooks/api";
 import { cn } from "@/lib/utils";
-import { formatStoredPhone } from "@/lib/utils/format-phone";
+import { formatUserMobile } from "@/lib/utils/format-phone";
 
 import { Amount, StatusBadge, TestAccountIcon } from "../results/test-account-result-parts";
 
@@ -43,7 +43,7 @@ function TestAccountDetailsModal({
                     {testAccount.user.name}
                   </p>
                   <p className="truncate text-sm text-gray" dir="ltr">
-                    {formatStoredPhone(testAccount.user.mobile)}
+                    {formatUserMobile(testAccount.user.mobile)}
                   </p>
                 </div>
               </div>

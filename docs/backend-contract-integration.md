@@ -20,6 +20,9 @@ healthy.
 - Trip end/cancel requests include the reason and idempotency key in the request body and
   header. The UI reports success only for `COMPLETED`; queued, device-pending, compensated,
   failed, and reconciliation states are not presented as completion.
+- Active-trip lists and active trip details poll so lock-close completion is reflected without
+  an operator refresh. If a trip completes while an End/Cancel confirmation is open, the stale
+  action is dismissed. Trip details render `end_source` and `lock_closed_at` when supplied.
 - Refund, pricing configuration, content publication, and feature-flag version/rollback
   endpoints have typed query and mutation boundaries. Existing receipt-refund compatibility
   calls remain in place until that backend surface is retired.
@@ -28,6 +31,10 @@ healthy.
   policy.
 - Money rendering respects the record currency and configured minor units rather than a
   hard-coded tenant currency.
+- Deleted users render the original mobile supplied by the API in list, detail, export, and
+  embedded-user contexts. Unrecoverable legacy deletions render an unavailable marker; the
+  dashboard never parses a storage tombstone to guess a number. Mobile search and export keep
+  using the users endpoint query so the backend applies deleted-mobile matching consistently.
 - The October 2026 cleanup is treated as a backend operation, not a dashboard command. Empty
   module responses remain valid and retained payment operations render safely when their deleted
   order leaves `payable: null`. See [the cleanup integration note](./data-cleanup-2026-10.md).
@@ -47,3 +54,8 @@ are retained without silently changing the existing operator decision UI.
 requires the authorization probe and the payment, refund, device, and trip staging checks to
 run against the target tenant databases and real provider/device integrations. Those checks
 cannot be established by this frontend repository alone.
+
+The lock-close guide states that `GET /admin/v1/trips` and `GET /admin/v1/trips/{uuid}` do not
+yet serialize `end_source` or `lock_closed_at`. Their dashboard fields are therefore optional and
+forward-compatible; backend exposure is still required before operators can see completion
+provenance and the normalized lock-close time.

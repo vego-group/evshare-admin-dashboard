@@ -1,7 +1,7 @@
 import EmptyState from "@/components/ui/empty-state";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { formatStoredPhone } from "@/lib/utils/format-phone";
+import { formatUserMobile } from "@/lib/utils/format-phone";
 import type { PaymentTransaction } from "@/types";
 
 import {
@@ -98,7 +98,7 @@ function TransactionTableRow({
         <span className="block truncate">{transaction.reference ?? transaction.transaction_id}</span>
         {transaction.reference && transaction.reference !== transaction.transaction_id ? <span className="mt-1 block truncate text-xs text-gray">{transaction.transaction_id}</span> : null}
       </TableCell>
-      <TableCell><span className="block truncate">{user?.name ?? "-"}</span><span dir="ltr" className="mt-1 block text-xs text-gray">{user?.mobile ? formatStoredPhone(user.mobile) : "-"}</span></TableCell>
+      <TableCell><span className="block truncate">{user?.name ?? "-"}</span><span dir="ltr" className="mt-1 block text-xs text-gray">{formatUserMobile(user?.mobile)}</span></TableCell>
       <TableCell>{formatGateway(transaction.payment_gateway)}</TableCell>
       <TableCell>{formatPaymentMethod(transaction)}</TableCell>
       <TableCell dir="ltr">

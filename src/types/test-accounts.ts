@@ -1,7 +1,7 @@
 export type TestAccountUser = {
   id: string;
   name: string;
-  mobile: string;
+  mobile: string | null;
 };
 
 export type TestAccountsQueryParams = {

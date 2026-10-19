@@ -27,6 +27,7 @@ export default function UserDetailActions({ user }: { user: AdminUserDetail }) {
       const result = await request();
       if (result.ok && result.data) {
         await saved(user.id, result.data);
+        setAction(null);
         showSuccessModal(result.message || "تم تحديث الحساب");
       } else toast.error(result.error?.message || result.message || fallback);
     } catch {

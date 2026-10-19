@@ -7,7 +7,7 @@ import MoneyValue from "@/components/ui/money-value";
 import { PricingConfigurationMeta } from "@/components/ui/pricing-configuration-meta";
 import type { VehicleListItem } from "@/types";
 import { vehicleTypeSourceLabel } from "@/lib/utils/vehicle-type";
-import { formatStoredPhone } from "@/lib/utils/format-phone";
+import { formatUserMobile } from "@/lib/utils/format-phone";
 import StatusBadge from "../status-badge";
 import ProvisioningBadge from "../provisioning-badge";
 import VehicleTypeIndicator from "../vehicle-type-indicator";
@@ -96,7 +96,7 @@ export function VehicleDetailsContent({ vehicle, isLoading }: Props) {
         {merchant ? (
           <div className="grid gap-2 sm:grid-cols-2">
             <DetailRow label="الاسم" value={merchant.name} />
-            <DetailRow label="رقم الجوال" value={<span dir="ltr">{formatStoredPhone(merchant.mobile)}</span>} />
+            <DetailRow label="رقم الجوال" value={<span dir="ltr">{formatUserMobile(merchant.mobile)}</span>} />
             <DetailRow label="الدور" value={merchant.role} />
             <DetailRow label="رقم المستخدم" value={vehicle.user_id} />
           </div>

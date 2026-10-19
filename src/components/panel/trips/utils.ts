@@ -1,4 +1,4 @@
-import type { Coordinate, TripListItem, TripPricingSnapshot } from "@/types";
+import type { Coordinate, TripEndSource, TripListItem, TripPricingSnapshot } from "@/types";
 
 export function formatDate(value?: string | null) {
   if (!value) return "-";
@@ -8,6 +8,15 @@ export function formatDate(value?: string | null) {
     dateStyle: "medium",
     timeStyle: "short",
   }).format(date);
+}
+
+/** Formats the backend-authoritative trip distance, which is expressed in km. */
+export function formatTripDistance(value?: number | string | null) {
+  if (value == null || value === "") return "-";
+  const distanceKm = Number(value);
+  if (!Number.isFinite(distanceKm)) return String(value);
+  if (distanceKm < 0.01) return `${Math.round(distanceKm * 1000)} متر`;
+  return `${new Intl.NumberFormat("ar-EG", { maximumFractionDigits: 2 }).format(distanceKm)} كم`;
 }
 
 export function tripVehicleTitle(vehicle: TripListItem["vehicle"]) {
@@ -50,4 +59,21 @@ export function formatDuration(seconds?: number | null) {
   if (seconds == null) return "-";
   if (seconds % 60 === 0) return `${seconds / 60} دقيقة`;
   return `${seconds} ثانية`;
+}
+
+export function tripEndSourceLabel(source?: TripEndSource | null) {
+  switch (source) {
+    case "rider":
+      return "السائق";
+    case "lock_closed":
+      return "إغلاق القفل تلقائياً";
+    case "lock_reconciliation":
+      return "مطابقة حالة القفل تلقائياً";
+    case "auto_stop":
+      return "الإيقاف التلقائي لنفاد الرصيد";
+    case "admin":
+      return "المشرف";
+    default:
+      return source || "-";
+  }
 }

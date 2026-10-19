@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import Panel from "@/components/ui/panel";
 import Shimmer from "@/components/ui/shimmer";
 import { usePaymentCheckout, usePaymentTransaction } from "@/hooks/api";
-import { formatStoredPhone } from "@/lib/utils/format-phone";
+import { formatUserMobile } from "@/lib/utils/format-phone";
 import type { PaymentCheckout, PaymentOperationTab, PaymentTransaction } from "@/types";
 
 import { describePayable, formatDate, formatGateway, formatPaymentMethod, MoneyValue } from "../utils";
@@ -48,7 +48,7 @@ function CheckoutDetails({ checkout }: { checkout: PaymentCheckout }) {
     </Section>
     <Section title="المستخدم">
       <Row label="الاسم" value={checkout.user?.name ?? "-"} />
-      <Row label="رقم الجوال" value={checkout.user?.mobile ? formatStoredPhone(checkout.user.mobile) : "-"} ltr />
+      <Row label="رقم الجوال" value={formatUserMobile(checkout.user?.mobile)} ltr />
       <Row label="معرف المستخدم" value={checkout.user?.id ?? "-"} ltr />
     </Section>
     <Section title="المرجع">
@@ -78,7 +78,7 @@ function TransactionDetails({ transaction }: { transaction: PaymentTransaction }
     </Section>
     <Section title="المستخدم">
       <Row label="الاسم" value={user?.name ?? "-"} />
-      <Row label="رقم الجوال" value={user?.mobile ? formatStoredPhone(user.mobile) : "-"} ltr />
+      <Row label="رقم الجوال" value={formatUserMobile(user?.mobile)} ltr />
       <Row label="معرف المستخدم" value={user?.id ?? "-"} ltr />
     </Section>
     {checkout ? <Section title="عملية التحقق المرتبطة">

@@ -20,7 +20,7 @@ function CancelTripConfirmModal({ open, isSubmitting, error, onClose, onConfirm 
           <Ban className="size-7 shrink-0" />
         </span>
         <p className="text-sm leading-6 text-dark-gray">
-          هل تريد إلغاء هذه الرحلة؟ يعتمد رد رسوم الفتح على نافذة الإلغاء المجاني، وسيعرض الخادم قرار الاسترداد النهائي.
+          هل تريد إلغاء هذه الرحلة؟ يعتمد رد رسوم الفتح على نافذة الإلغاء المجاني، وسيعرض الخادم قرار الاسترداد النهائي. بعد نجاح العملية، يحفظ للسائق إشعار إيقاف الرحلة ويرسله إلى أجهزته إذا كانت إشعارات الدفع مفعلة.
         </p>
         {error && <p role="alert" className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</p>}
         <div className="flex justify-center gap-2">

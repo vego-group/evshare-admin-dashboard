@@ -8,10 +8,11 @@ import type {
   RoleFormValues,
   SyncRolePermissionsValues,
 } from "@/schemas/roles-permissions";
+import type { CreateRoleResponse } from "@/types";
 import { safeApi } from "..";
 
 export const addRole = async (payload: RoleFormValues) =>
-  await safeApi("POST", "/roles/add", payload);
+  await safeApi<CreateRoleResponse>("POST", "/roles/add", payload);
 export const editRole = async (roleId: string, payload: RoleEditFormValues) =>
   await safeApi("POST", `/roles/${roleId}/edit`, payload);
 export const deleteRole = async (roleId: string) =>

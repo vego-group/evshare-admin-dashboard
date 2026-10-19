@@ -34,6 +34,19 @@ export function formatStoredPhone(phone: number | string | null | undefined, cou
   return raw;
 }
 
+/** Formats API user mobiles and gives unrecoverable deleted accounts a stable UI fallback. */
+export function formatUserMobile(
+  phone: number | string | null | undefined,
+  countryCode?: string,
+  fallback = "-",
+) {
+  const raw = String(phone ?? "").trim();
+  // Never try to reconstruct a number from a storage tombstone. The API owns
+  // that recovery and returns the original number (or null) in `mobile`.
+  if (!raw || /^deleted(?:_|-)/i.test(raw)) return fallback;
+  return formatStoredPhone(raw, countryCode).trim() || fallback;
+}
+
 export function normalizePhoneForLink(phone: string) {
   return formatStoredPhone(phone);
 }
