@@ -5,9 +5,11 @@ import { useQueryClient } from "@tanstack/react-query";
 import {
   AlertTriangle,
   ArrowLeft,
+  ChevronDown,
   Clock3,
   Database,
   History,
+  ListFilter,
   LoaderCircle,
   PlayCircle,
   RefreshCw,
@@ -20,6 +22,13 @@ import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import DashboardDropdown from "@/components/ui/dashboard-dropdown";
 import DatePicker from "@/components/ui/date-picker";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import EmptyState from "@/components/ui/empty-state";
 import Header from "@/components/ui/header";
 import Modal from "@/components/ui/modal";
 import QueryErrorState from "@/components/ui/query-error-state";
@@ -441,14 +450,7 @@ function HistoryScreen({ runs, meta, isLoading, isFetching, isError, status, pag
         <div><h2 className="text-lg font-semibold text-secondary">سجل العمليات</h2><p className="mt-1 text-sm text-text-muted">كل المعاينات ونتائج التنفيذ في الدولة الحالية.</p></div>
         <div className="flex items-center gap-2">
           {isFetching ? <RefreshCw className="size-4 animate-spin text-text-muted" /> : null}
-          <DashboardDropdown
-            value={status || ""}
-            options={[{ value: "", label: "كل الحالات" }, ...statusOptions]}
-            onChange={(value) => onStatusChange((value || undefined) as DataCleanupStatus | undefined)}
-            placeholder="كل الحالات"
-            ariaLabel="تصفية حسب الحالة"
-            className="w-52"
-          />
+          <HistoryStatusDropdown value={status} onChange={onStatusChange} />
         </div>
       </div>
       {isLoading ? <div className="h-64 animate-pulse bg-neutral-50" /> : runs.length ? (
@@ -466,7 +468,17 @@ function HistoryScreen({ runs, meta, isLoading, isFetching, isError, status, pag
             ))}</tbody>
           </table>
         </div>
-      ) : <div className="p-12 text-center text-sm text-text-muted">لا توجد عمليات مطابقة.</div>}
+      ) : (
+        <EmptyState
+          title={status ? "لا توجد عمليات مطابقة" : "لا يوجد سجل تنظيف بعد"}
+          description={
+            status
+              ? "لا توجد عمليات تنظيف بالحالة المحددة. جرّب اختيار حالة أخرى."
+              : "ستظهر هنا معاينات التنظيف ونتائج العمليات بعد إنشائها."
+          }
+          className="min-h-72 rounded-none border-0"
+        />
+      )}
       {meta && meta.lastPage > 1 ? (
         <div className="flex items-center justify-between border-t border-border-subtle p-4 text-sm">
           <span className="text-text-muted">صفحة {page.toLocaleString("ar-EG")} من {meta.lastPage.toLocaleString("ar-EG")}</span>
@@ -474,6 +486,56 @@ function HistoryScreen({ runs, meta, isLoading, isFetching, isError, status, pag
         </div>
       ) : null}
     </section>
+  );
+}
+
+function HistoryStatusDropdown({
+  value,
+  onChange,
+}: {
+  value?: DataCleanupStatus;
+  onChange: (value: DataCleanupStatus | undefined) => void;
+}) {
+  const options: Array<{ value?: DataCleanupStatus; label: string }> = [
+    { value: undefined, label: "كل الحالات" },
+    ...statusOptions,
+  ];
+  const selectedLabel = options.find((option) => option.value === value)?.label ?? "كل الحالات";
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          type="button"
+          aria-label="تصفية حسب الحالة"
+          className="group flex h-9.5 w-52 items-center justify-between rounded-[14px] border border-primary bg-primary/4 py-3.5 pl-2 pr-3 text-sm font-medium text-dark-gray outline-none transition hover:bg-primary/10 focus-visible:ring-2 focus-visible:ring-primary/20"
+        >
+          <span className="flex min-w-0 items-center gap-1">
+            <span className="truncate">{selectedLabel}</span>
+            <ListFilter className="size-3.5 shrink-0 text-primary" />
+          </span>
+          <ChevronDown className="size-5 shrink-0 text-primary transition group-data-[state=open]:rotate-180" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align="start"
+        sideOffset={2}
+        className="max-h-72 w-[var(--radix-dropdown-menu-trigger-width)] overflow-y-auto rounded-[14px] border-primary bg-bg-warm-ivory p-0"
+      >
+        {options.map((option) => (
+          <DropdownMenuItem
+            key={option.value ?? "all"}
+            onSelect={() => onChange(option.value)}
+            className={cn(
+              "h-10 rounded-none px-3 font-medium",
+              value === option.value && "bg-primary/15 text-secondary",
+            )}
+          >
+            {option.label}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 
@@ -516,7 +578,7 @@ function DataCleanupsShimmer() {
 
 function buildInitialRules(modules: DataCleanupModule[]): RuleState {
   return Object.fromEntries(modules.map((module) => [module.key, {
-    included: true,
+    included: false,
     mode: module.default.mode,
     cutoff: module.default.cutoff,
   }])) as RuleState;
