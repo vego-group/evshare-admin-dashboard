@@ -57,7 +57,9 @@ function PromosTable({ promos, onViewPromo, onEditPromo, onDeletePromo }: Promos
                   <DiscountValue promo={promo} />
                 </TableCell>
                 <TableCell dir="ltr">{formatUsage(promo)}</TableCell>
-                <TableCell dir="ltr">{formatPeriod(promo)}</TableCell>
+                <TableCell dir="ltr" truncate={false}>
+                  <span className="whitespace-nowrap">{formatPeriod(promo)}</span>
+                </TableCell>
                 <TableCell truncate={false}>
                   <StatusBadge promo={promo} />
                 </TableCell>

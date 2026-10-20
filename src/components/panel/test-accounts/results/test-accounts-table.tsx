@@ -40,11 +40,16 @@ function TestAccountsTable({
               <tr key={testAccount.id} className="text-dark-gray">
                 <TableCell>
                   <div className="max-w-55 min-w-0">
-                    <p className="truncate text-base font-medium" title={testAccount.user.name}>
-                      {testAccount.user.name}
+                    <p
+                      className="truncate text-base font-medium"
+                      title={testAccount.user?.name || "مستخدم غير متاح"}
+                    >
+                      {testAccount.user?.name || "مستخدم غير متاح"}
                     </p>
                     <p className="truncate text-sm text-gray" dir="ltr">
-                      {formatUserMobile(testAccount.user.mobile)}
+                      {testAccount.user
+                        ? formatUserMobile(testAccount.user.mobile)
+                        : "-"}
                     </p>
                   </div>
                 </TableCell>

@@ -13,7 +13,7 @@ export type TestAccountsQueryParams = {
 export type TestAccountListItem = {
   id: string;
   currency?: string;
-  user: TestAccountUser;
+  user: TestAccountUser | null;
   subscription_amount: number;
   order_amount: number;
   shipping_fee: number;

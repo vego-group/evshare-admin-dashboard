@@ -134,7 +134,7 @@ function TestAccounts() {
       <TestAccountConfirmModal
         open={Boolean(testAccountPendingToggle)}
         variant={testAccountPendingToggle?.is_active ? "disable" : "enable"}
-        userName={testAccountPendingToggle?.user.name}
+        userName={testAccountPendingToggle?.user?.name}
         isSubmitting={isTogglingActive}
         onClose={() => {
           if (!isTogglingActive) setTestAccountPendingToggle(null);
@@ -145,7 +145,7 @@ function TestAccounts() {
       <TestAccountConfirmModal
         open={Boolean(testAccountPendingDelete)}
         variant="delete"
-        userName={testAccountPendingDelete?.user.name}
+        userName={testAccountPendingDelete?.user?.name}
         isSubmitting={isDeleting}
         onClose={() => {
           if (!isDeleting) setTestAccountPendingDelete(null);

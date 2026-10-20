@@ -69,7 +69,9 @@ export default function OperatingContractSection({ orderId }: { orderId: string 
         </div>
       ) : !contract ? <p className="text-sm text-gray">لا يوجد عقد تشغيل لهذا الطلب حتى الآن.</p> : (
         <>
-          <p className="text-sm text-secondary">الشركة المشغلة: {contract.operation_company.name}</p>
+          <p className="text-sm text-secondary">
+            الشركة المشغلة: {contract.operation_company?.name ?? "-"}
+          </p>
           {contract.signed_at && <p className="text-sm text-gray">تاريخ التوقيع: {new Date(contract.signed_at).toLocaleString("ar-EG")}</p>}
           {contract.status === "pending_signature" && <p className="text-sm text-gray">بانتظار رفع العقد الموقع من العميل.</p>}
           {contract.rejection_reason && <p className="rounded-lg bg-red-50 p-3 text-sm text-red-600">سبب الرفض: {contract.rejection_reason}</p>}
