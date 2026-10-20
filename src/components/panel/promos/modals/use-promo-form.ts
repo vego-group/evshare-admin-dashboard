@@ -7,6 +7,7 @@ import type { PromoFormValues } from "@/schemas/promos";
 import { addPromo, editPromo } from "@/services/mutations";
 import type { PromoListItem } from "@/types";
 import { confirmPricingChange } from "@/lib/utils/confirm-pricing-change";
+import { useTenantCountry } from "@/provider/currency";
 
 import {
   buildAddPromoPayload,
@@ -25,6 +26,7 @@ type Options = {
 };
 
 export function usePromoForm({ open, promo, onClose, onSaved }: Options) {
+  const countryCode = useTenantCountry();
   const form = useForm<PromoFormValues>({
     resolver: promoFormResolver,
     defaultValues: promoDefaultValues,
@@ -42,8 +44,8 @@ export function usePromoForm({ open, promo, onClose, onSaved }: Options) {
       form.reset(promoDefaultValues);
       return;
     }
-    form.reset(promo ? promoToFormValues(promo) : promoDefaultValues);
-  }, [form, open, promo]);
+    form.reset(promo ? promoToFormValues(promo, countryCode) : promoDefaultValues);
+  }, [countryCode, form, open, promo]);
 
   const close = () => {
     if (form.formState.isSubmitting) return;

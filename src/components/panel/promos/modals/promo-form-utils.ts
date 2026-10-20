@@ -1,7 +1,7 @@
 import type { FieldErrors, Resolver } from "react-hook-form";
 
 import { promoSchema, type PromoFormValues } from "@/schemas/promos";
-import type { PromoCodePayload, PromoListItem } from "@/types";
+import type { CountryCode, PromoCodePayload, PromoListItem } from "@/types";
 
 export const promoDefaultValues: Partial<PromoFormValues> = {
   code: "",
@@ -38,15 +38,39 @@ export const promoFormResolver: Resolver<PromoFormValues> = async (values) => {
   return { values: {}, errors };
 };
 
-// The API returns dates as full ISO timestamps (e.g. "2026-08-31T00:00:00.000000Z");
-// the date picker only understands the "yyyy-MM-dd" portion, so slice it off here
-// rather than round-tripping through `new Date()` (which can shift the day under
-// negative UTC offsets).
-function toDateInputValue(value: string | null) {
-  return value ? value.slice(0, 10) : "";
+const tenantTimeZones: Record<CountryCode, string> = {
+  sa: "Asia/Riyadh",
+  jo: "Asia/Amman",
+  sy: "Asia/Damascus",
+};
+
+// Promo dates are entered as tenant-local calendar dates, but the API returns
+// them as UTC timestamps. Convert back in the tenant's timezone before giving
+// the value to the date picker (for example, 2026-10-20T21:00:00Z is
+// 2026-10-21 in Riyadh).
+function toDateInputValue(value: string | null, countryCode: string) {
+  if (!value) return "";
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value.slice(0, 10);
+
+  const timeZone = tenantTimeZones[countryCode.toLowerCase() as CountryCode] ?? "UTC";
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(date);
+  const part = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((item) => item.type === type)?.value ?? "";
+
+  return `${part("year")}-${part("month")}-${part("day")}`;
 }
 
-export function promoToFormValues(promo: PromoListItem): PromoFormValues {
+export function promoToFormValues(
+  promo: PromoListItem,
+  countryCode: string,
+): PromoFormValues {
   return {
     code: promo.code,
     type: promo.type,
@@ -56,8 +80,8 @@ export function promoToFormValues(promo: PromoListItem): PromoFormValues {
     minimum_order_amount: promo.minimum_order_amount ?? undefined,
     usage_limit: promo.usage_limit ?? undefined,
     per_user_limit: promo.per_user_limit ?? undefined,
-    start_date: toDateInputValue(promo.start_date),
-    end_date: toDateInputValue(promo.end_date),
+    start_date: toDateInputValue(promo.start_date, countryCode),
+    end_date: toDateInputValue(promo.end_date, countryCode),
     is_active: promo.is_active,
     description_ar: promo.description_ar ?? "",
     description_en: promo.description_en ?? "",

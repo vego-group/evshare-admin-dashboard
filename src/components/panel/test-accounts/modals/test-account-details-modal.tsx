@@ -39,11 +39,16 @@ function TestAccountDetailsModal({
               <div className="flex min-w-0 items-center gap-3">
                 <TestAccountIcon />
                 <div className="min-w-0">
-                  <p className="truncate text-xl font-semibold text-secondary" title={testAccount.user.name}>
-                    {testAccount.user.name}
+                  <p
+                    className="truncate text-xl font-semibold text-secondary"
+                    title={testAccount.user?.name || "مستخدم غير متاح"}
+                  >
+                    {testAccount.user?.name || "مستخدم غير متاح"}
                   </p>
                   <p className="truncate text-sm text-gray" dir="ltr">
-                    {formatUserMobile(testAccount.user.mobile)}
+                    {testAccount.user
+                      ? formatUserMobile(testAccount.user.mobile)
+                      : "-"}
                   </p>
                 </div>
               </div>
@@ -52,7 +57,7 @@ function TestAccountDetailsModal({
 
             <section className="grid gap-3 rounded-[14px] bg-background p-4 sm:grid-cols-2">
               <DetailRow label="Test account ID" value={testAccount.id} dir="ltr" />
-              <DetailRow label="User ID" value={testAccount.user.id} dir="ltr" />
+              <DetailRow label="User ID" value={testAccount.user?.id ?? "-"} dir="ltr" />
               <DetailRow
                 label="Subscription amount"
                 value={<Amount value={testAccount.subscription_amount} currency={testAccount.currency} />}

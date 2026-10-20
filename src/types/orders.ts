@@ -229,7 +229,7 @@ export type OrderOperatingContract = {
   status: "pending_signature" | "pending_admin_review" | "approved" | "rejected";
   rejection_reason: string | null;
   signed_at: string | null;
-  operation_company: { id: string; name: string };
+  operation_company: { id: string; name: string } | null;
   original_contract: ContractAttachment | null;
   signed_contract: ContractAttachment | null;
   created_at: string;

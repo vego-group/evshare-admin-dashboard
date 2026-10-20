@@ -136,11 +136,13 @@ export function PromoDetailsContent({ detail, isLoading }: Props) {
                     <RedemptionCell>
                       <span className="inline-flex items-center gap-2">
                         <Users className="size-4 shrink-0 text-secondary" />
-                        {redemption.user.name}
+                        {redemption.user?.name || "مستخدم غير متاح"}
                       </span>
                     </RedemptionCell>
                     <RedemptionCell dir="ltr">
-                      {formatUserMobile(redemption.user.mobile)}
+                      {redemption.user
+                        ? formatUserMobile(redemption.user.mobile)
+                        : "-"}
                     </RedemptionCell>
                     <RedemptionCell>
                       {redemption.redeemable_type

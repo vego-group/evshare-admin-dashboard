@@ -62,7 +62,7 @@ export type PromoRedeemableType = "Order" | "Subscription" | null;
 export type PromoRedemption = {
   id: number;
   currency?: string;
-  user: PromoRedemptionUser;
+  user: PromoRedemptionUser | null;
   promo_code_used: string;
   discount_amount_applied: number;
   redeemable_type: PromoRedeemableType;
