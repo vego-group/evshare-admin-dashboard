@@ -5,6 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 import Header from "@/components/ui/header";
 import ExportListButton from "@/components/ui/export-list-button";
+import QueryErrorState from "@/components/ui/query-error-state";
 import { ADMIN_PERMISSIONS } from "@/constants";
 import { useHasPermission } from "@/hooks";
 import { usePaymentCheckouts, usePaymentTransactions } from "@/hooks/api";
@@ -63,11 +64,15 @@ function PaymentOperations() {
     data: checkoutsData,
     isLoading: isCheckoutsLoading,
     isFetching: isCheckoutsFetching,
+    isError: isCheckoutsError,
+    refetch: refetchCheckouts,
   } = usePaymentCheckouts(checkoutParams, effectiveTab === "checkouts");
   const {
     data: transactionsData,
     isLoading: isTransactionsLoading,
     isFetching: isTransactionsFetching,
+    isError: isTransactionsError,
+    refetch: refetchTransactions,
   } = usePaymentTransactions(
     transactionParams,
     effectiveTab === "transactions",
@@ -77,6 +82,8 @@ function PaymentOperations() {
     effectiveTab === "checkouts" ? isCheckoutsLoading : isTransactionsLoading;
   const isFetching =
     effectiveTab === "checkouts" ? isCheckoutsFetching : isTransactionsFetching;
+  const isError =
+    effectiveTab === "checkouts" ? isCheckoutsError : isTransactionsError;
 
   const updateCheckoutParams = (
     nextParams: Partial<PaymentCheckoutQueryParams>,
@@ -165,7 +172,13 @@ function PaymentOperations() {
             onChange={handleTabChange}
           />
 
-          {effectiveTab === "checkouts" ? (
+          {isError ? (
+            <QueryErrorState
+              title="تعذر تحميل عمليات الدفع"
+              isRetrying={isFetching}
+              onRetry={() => void (effectiveTab === "checkouts" ? refetchCheckouts() : refetchTransactions())}
+            />
+          ) : effectiveTab === "checkouts" ? (
             <>
               <CheckoutStatsCards checkouts={checkoutsData?.data ?? []} />
               <PaymentOperationsToolbar

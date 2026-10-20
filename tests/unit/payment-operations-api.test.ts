@@ -1,14 +1,17 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const serviceMocks = vi.hoisted(() => ({ baseAPI: vi.fn() }));
+const serviceMocks = vi.hoisted(() => ({ baseAPI: vi.fn(), safeApi: vi.fn() }));
 vi.mock("@/services", () => serviceMocks);
 
 import { paymentCheckoutsAPI, paymentTransactionsAPI } from "@/services/queries/payment-gateways";
+import { refundPaymentTransactionAPI } from "@/services/mutations/payment-gateways";
 
 describe("payment operations API contract", () => {
   beforeEach(() => {
     serviceMocks.baseAPI.mockReset();
     serviceMocks.baseAPI.mockResolvedValue({ data: [], filters: {}, meta: {} });
+    serviceMocks.safeApi.mockReset();
+    serviceMocks.safeApi.mockResolvedValue({ ok: true, status: 200 });
   });
 
   it("maps checkout search and the UI status to the documented query", async () => {
@@ -25,7 +28,7 @@ describe("payment operations API contract", () => {
 
     expect(serviceMocks.baseAPI).toHaveBeenCalledWith(
       "GET",
-      "/payment/checkouts?page=2&per_page=25&gateway=moyasar&payment_method=mada&payable_type=order&is_processed=0&search=Khaled&sort_by=created_at&sort_order=asc",
+      "/payment/checkouts?page=2&per_page=25&gateway=moyasar&payment_method=mada&status=unprocessed&payable_type=order&search=Khaled&sort_by=created_at&sort_order=asc",
     );
   });
 
@@ -68,6 +71,23 @@ describe("payment operations API contract", () => {
     expect(serviceMocks.baseAPI).toHaveBeenLastCalledWith(
       "GET",
       "/payment/transactions?page=1&per_page=20&transaction_id=provider-payment-id&sort_by=created_at&sort_order=desc",
+    );
+  });
+
+  it("sends refund idempotency in both the body and header", async () => {
+    const payload = {
+      amount: 120.5,
+      reason: "Customer request",
+      idempotency_key: "refund-attempt-1",
+    };
+
+    await refundPaymentTransactionAPI("transaction/id", payload);
+
+    expect(serviceMocks.safeApi).toHaveBeenCalledWith(
+      "POST",
+      "/payment/transactions/transaction%2Fid/refund",
+      payload,
+      { headers: { "Idempotency-Key": "refund-attempt-1" } },
     );
   });
 });

@@ -42,7 +42,7 @@ function CheckoutDetails({ checkout }: { checkout: PaymentCheckout }) {
       <Row label="رقم العملية" value={checkout.id} ltr />
       <Row label="مرجع الدفع" value={checkout.reference ?? "-"} ltr />
       <Row label="المبلغ" value={<MoneyValue amount={checkout.amount} currency={checkout.currency} />} ltr />
-      <Row label="بوابة الدفع" value={formatGateway(checkout.payment_gateway)} />
+      <Row label="بوابة الدفع" value={formatGateway(checkout.payment_gateway, checkout.payment_gateway_name)} />
       <Row label="طريقة الدفع" value={formatPaymentMethod(checkout)} />
       <Row label="المعالجة" value={<ProcessedBadge isProcessed={checkout.is_processed} />} />
     </Section>
@@ -71,7 +71,7 @@ function TransactionDetails({ transaction }: { transaction: PaymentTransaction }
       <Row label="رقم المعاملة" value={transaction.transaction_id} ltr />
       <Row label="مرجع الدفع" value={transaction.reference ?? "-"} ltr />
       <Row label="المبلغ" value={<MoneyValue amount={transaction.amount} currency={transaction.currency} />} ltr />
-      <Row label="بوابة الدفع" value={formatGateway(transaction.payment_gateway)} />
+      <Row label="بوابة الدفع" value={formatGateway(transaction.payment_gateway, transaction.payment_gateway_name)} />
       <Row label="طريقة الدفع" value={formatPaymentMethod(transaction)} />
       <Row label="الحالة" value={<TransactionStatusBadge status={transaction.status} />} />
       <Row label="تاريخ الدفع" value={transaction.paid_at ? formatDate(transaction.paid_at) : "-"} ltr />

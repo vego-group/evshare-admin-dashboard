@@ -83,7 +83,7 @@ function PaymentOperationsToolbar({ tab, search, gateway, paymentMethod, status,
           { label: "كل البوابات", value: "all" }, ...gateways.map((value) => ({ label: formatGateway(value), value })),
         ]} onChange={(value) => onChange({ gateway: value === "all" ? undefined : value })} />
         <FilterSelect label="طريقة الدفع" value={paymentMethod ?? "all"} options={[
-          { label: "كل طرق الدفع", value: "all" }, ...paymentMethods.map(({ key }) => ({ label: formatPaymentMethodLabel(key), value: key })),
+          { label: "كل طرق الدفع", value: "all" }, ...paymentMethods.map(({ key, name }) => ({ label: name?.trim() || formatPaymentMethodLabel(key), value: key })),
         ]} onChange={(value) => onChange({ payment_method: value === "all" ? undefined : value })} />
         <FilterSelect label="الحالة" value={status ?? "all"} options={statusOptions}
           onChange={(value) => onChange({ status: value as PaymentCheckoutStatus | PaymentTransactionStatus })} />

@@ -55,6 +55,7 @@ export default function PaymentRefundModal({ transaction, open, onClose, onRefun
     if (result.ok && result.data?.data.transaction) {
       await onRefunded(result.data.data.transaction);
       showSuccessModal(result.status === 202 ? "تم إرسال طلب الاسترداد وهو قيد تأكيد مزود الدفع." : result.message || "تم استرداد المعاملة بنجاح.");
+      onClose();
       return;
     }
     if (result && UNKNOWN_OUTCOME_STATUSES.has(result.status)) {
