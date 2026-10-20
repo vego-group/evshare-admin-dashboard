@@ -21,7 +21,8 @@ export function formatDate(value: string) {
   }).format(date);
 }
 
-export function formatGateway(value?: string) {
+export function formatGateway(value?: string, displayName?: string | null) {
+  if (displayName?.trim()) return displayName.trim();
   if (!value) return "-";
   const labels: Record<string, string> = {
     moyasar: "Moyasar",
@@ -32,7 +33,9 @@ export function formatGateway(value?: string) {
 }
 
 export function formatPaymentMethod(payment: PaymentTransaction | PaymentCheckout) {
-  return formatPaymentMethodLabel(payment.payment_method) || "-";
+  return payment.payment_method_name?.trim()
+    || formatPaymentMethodLabel(payment.payment_method)
+    || "-";
 }
 
 export function formatPaymentMethodLabel(value?: string | null) {

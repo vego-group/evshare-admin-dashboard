@@ -35,6 +35,12 @@ healthy.
   embedded-user contexts. Unrecoverable legacy deletions render an unavailable marker; the
   dashboard never parses a storage tombstone to guess a number. Mobile search and export keep
   using the users endpoint query so the backend applies deleted-mobile matching consistently.
+- User details consume the October 2026 subscription contract. The UI renders the derived
+  `subscription_status`, base and calculated expiry, valid and reversed bonus counts, enrollment
+  state, and the complete `subscription_extensions` audit history. The current
+  `subscription_summary.ends_at` is presented as authoritative; grant-time date snapshots are
+  explicitly described as historical. The legacy `subscription` start/end fields remain as a
+  rollout fallback when the additive summary fields are absent.
 - The October 2026 cleanup is treated as a backend operation, not a dashboard command. Empty
   module responses remain valid and retained payment operations render safely when their deleted
   order leaves `payable: null`. See [the cleanup integration note](./data-cleanup-2026-10.md).

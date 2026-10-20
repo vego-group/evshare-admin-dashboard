@@ -71,3 +71,26 @@ test("vehicle type source is modeled and inferred vehicles are surfaced", () => 
   assert.match(details, /vehicle\.vehicle_type_source\s*===\s*"inferred"/);
   assert.match(list, /source=\{vehicle\.vehicle_type_source\}/);
 });
+
+test("user details expose the subscription bonus summary and audit history", () => {
+  const types = fs.readFileSync(path.join(testDirectory, "..", "src/types/users.ts"), "utf8");
+  const details = fs.readFileSync(path.join(testDirectory, "..", "src/components/panel/users/user-details/index.tsx"), "utf8");
+
+  assert.match(types, /subscription_summary\?:\s*UserSubscriptionSummary/);
+  assert.match(types, /subscription_extensions\?:\s*UserSubscriptionExtension\[\]/);
+  assert.match(types, /is_bonus_enrolled:\s*boolean/);
+  assert.match(types, /reversal:\s*UserSubscriptionExtensionReversal\s*\|\s*null/);
+  assert.match(details, /subscriptionSummary\?\.ends_at\s*\?\?\s*user\.subscription\?\.end_date/);
+  assert.match(details, /سجل مكافآت الاشتراك/);
+  assert.match(details, /تاريخ الانتهاء الحالي أعلاه هو المرجع المعتمد/);
+});
+
+test("admin transports send the documented content negotiation headers", () => {
+  const service = fs.readFileSync(path.join(testDirectory, "..", "src/services/index.ts"), "utf8");
+  const proxy = fs.readFileSync(path.join(testDirectory, "..", "src/app/api/admin/[...path]/route.ts"), "utf8");
+
+  assert.match(service, /Accept:\s*"application\/json"/);
+  assert.match(service, /"app-language":\s*"ar"/);
+  assert.match(proxy, /Accept:\s*"application\/json"/);
+  assert.equal((proxy.match(/"app-language":\s*"ar"/g) ?? []).length, 2);
+});

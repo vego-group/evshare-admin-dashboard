@@ -99,7 +99,7 @@ function TransactionTableRow({
         {transaction.reference && transaction.reference !== transaction.transaction_id ? <span className="mt-1 block truncate text-xs text-gray">{transaction.transaction_id}</span> : null}
       </TableCell>
       <TableCell><span className="block truncate">{user?.name ?? "-"}</span><span dir="ltr" className="mt-1 block text-xs text-gray">{formatUserMobile(user?.mobile)}</span></TableCell>
-      <TableCell>{formatGateway(transaction.payment_gateway)}</TableCell>
+      <TableCell>{formatGateway(transaction.payment_gateway, transaction.payment_gateway_name)}</TableCell>
       <TableCell>{formatPaymentMethod(transaction)}</TableCell>
       <TableCell dir="ltr">
         <MoneyValue amount={transaction.amount} currency={transaction.currency} />

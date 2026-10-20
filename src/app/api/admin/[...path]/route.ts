@@ -32,6 +32,7 @@ async function downloadExport(
       headers: {
         Accept: "application/json",
         "Accept-Language": "ar",
+        "app-language": "ar",
         Authorization: `Bearer ${token}`,
         "X-Tenant-Id": country,
       },

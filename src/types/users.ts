@@ -54,7 +54,11 @@ export type UserBankAccount = {
   iban: string;
 };
 
+/** Status values returned by the users list filters and rows. */
 export type UserSubscriptionStatus = "subscribed" | "unsubscribed";
+
+/** Derived status returned by GET /users/{uuid}. */
+export type UserDetailSubscriptionStatus = "active" | "expired" | "unsubscribed";
 
 export type UserRoleSummary = {
   id: string;
@@ -87,11 +91,55 @@ export type UsersStatisticsResponse = {
 };
 
 export type UserSubscription = {
-  start_date: string;
-  end_date: string;
+  start_date: string | null;
+  end_date: string | null;
 };
 
-export type AdminUserDetail = UserListItem & {
+export type UserSubscriptionSummary = {
+  subscription_status: UserDetailSubscriptionStatus;
+  is_subscribed: boolean;
+  subscription_id: string | null;
+  activated_at: string | null;
+  initial_duration_months: number | null;
+  bonus_months: number;
+  bonus_orders_count: number;
+  reversed_bonus_orders_count: number;
+  bonus_months_per_order: number;
+  is_bonus_enrolled: boolean;
+  base_ends_at: string | null;
+  ends_at: string | null;
+  days_remaining: number | null;
+};
+
+export type UserSubscriptionExtensionOrder = {
+  id: string;
+  code: string;
+  status: string;
+};
+
+export type UserSubscriptionExtensionReversal = {
+  id: string;
+  reason: "refunded" | "cancelled";
+  months: number;
+  previous_ends_at: string;
+  new_ends_at: string;
+  created_at: string;
+};
+
+export type UserSubscriptionExtension = {
+  id: string;
+  subscription_id: string;
+  order: UserSubscriptionExtensionOrder | null;
+  months: number;
+  previous_ends_at: string;
+  new_ends_at: string;
+  is_reversed: boolean;
+  reversed_at: string | null;
+  reversal: UserSubscriptionExtensionReversal | null;
+  created_at: string;
+};
+
+export type AdminUserDetail = Omit<UserListItem, "subscription_status"> & {
   role_id?: string | null;
   first_name: string | null;
   last_name: string | null;
@@ -104,6 +152,12 @@ export type AdminUserDetail = UserListItem & {
   wallet_currency?: string;
   is_subscribed: boolean;
   subscription: UserSubscription | null;
+  /** Optional during the October 2026 backend rollout. */
+  subscription_status?: UserDetailSubscriptionStatus;
+  /** Optional during the October 2026 backend rollout. */
+  subscription_summary?: UserSubscriptionSummary | null;
+  /** Optional during the October 2026 backend rollout. */
+  subscription_extensions?: UserSubscriptionExtension[];
   city: UserCity | null;
   location: UserLocation | null;
   bank_account: UserBankAccount | null;

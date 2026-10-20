@@ -81,6 +81,7 @@ function UserDetails() {
 
 function UserDetailsContent({ user }: { user: AdminUserDetail }) {
   const countryCode = useTenantCountry();
+  const subscriptionSummary = user.subscription_summary;
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -191,15 +192,43 @@ function UserDetailsContent({ user }: { user: AdminUserDetail }) {
 
         <Section title="تفاصيل الاشتراك">
           <InfoRow
+            label="حالة الاشتراك"
+            value={<SubscriptionStatusBadge status={user.subscription_status} active={user.is_subscribed} />}
+          />
+          <InfoRow
             label="تاريخ بدء الاشتراك"
-            value={formatDateTime(user.subscription?.start_date ?? null)}
+            value={formatDateTime(subscriptionSummary?.activated_at ?? user.subscription?.start_date ?? null)}
             dir="ltr"
           />
           <InfoRow
-            label="تاريخ انتهاء الاشتراك"
-            value={formatDateTime(user.subscription?.end_date ?? null)}
+            label="تاريخ الانتهاء الأساسي"
+            value={formatDateTime(subscriptionSummary?.base_ends_at ?? null)}
             dir="ltr"
           />
+          <InfoRow
+            label="تاريخ الانتهاء الحالي"
+            value={formatDateTime(subscriptionSummary?.ends_at ?? user.subscription?.end_date ?? null)}
+            dir="ltr"
+          />
+          {subscriptionSummary ? (
+            <>
+              <InfoRow
+                label="المدة الأساسية"
+                value={subscriptionSummary.initial_duration_months == null ? EMPTY_VALUE : `${formatNumber(subscriptionSummary.initial_duration_months)} شهر`}
+              />
+              <InfoRow label="أشهر المكافآت السارية" value={`${formatNumber(subscriptionSummary.bonus_months)} شهر`} />
+              <InfoRow label="طلبات المكافآت السارية" value={formatNumber(subscriptionSummary.bonus_orders_count)} />
+              <InfoRow label="المكافآت المسحوبة" value={formatNumber(subscriptionSummary.reversed_bonus_orders_count)} />
+              <InfoRow
+                label="الأيام المتبقية"
+                value={subscriptionSummary.days_remaining == null ? EMPTY_VALUE : formatNumber(subscriptionSummary.days_remaining)}
+              />
+              <InfoRow
+                label="مشمول بآلية المكافآت"
+                value={<BooleanBadge active={subscriptionSummary.is_bonus_enrolled} activeLabel="نعم" inactiveLabel="لا" />}
+              />
+            </>
+          ) : null}
         </Section>
 
         <Section title="الإحصائيات">
@@ -231,7 +260,79 @@ function UserDetailsContent({ user }: { user: AdminUserDetail }) {
           </div>
         </Section>
       </div>
+
+      {user.subscription_extensions ? (
+        <SubscriptionExtensions extensions={user.subscription_extensions} />
+      ) : null}
     </div>
+  );
+}
+
+function SubscriptionExtensions({ extensions }: { extensions: NonNullable<AdminUserDetail["subscription_extensions"]> }) {
+  return (
+    <section className="rounded-[14px] border border-[#e5e7eb] bg-white px-5 py-4">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+        <h2 className="text-base font-semibold text-secondary">سجل مكافآت الاشتراك</h2>
+        <span className="text-sm text-gray">{formatNumber(extensions.length)} مكافأة</span>
+      </div>
+      {extensions.length === 0 ? (
+        <p className="rounded-[10px] bg-neutral-50 px-4 py-6 text-center text-sm text-gray">لا توجد مكافآت اشتراك مسجلة.</p>
+      ) : (
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          {extensions.map((extension) => (
+            <article key={extension.id} className="space-y-3 rounded-xl border border-neutral-200 p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-xs text-gray">الطلب</p>
+                  <p dir="ltr" className="text-right font-semibold text-secondary">{extension.order?.code ?? "-"}</p>
+                </div>
+                <span className={cn(
+                  "rounded-full px-3 py-1 text-xs font-medium",
+                  extension.is_reversed ? "bg-red-50 text-red-700" : "bg-green-50 text-green-700",
+                )}>
+                  {extension.is_reversed ? "مسحوبة" : `+${formatNumber(extension.months)} شهر`}
+                </span>
+              </div>
+              <InfoRow label="تاريخ المنح" value={formatDateTime(extension.created_at)} dir="ltr" />
+              <InfoRow label="الانتهاء بعد المنح" value={formatDateTime(extension.new_ends_at)} dir="ltr" />
+              {extension.reversal ? (
+                <div className="rounded-[10px] bg-red-50 px-4 py-3 text-sm text-red-800">
+                  <p className="font-medium">سبب السحب: {extension.reversal.reason === "refunded" ? "استرداد كامل" : "إلغاء الطلب"}</p>
+                  <p className="mt-1" dir="ltr">{formatDateTime(extension.reversal.created_at)}</p>
+                  <p className="mt-1" dir="ltr">{formatDateTime(extension.reversal.previous_ends_at)} ← {formatDateTime(extension.reversal.new_ends_at)}</p>
+                </div>
+              ) : null}
+            </article>
+          ))}
+        </div>
+      )}
+      <p className="mt-4 text-xs leading-5 text-gray">
+        تاريخ الانتهاء الحالي أعلاه هو المرجع المعتمد؛ تواريخ كل مكافأة لقطات تاريخية ولا يلزم أن تتسلسل بعد سحب مكافأة أقدم.
+      </p>
+    </section>
+  );
+}
+
+function SubscriptionStatusBadge({
+  status,
+  active,
+}: {
+  status: AdminUserDetail["subscription_status"];
+  active: boolean;
+}) {
+  const resolvedStatus = status ?? (active ? "active" : "unsubscribed");
+  const labels = { active: "نشط", expired: "منتهي", unsubscribed: "غير مشترك" } as const;
+  return (
+    <span className={cn(
+      "inline-flex rounded-full px-3 py-1 text-xs font-medium",
+      resolvedStatus === "active"
+        ? "bg-green-50 text-green-700"
+        : resolvedStatus === "expired"
+          ? "bg-amber-50 text-amber-700"
+          : "bg-gray-100 text-dark-gray",
+    )}>
+      {labels[resolvedStatus]}
+    </span>
   );
 }
 

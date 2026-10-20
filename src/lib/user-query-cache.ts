@@ -1,6 +1,7 @@
 import type { QueryClient, QueryKey } from "@tanstack/react-query";
 
 import type {
+  AdminUserDetail,
   AdminUserDetailResponse,
   UserListItem,
   UsersListResponse,
@@ -61,7 +62,7 @@ function getUsersQueryParams(queryKey: QueryKey) {
   return params && typeof params === "object" ? (params as UsersQueryParams) : undefined;
 }
 
-function toListItem(user: UserListItem): UserListItem {
+function toListItem(user: AdminUserDetail): UserListItem {
   return {
     id: user.id,
     name: user.name,
@@ -72,7 +73,12 @@ function toListItem(user: UserListItem): UserListItem {
     status: user.status,
     role: user.role,
     verification_status: user.verification_status,
-    subscription_status: user.subscription_status,
+    subscription_status:
+      user.subscription_status === "active"
+        ? "subscribed"
+        : user.subscription_status
+          ? "unsubscribed"
+          : undefined,
     mobile_verified: user.mobile_verified,
     mobile_verified_at: user.mobile_verified_at,
     created_at: user.created_at,

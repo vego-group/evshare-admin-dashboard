@@ -32,22 +32,18 @@ export const singlePaymentGatewayAPI = async (
   await baseAPI("GET", `/payment-gateways/${gatewayId}`);
 
 export const buildPaymentCheckoutsQuery = (params: PaymentCheckoutQueryParams) => {
-  const isProcessed =
-    params.status === "processed"
-      ? 1
-      : params.status === "unprocessed"
-        ? 0
-        : typeof params.is_processed === "boolean"
-          ? Number(params.is_processed)
-          : undefined;
-
   return buildQuery({
     page: params.page,
     per_page: params.per_page ?? params.limit ?? PAGE_SIZE,
     gateway: params.gateway,
     payment_method: params.payment_method,
+    status: params.status === "all" ? undefined : params.status,
     payable_type: params.payable_type,
-    is_processed: isProcessed,
+    // Preserve the legacy wire filter only for callers that explicitly use it.
+    is_processed:
+      params.status === undefined && typeof params.is_processed === "boolean"
+        ? Number(params.is_processed)
+        : undefined,
     search: params.search?.trim() || undefined,
     sort_by: params.sort_by ?? "created_at",
     sort_order: params.sort_order ?? "desc",
