@@ -6,7 +6,11 @@ const serviceMocks = vi.hoisted(() => ({
 
 vi.mock("@/services", () => serviceMocks);
 
-import { usersAPI, usersStatisticsAPI } from "@/services/queries/users";
+import {
+  singleUserAPI,
+  usersAPI,
+  usersStatisticsAPI,
+} from "@/services/queries/users";
 
 describe("users API contract", () => {
   beforeEach(() => {
@@ -64,5 +68,13 @@ describe("users API contract", () => {
     await usersStatisticsAPI();
 
     expect(serviceMocks.baseAPI).toHaveBeenCalledWith("GET", "/users/statistics");
+  });
+
+  it("loads subscription details and extension history from the user detail endpoint", async () => {
+    const userId = "a266f4b5-32a2-43bf-8ae6-6898b471cfc3";
+
+    await singleUserAPI(userId);
+
+    expect(serviceMocks.baseAPI).toHaveBeenCalledWith("GET", `/users/${userId}`);
   });
 });
