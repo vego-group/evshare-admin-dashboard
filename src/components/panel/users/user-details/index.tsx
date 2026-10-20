@@ -5,15 +5,19 @@ import {
   ArrowRight,
   Banknote,
   BellRing,
+  CircleAlert,
+  ExternalLink,
   type LucideIcon,
   MapPin,
   ShieldCheck,
   UserRound,
   WalletCards,
 } from "lucide-react";
+import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 
 import { cn } from "@/lib/utils";
+import PermissionGate from "@/components/permission-gate";
 import MoneyValue from "@/components/ui/money-value";
 import { formatUserMobile } from "@/lib/utils/format-phone";
 import { useTenantCountry } from "@/provider/currency";
@@ -82,6 +86,7 @@ function UserDetails() {
 function UserDetailsContent({ user }: { user: AdminUserDetail }) {
   const countryCode = useTenantCountry();
   const subscriptionSummary = user.subscription_summary;
+  const isMerchant = user.role === "merchant";
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -96,17 +101,18 @@ function UserDetailsContent({ user }: { user: AdminUserDetail }) {
           label="التحقق"
           value={<KycBadge status={user.kyc_status} />}
         />
-        <SummaryCard
-          icon={Banknote}
-          label="الاشتراك"
-          value={
-            <BooleanBadge
-              active={user.is_subscribed}
-              activeLabel="مشترك"
-              inactiveLabel="غير مشترك"
-            />
-          }
-        />
+        {isMerchant ? (
+          <SummaryCard
+            icon={Banknote}
+            label="حالة الاشتراك"
+            value={
+              <SubscriptionStatusBadge
+                status={user.subscription_status}
+                active={user.is_subscribed}
+              />
+            }
+          />
+        ) : null}
         <SummaryCard
           icon={UserRound}
           label="حالة الحساب"
@@ -190,46 +196,51 @@ function UserDetailsContent({ user }: { user: AdminUserDetail }) {
           />
         </Section>
 
-        <Section title="تفاصيل الاشتراك">
-          <InfoRow
-            label="حالة الاشتراك"
-            value={<SubscriptionStatusBadge status={user.subscription_status} active={user.is_subscribed} />}
-          />
-          <InfoRow
-            label="تاريخ بدء الاشتراك"
-            value={formatDateTime(subscriptionSummary?.activated_at ?? user.subscription?.start_date ?? null)}
-            dir="ltr"
-          />
-          <InfoRow
-            label="تاريخ الانتهاء الأساسي"
-            value={formatDateTime(subscriptionSummary?.base_ends_at ?? null)}
-            dir="ltr"
-          />
-          <InfoRow
-            label="تاريخ الانتهاء الحالي"
-            value={formatDateTime(subscriptionSummary?.ends_at ?? user.subscription?.end_date ?? null)}
-            dir="ltr"
-          />
-          {subscriptionSummary ? (
-            <>
-              <InfoRow
-                label="المدة الأساسية"
-                value={subscriptionSummary.initial_duration_months == null ? EMPTY_VALUE : `${formatNumber(subscriptionSummary.initial_duration_months)} شهر`}
-              />
-              <InfoRow label="أشهر المكافآت السارية" value={`${formatNumber(subscriptionSummary.bonus_months)} شهر`} />
-              <InfoRow label="طلبات المكافآت السارية" value={formatNumber(subscriptionSummary.bonus_orders_count)} />
-              <InfoRow label="المكافآت المسحوبة" value={formatNumber(subscriptionSummary.reversed_bonus_orders_count)} />
-              <InfoRow
-                label="الأيام المتبقية"
-                value={subscriptionSummary.days_remaining == null ? EMPTY_VALUE : formatNumber(subscriptionSummary.days_remaining)}
-              />
-              <InfoRow
-                label="مشمول بآلية المكافآت"
-                value={<BooleanBadge active={subscriptionSummary.is_bonus_enrolled} activeLabel="نعم" inactiveLabel="لا" />}
-              />
-            </>
-          ) : null}
-        </Section>
+        {isMerchant ? (
+          <Section title="تفاصيل الاشتراك">
+            <InfoRow
+              label="حالة الاشتراك"
+              value={<SubscriptionStatusBadge status={user.subscription_status} active={user.is_subscribed} />}
+            />
+            <InfoRow
+              label="تاريخ بدء الاشتراك"
+              value={formatDateTime(subscriptionSummary?.activated_at ?? user.subscription?.start_date ?? null)}
+              dir="ltr"
+            />
+            <InfoRow
+              label="تاريخ الانتهاء الأساسي"
+              value={formatDateTime(subscriptionSummary?.base_ends_at ?? null)}
+              dir="ltr"
+            />
+            <InfoRow
+              label="تاريخ الانتهاء الحالي"
+              value={formatDateTime(subscriptionSummary?.ends_at ?? user.subscription?.end_date ?? null)}
+              dir="ltr"
+            />
+            {subscriptionSummary ? (
+              <>
+                <InfoRow
+                  label="المدة الأساسية"
+                  value={subscriptionSummary.initial_duration_months == null ? EMPTY_VALUE : `${formatNumber(subscriptionSummary.initial_duration_months)} شهر`}
+                />
+                <InfoRow label="أشهر المكافآت السارية" value={`${formatNumber(subscriptionSummary.bonus_months)} شهر`} />
+                <InfoRow label="طلبات المكافآت السارية" value={formatNumber(subscriptionSummary.bonus_orders_count)} />
+                <InfoRow label="المكافآت المسحوبة" value={formatNumber(subscriptionSummary.reversed_bonus_orders_count)} />
+                <InfoRow label="مكافأة الطلب الواحد" value={`+${formatNumber(subscriptionSummary.bonus_months_per_order)} شهر`} />
+                <InfoRow
+                  label="الأيام المتبقية"
+                  value={subscriptionSummary.days_remaining == null ? EMPTY_VALUE : formatNumber(subscriptionSummary.days_remaining)}
+                />
+                {!subscriptionSummary.is_bonus_enrolled ? (
+                  <div className="flex items-start gap-2 rounded-[10px] border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-900">
+                    <CircleAlert className="mt-1 size-4 shrink-0" />
+                    <span>هذا اشتراك قديم غير مشمول بآلية المكافآت، ولن تكسب طلباته أشهراً إضافية حتى تتم تهيئته من الخادم.</span>
+                  </div>
+                ) : null}
+              </>
+            ) : null}
+          </Section>
+        ) : null}
 
         <Section title="الإحصائيات">
           <InfoRow
@@ -261,7 +272,7 @@ function UserDetailsContent({ user }: { user: AdminUserDetail }) {
         </Section>
       </div>
 
-      {user.subscription_extensions ? (
+      {isMerchant && user.subscription_extensions ? (
         <SubscriptionExtensions extensions={user.subscription_extensions} />
       ) : null}
     </div>
@@ -278,13 +289,29 @@ function SubscriptionExtensions({ extensions }: { extensions: NonNullable<AdminU
       {extensions.length === 0 ? (
         <p className="rounded-[10px] bg-neutral-50 px-4 py-6 text-center text-sm text-gray">لا توجد مكافآت اشتراك مسجلة.</p>
       ) : (
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-3 xl:grid-cols-2">
           {extensions.map((extension) => (
             <article key={extension.id} className="space-y-3 rounded-xl border border-neutral-200 p-4">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="text-xs text-gray">الطلب</p>
-                  <p dir="ltr" className="text-right font-semibold text-secondary">{extension.order?.code ?? "-"}</p>
+                  {extension.order ? (
+                    <PermissionGate
+                      slug="Admin Show Orders"
+                      fallback={<p dir="ltr" className="text-right font-semibold text-secondary">{extension.order.code}</p>}
+                    >
+                      <Link
+                        href={`/orders/${encodeURIComponent(extension.order.id)}`}
+                        dir="ltr"
+                        className="inline-flex items-center gap-1 font-semibold text-blue-700 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                      >
+                        {extension.order.code}
+                        <ExternalLink className="size-3.5" aria-hidden="true" />
+                      </Link>
+                    </PermissionGate>
+                  ) : (
+                    <p className="font-semibold text-secondary">-</p>
+                  )}
                 </div>
                 <span className={cn(
                   "rounded-full px-3 py-1 text-xs font-medium",
@@ -293,13 +320,25 @@ function SubscriptionExtensions({ extensions }: { extensions: NonNullable<AdminU
                   {extension.is_reversed ? "مسحوبة" : `+${formatNumber(extension.months)} شهر`}
                 </span>
               </div>
+              <InfoRow label="حالة الطلب" value={extension.order?.status ?? EMPTY_VALUE} />
+              <InfoRow label="معرّف الاشتراك" value={extension.subscription_id} dir="ltr" align="left" />
               <InfoRow label="تاريخ المنح" value={formatDateTime(extension.created_at)} dir="ltr" />
-              <InfoRow label="الانتهاء بعد المنح" value={formatDateTime(extension.new_ends_at)} dir="ltr" />
+              <InfoRow
+                label="تغيير الانتهاء عند المنح"
+                value={<DateTransition from={extension.previous_ends_at} to={extension.new_ends_at} />}
+              />
               {extension.reversal ? (
                 <div className="rounded-[10px] bg-red-50 px-4 py-3 text-sm text-red-800">
-                  <p className="font-medium">سبب السحب: {extension.reversal.reason === "refunded" ? "استرداد كامل" : "إلغاء الطلب"}</p>
-                  <p className="mt-1" dir="ltr">{formatDateTime(extension.reversal.created_at)}</p>
-                  <p className="mt-1" dir="ltr">{formatDateTime(extension.reversal.previous_ends_at)} ← {formatDateTime(extension.reversal.new_ends_at)}</p>
+                  <p className="font-medium">مسحوبة — {extension.reversal.reason === "refunded" ? "استرداد كامل" : "إلغاء الطلب"}</p>
+                  <p className="mt-1">تاريخ السحب: <span dir="ltr">{formatDateTime(extension.reversal.created_at)}</span></p>
+                  <div className="mt-1">
+                    <DateTransition from={extension.reversal.previous_ends_at} to={extension.reversal.new_ends_at} />
+                  </div>
+                </div>
+              ) : extension.is_reversed ? (
+                <div className="rounded-[10px] bg-red-50 px-4 py-3 text-sm text-red-800">
+                  <p className="font-medium">مسحوبة</p>
+                  <p className="mt-1">تاريخ السحب: <span dir="ltr">{formatDateTime(extension.reversed_at)}</span></p>
                 </div>
               ) : null}
             </article>
@@ -310,6 +349,16 @@ function SubscriptionExtensions({ extensions }: { extensions: NonNullable<AdminU
         تاريخ الانتهاء الحالي أعلاه هو المرجع المعتمد؛ تواريخ كل مكافأة لقطات تاريخية ولا يلزم أن تتسلسل بعد سحب مكافأة أقدم.
       </p>
     </section>
+  );
+}
+
+function DateTransition({ from, to }: { from: string; to: string }) {
+  return (
+    <span dir="ltr" className="inline-flex flex-wrap items-center justify-end gap-1 text-left">
+      <span>{formatDateTime(from)}</span>
+      <span aria-hidden="true">→</span>
+      <span>{formatDateTime(to)}</span>
+    </span>
   );
 }
 
