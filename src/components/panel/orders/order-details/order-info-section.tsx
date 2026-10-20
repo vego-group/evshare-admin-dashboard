@@ -39,6 +39,7 @@ function OrderInfoSection({ order }: { order: OrderDetail }) {
     setIsUpdating(false);
 
     if (result?.ok) {
+      setPendingStatus(null);
       showSuccessModal(result.message || "تم تحديث حالة الطلب بنجاح");
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["orders"] }),

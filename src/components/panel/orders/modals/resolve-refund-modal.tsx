@@ -139,10 +139,11 @@ function ResolveRefundModal({
     );
 
     if (result?.ok) {
-      showSuccessModal(result.message || "تم إرسال قرار الاسترداد بنجاح");
       reset();
       setAmountText("");
       await onSaved();
+      onClose();
+      showSuccessModal(result.message || "تم إرسال قرار الاسترداد بنجاح");
       return;
     }
 
@@ -246,6 +247,7 @@ function ResolveRefundModal({
           <span className="mb-2 block text-sm text-dark-gray">سبب الاسترداد</span>
           <textarea
             {...register("notes")}
+            maxLength={1000}
             disabled={outcomeUnknown}
             placeholder="اكتب سبب الاسترداد"
             aria-invalid={Boolean(errors.notes)}

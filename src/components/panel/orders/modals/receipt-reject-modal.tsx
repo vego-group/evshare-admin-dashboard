@@ -46,10 +46,14 @@ function ReceiptRejectModal({ open, isSubmitting, onClose, onConfirm }: Props) {
           <textarea
             id="receipt-reject-reason"
             value={reason}
+            maxLength={1000}
             onChange={(e) => setReason(e.target.value)}
             placeholder="يرجى توضيح ما يجب على العميل تصحيحه..."
             className="h-30 w-full resize-none rounded-[14px] border border-border bg-[#f9fafb] px-4 py-3 text-right text-base font-normal leading-6 text-secondary outline-none transition placeholder:text-secondary/50 focus:border-red/60 focus:ring-2 focus:ring-red/15"
           />
+          <p className="text-left text-xs text-gray" dir="ltr">
+            {reason.length}/1000
+          </p>
         </div>
         <div className="grid w-full grid-cols-2 gap-3">
           <Button

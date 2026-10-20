@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 import { cn } from "@/lib/utils";
+import { getOrderStatusActions } from "@/lib/orders";
 import type { OrderNewStatus } from "@/types";
 
 const STATUS_OPTIONS: { label: string; value: OrderNewStatus }[] = [
@@ -79,6 +80,20 @@ function OrderStatusDropdown({ currentStatus, disabled, onSelect }: Props) {
 
   const currentLabel =
     STATUS_OPTIONS.find((o) => o.value === currentStatus)?.label ?? currentStatus;
+  const availableStatuses = getOrderStatusActions(currentStatus);
+
+  if (!availableStatuses.length) {
+    return (
+      <span
+        className={cn(
+          "inline-flex h-8.5 items-center rounded-full px-3 text-sm font-medium",
+          STATUS_STYLES[currentStatus],
+        )}
+      >
+        {currentLabel}
+      </span>
+    );
+  }
 
   return (
     <div
@@ -119,11 +134,12 @@ function OrderStatusDropdown({ currentStatus, disabled, onSelect }: Props) {
             className="overflow-hidden rounded-[14px] border border-neutral-200 bg-white shadow-[0_10px_24px_rgba(16,24,40,0.12)]"
           >
             <div className="dashboard-dropdown-scroll">
-              {STATUS_OPTIONS.map((option) => (
+              {STATUS_OPTIONS.filter((option) =>
+                availableStatuses.includes(option.value),
+              ).map((option) => (
                 <button
                   key={option.value}
                   type="button"
-                  disabled={option.value === currentStatus}
                   onClick={(e) => {
                     e.stopPropagation();
                     onSelect(option.value);
@@ -131,9 +147,7 @@ function OrderStatusDropdown({ currentStatus, disabled, onSelect }: Props) {
                   }}
                   className={cn(
                     "flex h-10 w-full items-center justify-start px-4 text-right text-sm font-medium transition",
-                    option.value === currentStatus
-                      ? "cursor-default bg-neutral-50 text-dark-gray opacity-50"
-                      : "cursor-pointer text-secondary hover:bg-primary/5",
+                    "cursor-pointer text-secondary hover:bg-primary/5",
                   )}
                 >
                   {option.label}

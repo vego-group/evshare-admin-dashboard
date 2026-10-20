@@ -18,6 +18,9 @@ export const updateOrderStatusAPI = async (
   status: OrderNewStatus,
 ) => await safeApi("POST", `/orders/${orderId}/status`, { status });
 
+export const deleteOrderAPI = async (orderId: string) =>
+  await safeApi("DELETE", `/orders/${orderId}/delete`);
+
 export const reviewOrderReceiptAPI = async (
   orderId: string,
   payload: ReviewOrderReceiptPayload,

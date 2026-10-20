@@ -250,5 +250,5 @@ export type ReviewOrderReceiptPayload =
   | { status: "rejected"; rejection_reason: string };
 
 export type ResolveOrderRefundPayload =
-  | { method: "wallet"; amount: number; notes: string; currency?: string }
-  | { method: "contact"; amount?: undefined; notes: string; currency?: string };
+  | { method: "wallet"; amount: number; notes?: string; currency?: string }
+  | { method: "contact"; amount?: undefined; notes?: string; currency?: string };
