@@ -168,25 +168,48 @@ function OrderReceiptSection({
       ) : null}
 
       {returnedCount > 0 ? (
-        <div className="rounded-[10px] bg-amber-50 px-4 py-3 text-sm text-orange-600">
-          تم حل {resolvedCount} من {returnedCount} من المركبات المرتجعة
+        <div className="space-y-2 rounded-[10px] bg-amber-50 px-4 py-3 text-sm text-orange-700">
+          <div className="flex items-center justify-between gap-3">
+            <span>تقدم معالجة المركبات المرتجعة</span>
+            <span className="font-semibold" dir="ltr">
+              {resolvedCount} / {returnedCount}
+            </span>
+          </div>
+          <div
+            role="progressbar"
+            aria-label="تقدم معالجة المركبات المرتجعة"
+            aria-valuemin={0}
+            aria-valuemax={returnedCount}
+            aria-valuenow={resolvedCount}
+            className="h-2 overflow-hidden rounded-full bg-amber-100"
+          >
+            <div
+              className="h-full rounded-full bg-green-600 transition-[width]"
+              style={{ width: `${(resolvedCount / returnedCount) * 100}%` }}
+            />
+          </div>
+          <p className="text-xs">
+            تم حل {resolvedCount} من {returnedCount}. يكتمل الطلب تلقائياً بعد حلها جميعاً.
+          </p>
         </div>
       ) : null}
 
       <div className="flex flex-wrap gap-2">
-        <a
-          href={receipt.pdf_link}
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex items-center gap-1.5 rounded-[10px] border border-neutral-200 px-3 py-2 text-sm font-medium text-secondary hover:bg-neutral-50"
-        >
-          <FileDown className="size-4 shrink-0" />
-          عرض السند الأصلي (PDF غير موقع)
-        </a>
+        {receipt.pdf_link ? (
+          <a
+            href={receipt.pdf_link}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1.5 rounded-[10px] border border-neutral-200 px-3 py-2 text-sm font-medium text-secondary hover:bg-neutral-50"
+          >
+            <FileDown className="size-4 shrink-0" />
+            عرض السند الأصلي (PDF غير موقع)
+          </a>
+        ) : null}
         {receipt.status !== "pending_signature" && attachments.length
           ? attachments.map((attachment, index) => (
               <a
-                key={index}
+                key={`${attachment.url}-${index}`}
                 href={attachment.url}
                 target="_blank"
                 rel="noreferrer"
@@ -222,7 +245,10 @@ function OrderReceiptSection({
               {items.map((item) => (
                 <tr
                   key={item.id}
-                  className="text-sm font-medium text-dark-gray"
+                  className={cn(
+                    "text-sm font-medium text-dark-gray",
+                    !item.received && "bg-red-50/60",
+                  )}
                 >
                   <td className="border-b border-primary/15 px-4 py-3 text-secondary">
                     {item.vehicle.label ?? "-"}
@@ -250,9 +276,7 @@ function OrderReceiptSection({
                       {COMPLETED_REFUND_STATUSES.has(item.refund_status) ? (
                         <div className="space-y-1 text-xs text-gray">
                           <p>
-                          {item.refund_method === "wallet"
-                            ? "محفظة"
-                            : "تواصل مباشر"}
+                          {getRefundMethodLabel(item.refund_method)}
                           {item.refund_amount != null ? (
                             <> · <MoneyValue value={item.refund_amount} currency={currency} /></>
                           ) : null}
@@ -307,6 +331,13 @@ function OrderReceiptSection({
                   </td>
                 </tr>
               ))}
+              {!items.length ? (
+                <tr>
+                  <td colSpan={5} className="px-4 py-8 text-center text-sm text-gray">
+                    لا توجد بيانات مركبات في سند الاستلام.
+                  </td>
+                </tr>
+              ) : null}
             </tbody>
           </table>
         </div>
@@ -372,4 +403,10 @@ function formatAuditDate(value: string) {
     dateStyle: "medium",
     timeStyle: "short",
   }).format(date);
+}
+
+function getRefundMethodLabel(method: OrderReceiptItem["refund_method"]) {
+  if (method === "wallet") return "محفظة";
+  if (method === "contact") return "تواصل مباشر";
+  return "لم تُحدد طريقة الحل";
 }

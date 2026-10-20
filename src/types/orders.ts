@@ -200,7 +200,10 @@ export type OrderReceiptItem = {
   can_refund?: boolean;
 };
 
-export type OrderReceiptAttachment = ProductImage;
+export type OrderReceiptAttachment = {
+  url: string;
+  type: string;
+};
 
 export type OrderReceipt = {
   id: string;
@@ -208,7 +211,8 @@ export type OrderReceipt = {
   rejection_reason: string | null;
   items?: OrderReceiptItem[] | null;
   attachments?: OrderReceiptAttachment[] | null;
-  pdf_link: string;
+  /** Auto-generated unsigned receipt, when included by the API. */
+  pdf_link?: string | null;
   created_at: string;
 };
 
