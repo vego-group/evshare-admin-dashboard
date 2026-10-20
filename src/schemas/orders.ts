@@ -3,7 +3,7 @@ import { z } from "zod";
 export const orderReceiptReviewSchema = z
   .object({
     status: z.enum(["approved", "rejected"]).nullable(),
-    rejection_reason: z.string().trim().optional(),
+    rejection_reason: z.string().trim().max(1000, "سبب الرفض يجب ألا يتجاوز 1000 حرف").optional(),
   })
   .superRefine((values, ctx) => {
     if (!values.status) {
@@ -32,7 +32,7 @@ export const resolveOrderRefundSchema = z
           : value,
       z.coerce.number().min(0, "المبلغ يجب أن يكون 0 أو أكثر").optional(),
     ),
-    notes: z.string().trim().min(1, "سبب الاسترداد مطلوب"),
+    notes: z.string().trim().max(1000, "الملاحظات يجب ألا تتجاوز 1000 حرف").optional(),
     confirmed: z.boolean().refine(Boolean, "يجب تأكيد عملية الاسترداد"),
   })
   .superRefine((values, ctx) => {

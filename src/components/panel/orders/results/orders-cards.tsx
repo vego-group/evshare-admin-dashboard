@@ -47,6 +47,7 @@ function OrderCard({ order }: { order: OrderListItem }) {
     setIsUpdating(false);
 
     if (result?.ok) {
+      setPendingStatus(null);
       showSuccessModal(result.message || "تم تحديث حالة الطلب بنجاح");
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["orders"] }),

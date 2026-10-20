@@ -99,7 +99,7 @@ function OrderReceiptSection({
   const attachments = receipt.attachments ?? [];
   const returnedCount = items.filter((item) => !item.received).length;
   const resolvedCount = items.filter(
-    (item) => COMPLETED_REFUND_STATUSES.has(item.refund_status),
+    (item) => !item.received && COMPLETED_REFUND_STATUSES.has(item.refund_status),
   ).length;
 
   async function refresh() {
@@ -133,6 +133,7 @@ function OrderReceiptSection({
     setReviewLoading(null);
 
     if (result?.ok) {
+      setRejectModalOpen(false);
       showSuccessModal(result.message || "تم رفض سند الاستلام");
       await refresh();
       return;
@@ -247,14 +248,30 @@ function OrderReceiptSection({
                         {REFUND_STATUS_LABELS[item.refund_status]}
                       </span>
                       {COMPLETED_REFUND_STATUSES.has(item.refund_status) ? (
-                        <span className="text-xs text-gray">
+                        <div className="space-y-1 text-xs text-gray">
+                          <p>
                           {item.refund_method === "wallet"
                             ? "محفظة"
                             : "تواصل مباشر"}
                           {item.refund_amount != null ? (
-                            <MoneyValue value={item.refund_amount} currency={currency} />
+                            <> · <MoneyValue value={item.refund_amount} currency={currency} /></>
                           ) : null}
-                        </span>
+                          </p>
+                          {item.refund_notes ? (
+                            <p className="max-w-56 whitespace-normal text-dark-gray">
+                              {item.refund_notes}
+                            </p>
+                          ) : null}
+                          {item.refund_resolved_at ? (
+                            <time
+                              dateTime={item.refund_resolved_at}
+                              dir="ltr"
+                              className="block text-right"
+                            >
+                              {formatAuditDate(item.refund_resolved_at)}
+                            </time>
+                          ) : null}
+                        </div>
                       ) : null}
                       {item.refund_status === "timed_out" ? (
                         <span className="max-w-52 text-xs text-amber-700">
@@ -347,3 +364,12 @@ function OrderReceiptSection({
 }
 
 export default OrderReceiptSection;
+
+function formatAuditDate(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat("ar-EG", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(date);
+}
