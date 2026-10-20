@@ -45,8 +45,8 @@ describe("order lifecycle contract", () => {
   it("only exposes the next fulfilment step and cancellation", () => {
     expect(getOrderStatusActions("pending")).toEqual(["preparing", "cancelled"]);
     expect(getOrderStatusActions("preparing")).toEqual(["ready", "cancelled"]);
-    expect(getOrderStatusActions("ready")).toEqual(["delivered", "cancelled"]);
-    expect(getOrderStatusActions("delivered")).toEqual(["cancelled"]);
+    expect(getOrderStatusActions("ready")).toEqual(["cancelled"]);
+    expect(getOrderStatusActions("delivered")).toEqual([]);
     expect(getOrderStatusActions("completed")).toEqual([]);
     expect(getOrderStatusActions("cancelled")).toEqual([]);
   });

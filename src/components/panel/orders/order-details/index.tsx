@@ -9,6 +9,8 @@ import toast from "react-hot-toast";
 import { useOrder, useOrderReceipt } from "@/hooks/api";
 import PermissionGate from "@/components/permission-gate";
 import { Button } from "@/components/ui/button";
+import QueryErrorState from "@/components/ui/query-error-state";
+import Shimmer from "@/components/ui/shimmer";
 import { showSuccessModal } from "@/components/ui/success-modal";
 import { deleteOrderAPI } from "@/services/mutations";
 
@@ -35,11 +37,18 @@ function OrderDetails() {
       order.operating_type !== "operation_company" &&
       RECEIPT_STATUSES.includes(order.status),
   );
-  const { data: receiptData } = useOrderReceipt(
-    shouldFetchReceipt ? id : null,
-    shouldFetchReceipt,
+  const shouldLoadReceipt = shouldFetchReceipt && !order?.receipt;
+  const {
+    data: receiptData,
+    isLoading: isReceiptLoading,
+    isError: isReceiptError,
+    isFetching: isReceiptFetching,
+    refetch: refetchReceipt,
+  } = useOrderReceipt(
+    shouldLoadReceipt ? id : null,
+    shouldLoadReceipt,
   );
-  const receipt = receiptData?.data ?? order?.receipt ?? null;
+  const receipt = order?.receipt ?? receiptData?.data ?? null;
 
   async function handleDelete() {
     if (!order || isDeleting) return;
@@ -102,6 +111,14 @@ function OrderDetails() {
             <OperatingContractSection key={order.id} orderId={order.id} />
           ) : order.operating_type !== "operation_company" && receipt ? (
             <OrderReceiptSection orderId={order.id} receipt={receipt} currency={order.currency} />
+          ) : shouldLoadReceipt && isReceiptLoading ? (
+            <Shimmer className="h-48 w-full rounded-[14px]" />
+          ) : shouldLoadReceipt && isReceiptError ? (
+            <QueryErrorState
+              title="تعذر تحميل سند الاستلام"
+              isRetrying={isReceiptFetching}
+              onRetry={() => void refetchReceipt()}
+            />
           ) : null}
         </>
       ) : (
