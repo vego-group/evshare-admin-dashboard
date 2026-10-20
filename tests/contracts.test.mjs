@@ -81,7 +81,12 @@ test("user details expose the subscription bonus summary and audit history", () 
   assert.match(types, /is_bonus_enrolled:\s*boolean/);
   assert.match(types, /reversal:\s*UserSubscriptionExtensionReversal\s*\|\s*null/);
   assert.match(details, /subscriptionSummary\?\.ends_at\s*\?\?\s*user\.subscription\?\.end_date/);
+  assert.match(details, /isMerchant\s*&&\s*user\.subscription_extensions/);
+  assert.match(details, /bonus_months_per_order/);
+  assert.match(details, /slug="Admin Show Orders"/);
+  assert.match(details, /href=\{`\/orders\/\$\{encodeURIComponent\(extension\.order\.id\)\}`\}/);
   assert.match(details, /سجل مكافآت الاشتراك/);
+  assert.match(details, /اشتراك قديم غير مشمول بآلية المكافآت/);
   assert.match(details, /تاريخ الانتهاء الحالي أعلاه هو المرجع المعتمد/);
 });
 
