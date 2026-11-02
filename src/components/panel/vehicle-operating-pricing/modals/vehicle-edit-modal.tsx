@@ -15,6 +15,7 @@ import {
   preventNegativeNumberInput,
   preventNegativeNumberPaste,
 } from "@/lib/utils/non-negative-input";
+import { isVehicleProvisioningReady } from "@/lib/utils/vehicle-provisioning";
 import { editVehicleAPI } from "@/services/mutations";
 import { useOperatingCompanies } from "@/hooks/api";
 import type { VehicleListItem, VehicleStatus, VehicleType } from "@/types";
@@ -64,7 +65,7 @@ function VehicleEditModal({
     event.preventDefault();
     if (!vehicle || isSaving || !isChanged) return;
     const payload = buildChangedPayload(values, vehicle);
-    if (payload.status === "active" && vehicle.provisioning && !vehicle.provisioning.ready) {
+    if (payload.status === "active" && !isVehicleProvisioningReady(vehicle)) {
       toast.error("أكمل تجهيز المركبة قبل تفعيلها");
       return;
     }
@@ -101,7 +102,7 @@ function VehicleEditModal({
           </div>
           <FilterSelect
             label="حالة المركبة"
-            options={vehicle.provisioning && !vehicle.provisioning.ready ? vehicleStatusOptions.filter((option) => option.value !== "active") : vehicleStatusOptions}
+            options={!isVehicleProvisioningReady(vehicle) ? vehicleStatusOptions.filter((option) => option.value !== "active") : vehicleStatusOptions}
             value={values.status as VehicleStatus}
             onChange={(status) =>
               setValues((current) => ({ ...current, status }))

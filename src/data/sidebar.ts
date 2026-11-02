@@ -33,6 +33,7 @@ import {
   Users,
   Wallet,
   Webhook,
+  Globe2,
   type LucideIcon,
 } from "lucide-react";
 
@@ -419,6 +420,14 @@ export const sidebarNavItems: SidebarNavItem[] = [
     ariaLabel: "بيانات التواصل",
     icon: Phone,
     permission: "Admin Index Settings",
+  },
+  {
+    href: "/website/pages",
+    group: "content",
+    label: "محتوى الموقع الإلكتروني",
+    ariaLabel: "إدارة محتوى الموقع الإلكتروني",
+    icon: Globe2,
+    permission: "Admin View Website Content",
   },
   {
     href: "/pages",

@@ -1,4 +1,5 @@
 import type { CategoryListItem } from "@/types";
+import { vehicleTypeLabel } from "@/lib/utils/vehicle-type";
 
 import {
   CategoryActions,
@@ -45,6 +46,10 @@ function CategoriesCards({
           </div>
 
           <div className="mt-5 space-y-3 rounded-[14px] bg-background p-4 text-right">
+            <DetailLine
+              label="نوع المركبة"
+              value={vehicleTypeLabel(category.vehicle_type)}
+            />
             <DetailLine
               label="عدد المنتجات"
               value={formatProductsCount(category.products_count)}

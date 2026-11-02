@@ -45,6 +45,19 @@ function VehicleMainContent({ data, companies, params, onParamsChange, ...handle
         onVehicleTypeChange={(vehicle_type) => onParamsChange({ vehicle_type, page: 1 })}
         onDeviceQueryChange={(device_id) => onParamsChange({ device_id: device_id || undefined, page: 1 })}
         onConnectivityChange={(connectivity) => onParamsChange({ connectivity, page: 1 })}
+        onClearFilters={() =>
+          onParamsChange({
+            search: undefined,
+            device_id: undefined,
+            status: undefined,
+            operation_company_uuid: undefined,
+            vehicle_type: undefined,
+            connectivity: undefined,
+            provisioning_status: undefined,
+            order_by: "desc",
+            page: 1,
+          })
+        }
       />
       <VehiclesResults vehicles={data?.data ?? []} {...handlers} />
       <VehiclesPagination meta={data?.meta} onPageChange={(page) => onParamsChange({ page })} />

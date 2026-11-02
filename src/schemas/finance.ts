@@ -4,14 +4,17 @@ export const vatSettlementSchema = z.object({
   period: z
     .string()
     .trim()
-    .regex(/^\d{4}-\d{2}$/, "الفترة يجب أن تكون بصيغة YYYY-MM"),
+    .regex(/^\d{4}-(0[1-9]|1[0-2])$/, "الفترة يجب أن تكون بصيغة YYYY-MM"),
   amount: z.preprocess(
     (v) => (v === "" || v == null ? undefined : v),
     z.coerce
       .number({ error: "قيمة السداد مطلوبة" })
       .positive("قيمة السداد يجب أن تكون أكبر من 0"),
   ),
-  paid_at: z.string().trim().min(1, "تاريخ السداد مطلوب"),
+  paid_at: z
+    .string()
+    .trim()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "تاريخ السداد مطلوب"),
   notes: z.string().trim().optional(),
 });
 

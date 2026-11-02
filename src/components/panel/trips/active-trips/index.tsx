@@ -11,9 +11,10 @@ import Header from "@/components/ui/header";
 import QueryErrorState from "@/components/ui/query-error-state";
 import { useActiveTrips } from "@/hooks/api";
 import { cancelTripAPI, endTripAPI } from "@/services/mutations";
-import type { TripListItem, TripMutationError } from "@/types";
+import type { TripListItem } from "@/types";
 import { ADMIN_PERMISSIONS } from "@/constants";
 import { useUserPermissions } from "@/hooks";
+import { formatTripActionError } from "@/lib/utils/trip-action-error";
 
 import { CancelTripConfirmModal, EndTripConfirmModal } from "./modals";
 import TripSidebar from "./trip-sidebar";
@@ -270,26 +271,6 @@ function getTripActionIdempotencyKey(
   const idempotencyKey = `admin-trip-${tripId}-${action}-${suffix}`;
   attempt.current = { action, tripId, idempotencyKey };
   return idempotencyKey;
-}
-
-function formatTripActionError(
-  fallbackMessage?: string,
-  error?: TripMutationError,
-) {
-  const reason = Array.isArray(error?.errors?.reason)
-    ? error.errors.reason.join(" ")
-    : error?.errors?.reason;
-  const reference = error?.correlation_id
-    ? `رقم التتبع: ${error.correlation_id}`
-    : null;
-
-  return [
-    error?.message || fallbackMessage || "تعذر تنفيذ الإجراء. يمكنك المحاولة مرة أخرى بأمان.",
-    reason,
-    reference,
-  ]
-    .filter(Boolean)
-    .join(" — ");
 }
 
 function tripOperationStatusMessage(state: string) {

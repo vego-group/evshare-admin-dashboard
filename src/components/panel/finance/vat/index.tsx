@@ -12,6 +12,7 @@ import {
   useVatSummary,
 } from "@/hooks/api";
 import type { VatStatus } from "@/types";
+import QueryErrorState from "@/components/ui/query-error-state";
 
 import VatContentShimmer from "./content-shimmer";
 import VatExports from "./exports";
@@ -29,39 +30,53 @@ type Filters = {
   status?: VatStatus;
   period?: string;
   currency?: string;
+  date_from?: string;
+  date_to?: string;
 };
 
 function VatFinance() {
   const queryClient = useQueryClient();
   const [filters, setFilters] = useState<Filters>({});
   const [page, setPage] = useState(1);
+  const [settlementsPage, setSettlementsPage] = useState(1);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"records" | "exports">("records");
   const canExport = useHasPermission(ADMIN_PERMISSIONS.vat.export);
-  const canViewExports = useHasPermission(ADMIN_PERMISSIONS.vat.viewExports);
   const {
     startExport,
     downloadExport,
     isBusy: isExporting,
     downloadingId,
-  } = useVatExportActions(canExport, canViewExports);
+  } = useVatExportActions(canExport);
 
   const sharedFilters = {
     status: filters.status,
     period: filters.period,
     currency: filters.currency,
+    date_from: filters.date_from,
+    date_to: filters.date_to,
+  };
+  const recordExportFilters = {
+    date_from: filters.date_from,
+    date_to: filters.date_to,
+    status: filters.status,
+    period: filters.period,
+  };
+  const settlementExportFilters = {
+    date_from: filters.date_from,
+    date_to: filters.date_to,
+    period: filters.period,
   };
 
-  const { data: summary, isLoading: isSummaryLoading } =
+  const { data: summary, isLoading: isSummaryLoading, isError: isSummaryError } =
     useVatSummary(sharedFilters);
-  const { data: periods, isLoading: isPeriodsLoading } = useVatPeriods({
-    status: filters.status,
-    currency: filters.currency,
-  });
+  const { data: periods, isLoading: isPeriodsLoading, isError: isPeriodsError } =
+    useVatPeriods(sharedFilters);
   const {
     data: records,
     isLoading: isRecordsLoading,
     isFetching: isRecordsFetching,
+    isError: isRecordsError,
   } = useVatRecords({
     ...sharedFilters,
     page,
@@ -71,9 +86,12 @@ function VatFinance() {
     data: settlements,
     isLoading: isSettlementsLoading,
     isFetching: isSettlementsFetching,
+    isError: isSettlementsError,
   } = useVatSettlements({
     period: filters.period,
-    page: 1,
+    date_from: filters.date_from,
+    date_to: filters.date_to,
+    page: settlementsPage,
     limit: PAGE_SIZE,
   });
 
@@ -86,6 +104,7 @@ function VatFinance() {
   const updateFilters = (next: Partial<Filters>) => {
     setFilters((current) => ({ ...current, ...next }));
     setPage(1);
+    setSettlementsPage(1);
   };
 
   async function refresh() {
@@ -99,11 +118,20 @@ function VatFinance() {
 
   if (isLoading) return <VatContentShimmer />;
 
+  if (isSummaryError || isPeriodsError || isRecordsError || isSettlementsError) {
+    return (
+      <QueryErrorState
+        title="تعذر تحميل بيانات ضريبة القيمة المضافة"
+        onRetry={() => void refresh()}
+      />
+    );
+  }
+
   return (
     <div className="flex w-full flex-col gap-6">
       <VatHeader />
       <VatSummaryStats data={summary?.data} />
-      {canViewExports && (
+      {canExport && (
         <div
           className="flex gap-2 border-b border-primary/20"
           role="tablist"
@@ -131,7 +159,7 @@ function VatFinance() {
           </button>
         </div>
       )}
-      {activeTab === "exports" && canViewExports ? (
+      {activeTab === "exports" && canExport ? (
         <div id="vat-exports-panel" role="tabpanel">
           <VatExports
             onDownload={downloadExport}
@@ -149,14 +177,23 @@ function VatFinance() {
             selectedStatus={filters.status}
             selectedPeriod={filters.period}
             selectedCurrency={filters.currency}
+            dateFrom={filters.date_from}
+            dateTo={filters.date_to}
             periods={[
               ...new Set((periods?.data ?? []).map((item) => item.period)),
             ]}
             onStatusChange={(status) => updateFilters({ status })}
             onPeriodChange={(period) => updateFilters({ period })}
             onCurrencyChange={(currency) => updateFilters({ currency })}
+            onDateFromChange={(date_from) => updateFilters({ date_from })}
+            onDateToChange={(date_to) => updateFilters({ date_to })}
+            onClear={() => {
+              setFilters({});
+              setPage(1);
+              setSettlementsPage(1);
+            }}
             onExport={() =>
-              void startExport({ type: "vat_records", ...sharedFilters })
+              void startExport({ type: "vat_records", ...recordExportFilters })
             }
             isExporting={isExporting}
           />
@@ -171,11 +208,13 @@ function VatFinance() {
             onExport={() =>
               void startExport({
                 type: "vat_settlements",
-                period: filters.period,
+                ...settlementExportFilters,
               })
             }
             isExporting={isExporting}
             isLoading={isSettlementsLoading || isSettlementsFetching}
+            meta={settlements?.meta}
+            onPageChange={setSettlementsPage}
           />
         </div>
       )}

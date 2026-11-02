@@ -147,9 +147,17 @@ export type VatSettlementDetailResponse = {
 export type VatExportType = "vat_records" | "vat_settlements";
 export type VatExportStatus = "queued" | "processing" | "completed" | "failed" | "expired";
 
-export type VatExportFilters = Pick<VatQueryParams, "date_from" | "date_to" | "status" | "period" | "currency">;
+export type VatExportFilters = Pick<
+  VatQueryParams,
+  "date_from" | "date_to" | "status" | "period"
+>;
 
-export type VatExportRequest = VatExportFilters & { type: VatExportType };
+export type VatExportRequest =
+  | (VatExportFilters & { type: "vat_records" })
+  | (Omit<VatExportFilters, "status"> & {
+      type: "vat_settlements";
+      status?: never;
+    });
 
 export type VatExport = {
   id: string;

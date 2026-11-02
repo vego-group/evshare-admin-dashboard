@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, Download, ListFilter } from "lucide-react";
+import { CalendarDays, ChevronDown, Download, ListFilter, X } from "lucide-react";
 import { useState } from "react";
 
 import { vatStatusOptions } from "@/data/finance";
@@ -14,10 +14,15 @@ type VatToolbarProps = {
   selectedStatus?: VatStatus;
   selectedPeriod?: string;
   selectedCurrency?: string;
+  dateFrom?: string;
+  dateTo?: string;
   periods: string[];
   onStatusChange: (value?: VatStatus) => void;
   onPeriodChange: (value?: string) => void;
   onCurrencyChange: (value?: string) => void;
+  onDateFromChange: (value?: string) => void;
+  onDateToChange: (value?: string) => void;
+  onClear: () => void;
   onExport: () => void;
   isExporting: boolean;
 };
@@ -38,21 +43,23 @@ function VatToolbar({
   selectedStatus,
   selectedPeriod,
   selectedCurrency,
+  dateFrom,
+  dateTo,
   periods,
   onStatusChange,
   onPeriodChange,
   onCurrencyChange,
+  onDateFromChange,
+  onDateToChange,
+  onClear,
   onExport,
   isExporting,
 }: VatToolbarProps) {
   const statusValue: VatStatus | "all" = selectedStatus ?? "all";
 
   return (
-    <section className="flex flex-col gap-3 rounded-2xl border border-neutral-100/60 bg-white p-3 shadow-[0_2px_6px_rgba(0,0,0,0.04)] sm:flex-row sm:items-center sm:justify-end">
-      <PermissionGate
-        slug={[ADMIN_PERMISSIONS.vat.export, ADMIN_PERMISSIONS.vat.viewExports]}
-        requireAll
-      >
+    <section className="flex flex-col gap-3 rounded-2xl border border-neutral-100/60 bg-white p-3 shadow-[0_2px_6px_rgba(0,0,0,0.04)] sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
+      <PermissionGate slug={ADMIN_PERMISSIONS.vat.export}>
         <Button type="button" variant="outline" onClick={onExport} disabled={isExporting}>
           <Download className="size-4" /> تصدير السجلات
         </Button>
@@ -62,6 +69,18 @@ function VatToolbar({
         options={currencyOptions}
         value={selectedCurrency ?? "all"}
         onChange={(value) => onCurrencyChange(value === "all" ? undefined : value)}
+      />
+      <DateFilter
+        label="من تاريخ"
+        value={dateFrom}
+        max={dateTo}
+        onChange={onDateFromChange}
+      />
+      <DateFilter
+        label="إلى تاريخ"
+        value={dateTo}
+        min={dateFrom}
+        onChange={onDateToChange}
       />
       <FilterSelect
         label="الفترة"
@@ -78,7 +97,43 @@ function VatToolbar({
         value={statusValue}
         onChange={(value) => onStatusChange(value === "all" ? undefined : value)}
       />
+      {(selectedStatus || selectedPeriod || selectedCurrency || dateFrom || dateTo) && (
+        <Button type="button" variant="ghost" onClick={onClear}>
+          <X className="size-4" /> مسح الفلاتر
+        </Button>
+      )}
     </section>
+  );
+}
+
+function DateFilter({
+  label,
+  value,
+  min,
+  max,
+  onChange,
+}: {
+  label: string;
+  value?: string;
+  min?: string;
+  max?: string;
+  onChange: (value?: string) => void;
+}) {
+  return (
+    <label className="relative flex h-9.5 w-full items-center gap-2 rounded-[14px] border border-primary bg-primary/4 px-3 text-sm font-medium text-dark-gray transition focus-within:bg-primary/10 sm:w-49">
+      <CalendarDays className="size-4 shrink-0 text-primary" aria-hidden="true" />
+      <span className="sr-only">{label}</span>
+      <input
+        type="date"
+        dir="ltr"
+        aria-label={label}
+        value={value ?? ""}
+        min={min}
+        max={max}
+        onChange={(event) => onChange(event.target.value || undefined)}
+        className="min-w-0 flex-1 bg-transparent text-xs outline-none"
+      />
+    </label>
   );
 }
 

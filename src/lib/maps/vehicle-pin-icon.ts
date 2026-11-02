@@ -9,6 +9,7 @@ export function buildVehiclePinIcon(
   color: string,
   isSelected: boolean,
   batteryPercentage: number | null,
+  isStale = false,
 ) {
   const hasBadge = batteryPercentage != null;
   const canvasWidth = hasBadge ? BADGE_CANVAS_WIDTH : PIN_WIDTH;
@@ -26,7 +27,7 @@ export function buildVehiclePinIcon(
   const width = Math.round(canvasWidth * scale);
   const height = Math.round(viewBoxHeight * scale);
 
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${canvasWidth} ${viewBoxHeight}">
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${canvasWidth} ${viewBoxHeight}" opacity="${isStale ? 0.55 : 1}">
     ${badge}
     <g transform="translate(${pinOffsetX},${pinOffsetY})">
       <path d="M16 0C7.163 0 0 7.163 0 16c0 11.5 16 26 16 26s16-14.5 16-26C32 7.163 24.837 0 16 0z" fill="${color}" stroke="#ffffff" stroke-width="2"/>

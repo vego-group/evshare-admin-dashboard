@@ -8,6 +8,7 @@ import {
   Link2,
   Lock,
   MapPin,
+  Pencil,
   Plus,
   Unlink,
   Unlock,
@@ -22,11 +23,15 @@ import Modal from "@/components/ui/modal";
 import { useHasPermission } from "@/hooks";
 import { useVehicleAssignedLock, useVehicleLocks } from "@/hooks/api";
 import { cn } from "@/lib/utils";
-import { getApiErrorCode, getRequiredPermissions } from "@/lib/utils/api-error";
 import { isGatewayDeviceId } from "@/lib/utils/device-id";
+import {
+  vehicleCommandErrorMessage,
+  type VehicleControlCommand,
+} from "@/lib/utils/vehicle-command-error";
 import {
   addVehicleLockAPI,
   assignVehicleLockAPI,
+  editVehicleLockAPI,
   locateVehicleLockAPI,
   lockVehicleLockAPI,
   sendVehicleCommandAPI,
@@ -41,9 +46,10 @@ type PendingAction =
   | "lock"
   | "unlock"
   | "locate"
-  | "sound_alarm"
+  | `vehicle_${VehicleControlCommand}`
   | "assign_existing"
   | "create_lock"
+  | "edit_lock"
   | "unassign_lock";
 
 const lockActions: {
@@ -69,6 +75,43 @@ const lockActions: {
   },
 ];
 
+const vehicleCommandActions: {
+  command: VehicleControlCommand;
+  label: string;
+  permission: string | readonly string[];
+  icon: LucideIcon;
+  className: string;
+}[] = [
+  {
+    command: "lock",
+    label: "قفل المركبة",
+    permission: ADMIN_PERMISSIONS.vehicles.lock,
+    icon: Lock,
+    className: "bg-red-50 text-red-600",
+  },
+  {
+    command: "unlock",
+    label: "فتح المركبة",
+    permission: ADMIN_PERMISSIONS.vehicles.unlock,
+    icon: Unlock,
+    className: "bg-green-50 text-green-700",
+  },
+  {
+    command: "locate",
+    label: "تحديث الموقع",
+    permission: ADMIN_PERMISSIONS.vehicles.locate,
+    icon: MapPin,
+    className: "bg-blue-50 text-blue-600",
+  },
+  {
+    command: "sound_alarm",
+    label: "تشغيل الجرس",
+    permission: ADMIN_PERMISSIONS.vehicles.ring,
+    icon: Volume2,
+    className: "bg-amber-50 text-orange-600",
+  },
+];
+
 function CommandPanelModal({
   vehicle,
   open,
@@ -86,6 +129,9 @@ function CommandPanelModal({
   const [newLockDeviceId, setNewLockDeviceId] = useState("");
   const [deviceIdError, setDeviceIdError] = useState(false);
   const [newLockNotes, setNewLockNotes] = useState("");
+  const [editingLock, setEditingLock] = useState(false);
+  const [editLockDeviceId, setEditLockDeviceId] = useState("");
+  const [editDeviceIdError, setEditDeviceIdError] = useState(false);
   const canViewLocks = useHasPermission("Admin View Locks");
   const canAssignLocks = useHasPermission(ADMIN_PERMISSIONS.locks.assign);
   const vehicleId = open ? (vehicle?.id ?? null) : null;
@@ -106,7 +152,7 @@ function CommandPanelModal({
   if (!vehicle) return null;
 
   const currentVehicle = vehicle;
-  const hasVehicleDevice = Boolean(currentVehicle.iot_device_id);
+  const hasVehicleDevice = Boolean(currentVehicle.iot_device_id?.trim());
 
   async function refreshLockState() {
     await Promise.all([
@@ -190,6 +236,38 @@ function CommandPanelModal({
     toast.error(result?.message || "فشل فك ربط القفل من المركبة");
   }
 
+  function beginEditingLock() {
+    if (!assignedLock || isBusy) return;
+    setEditLockDeviceId(assignedLock.device_id);
+    setEditDeviceIdError(false);
+    setEditingLock(true);
+  }
+
+  async function saveLockDeviceId() {
+    if (!assignedLock || isBusy) return;
+    const deviceId = editLockDeviceId.trim();
+    if (!isGatewayDeviceId(deviceId)) {
+      setEditDeviceIdError(true);
+      return;
+    }
+
+    setEditDeviceIdError(false);
+    setPendingAction("edit_lock");
+    const result = await editVehicleLockAPI(assignedLock.id, {
+      device_id: deviceId,
+    });
+    setPendingAction(null);
+
+    if (result?.ok) {
+      setEditingLock(false);
+      showSuccessModal(result.message || "تم تحديث معرف جهاز القفل بنجاح");
+      await refreshLockState();
+      return;
+    }
+
+    toast.error(result?.message || "تعذر تحديث معرف جهاز القفل");
+  }
+
   async function dispatchLock(action: "lock" | "unlock") {
     if (isBusy || !assignedLock) return;
     setPendingAction(action);
@@ -198,14 +276,13 @@ function CommandPanelModal({
         ? await lockVehicleLockAPI(assignedLock.id)
         : await unlockVehicleLockAPI(assignedLock.id);
     setPendingAction(null);
-    console.log("dispatchLock result:", result);
     if (result?.ok) {
       showSuccessModal(result.message || commandSuccessMessage(action));
       await refreshLockState();
       return;
     }
 
-    toast.error(commandErrorMessage(result, action));
+    toast.error(vehicleCommandErrorMessage(result, action));
   }
 
   async function dispatchLocate() {
@@ -220,25 +297,25 @@ function CommandPanelModal({
       return;
     }
 
-    toast.error(commandErrorMessage(result, "locate"));
+    toast.error(vehicleCommandErrorMessage(result, "locate"));
   }
 
-  async function dispatchRingCommand() {
+  async function dispatchVehicleCommand(command: VehicleControlCommand) {
     if (isBusy || !hasVehicleDevice) return;
-    setPendingAction("sound_alarm");
+    setPendingAction(`vehicle_${command}`);
     const result = await sendVehicleCommandAPI(currentVehicle.id, {
-      command: "sound_alarm",
-      params: { duration: 5 },
+      command,
+      ...(command === "sound_alarm" ? { params: { duration: 5 } } : {}),
     });
     setPendingAction(null);
 
     if (result?.ok) {
-      showSuccessModal(result.message || commandSuccessMessage("sound_alarm"));
+      toast.success(result.message || commandSuccessMessage(command));
       await refreshLockState();
       return;
     }
 
-    toast.error(commandErrorMessage(result, "sound_alarm"));
+    toast.error(vehicleCommandErrorMessage(result, command));
   }
 
   return (
@@ -281,6 +358,58 @@ function CommandPanelModal({
                     IoT.
                   </p>
                 )}
+                <PermissionGate slug={ADMIN_PERMISSIONS.locks.edit}>
+                  {editingLock ? (
+                    <div className="space-y-2 rounded-xl border border-primary/20 bg-white p-3">
+                      <label className="block text-sm text-dark-gray">
+                        معرف الجهاز من وحدة Vego IoT
+                        <input
+                          value={editLockDeviceId}
+                          onChange={(event) => {
+                            setEditLockDeviceId(event.target.value);
+                            setEditDeviceIdError(false);
+                          }}
+                          disabled={isBusy}
+                          placeholder="3fcbff96-04c0-4803-a24f-6f6aba32f8e7"
+                          dir="ltr"
+                          className="mt-2 h-11 w-full rounded-xl border border-primary/15 bg-background px-3 text-left text-sm outline-none transition focus:border-primary"
+                        />
+                      </label>
+                      <p className="text-xs text-gray">استخدم UUID الجهاز من وحدة Vego IoT، وليس الرقم التسلسلي أو الاسم.</p>
+                      {editDeviceIdError && (
+                        <p role="alert" className="text-xs text-red-600">يجب إدخال UUID صالح للجهاز.</p>
+                      )}
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          disabled={isBusy || !editLockDeviceId.trim()}
+                          onClick={saveLockDeviceId}
+                          className="flex min-h-10 flex-1 items-center justify-center rounded-xl bg-secondary px-3 text-sm font-medium text-white disabled:opacity-60"
+                        >
+                          {pendingAction === "edit_lock" ? <Loader /> : "حفظ المعرف"}
+                        </button>
+                        <button
+                          type="button"
+                          disabled={isBusy}
+                          onClick={() => setEditingLock(false)}
+                          className="min-h-10 rounded-xl bg-background px-4 text-sm font-medium text-secondary disabled:opacity-60"
+                        >
+                          إلغاء
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      disabled={isBusy}
+                      onClick={beginEditingLock}
+                      className="flex min-h-10 w-full items-center justify-center gap-2 rounded-xl bg-white px-4 text-sm font-medium text-secondary transition hover:bg-primary/10 disabled:opacity-60"
+                    >
+                      <Pencil className="size-4" />
+                      تعديل معرف جهاز القفل
+                    </button>
+                  )}
+                </PermissionGate>
                 <InfoRow
                   label="آخر اتصال"
                   value={formatDate(assignedLock.last_seen_at ?? undefined)}
@@ -512,31 +641,43 @@ function CommandPanelModal({
 
         <section className="space-y-3 rounded-[14px] bg-background p-4">
           <h4 className="text-sm font-semibold text-secondary">
-            جهاز IoT المباشر للمركبة (اختياري)
+            أوامر المركبة المباشرة
           </h4>
+          <p className="text-xs leading-5 text-gray">
+            تظهر كل عملية وفق صلاحيتها الخاصة، وتبقى صلاحية Admin Command Vehicles مقبولة لجميع العمليات.
+          </p>
           <InfoRow label="معرف الجهاز" value={vehicle.iot_device_id ?? "-"} />
 
           {!hasVehicleDevice ? (
             <p className="rounded-xl bg-red-50 p-4 text-center text-sm text-red-600">
-              لا يوجد جهاز IoT مباشر للمركبة. القفل المربوط أعلاه يعمل بشكل
-              مستقل.
+              لا يوجد جهاز IoT مباشر للمركبة، لذلك لا يمكن إرسال أوامر المركبة. القفل المربوط أعلاه يعمل بشكل مستقل.
             </p>
           ) : (
-            <PermissionGate slug={ADMIN_PERMISSIONS.vehicles.ring}>
-              <button
-                type="button"
-                disabled={isBusy}
-                onClick={dispatchRingCommand}
-                className="flex min-h-20 w-full items-center justify-center gap-2 rounded-xl bg-amber-50 p-4 text-sm font-medium text-orange-500 transition hover:brightness-95 disabled:opacity-60"
-              >
-                {pendingAction === "sound_alarm" ? (
-                  <Loader />
-                ) : (
-                  <Volume2 className="size-6 shrink-0" />
-                )}
-                تشغيل الجرس
-              </button>
-            </PermissionGate>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {vehicleCommandActions.map(
+                ({ command, label, permission, icon: Icon, className }) => (
+                  <PermissionGate key={command} slug={permission}>
+                    <button
+                      type="button"
+                      disabled={isBusy}
+                      aria-busy={pendingAction === `vehicle_${command}`}
+                      onClick={() => dispatchVehicleCommand(command)}
+                      className={cn(
+                        "flex min-h-20 items-center justify-center gap-2 rounded-xl p-4 text-sm font-medium transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-60",
+                        className,
+                      )}
+                    >
+                      {pendingAction === `vehicle_${command}` ? (
+                        <Loader />
+                      ) : (
+                        <Icon className="size-6 shrink-0" />
+                      )}
+                      {label}
+                    </button>
+                  </PermissionGate>
+                ),
+              )}
+            </div>
           )}
         </section>
       </div>
@@ -581,54 +722,11 @@ function LockStatus({
   );
 }
 
-type ControlCommand = "lock" | "unlock" | "locate" | "sound_alarm";
-
-function commandSuccessMessage(type: ControlCommand) {
+function commandSuccessMessage(type: VehicleControlCommand) {
   if (type === "lock") return "أكد الجهاز قفل المركبة بنجاح";
   if (type === "unlock") return "أكد الجهاز فتح المركبة بنجاح";
   if (type === "locate") return "أكد الجهاز تحديث موقع المركبة بنجاح";
   return "أكد الجهاز تشغيل الجرس بنجاح";
-}
-
-function commandErrorMessage(
-  result: { error?: unknown; message?: string; status?: number },
-  command: ControlCommand,
-) {
-  const code = getApiErrorCode(result.error);
-  const backendMessage = result.message?.trim();
-
-  console.error("[Vehicle control command failed]", {
-    command,
-    status: result.status,
-    code,
-    message: backendMessage,
-    error: result.error,
-  });
-
-  if (code === "AUTH_PERMISSION_DENIED") {
-    const required = getRequiredPermissions(result.error);
-    if (backendMessage) {
-      return required.length
-        ? `${backendMessage} (${required.join("، ")})`
-        : backendMessage;
-    }
-    return required.length
-      ? `لا تملك الصلاحية المطلوبة: ${required.join("، ")}`
-      : "لا تملك صلاحية تنفيذ هذا الإجراء";
-  }
-  if (code === "iot_device_offline") {
-    return backendMessage || "القفل غير متصل حاليًا. حاول مرة أخرى.";
-  }
-  if (code === "iot_command_timeout") {
-    return backendMessage || "لم يستجب القفل في الوقت المحدد. حاول مرة أخرى.";
-  }
-  if (code === "iot_command_rejected") {
-    return (
-      backendMessage || "رفض القفل الأمر. تحقق من حالة الجهاز وحاول مرة أخرى."
-    );
-  }
-  if (backendMessage) return backendMessage;
-  return command === "unlock" ? "فشل فتح المركبة" : "فشل إرسال الأمر";
 }
 
 function InfoRow({ label, value }: { label: string; value?: string | null }) {

@@ -31,7 +31,12 @@ function VehicleMarker({
       onClick={onSelect}
       title={vehicle.rental_availability?.message || vehicle.label || vehicle.id}
       zIndex={isSelected ? 999 : undefined}
-      icon={buildVehiclePinIcon(vehicle.rental_availability?.available ? "#16a34a" : "#dc2626", isSelected, vehicle.battery_percentage)}
+      icon={buildVehiclePinIcon(
+        vehicle.rental_availability?.available ? "#16a34a" : "#dc2626",
+        isSelected,
+        vehicle.battery_percentage,
+        vehicle.current_location?.is_stale ?? false,
+      )}
     />
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { Cpu } from "lucide-react";
+import { Cpu, RotateCcw } from "lucide-react";
 import { useState } from "react";
 import useDebouncedChange from "@/hooks/use-debounced-change";
 import type {
@@ -32,6 +32,7 @@ type Props = {
   onOperationCompanyChange: (value?: string) => void;
   onVehicleTypeChange: (value?: VehicleType) => void;
   onConnectivityChange: (value?: VehicleLockConnectivity) => void;
+  onClearFilters: () => void;
 };
 
 const sortOptions: FilterOption<OrderBy>[] = [
@@ -78,6 +79,7 @@ function VehicleToolbar({
   onVehicleTypeChange,
   onConnectivityChange,
   onProvisioningChange,
+  onClearFilters,
 }: Props) {
   const [internalSearchQuery, setInternalSearchQuery] = useState(searchQuery);
   const [internalDeviceQuery, setInternalDeviceQuery] = useState(deviceQuery);
@@ -87,6 +89,22 @@ function VehicleToolbar({
     { label: "كل شركات التشغيل", value: "all" },
     ...companies.map((company) => ({ label: company.name, value: company.id })),
   ];
+  const activeFilterCount = [
+    searchQuery,
+    deviceQuery,
+    selectedStatus,
+    selectedOperationCompany,
+    selectedVehicleType,
+    selectedConnectivity,
+    selectedProvisioning,
+    selectedSort !== "desc" ? selectedSort : undefined,
+  ].filter(Boolean).length;
+
+  function clearFilters() {
+    setInternalSearchQuery("");
+    setInternalDeviceQuery("");
+    onClearFilters();
+  }
 
   return (
     <section className="space-y-3 rounded-2xl border border-neutral-100/60 bg-white p-2 shadow-[0_2px_6px_rgba(0,0,0,0.04)]">
@@ -97,9 +115,21 @@ function VehicleToolbar({
             ابحث عن المركبات وأجهزة IoT والأقفال
           </p>
         </div>
-        <span className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full bg-teal-50 px-3 py-1.5 text-xs font-medium text-teal-700">
-          فلاتر <bdi dir="ltr">IoT</bdi>
-        </span>
+        <div className="flex items-center gap-2">
+          {activeFilterCount > 0 && (
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium text-gray transition hover:bg-neutral-100 hover:text-secondary"
+            >
+              <RotateCcw className="size-3.5" />
+              مسح الكل
+            </button>
+          )}
+          <span className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full bg-teal-50 px-3 py-1.5 text-xs font-medium text-teal-700">
+            {activeFilterCount > 0 ? `${activeFilterCount} فلاتر نشطة` : "فلاتر"}
+          </span>
+        </div>
       </div>
       <div className="grid gap-3 lg:grid-cols-2">
         <SearchInput

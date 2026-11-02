@@ -1,6 +1,8 @@
 import type { VehicleListItem } from "@/types";
+import { isGatewayDeviceId } from "@/lib/utils/device-id";
 import StatusBadge from "../status-badge";
 import ProvisioningBadge from "../provisioning-badge";
+import VehicleTypeIndicator from "../vehicle-type-indicator";
 import { vehicleTitle } from "../utils";
 import VehicleActions from "./action-buttons";
 
@@ -36,6 +38,11 @@ function VehicleCard(props: Props) {
           <div className="mt-2 flex flex-wrap gap-2">
             <StatusBadge status={vehicle.status} />
             <ProvisioningBadge vehicle={vehicle} />
+            <VehicleTypeIndicator
+              type={vehicle.vehicle_type}
+              source={vehicle.vehicle_type_source}
+              showSource={vehicle.vehicle_type_source === "inferred"}
+            />
           </div>
         </div>
         <div className="shrink-0">
@@ -47,6 +54,11 @@ function VehicleCard(props: Props) {
           <Line key={label} label={label} value={value} />
         ))}
       </div>
+      {vehicle.lock?.device_id && !isGatewayDeviceId(vehicle.lock.device_id) && (
+        <p role="alert" className="border-t border-amber-200 bg-amber-50 px-4 py-3 text-xs font-medium text-orange-700">
+          معرف القفل غير صالح. يجب استخدام UUID الجهاز من وحدة Vego IoT.
+        </p>
+      )}
     </article>
   );
 }

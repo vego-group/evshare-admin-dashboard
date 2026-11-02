@@ -88,7 +88,13 @@ export function ProductDetailsContent({ product, isLoading }: Props) {
         <DetailRow label="نوع المركبة" value={vehicleTypeLabel(product.vehicle_type)} />
         <DetailRow
           label="مصدر نوع المركبة"
-          value={product.vehicle_type_override ? "محدد على المنتج" : "موروث من التصنيف"}
+          value={
+            product.vehicle_type_override
+              ? "محدد على المنتج"
+              : product.vehicle_type
+                ? "موروث من التصنيف"
+                : "غير محدد"
+          }
         />
         <DetailRow
           label="السعر"

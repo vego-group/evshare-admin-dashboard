@@ -50,6 +50,10 @@ export const vatPeriodsAPI = async (
     date_from: params.date_from,
     date_to: params.date_to,
     status: params.status,
+    period: params.period,
+    page: params.page,
+    limit: params.limit,
+    currency: params.currency,
   });
 
   return await baseAPI("GET", `/finance/vat/periods${query ? `?${query}` : ""}`);

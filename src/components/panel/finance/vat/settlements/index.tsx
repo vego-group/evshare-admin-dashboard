@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import EmptyState from "@/components/ui/empty-state";
 import TableShimmer from "@/components/ui/table-shimmer";
 import type { VatSettlement } from "@/types";
+import type { VatPaginationMeta } from "@/types";
 import PermissionGate from "@/components/permission-gate";
 import { ADMIN_PERMISSIONS } from "@/constants";
 
@@ -14,6 +15,8 @@ type Props = {
   onExport: () => void;
   isExporting: boolean;
   isLoading?: boolean;
+  meta?: VatPaginationMeta;
+  onPageChange: (page: number) => void;
 };
 
 function VatSettlements({
@@ -22,6 +25,8 @@ function VatSettlements({
   onExport,
   isExporting,
   isLoading = false,
+  meta,
+  onPageChange,
 }: Props) {
   return (
     <section className="flex flex-col gap-4 rounded-2xl bg-white p-5">
@@ -31,10 +36,7 @@ function VatSettlements({
           <p className="text-sm text-gray">سجل بمبالغ ضريبة القيمة المضافة التي تم سدادها</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <PermissionGate
-            slug={[ADMIN_PERMISSIONS.vat.export, ADMIN_PERMISSIONS.vat.viewExports]}
-            requireAll
-          >
+          <PermissionGate slug={ADMIN_PERMISSIONS.vat.export}>
             <Button type="button" variant="outline" onClick={onExport} disabled={isExporting}>
               <Download className="size-4" /> تصدير التسويات
             </Button>
@@ -93,7 +95,52 @@ function VatSettlements({
           {isLoading && <span className="sr-only">جارٍ تحميل تسويات الضريبة...</span>}
         </div>
       )}
+      <VatSettlementPagination
+        meta={meta}
+        isLoading={isLoading}
+        onPageChange={onPageChange}
+      />
     </section>
+  );
+}
+
+function VatSettlementPagination({
+  meta,
+  isLoading,
+  onPageChange,
+}: {
+  meta?: VatPaginationMeta;
+  isLoading: boolean;
+  onPageChange: (page: number) => void;
+}) {
+  if (!meta || meta.lastPage <= 1) return null;
+
+  return (
+    <div className="flex items-center justify-between gap-3 border-t border-primary/10 pt-4 text-sm text-gray">
+      <span>
+        صفحة {meta.currentPage} من {meta.lastPage}
+      </span>
+      <div className="flex gap-2" dir="ltr">
+        <Button
+          type="button"
+          size="sm"
+          variant="outline"
+          disabled={isLoading || meta.currentPage === 1}
+          onClick={() => onPageChange(meta.currentPage - 1)}
+        >
+          السابق
+        </Button>
+        <Button
+          type="button"
+          size="sm"
+          variant="outline"
+          disabled={isLoading || meta.currentPage === meta.lastPage}
+          onClick={() => onPageChange(meta.currentPage + 1)}
+        >
+          التالي
+        </Button>
+      </div>
+    </div>
   );
 }
 

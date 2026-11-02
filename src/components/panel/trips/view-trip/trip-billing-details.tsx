@@ -10,7 +10,7 @@ function TripBillingDetails({ trip }: { trip: TripListItem }) {
   const price = Number(trip.price);
   const commission = Number(trip.commission);
   const ownerEarning = trip.price != null && trip.commission != null && Number.isFinite(price) && Number.isFinite(commission)
-    ? Math.max(0, price - commission)
+    ? price - commission
     : null;
   return (
     <section className="space-y-3">

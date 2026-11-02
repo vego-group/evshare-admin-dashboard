@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 import type { CategoryListItem } from "@/types";
+import { vehicleTypeLabel } from "@/lib/utils/vehicle-type";
 
 import {
   CategoryActions,
@@ -25,11 +26,12 @@ function CategoriesTable({
   return (
     <section className="overflow-hidden rounded-lg bg-white">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[900px] border-separate border-spacing-0 text-right">
+        <table className="w-full min-w-[1000px] border-separate border-spacing-0 text-right">
           <thead>
             <tr className="bg-primary/8 text-base font-semibold text-dark-gray">
               <HeaderCell>الصورة</HeaderCell>
               <HeaderCell>العنوان</HeaderCell>
+              <HeaderCell>نوع المركبة</HeaderCell>
               <HeaderCell>عدد المنتجات</HeaderCell>
               <HeaderCell>الحالة</HeaderCell>
               <HeaderCell>الإجراءات</HeaderCell>
@@ -49,6 +51,7 @@ function CategoriesTable({
                     {category.name}
                   </p>
                 </TableCell>
+                <TableCell>{vehicleTypeLabel(category.vehicle_type)}</TableCell>
                 <TableCell>{formatProductsCount(category.products_count)}</TableCell>
                 <TableCell truncate={false}>
                   <StatusBadge active={category.active} />

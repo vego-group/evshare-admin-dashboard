@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { Eye } from "lucide-react";
+import Link from "next/link";
 import MoneyValue from "@/components/ui/money-value";
 
 import type { WalletTransaction } from "@/types";
@@ -39,9 +40,19 @@ function WalletCard({
     <article className="overflow-hidden rounded-2xl border border-neutral-100 bg-white p-4 transition hover:shadow-md">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1 text-right">
-          <h3 className="truncate text-lg font-semibold text-secondary">
-            {transaction.title}
-          </h3>
+          {transaction.reference?.id &&
+          transaction.reference.type?.trim().toLowerCase() === "trip" ? (
+            <Link
+              href={`/trips/${encodeURIComponent(transaction.reference.id)}`}
+              className="block truncate text-lg font-semibold text-blue-700 underline-offset-2 hover:underline"
+            >
+              {transaction.title}
+            </Link>
+          ) : (
+            <h3 className="truncate text-lg font-semibold text-secondary">
+              {transaction.title}
+            </h3>
+          )}
           <p className="text-sm text-gray">مستخدم #{transaction.user_id}</p>
         </div>
         <div className="shrink-0">

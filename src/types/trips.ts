@@ -245,7 +245,13 @@ export type TripOperationsResponse = {
 export type TripMutationError = {
   message: string;
   error_code?: string;
-  errors?: { reason?: string | string[] };
+  errors?: {
+    reason?: string | string[];
+    status_reason?: string | string[];
+    last_seen_at?: string | string[];
+    http_status?: number | string | string[];
+    response?: unknown;
+  };
   correlation_id?: string;
   recoverable?: boolean;
   operation_id?: string;

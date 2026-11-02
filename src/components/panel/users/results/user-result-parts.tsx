@@ -164,7 +164,7 @@ export function UserActions({
   return (
     <div className={cn("flex items-center gap-2", compact && "w-full")}>
       {user.account_status !== "deleted" && (
-        <PermissionGate slug={["Admin Edit Users", "Admin Assign User Roles"]}>
+        <PermissionGate slug={["Admin Edit Users", ADMIN_PERMISSIONS.users.assignRole]}>
           <ActionButton
             icon={Pencil}
             onClick={onEdit}

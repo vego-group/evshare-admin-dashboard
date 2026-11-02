@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { Eye } from "lucide-react";
+import Link from "next/link";
 import MoneyValue from "@/components/ui/money-value";
 
 import { cn } from "@/lib/utils";
@@ -19,9 +20,18 @@ function WalletTableRow({
   return (
     <tr className="text-base font-medium leading-6 text-dark-gray transition hover:bg-primary/5">
       <TableCell dir="ltr" className="max-w-0 text-right">
-        <span className="block truncate font-semibold text-secondary">
-          {transaction.title}
-        </span>
+        {isTripReference(transaction.reference) ? (
+          <Link
+            href={`/trips/${encodeURIComponent(transaction.reference.id)}`}
+            className="block truncate font-semibold text-blue-700 underline-offset-2 hover:underline"
+          >
+            {transaction.title}
+          </Link>
+        ) : (
+          <span className="block truncate font-semibold text-secondary">
+            {transaction.title}
+          </span>
+        )}
       </TableCell>
       <TableCell dir="ltr" className="text-right">
         <AmountCell value={transaction.credit} currency={transaction.currency} color="text-green-600" />
@@ -48,6 +58,14 @@ function WalletTableRow({
         </button>
       </TableCell>
     </tr>
+  );
+}
+
+function isTripReference(
+  reference: WalletTransaction["reference"],
+): reference is NonNullable<WalletTransaction["reference"]> {
+  return Boolean(
+    reference?.id && reference.type?.trim().toLowerCase() === "trip",
   );
 }
 

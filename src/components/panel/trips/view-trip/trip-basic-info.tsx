@@ -14,11 +14,12 @@ import { vehicleTypeLabel } from "@/lib/utils/vehicle-type";
 import TripZoneStatus from "../trip-zone-status";
 
 function TripBasicInfo({ trip }: { trip: TripListItem }) {
+  const isActiveTrip = trip.status === "started" || trip.status === "in_progress";
   const hasAutoStopError =
-    (trip.status === "started" || trip.status === "in_progress") &&
-    Boolean(trip.auto_stop_last_error);
-  const isNegativeNonScooter =
-    trip.vehicle_type !== "scooter" &&
+    isActiveTrip && Boolean(trip.auto_stop_last_error);
+  const isNegativeBikeBalance =
+    isActiveTrip &&
+    trip.vehicle_type === "bike" &&
     trip.remaining_balance != null &&
     Number(trip.remaining_balance) < 0;
   const wasCompletedByLock =
@@ -27,26 +28,34 @@ function TripBasicInfo({ trip }: { trip: TripListItem }) {
 
   return (
     <>
-      {(wasCompletedByLock || trip.auto_stopped_at || hasAutoStopError || isNegativeNonScooter) && (
-        <section className="space-y-2">
+      {(wasCompletedByLock || trip.auto_stopped_at || hasAutoStopError || isNegativeBikeBalance) && (
+        <section className="space-y-2" aria-label="تنبيهات تشغيل الرحلة">
           {wasCompletedByLock && (
             <p className="rounded-xl bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
               اكتملت الرحلة تلقائياً بعد تأكيد إغلاق قفل المركبة، وتوقفت الفوترة عند وقت الإغلاق.
             </p>
           )}
           {trip.auto_stopped_at && (
-            <p className="rounded-xl bg-amber-50 px-4 py-3 text-sm font-medium text-orange-600">
-              تم الإيقاف تلقائياً بسبب عدم كفاية الرصيد
-            </p>
+            <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900" role="status">
+              <p className="font-semibold">تم الإيقاف تلقائياً بسبب عدم كفاية الرصيد</p>
+              <p className="mt-1 text-xs text-amber-800">
+                اكتملت تسوية الرحلة وأعيدت المركبة إلى الحالة النشطة في {formatDate(trip.auto_stopped_at)}.
+              </p>
+            </div>
           )}
           {hasAutoStopError && (
-            <p className="rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
-              فشل الإيقاف التلقائي — المحاولة {trip.auto_stop_attempts}: {trip.auto_stop_last_error}
-            </p>
+            <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
+              <p className="font-semibold">
+                فشل الإيقاف التلقائي — المحاولة {trip.auto_stop_attempts ?? 0}: {trip.auto_stop_last_error}
+              </p>
+              <p className="mt-1 text-xs text-red-600">
+                الرحلة ما زالت نشطة ولم يُخصم المبلغ. افحص جهاز المركبة وبوابة IoT، أو أنهِ الرحلة يدوياً من لوحة التحكم.
+              </p>
+            </div>
           )}
-          {isNegativeNonScooter && (
-            <p className="rounded-xl bg-blue-50 px-4 py-3 text-sm font-medium text-blue-600">
-              رصيد سالب ({vehicleTypeLabel(trip.vehicle_type)}) — تستمر الرحلة حتى ينهيها السائق أو المشرف
+          {isNegativeBikeBalance && (
+            <p className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-medium text-blue-700" role="status">
+              رصيد سالب (دراجة) — تستمر الرحلة لأن الدراجة لا تدعم الإيقاف عن بُعد، حتى ينهيها السائق أو المشرف
             </p>
           )}
         </section>
@@ -73,10 +82,21 @@ function TripBasicInfo({ trip }: { trip: TripListItem }) {
         <DetailRow label="نوع المركبة" value={vehicleTypeLabel(trip.vehicle_type)} />
         <DetailRow label="المسافة" value={formatTripDistance(trip.distance)} />
         <DetailRow label="تاريخ إنشاء الرحلة" value={<span dir="ltr">{formatDate(trip.created_at)}</span>} />
+        {trip.remaining_balance != null && (
+          <DetailRow
+            label="الرصيد المتبقي أثناء الرحلة"
+            value={<MoneyValue value={trip.remaining_balance} currency={trip.currency} />}
+          />
+        )}
+        {trip.auto_stopped_at && (
+          <DetailRow label="وقت الإيقاف التلقائي" value={<span dir="ltr">{formatDate(trip.auto_stopped_at)}</span>} />
+        )}
         {trip.auto_stop_attempts != null && (
           <DetailRow label="محاولات الإيقاف التلقائي" value={trip.auto_stop_attempts} />
         )}
-        <DetailRow label="آخر محاولة إيقاف" value={<span dir="ltr">{formatDate(trip.auto_stop_last_attempt_at)}</span>} />
+        {trip.auto_stop_last_attempt_at && (
+          <DetailRow label="آخر محاولة إيقاف" value={<span dir="ltr">{formatDate(trip.auto_stop_last_attempt_at)}</span>} />
+        )}
         <DetailRow label="وقت البدء" value={<span dir="ltr">{formatDate(trip.date_time.start)}</span>} />
         <DetailRow label="وقت الانتهاء" value={<span dir="ltr">{formatDate(trip.date_time.end)}</span>} />
         <DetailRow

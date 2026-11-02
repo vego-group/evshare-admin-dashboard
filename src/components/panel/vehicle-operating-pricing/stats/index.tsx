@@ -10,17 +10,17 @@ import type { VehiclesAnalysis } from "@/types";
 
 function VehicleStats({ analysis }: { analysis?: VehiclesAnalysis }) {
   const cards = [
-    ["الإجمالي", analysis?.total ?? 0, ListChecks, "bg-primary/15 text-secondary"],
-    ["نشط", analysis?.active ?? 0, CheckCircle2, "bg-green-50 text-green-600"],
-    ["قيد الاستخدام", analysis?.in_use ?? 0, Route, "bg-indigo-50 text-indigo-600"],
-    ["صيانة", analysis?.maintenance ?? 0, Wrench, "bg-yellow-50 text-yellow-700"],
-    ["موقوف", analysis?.stopped ?? 0, AlertTriangle, "bg-red-50 text-red-600"],
+    ["الإجمالي", analysis?.total ?? 0, ListChecks, "bg-primary/15 text-secondary", undefined],
+    ["نشط", analysis?.active ?? 0, CheckCircle2, "bg-green-50 text-green-600", undefined],
+    ["قيد الاستخدام", analysis?.in_use ?? 0, Route, "bg-indigo-50 text-indigo-600", undefined],
+    ["صيانة", analysis?.maintenance ?? 0, Wrench, "bg-yellow-50 text-yellow-700", undefined],
+    ["موقوف", analysis?.stopped ?? 0, AlertTriangle, "bg-red-50 text-red-600", "يشمل المركبات المعطلة والموقوفة إداريًا"],
   ] as const;
 
   return (
     <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
-      {cards.map(([label, value, Icon, className]) => (
-        <div key={label} className="flex items-center justify-between rounded-[14px] border border-[#e5e7eb] bg-white px-5 py-5">
+      {cards.map(([label, value, Icon, className, title]) => (
+        <div key={label} title={title} className="flex items-center justify-between rounded-[14px] border border-[#e5e7eb] bg-white px-5 py-5">
           <div>
             <p className="text-sm text-gray">{label}</p>
             <p className="mt-1 text-2xl font-semibold text-secondary">{value}</p>

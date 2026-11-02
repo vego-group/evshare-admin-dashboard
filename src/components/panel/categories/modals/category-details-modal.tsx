@@ -6,6 +6,7 @@ import Image from "next/image";
 import Modal from "@/components/ui/modal";
 import { useCategory } from "@/hooks/api";
 import { cn } from "@/lib/utils";
+import { vehicleTypeLabel } from "@/lib/utils/vehicle-type";
 
 import CategoryDetailsShimmer from "./category-details-shimmer";
 
@@ -63,6 +64,10 @@ function CategoryDetailsModal({
             <section className="space-y-3 rounded-[14px] bg-background p-4">
               <DetailRow label="الاسم العربي" value={category.name_ar} />
               <DetailRow label="الاسم الإنجليزي" value={category.name_en} />
+              <DetailRow
+                label="نوع المركبة"
+                value={vehicleTypeLabel(category.vehicle_type)}
+              />
               <DetailRow
                 label="عدد المنتجات"
                 value={formatProductsCount(category.products_count)}

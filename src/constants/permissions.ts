@@ -11,12 +11,15 @@ export const ADMIN_PERMISSIONS = {
     end: "Admin End Trips",
   },
   users: {
+    edit: "Admin Edit Users",
+    assignRole: "Admin Assign User Roles",
     export: "Admin Export Users",
     suspend: "Admin Suspend Users",
     reactivate: "Admin Reactivate Users",
     delete: "Admin Delete Users",
   },
   vehicles: {
+    add: "Admin Add Vehicles",
     lock: ["Admin Lock Vehicles", "Admin Command Vehicles"],
     unlock: ["Admin Unlock Vehicles", "Admin Command Vehicles"],
     locate: ["Admin Locate Vehicles", "Admin Command Vehicles"],
@@ -24,6 +27,7 @@ export const ADMIN_PERMISSIONS = {
     viewCommands: "Admin Index Vehicle Commands",
   },
   locks: {
+    edit: "Admin Edit Locks",
     assign: "Admin Edit Locks",
     unassign: "Admin Edit Locks",
     lock: "Admin Lock Vehicles",
@@ -56,7 +60,6 @@ export const ADMIN_PERMISSIONS = {
   },
   vat: {
     export: "Admin Export VAT",
-    viewExports: "Admin View VAT Exports",
   },
   reports: {
     generate: "Admin Generate Reports",
@@ -83,5 +86,12 @@ export const ADMIN_PERMISSIONS = {
     details: "Admin Details Data Cleanups",
     preview: "Admin Preview Data Cleanups",
     execute: "Admin Execute Data Cleanups",
+  },
+  website: {
+    view: "Admin View Website Content",
+    edit: "Admin Edit Website Content",
+    publish: "Admin Publish Website Content",
+    media: "Admin Manage Website Media",
+    audit: "Admin View Website Audit Logs",
   },
 } as const;

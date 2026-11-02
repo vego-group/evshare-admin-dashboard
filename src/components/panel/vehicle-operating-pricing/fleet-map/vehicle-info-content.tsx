@@ -3,7 +3,7 @@ import { BatteryMedium, MapPin, Navigation } from "lucide-react";
 import MoneyValue from "@/components/ui/money-value";
 import { cn } from "@/lib/utils";
 import type { VehicleListItem } from "@/types";
-import StatusBadge from "../status-badge";
+import { VehicleOperationalStatus } from "../vehicle-operational-status";
 import {
   batteryBarClass,
   batteryTextClass,
@@ -38,11 +38,16 @@ function VehicleInfoContent({
           {vehicleTitle(vehicle)}
         </p>
         <div className="mt-1.5 flex items-center gap-2">
-          <StatusBadge status={vehicle.status} />
+          {vehicle.current_location?.is_stale && (
+            <span className="rounded-full bg-amber-50 px-2 py-1 text-[11px] font-medium text-orange-700">
+              موقع قديم
+            </span>
+          )}
         </div>
       </div>
 
       <div className="space-y-2 px-3 py-2.5 text-xs">
+        <VehicleOperationalStatus vehicle={vehicle} compact />
         {vehicle.location?.address && (
           <p className="flex items-start gap-1.5 text-gray">
             <MapPin className="mt-0.5 size-3.5 shrink-0 text-primary" />

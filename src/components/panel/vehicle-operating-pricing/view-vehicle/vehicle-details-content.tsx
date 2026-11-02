@@ -11,6 +11,7 @@ import { formatUserMobile } from "@/lib/utils/format-phone";
 import StatusBadge from "../status-badge";
 import ProvisioningBadge from "../provisioning-badge";
 import VehicleTypeIndicator from "../vehicle-type-indicator";
+import { VehicleOperationalStatus } from "../vehicle-operational-status";
 import VehicleDetailsShimmer from "./vehicle-details-shimmer";
 import {
   formatDate,
@@ -57,10 +58,18 @@ export function VehicleDetailsContent({ vehicle, isLoading }: Props) {
         </div>
       )}
       <section className="space-y-3 rounded-[14px] bg-background p-4">
+        <div>
+          <h4 className="text-sm font-semibold text-secondary">الحالة التشغيلية</h4>
+          <p className="mt-1 text-xs text-gray">
+            تعرض الحالات كما يرسلها النظام دون دمج حالة المركبة أو القفل أو توفر الإيجار.
+          </p>
+        </div>
+        <VehicleOperationalStatus vehicle={vehicle} />
+      </section>
+      <section className="space-y-3 rounded-[14px] bg-background p-4">
         <h4 className="text-sm font-semibold text-secondary">البيانات الأساسية</h4>
         <div className="grid gap-2 sm:grid-cols-2">
           <DetailRow label="معرف المركبة" value={<span dir="ltr">{vehicle.id}</span>} />
-          <DetailRow label="الحالة" value={<StatusBadge status={vehicle.status} />} />
           <DetailRow label="حالة التجهيز" value={<ProvisioningBadge vehicle={vehicle} />} />
           <DetailRow
             label="نوع المركبة"
@@ -74,14 +83,6 @@ export function VehicleDetailsContent({ vehicle, isLoading }: Props) {
           <DetailRow
             label="مصدر نوع المركبة"
             value={vehicleTypeSourceLabel(vehicle.vehicle_type_source)}
-          />
-          <DetailRow
-            label="توفر الإيجار"
-            value={
-              <span className={vehicle.rental_availability?.available ? "text-green-600" : "text-red-600"}>
-                {vehicle.rental_availability?.message ?? "-"}
-              </span>
-            }
           />
           <DetailRow label="نوع التشغيل" value={vehicle.operating_type === "evshare" ? "EvShare" : "شركة تشغيل"} />
           <DetailRow label="شركة التشغيل" value={vehicle.operation_company?.name} />
@@ -114,16 +115,16 @@ export function VehicleDetailsContent({ vehicle, isLoading }: Props) {
           <DetailRow label="حالة الموقع" value={currentLocation ? (currentLocation.is_stale ? "قديم" : "محدث") : undefined} />
           <DetailRow label="اسم الموقع" value={location?.label} />
           <DetailRow label="العنوان" value={location?.address} />
-          <DetailRow label="خط العرض" value={<span dir="ltr">{location?.latitude ?? "-"}</span>} />
-          <DetailRow label="خط الطول" value={<span dir="ltr">{location?.longitude ?? "-"}</span>} />
+          <DetailRow label="خط العرض" value={<span dir="ltr">{currentLocation?.latitude ?? "-"}</span>} />
+          <DetailRow label="خط الطول" value={<span dir="ltr">{currentLocation?.longitude ?? "-"}</span>} />
+          <DetailRow label="وقت تسجيل الموقع" value={<span dir="ltr">{formatDate(currentLocation?.recorded_at)}</span>} />
         </div>
       </section>
 
-      {lock && (
-        <section className="space-y-3 rounded-[14px] bg-background p-4">
+      <section className="space-y-3 rounded-[14px] bg-background p-4">
           <div className="flex items-center justify-between gap-3">
-            <h4 className="text-sm font-semibold text-secondary">موقع القفل (GPS)</h4>
-            {lock.location && (
+            <h4 className="text-sm font-semibold text-secondary">القفل المرتبط</h4>
+            {lock?.location && (
               <span
                 className={
                   lock.location_is_stale
@@ -135,17 +136,29 @@ export function VehicleDetailsContent({ vehicle, isLoading }: Props) {
               </span>
             )}
           </div>
+          {!lock ? (
+            <div className="rounded-xl border border-dashed border-amber-300 bg-amber-50 p-4">
+              <p className="font-medium text-amber-900">لا يوجد قفل مربوط بهذه المركبة</p>
+              <p className="mt-1 text-sm text-amber-800">
+                استخدم لوحة التحكم من قائمة المركبات لاختيار قفل غير مخصص وربطه بالمركبة.
+              </p>
+            </div>
+          ) : (
           <div className="grid gap-2 sm:grid-cols-2">
+            <DetailRow label="معرف القفل" value={<span dir="ltr">{lock.id}</span>} />
+            <DetailRow label="معرف الجهاز" value={<span dir="ltr">{lock.device_id}</span>} />
             <DetailRow label="حالة القفل" value={lock.status === "locked" ? "مقفل" : "مفتوح"} />
             <DetailRow label="الاتصال" value={lock.connectivity === "online" ? "متصل" : lock.connectivity === "offline" ? "غير متصل" : "غير معروف"} />
             <DetailRow label="بطارية القفل" value={lock.battery_percentage != null ? `${lock.battery_percentage}%` : undefined} />
             <DetailRow label="آخر اتصال" value={<span dir="ltr">{formatDate(lock.last_seen_at ?? undefined)}</span>} />
+            <DetailRow label="آخر قفل" value={<span dir="ltr">{formatDate(lock.last_lock_date ?? undefined)}</span>} />
+            <DetailRow label="آخر فتح" value={<span dir="ltr">{formatDate(lock.last_unlock_date ?? undefined)}</span>} />
             <DetailRow label="خط العرض" value={<span dir="ltr">{lock.location?.latitude ?? "-"}</span>} />
             <DetailRow label="خط الطول" value={<span dir="ltr">{lock.location?.longitude ?? "-"}</span>} />
             <DetailRow label="آخر تحديث للموقع" value={<span dir="ltr">{formatDate(lock.last_location_date ?? undefined)}</span>} />
           </div>
-        </section>
-      )}
+          )}
+      </section>
 
       <section className="space-y-3 rounded-[14px] bg-background p-4">
         <h4 className="text-sm font-semibold text-secondary">التسعير الحالي</h4>

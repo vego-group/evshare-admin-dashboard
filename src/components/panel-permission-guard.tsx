@@ -41,6 +41,7 @@ const routeRules: RouteRule[] = [
   { pattern: /^\/operating-companies\/[^/]+\/edit$/, permission: "Admin Edit Operation Companies" },
   { pattern: /^\/operating-companies\/[^/]+$/, permission: "Admin View Operation Companies" },
   { pattern: /^\/operating-companies$/, permission: "Admin View Operation Companies" },
+  { pattern: /^\/vehicle-operating-pricing\/create$/, permission: "Admin Add Vehicles" },
   { pattern: /^\/vehicle-operating-pricing\/map$/, permission: "Admin Locate Vehicles" },
   { pattern: /^\/vehicle-operating-pricing\/[^/]+$/, permission: "Admin View Vehicles" },
   { pattern: /^\/vehicle-operating-pricing$/, permission: "Admin View Vehicles" },
@@ -62,6 +63,9 @@ const routeRules: RouteRule[] = [
   { pattern: /^\/(?:settings|contact-us|driver-pricing-settings)$/, permission: "Admin Index Settings" },
   { pattern: /^\/pages\/[^/]+\/edit$/, permission: "Admin Edit Pages" },
   { pattern: /^\/pages$/, permission: "Admin Index Pages" },
+  { pattern: /^\/website\/media$/, permission: "Admin View Website Content" },
+  { pattern: /^\/website\/audit-logs$/, permission: "Admin View Website Audit Logs" },
+  { pattern: /^\/website\/(?:pages(?:\/[^/]+)?|settings)$/, permission: "Admin View Website Content" },
 ];
 
 function PermissionLoadingShimmer() {

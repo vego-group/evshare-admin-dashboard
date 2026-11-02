@@ -33,7 +33,10 @@ function VatPeriods({ periods }: { periods: VatPeriod[] }) {
         </thead>
         <tbody>
           {periods.map((period) => (
-            <tr key={period.period} className="border-b border-primary/15 last:border-0">
+            <tr
+              key={`${period.period}-${period.currency ?? "default"}`}
+              className="border-b border-primary/15 last:border-0"
+            >
               <td className="px-5 py-4 font-medium" dir="ltr">
                 {period.period}
               </td>

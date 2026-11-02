@@ -10,28 +10,27 @@ import InputErrorMessage from "@/components/ui/input-error-message";
 import DashboardDropdown from "@/components/ui/dashboard-dropdown";
 import { useUser, useCities, useRoles } from "@/hooks/api";
 import { useUserPermissions } from "@/hooks";
+import { ADMIN_PERMISSIONS } from "@/constants/permissions";
 import { useUserSession } from "@/lib/utils/user-session";
+import {
+  buildEditUserPayload,
+  getUserEditErrorMessage,
+  type UserEditValues,
+} from "@/lib/user-edit";
 import { assignUserRole, editUser, type EditUserPayload } from "@/services/mutations/users";
 import { UserFormActions } from "./user-form-modal-parts";
 import UserEditRoleDropdown from "./user-edit-role-dropdown";
 import UserEditModalShimmer from "./user-edit-modal-shimmer";
 
-type Values = {
-  first_name: string;
-  last_name: string;
-  email: string;
-  city_id: string;
-  active: boolean;
-  language: "ar" | "en";
-  notifications_enabled: boolean;
-};
+type Values = UserEditValues;
 
-const fields = ["first_name", "last_name", "email", "city_id", "active", "language", "notifications_enabled"] as const;
+const fields = ["first_name", "last_name", "email", "city_id", "role", "active", "language", "notifications_enabled"] as const;
 const userEditDefaultValues: Values = {
   first_name: "",
   last_name: "",
   email: "",
   city_id: "",
+  role: "",
   active: false,
   language: "ar",
   notifications_enabled: false,
@@ -48,16 +47,10 @@ export default function UserEditModal({ userId, onClose, onSaved }: {
 }) {
   const session = useUserSession();
   const { hasPermission } = useUserPermissions();
-  const canRequestRoles =
-    Boolean(userId) &&
-    hasPermission("Admin Assign User Roles") &&
-    hasPermission("Admin Index Roles");
+  const hasAssignRolePermission = hasPermission(ADMIN_PERMISSIONS.users.assignRole);
+  const canListRoles = hasPermission("Admin Index Roles");
   const { data, isLoading } = useUser(userId);
   const { data: cities, isLoading: citiesLoading } = useCities({ page: 1, limit: 100 });
-  const { data: roles, isLoading: rolesLoading } = useRoles(
-    { page: 1, limit: 100 },
-    { enabled: canRequestRoles },
-  );
   const [selectedRoleId, setSelectedRoleId] = useState("");
   const [roleError, setRoleError] = useState("");
   const [isAssigningRole, setIsAssigningRole] = useState(false);
@@ -69,9 +62,28 @@ export default function UserEditModal({ userId, onClose, onSaved }: {
       : []),
     ...(cities?.data ?? []).map((city) => ({ value: city.id, label: city.name })),
   ];
+  const canAssignRole = Boolean(
+    user &&
+    user.account_status !== "deleted" &&
+    session?.id &&
+    session.id !== user.id &&
+    hasAssignRolePermission &&
+    canListRoles
+  );
+  const canEdit = hasPermission(ADMIN_PERMISSIONS.users.edit);
+  const canEditRole = Boolean(
+    canEdit &&
+    user &&
+    user.account_status !== "deleted" &&
+    session?.id &&
+    session?.id !== user.id &&
+    canListRoles
+  );
+  const { data: roles, isLoading: rolesLoading } = useRoles(
+    { page: 1, limit: 100 },
+    { enabled: canAssignRole || canEditRole },
+  );
   const currentRoleId = user?.role_id ?? roles?.data?.find(role => role.name === user?.role)?.id ?? "";
-  const canAssignRole = Boolean(user && user.account_status !== "deleted" && session?.id && session.id !== user.id && canRequestRoles);
-  const canEdit = hasPermission("Admin Edit Users");
   const { register, control, handleSubmit, reset, setError, formState: { errors, isSubmitting } } = useForm<Values>({
     defaultValues: userEditDefaultValues,
   });
@@ -95,6 +107,7 @@ export default function UserEditModal({ userId, onClose, onSaved }: {
       last_name: user.last_name ?? "",
       email: user.email ?? "",
       city_id: user.city?.id ?? "",
+      role: user.role ?? "",
       active: user.active,
       language: user.language ?? "ar",
       notifications_enabled: user.notifications_enabled ?? false,
@@ -118,23 +131,11 @@ export default function UserEditModal({ userId, onClose, onSaved }: {
     const original: Values = {
       first_name: user.first_name ?? "", last_name: user.last_name ?? "",
       email: user.email ?? "", city_id: user.city?.id ?? "",
+      role: user.role ?? "",
       active: user.active,
       language: user.language ?? "ar", notifications_enabled: user.notifications_enabled ?? false,
     };
-    const payload: EditUserPayload = {};
-    for (const field of fields) {
-      if (values[field] === original[field]) continue;
-      if (field === "email" || field === "city_id") {
-        payload[field] = values[field] || null;
-      } else if (field === "notifications_enabled" || field === "active") {
-        payload[field] = values[field];
-      } else if (field === "language") {
-        payload[field] = values[field];
-      } else {
-        payload[field] = values[field];
-      }
-    }
-    if (!Object.keys(payload).length) return;
+    const payload: EditUserPayload = buildEditUserPayload(original, values);
     const result = await editUser(userId, payload);
     if (!result.ok) {
       if (result.status === 422 && result.error?.errors) {
@@ -143,11 +144,15 @@ export default function UserEditModal({ userId, onClose, onSaved }: {
           if (message) setError(field, { type: "server", message });
         }
       }
-      toast.error(result.error?.message || result.message || "تعذر تحديث المستخدم");
+      toast.error(getUserEditErrorMessage(
+        result.error,
+        result.message || "تعذر تحديث المستخدم",
+      ));
       return;
     }
     showSuccessModal(result.message || "تم تحديث المستخدم");
     await onSaved(userId, result.data!);
+    clearStateAndClose();
   }
 
   async function saveRole() {
@@ -157,18 +162,16 @@ export default function UserEditModal({ userId, onClose, onSaved }: {
     try {
       const result = await assignUserRole(userId, selectedRoleId);
       if (!result.ok || !result.data) {
-        const message = result.error?.error_code === "SELF_ROLE_CHANGE_FORBIDDEN"
-          ? "لا يمكنك تغيير دورك الخاص"
-          : result.error?.error_code === "ROLE_ESCALATION_FORBIDDEN"
-            ? "لا تملك صلاحية تعيين هذا الدور أو تغيير دور هذا المستخدم"
-            : result.error?.error_code === "INVALID_ACCOUNT_TRANSITION"
-              ? "لا يمكن تغيير دور حساب محذوف"
-              : result.error?.errors?.role_id?.[0] || result.error?.message || result.message || "تعذر تعيين الدور";
+        const message = result.error?.errors?.role_id?.[0] || getUserEditErrorMessage(
+          result.error,
+          result.message || "تعذر تعيين الدور",
+        );
         setRoleError(message);
         return;
       }
       await onSaved(userId, result.data);
       showSuccessModal(result.message || "تم تعيين الدور");
+      clearStateAndClose();
     } finally {
       setIsAssigningRole(false);
     }
@@ -176,7 +179,9 @@ export default function UserEditModal({ userId, onClose, onSaved }: {
 
   const inputClass = "h-12 w-full rounded-xl border border-primary bg-primary/4 px-3 text-sm text-dark-gray";
   return <Modal open={Boolean(userId)} onClose={handleClose} title="تعديل المستخدم" contentClassName="md:max-w-[560px]">
-    {isLoading ? <UserEditModalShimmer showRole={canRequestRoles} /> : !user ? (
+    {isLoading ? <UserEditModalShimmer showRole={
+      (canEdit || hasAssignRolePermission) && Boolean(session?.id) && session?.id !== userId
+    } /> : !user ? (
       <p className="p-5 text-center text-sm text-red-600">تعذر تحميل بيانات المستخدم.</p>
     ) :
       <div className="space-y-5 p-2">
@@ -234,6 +239,27 @@ export default function UserEditModal({ userId, onClose, onSaved }: {
           />
           <InputErrorMessage msg={errors.language?.message} />
         </div>
+        {canEditRole && <div className="sm:col-span-2">
+          <label htmlFor="user-role-id" className="mb-2 block">الدور</label>
+          <Controller
+            name="role"
+            control={control}
+            rules={{ required: "الدور مطلوب" }}
+            render={({ field }) => (
+              <UserEditRoleDropdown
+                roles={roles?.data ?? []}
+                value={field.value}
+                valueMode="name"
+                currentRole={user.role ? { id: currentRoleId || user.role, name: user.role } : undefined}
+                isLoading={rolesLoading}
+                disabled={isSubmitting || isAssigningRole}
+                onChange={field.onChange}
+              />
+            )}
+          />
+          <InputErrorMessage msg={errors.role?.message} />
+          <p className="mt-1 text-xs text-gray">تغيير الدور يسجل خروج المستخدم من جميع أجهزته.</p>
+        </div>}
         <label className="flex items-center gap-2"><input type="checkbox" className="size-4 accent-primary" {...register("active")} />الحساب نشط</label>
         <label className="flex items-center gap-2"><input type="checkbox" className="size-4 accent-primary" aria-describedby="notifications-enabled-help" {...register("notifications_enabled")} />إشعارات الدفع مفعلة</label>
         <p id="notifications-enabled-help" className="text-xs leading-5 text-gray sm:col-span-2">
@@ -241,7 +267,7 @@ export default function UserEditModal({ userId, onClose, onSaved }: {
         </p>
         <div className="sm:col-span-2"><UserFormActions submitLabel="حفظ التغييرات" isSubmitting={isSubmitting || isAssigningRole} onClose={handleClose} /></div>
       </form>}
-      {canAssignRole && <div className="border-t border-primary/15 pt-4">
+      {!canEdit && canAssignRole && <div className="border-t border-primary/15 pt-4">
         <label htmlFor="user-role-id" className="mb-2 block">الدور</label>
         <div className="flex gap-2">
           <UserEditRoleDropdown

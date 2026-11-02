@@ -11,7 +11,7 @@ function CategoryDetailsShimmer() {
         </div>
       </div>
       <section className="space-y-3 rounded-[14px] bg-background p-4">
-        {Array.from({ length: 4 }).map((_, index) => (
+        {Array.from({ length: 5 }).map((_, index) => (
           <div
             key={index}
             className="flex flex-col items-start gap-2 rounded-[10px] bg-white px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4"

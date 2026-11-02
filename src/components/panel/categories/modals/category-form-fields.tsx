@@ -62,11 +62,14 @@ function CategoryFormFields({
       <Field label="نوع المركبة" error={errors.vehicle_type?.message}>
         <VehicleTypeDropdown
           value={vehicleType}
-          nullLabel="تلقائي (حسب المركبة)"
+          nullLabel="غير محدد (استنتاج تلقائي)"
           onChange={(value) =>
             setValue("vehicle_type", value, { shouldDirty: true, shouldValidate: true })
           }
         />
+        <p className="mt-2 text-xs leading-5 text-gray">
+          تحديد النوع هنا يطبّقه على المنتجات والمركبات التي ترث من هذا التصنيف.
+        </p>
       </Field>
 
       <Field label="الصورة" error={errors.image?.message}>

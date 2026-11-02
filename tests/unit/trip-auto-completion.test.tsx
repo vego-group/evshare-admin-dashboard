@@ -69,4 +69,85 @@ describe("trip lock-close completion", () => {
     expect(screen.queryByText("مصدر إنهاء الرحلة")).not.toBeInTheDocument();
     expect(screen.queryByText("وقت إغلاق القفل")).not.toBeInTheDocument();
   });
+
+  it("shows a successful insufficient-balance auto-stop with its timestamp", () => {
+    render(
+      <TripBasicInfo
+        trip={{
+          ...completedTrip,
+          end_source: "auto_stop",
+          auto_stopped_at: "2026-10-19T08:10:00Z",
+          auto_stop_attempts: 1,
+          auto_stop_last_attempt_at: "2026-10-19T08:10:00Z",
+        }}
+      />,
+    );
+
+    expect(screen.getByText("تم الإيقاف تلقائياً بسبب عدم كفاية الرصيد")).toBeInTheDocument();
+    expect(screen.getByText("وقت الإيقاف التلقائي")).toBeInTheDocument();
+    expect(screen.getByText("محاولات الإيقاف التلقائي")).toBeInTheDocument();
+  });
+
+  it("shows actionable retry guidance when scooter auto-stop fails", () => {
+    render(
+      <TripBasicInfo
+        trip={{
+          ...completedTrip,
+          status: "in_progress",
+          end_source: undefined,
+          auto_stop_attempts: 2,
+          auto_stop_last_error: "IoT lock timed out",
+          auto_stop_last_attempt_at: "2026-10-19T08:10:00Z",
+        }}
+      />,
+    );
+
+    expect(screen.getByRole("alert")).toHaveTextContent("المحاولة 2");
+    expect(screen.getByRole("alert")).toHaveTextContent("IoT lock timed out");
+    expect(screen.getByRole("alert")).toHaveTextContent("لم يُخصم المبلغ");
+    expect(screen.getByRole("alert")).toHaveTextContent("أنهِ الرحلة يدوياً");
+  });
+
+  it("shows negative balance continuation only for an active bike trip", () => {
+    const { rerender } = render(
+      <TripBasicInfo
+        trip={{
+          ...completedTrip,
+          status: "started",
+          end_source: undefined,
+          vehicle_type: "bike",
+          remaining_balance: -4.5,
+        }}
+      />,
+    );
+
+    expect(screen.getByText(/رصيد سالب \(دراجة\)/)).toBeInTheDocument();
+    expect(screen.getByText("الرصيد المتبقي أثناء الرحلة")).toBeInTheDocument();
+
+    rerender(
+      <TripBasicInfo
+        trip={{
+          ...completedTrip,
+          status: "completed",
+          end_source: undefined,
+          vehicle_type: "bike",
+          remaining_balance: -4.5,
+        }}
+      />,
+    );
+    expect(screen.queryByText(/رصيد سالب \(دراجة\)/)).not.toBeInTheDocument();
+
+    rerender(
+      <TripBasicInfo
+        trip={{
+          ...completedTrip,
+          status: "started",
+          end_source: undefined,
+          vehicle_type: "scooter",
+          remaining_balance: -4.5,
+        }}
+      />,
+    );
+    expect(screen.queryByText(/رصيد سالب \(دراجة\)/)).not.toBeInTheDocument();
+  });
 });

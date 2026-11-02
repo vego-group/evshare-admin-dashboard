@@ -61,6 +61,29 @@ test("sensitive UI actions use split permissions", () => {
   assert.match(files.companies, /ADMIN_PERMISSIONS\.operationCompanies\.editCommission/);
 });
 
+test("vehicle commands accept their exact permission or the broad command permission", () => {
+  const { ADMIN_PERMISSIONS } = load("src/constants/permissions.ts");
+
+  assert.deepEqual(ADMIN_PERMISSIONS.vehicles.unlock, [
+    "Admin Unlock Vehicles",
+    "Admin Command Vehicles",
+  ]);
+  assert.deepEqual(ADMIN_PERMISSIONS.vehicles.lock, [
+    "Admin Lock Vehicles",
+    "Admin Command Vehicles",
+  ]);
+  assert.deepEqual(ADMIN_PERMISSIONS.vehicles.locate, [
+    "Admin Locate Vehicles",
+    "Admin Command Vehicles",
+  ]);
+  assert.deepEqual(ADMIN_PERMISSIONS.vehicles.ring, [
+    "Admin Ring Vehicles",
+    "Admin Command Vehicles",
+  ]);
+  assert.equal(ADMIN_PERMISSIONS.locks.unlock, "Admin Unlock Vehicles");
+  assert.equal(ADMIN_PERMISSIONS.locks.lock, "Admin Lock Vehicles");
+});
+
 test("vehicle type source is modeled and inferred vehicles are surfaced", () => {
   const types = fs.readFileSync(path.join(testDirectory, "..", "src/types/vehicle-operating-pricing.ts"), "utf8");
   const details = fs.readFileSync(path.join(testDirectory, "..", "src/components/panel/vehicle-operating-pricing/view-vehicle/vehicle-details-content.tsx"), "utf8");

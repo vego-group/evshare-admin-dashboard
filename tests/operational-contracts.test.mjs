@@ -64,11 +64,13 @@ test("vehicle control uses the synchronous command endpoint and payload", async 
     command: "sound_alarm",
     params: { duration: 5 },
   });
+  await mutations.sendVehicleCommandAPI("vehicle-1", {
+    command: "unlock",
+  });
 
-  assert.deepEqual(calls[0], [
-    "POST",
-    "/vehicles/vehicle-1/command",
-    { command: "sound_alarm", params: { duration: 5 } },
+  assert.deepEqual(calls, [
+    ["POST", "/vehicles/vehicle-1/command", { command: "sound_alarm", params: { duration: 5 } }],
+    ["POST", "/vehicles/vehicle-1/command", { command: "unlock" }],
   ]);
 });
 

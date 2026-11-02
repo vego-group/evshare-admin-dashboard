@@ -5,6 +5,7 @@ type Props = {
   roles: Role[];
   value: string;
   currentRole?: { id: string; name: string };
+  valueMode?: "id" | "name";
   disabled?: boolean;
   isLoading?: boolean;
   onChange: (roleId: string) => void;
@@ -14,13 +15,16 @@ export default function UserEditRoleDropdown({
   roles,
   value,
   currentRole,
+  valueMode = "id",
   disabled,
   isLoading,
   onChange,
 }: Props) {
-  const options = roles.map((role) => ({ value: role.id, label: role.name }));
-  if (currentRole && !options.some((option) => option.value === currentRole.id)) {
-    options.unshift({ value: currentRole.id, label: currentRole.name });
+  const getValue = (role: { id: string; name: string }) =>
+    valueMode === "name" ? role.name : role.id;
+  const options = roles.map((role) => ({ value: getValue(role), label: role.name }));
+  if (currentRole && !options.some((option) => option.value === getValue(currentRole))) {
+    options.unshift({ value: getValue(currentRole), label: currentRole.name });
   }
 
   return (

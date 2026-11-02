@@ -13,6 +13,13 @@ import { Button } from "@/components/ui/button";
 import InputErrorMessage from "@/components/ui/input-error-message";
 import { formatUserMobile } from "@/lib/utils/format-phone";
 import {
+  hasCompleteCreateConfiguration,
+  normalizeCreateVehicleFieldErrors,
+  vehicleCreateErrorMessage,
+  type CreateVehicleField,
+  type CreateVehicleFieldErrors,
+} from "@/lib/utils/vehicle-create";
+import {
   useOperatingCompanies,
   useProducts,
   useUsers,
@@ -27,8 +34,8 @@ import FormSelectDropdown, {
 } from "./form-select-dropdown";
 import { pricingFields } from "../utils";
 
-type Field = keyof CreateVehiclePayload;
-type Errors = Partial<Record<Field, string>>;
+type Field = CreateVehicleField;
+type Errors = CreateVehicleFieldErrors;
 const inputClass =
   "h-12 w-full rounded-xl border border-neutral-200 bg-white px-4 text-sm text-secondary outline-none focus:border-primary";
 const numberInputClass = `${inputClass} [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none`;
@@ -154,14 +161,7 @@ function CreateVehicle() {
       next.latitude = "خط العرض غير صالح";
     if (payload.longitude != null && Math.abs(payload.longitude) > 180)
       next.longitude = "خط الطول غير صالح";
-    if (
-      status === "active" &&
-      !(
-        (payload.lock_id || payload.iot_device_id) &&
-        (payload.product_id || payload.price_per_minute != null) &&
-        (operatingType === "evshare" || payload.operation_company_id)
-      )
-    )
+    if (status === "active" && !hasCompleteCreateConfiguration(payload))
       next.status = "أكمل التجهيز والتسعير والجهاز قبل التفعيل";
     setErrors(next);
     if (Object.keys(next).length) return;
@@ -170,28 +170,15 @@ function CreateVehicle() {
     setSaving(false);
     if (!result.ok) {
       const apiError = result.error as
-        | { error_code?: string; errors?: Record<string, string[]> }
+        | { error_code?: string; errors?: unknown }
         | undefined;
-      const apiErrors = apiError?.errors;
-      if (apiErrors)
-        setErrors(
-          Object.fromEntries(
-            Object.entries(apiErrors).map(([key, messages]) => [
-              key,
-              messages[0],
-            ]),
-          ) as Errors,
-        );
-      const messages: Record<string, string> = {
-        VEHICLE_COMPANY_INVALID: "شركة التشغيل أو مالكها غير نشط",
-        VEHICLE_DEVICE_INVALID: "القفل مخصص لمركبة أخرى",
-        VEHICLE_DUPLICATE: "هذه المركبة موجودة بالفعل",
-        VEHICLE_NOT_PROVISIONED: "أكمل تجهيز المركبة قبل تفعيلها",
-      };
+      const apiErrors = normalizeCreateVehicleFieldErrors(apiError?.errors);
+      if (Object.keys(apiErrors).length) setErrors(apiErrors);
       toast.error(
-        apiError?.error_code
-          ? (messages[apiError.error_code] ?? result.message)
-          : result.message || "تعذر إنشاء المركبة",
+        vehicleCreateErrorMessage(
+          apiError?.error_code,
+          result.message || "تعذر إنشاء المركبة",
+        ),
       );
       return;
     }

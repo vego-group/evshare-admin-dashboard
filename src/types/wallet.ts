@@ -21,6 +21,10 @@ export type WalletTransaction = {
   status: WalletTransactionStatus;
   user_id: number;
   created_at: string;
+  reference?: {
+    type: string;
+    id: string;
+  } | null;
 };
 
 export type WalletTransactionDetails = WalletTransaction & {
@@ -34,10 +38,6 @@ export type WalletTransactionDetails = WalletTransaction & {
     mobile: string | null;
     bank_account: string | null;
     role: string;
-  } | null;
-  reference?: {
-    type: string;
-    id: string;
   } | null;
 };
 

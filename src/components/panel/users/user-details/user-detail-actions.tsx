@@ -19,6 +19,7 @@ export default function UserDetailActions({ user }: { user: AdminUserDetail }) {
   const [submitting, setSubmitting] = useState(false);
   async function saved(_id: string, response: AdminUserDetailResponse) {
     await syncUserMutationResponse(queryClient, response);
+    await queryClient.invalidateQueries({ queryKey: ["users-statistics"] });
   }
   async function run(request: () => Promise<Awaited<ReturnType<typeof suspendUser>>>, fallback: string) {
     if (submitting) return;
@@ -38,7 +39,7 @@ export default function UserDetailActions({ user }: { user: AdminUserDetail }) {
   }
   return <>
     {user.account_status !== "deleted" && <div className="flex flex-wrap gap-2">
-      <PermissionGate slug={["Admin Edit Users", "Admin Assign User Roles"]}><Button type="button" variant="outline" onClick={() => setAction("edit")}>تعديل المستخدم</Button></PermissionGate>
+      <PermissionGate slug={["Admin Edit Users", ADMIN_PERMISSIONS.users.assignRole]}><Button type="button" variant="outline" onClick={() => setAction("edit")}>تعديل المستخدم</Button></PermissionGate>
       {user.account_status === "active" && <PermissionGate slug={ADMIN_PERMISSIONS.users.suspend}><Button type="button" variant="outline" onClick={() => setAction("suspend")}>تعليق الحساب</Button></PermissionGate>}
       {user.account_status === "suspended" && <PermissionGate slug={ADMIN_PERMISSIONS.users.reactivate}><Button type="button" variant="outline" disabled={submitting} onClick={() => run(() => reactivateUser(user.id), "تعذرت إعادة التفعيل")}>إعادة التفعيل</Button></PermissionGate>}
       <PermissionGate slug={ADMIN_PERMISSIONS.users.delete}><Button type="button" variant="outline" onClick={() => setAction("remove")}>إزالة الحساب</Button></PermissionGate>
