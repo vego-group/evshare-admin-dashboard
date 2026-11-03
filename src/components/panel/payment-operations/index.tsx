@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { Info } from "lucide-react";
 
 import Header from "@/components/ui/header";
 import ExportListButton from "@/components/ui/export-list-button";
@@ -209,6 +210,20 @@ function PaymentOperations() {
             </>
           ) : (
             <>
+              <section
+                aria-labelledby="merchant-analytics-policy-title"
+                className="flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-right text-sm text-blue-900"
+              >
+                <Info className="mt-0.5 size-5 shrink-0" aria-hidden="true" />
+                <div>
+                  <h2 id="merchant-analytics-policy-title" className="font-semibold">
+                    قاعدة مطابقة تحليلات التاجر
+                  </h2>
+                  <p className="mt-1 leading-6 text-blue-800">
+                    تعتمد الإيرادات على معاملات paid أو captured للطلبات غير المسودة وغير الملغاة، ويُستخدم تاريخ الدفع لا تاريخ إنشاء المعاملة. الاسترداد يستبعد المعاملة من إيراد تاريخها الأصلي.
+                  </p>
+                </div>
+              </section>
               <TransactionStatsCards analytics={transactionsData?.analytics} />
               <PaymentOperationsToolbar
                 key="transactions-toolbar"

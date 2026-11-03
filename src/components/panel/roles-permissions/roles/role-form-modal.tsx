@@ -11,7 +11,7 @@ import Loader from "@/components/ui/loader";
 import { useRole, useRoles } from "@/hooks/api";
 import { roleSchema, type RoleFormInput } from "@/schemas/roles-permissions";
 import { addRole, editRole } from "@/services/mutations";
-import type { CreateRoleResponse, Role } from "@/types";
+import type { CreatedRole, CreateRoleResponse, Role } from "@/types";
 import EntityError from "../shared/entity-error";
 import FormField from "../shared/form-field";
 import { inputClass } from "../shared/form-controls";
@@ -23,7 +23,7 @@ type Props = {
   open: boolean;
   role?: Role | null;
   onClose: () => void;
-  onSaved: () => void | Promise<void>;
+  onSaved: (createdRole?: CreatedRole) => void | Promise<void>;
 };
 
 export default function RoleFormModal({ open, role, onClose, onSaved }: Props) {
@@ -87,12 +87,7 @@ export default function RoleFormModal({ open, role, onClose, onSaved }: Props) {
     // The edit branch has an untyped response, so the conditional result loses
     // the create endpoint's more specific envelope at compile time.
     const createdRole = (result.data as CreateRoleResponse | undefined)?.data;
-    showSuccessModal(
-      createdRole?.copied_from?.name
-        ? `تم إنشاء الدور ونسخ صلاحيات ${createdRole.copied_from.name}`
-        : (result.message || "تم إنشاء الدور بنجاح"),
-    );
-    await onSaved();
+    await onSaved(createdRole);
   }
 
   return (
@@ -117,7 +112,10 @@ export default function RoleFormModal({ open, role, onClose, onSaved }: Props) {
             <input className={inputClass} {...register("name")} />
           </FormField>
           {!role && (
-            <FormField label="نسخ الصلاحيات من (اختياري)">
+            <FormField
+              label="نسخ الصلاحيات من (اختياري)"
+              error={errors.source_role_id?.message}
+            >
               {rolesLoading ? (
                 <div className="h-12 animate-pulse rounded-[14px] bg-neutral-100" />
               ) : rolesError ? (
@@ -144,6 +142,9 @@ export default function RoleFormModal({ open, role, onClose, onSaved }: Props) {
                   )}
                 />
               )}
+              <p className="mt-2 text-xs leading-5 text-gray">
+                تُنسخ الصلاحيات مرة واحدة عند الإنشاء، ويمكنك تعديلها في الخطوة التالية دون التأثير على الدور المصدر.
+              </p>
             </FormField>
           )}
           <div className="grid grid-cols-2 gap-3 pt-2">
@@ -160,7 +161,7 @@ export default function RoleFormModal({ open, role, onClose, onSaved }: Props) {
               disabled={isSubmitting || !isDirty}
               className="h-12 rounded-[14px] text-secondary"
             >
-              {isSubmitting ? <Loader /> : "حفظ"}
+              {isSubmitting ? <Loader /> : role ? "حفظ التغييرات" : "إنشاء ومراجعة الصلاحيات"}
             </Button>
           </div>
         </form>

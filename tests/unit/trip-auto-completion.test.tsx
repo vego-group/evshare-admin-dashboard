@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { tripEndSourceLabel } from "@/components/panel/trips/utils";
+import TripsTable from "@/components/panel/trips/results/trips-table";
 import TripBasicInfo from "@/components/panel/trips/view-trip/trip-basic-info";
 import type { TripListItem } from "@/types";
 
@@ -55,6 +56,13 @@ describe("trip lock-close completion", () => {
     expect(
       screen.getByText(/توقفت الفوترة عند وقت الإغلاق/),
     ).toBeInTheDocument();
+  });
+
+  it("shows backend completion provenance in the trips table", () => {
+    render(<TripsTable trips={[completedTrip]} onView={vi.fn()} />);
+
+    expect(screen.getByRole("columnheader", { name: "مصدر الإنهاء" })).toBeInTheDocument();
+    expect(screen.getByText("إغلاق القفل تلقائياً")).toBeInTheDocument();
   });
 
   it("does not invent completion provenance when the API omits it", () => {

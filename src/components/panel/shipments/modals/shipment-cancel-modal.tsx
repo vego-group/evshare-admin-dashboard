@@ -50,6 +50,7 @@ function ShipmentCancelModal({
 
     showSuccessModal(result.message || "تم إلغاء الشحنة بنجاح");
     await onSaved();
+    onClose();
   };
 
   return (

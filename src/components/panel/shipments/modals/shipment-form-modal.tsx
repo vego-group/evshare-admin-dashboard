@@ -10,6 +10,7 @@ import { useShipmentForm } from "./use-shipment-form";
 type ShipmentFormModalProps = {
   open: boolean;
   shipment?: ShipmentListItem | null;
+  initialOrder?: { id: string; orderCode: string };
   onClose: () => void;
   onSaved: () => Promise<void> | void;
 };
@@ -17,6 +18,7 @@ type ShipmentFormModalProps = {
 function ShipmentFormModal({
   open,
   shipment,
+  initialOrder,
   onClose,
   onSaved,
 }: ShipmentFormModalProps) {
@@ -32,7 +34,13 @@ function ShipmentFormModal({
     recipientCity,
     close,
     onSubmit,
-  } = useShipmentForm({ open, shipment, onClose, onSaved });
+  } = useShipmentForm({
+    open,
+    shipment,
+    initialOrderId: initialOrder?.id,
+    onClose,
+    onSaved,
+  });
 
   return (
     <Modal
@@ -52,6 +60,7 @@ function ShipmentFormModal({
       >
         <ShipmentFormFields
           isEdit={isEdit}
+          lockedOrderCode={initialOrder?.orderCode}
           orderUuid={orderUuid}
           companyUuid={companyUuid}
           pickingType={pickingType}

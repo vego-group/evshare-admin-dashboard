@@ -29,7 +29,8 @@ export function useShipmentsPage() {
     useState<ShipmentListItem | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const { data, isLoading } = useShipments(params);
+  const { data, isLoading, isError, isFetching, refetch } =
+    useShipments(params);
 
   const updateParams = (nextParams: Partial<ShipmentsQueryParams>) =>
     setParams((current) => ({ ...current, ...nextParams }));
@@ -52,6 +53,7 @@ export function useShipmentsPage() {
     setIsDeleting(false);
 
     if (result?.ok) {
+      setShipmentPendingDelete(null);
       showSuccessModal(result.message || "تم حذف الشحنة بنجاح");
       await refreshShipmentQueries(current.id);
       return;
@@ -73,6 +75,9 @@ export function useShipmentsPage() {
   return {
     data,
     isLoading,
+    isError,
+    isFetching,
+    refetch,
     params,
     updateParams,
     isFormOpen,

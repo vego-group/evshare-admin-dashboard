@@ -7,7 +7,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { PAGE_SIZE } from "@/constants";
 import { useDeleteRole, useRole, useRoles } from "@/hooks/api";
-import type { Role } from "@/types";
+import type { CreatedRole, Role } from "@/types";
 import DeleteModal from "../shared/delete-modal";
 import DetailsModal from "../shared/details-modal";
 import EntityPagination from "../shared/entity-pagination";
@@ -26,6 +26,10 @@ const canModifyRole = (role: Role) => !protectedRoleNames.has(role.name.trim().t
 
 export default function RolesPanel() {
   const { hasPermission, hasAnyPermission } = useUserPermissions();
+  const canManageRolePermissions = hasAnyPermission([
+    "Admin Sync Roles Permissions",
+    "Admin Assign Roles Permissions By Category",
+  ]);
   const client = useQueryClient();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -33,6 +37,7 @@ export default function RolesPanel() {
   const [form, setForm] = useState<Role | "new" | null>(null);
   const [view, setView] = useState<Role | null>(null);
   const [permissionsRole, setPermissionsRole] = useState<Role | null>(null);
+  const [creationSourceName, setCreationSourceName] = useState<string | null>(null);
   const [pendingDelete, setPendingDelete] = useState<Role | null>(null);
   const deleteMutation = useDeleteRole();
   const { data, isLoading } = useRoles({ page, limit: PAGE_SIZE, search, order_by: orderBy });
@@ -44,9 +49,19 @@ export default function RolesPanel() {
       client.invalidateQueries({ queryKey: ["role"] }),
     ]);
   };
-  async function roleSaved() {
+  async function roleSaved(createdRole?: CreatedRole) {
     await refresh();
     setForm(null);
+    if (createdRole && canManageRolePermissions) {
+      setCreationSourceName(createdRole.copied_from?.name ?? "");
+      setPermissionsRole(createdRole);
+    } else if (createdRole) {
+      showSuccessModal(
+        createdRole.copied_from?.name
+          ? `تم إنشاء الدور ونسخ صلاحيات ${createdRole.copied_from.name}`
+          : "تم إنشاء الدور بنجاح",
+      );
+    }
   }
   async function remove() {
     if (!pendingDelete) return;
@@ -59,14 +74,15 @@ export default function RolesPanel() {
   return (
     <section className="space-y-4">
       <EntityToolbar title="الأدوار" description="إدارة الأدوار والصلاحيات المرتبطة بها" addLabel="إضافة دور" search={search} orderBy={orderBy} onSort={(value) => { setOrderBy(value); setPage(1); }} onSearch={(value) => { setSearch(value); setPage(1); }} onAdd={hasPermission("Admin Add Roles") ? () => setForm("new") : undefined} />
-      <EntityTable rows={Array.isArray(data?.data) ? data.data : []} columns={columns} isLoading={isLoading} onView={hasPermission("Admin Details Roles") ? setView : undefined} onEdit={hasPermission("Admin Edit Roles") ? setForm : undefined} onDelete={hasPermission("Admin Delete Roles") ? setPendingDelete : undefined} onPermissions={hasAnyPermission(["Admin Sync Roles Permissions", "Admin Assign Roles Permissions By Category"]) ? setPermissionsRole : undefined} canEdit={canModifyRole} canDelete={canModifyRole} />
+      <EntityTable rows={Array.isArray(data?.data) ? data.data : []} columns={columns} isLoading={isLoading} onView={hasPermission("Admin Details Roles") ? setView : undefined} onEdit={hasPermission("Admin Edit Roles") ? setForm : undefined} onDelete={hasPermission("Admin Delete Roles") ? setPendingDelete : undefined} onPermissions={canManageRolePermissions ? (role) => { setCreationSourceName(null); setPermissionsRole(role); } : undefined} canEdit={canModifyRole} canDelete={canModifyRole} />
       <EntityPagination meta={data?.meta} onChange={setPage} />
       {form && <RoleFormModal open role={form === "new" ? null : form} onClose={() => setForm(null)} onSaved={roleSaved} />}
       {permissionsRole && (
         <RolePermissionsModal
           key={permissionsRole.id}
           role={permissionsRole}
-          onClose={() => setPermissionsRole(null)}
+          creationSourceName={creationSourceName}
+          onClose={() => { setPermissionsRole(null); setCreationSourceName(null); }}
           onSaved={refresh}
         />
       )}

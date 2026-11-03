@@ -10,6 +10,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Eye,
+  Info,
   Pencil,
   Percent,
   Plus,
@@ -27,8 +28,10 @@ import EmptyState from "@/components/ui/empty-state";
 import Loader from "@/components/ui/loader";
 import Modal from "@/components/ui/modal";
 import MoneyValue from "@/components/ui/money-value";
+import QueryErrorState from "@/components/ui/query-error-state";
 import Shimmer from "@/components/ui/shimmer";
-import { PAGE_SIZE } from "@/constants";
+import { ADMIN_PERMISSIONS, PAGE_SIZE } from "@/constants";
+import { useHasPermission } from "@/hooks";
 import {
   useCurrentSubscriptionPricing,
   useSubscriptionDiscount,
@@ -49,17 +52,21 @@ import type {
   SubscriptionDiscountStatus,
   SubscriptionDiscountType,
 } from "@/types";
-import {
-  preventNegativeNumberInput,
-  preventNegativeNumberPaste,
-} from "@/lib/utils/non-negative-input";
+import { preventNegativeNumberInput } from "@/lib/utils/non-negative-input";
 import { cn } from "@/lib/utils";
 import { confirmPricingChange } from "@/lib/utils/confirm-pricing-change";
 import { invalidatePricingQueries } from "@/lib/pricing-queries";
+import { notifyForbidden } from "@/lib/toast-events";
 import { PricingConfigurationMeta } from "@/components/ui/pricing-configuration-meta";
 import FilterSelect, {
   type FilterOption,
 } from "../promos/toolbar/filter-select";
+import {
+  formatSubscriptionDiscountDate,
+  getSubscriptionDiscountFieldErrors,
+  toSubscriptionDiscountInputDate,
+  toSubscriptionDiscountPayload,
+} from "./utils";
 
 const inputClass =
   "h-14 w-full rounded-[14px] border border-primary bg-primary/4 px-4 text-sm font-medium text-dark-gray outline-none transition focus:bg-primary/8";
@@ -76,9 +83,24 @@ export default function SubscriptionDiscounts() {
     useState<SubscriptionDiscount | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
-  const { data, isLoading } = useSubscriptionDiscounts(params);
-  const { data: pricing, isLoading: isPricingLoading } =
-    useCurrentSubscriptionPricing();
+  const canView = useHasPermission(ADMIN_PERMISSIONS.subscriptionDiscounts.view);
+  const canEdit = useHasPermission(ADMIN_PERMISSIONS.subscriptionDiscounts.edit);
+  const canDelete = useHasPermission(ADMIN_PERMISSIONS.subscriptionDiscounts.delete);
+  const hasRowActions = canView || canEdit || canDelete;
+  const {
+    data,
+    isLoading,
+    isError: isListError,
+    isFetching: isListFetching,
+    refetch: refetchList,
+  } = useSubscriptionDiscounts(params);
+  const {
+    data: pricing,
+    isLoading: isPricingLoading,
+    isError: isPricingError,
+    isFetching: isPricingFetching,
+    refetch: refetchPricing,
+  } = useCurrentSubscriptionPricing();
   const isPageLoading = isLoading || isPricingLoading;
   const discounts = Array.isArray(data?.data) ? data.data : [];
 
@@ -93,7 +115,15 @@ export default function SubscriptionDiscounts() {
     setIsDeleting(true);
     const result = await deleteSubscriptionDiscount(pendingDelete.id);
     setIsDeleting(false);
-    if (!result.ok) return toast.error(result.message || "تعذر حذف الخصم");
+    if (!result.ok) {
+      if (result.status === 403) {
+        setPendingDelete(null);
+        notifyForbidden(result.error);
+        return;
+      }
+      return toast.error(result.message || "تعذر حذف الخصم");
+    }
+    setPendingDelete(null);
     showSuccessModal(result.message || "تم حذف الخصم بنجاح");
     await refresh();
   }
@@ -104,6 +134,16 @@ export default function SubscriptionDiscounts() {
     return <SubscriptionDiscountsPageShimmer />;
   }
 
+  if (isListError || isPricingError) {
+    return (
+      <QueryErrorState
+        title="تعذر تحميل خصومات الاشتراك"
+        isRetrying={isListFetching || isPricingFetching}
+        onRetry={() => void Promise.all([refetchList(), refetchPricing()])}
+      />
+    );
+  }
+
   return (
     <div className="flex w-full flex-col gap-6">
       <section className="flex w-full flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
@@ -111,7 +151,7 @@ export default function SubscriptionDiscounts() {
           title="خصومات الاشتراك التلقائية"
           subtitle="إدارة الخصم المطبق تلقائياً ومعاينة سعر الاشتراك الحالي"
         />
-        <PermissionGate slug="Admin Add Subscription Discounts">
+        <PermissionGate slug={ADMIN_PERMISSIONS.subscriptionDiscounts.add}>
           <Button
             className="h-12 self-start rounded-2xl bg-primary px-6 text-base font-medium text-secondary shadow-[0_4px_12px_rgba(255,213,79,0.25)] hover:bg-primary/90 sm:self-auto"
             onClick={() => openForm(null)}
@@ -122,6 +162,14 @@ export default function SubscriptionDiscounts() {
       </section>
 
       <PricingSummary pricing={pricing?.data} />
+
+      <div className="flex items-start gap-3 border-y border-border-subtle px-1 py-3 text-sm leading-6 text-text-muted">
+        <Info className="mt-0.5 size-4 shrink-0 text-[#8a6500]" aria-hidden="true" />
+        <p>
+          يُطبّق الخصم التلقائي أولاً، ثم يُحسب كود الخصم على المبلغ المتبقي.
+          لا تؤثر التعديلات أو الحذف على الاشتراكات التي بدأت سابقاً.
+        </p>
+      </div>
 
       <DiscountToolbar
         params={params}
@@ -141,7 +189,7 @@ export default function SubscriptionDiscounts() {
                     "الفترة",
                     "التفعيل",
                     "الحالة الآن",
-                    "الإجراءات",
+                    ...(hasRowActions ? ["الإجراءات"] : []),
                   ].map((label) => (
                     <th
                       key={label}
@@ -160,6 +208,7 @@ export default function SubscriptionDiscounts() {
                     onView={() => setViewingId(discount.id)}
                     onEdit={() => openForm(discount)}
                     onDelete={() => setPendingDelete(discount)}
+                    showActions={hasRowActions}
                   />
                 ))}
               </tbody>
@@ -175,24 +224,34 @@ export default function SubscriptionDiscounts() {
         onPageChange={(page) => setParams({ ...params, page })}
       />
 
-      {formOpen && <DiscountForm
-        key={editing?.id ?? "new"}
-        open={formOpen}
-        discount={editing}
-        onClose={() => setFormOpen(false)}
-        onSaved={refresh}
-      />}
-      <DiscountDetails
-        open={Boolean(viewingId)}
-        discountId={viewingId}
-        onClose={() => setViewingId(null)}
-      />
-      <DeleteConfirmModal
-        discount={pendingDelete}
-        isDeleting={isDeleting}
-        onClose={() => !isDeleting && setPendingDelete(null)}
-        onConfirm={remove}
-      />
+      <PermissionGate
+        slug={editing
+          ? ADMIN_PERMISSIONS.subscriptionDiscounts.edit
+          : ADMIN_PERMISSIONS.subscriptionDiscounts.add}
+      >
+        {formOpen && <DiscountForm
+          key={editing?.id ?? "new"}
+          open={formOpen}
+          discount={editing}
+          onClose={() => setFormOpen(false)}
+          onSaved={refresh}
+        />}
+      </PermissionGate>
+      <PermissionGate slug={ADMIN_PERMISSIONS.subscriptionDiscounts.view}>
+        <DiscountDetails
+          open={Boolean(viewingId)}
+          discountId={viewingId}
+          onClose={() => setViewingId(null)}
+        />
+      </PermissionGate>
+      <PermissionGate slug={ADMIN_PERMISSIONS.subscriptionDiscounts.delete}>
+        <DeleteConfirmModal
+          discount={pendingDelete}
+          isDeleting={isDeleting}
+          onClose={() => !isDeleting && setPendingDelete(null)}
+          onConfirm={remove}
+        />
+      </PermissionGate>
     </div>
   );
 }
@@ -281,7 +340,7 @@ function PricingSummary({
           label="الخصم المطبق الآن"
           value={pricing?.discount_amount}
           currency={pricing?.currency}
-          icon="percent"
+          icon="money"
         />
         <Price
           label="السعر النهائي"
@@ -540,13 +599,15 @@ function DiscountRow({
   onView,
   onEdit,
   onDelete,
+  showActions,
 }: {
   discount: SubscriptionDiscount;
   onView: () => void;
   onEdit: () => void;
   onDelete: () => void;
+  showActions: boolean;
 }) {
-  const period = `${formatDate(discount.start_date) || "فوراً"} — ${formatDate(discount.end_date) || "دون انتهاء"}`;
+  const period = `${formatSubscriptionDiscountDate(discount.start_date) || "فوراً"} — ${formatSubscriptionDiscountDate(discount.end_date) || "دون انتهاء"}`;
   return (
     <tr className="text-dark-gray">
       <td className="border-b border-primary/15 px-5 py-3">
@@ -591,9 +652,9 @@ function DiscountRow({
           inactiveText="غير ساري"
         />
       </td>
-      <td className="border-b border-primary/15 px-5 py-3">
+      {showActions ? <td className="border-b border-primary/15 px-5 py-3">
         <div className="flex gap-2">
-          <PermissionGate slug="Admin View Subscription Discounts">
+          <PermissionGate slug={ADMIN_PERMISSIONS.subscriptionDiscounts.view}>
             <button
               aria-label="عرض التفاصيل"
               onClick={onView}
@@ -602,7 +663,7 @@ function DiscountRow({
               <Eye className="size-4" />
             </button>
           </PermissionGate>
-          <PermissionGate slug="Admin Edit Subscription Discounts">
+          <PermissionGate slug={ADMIN_PERMISSIONS.subscriptionDiscounts.edit}>
             <button
               aria-label="تعديل"
               onClick={onEdit}
@@ -611,7 +672,7 @@ function DiscountRow({
               <Pencil className="size-4" />
             </button>
           </PermissionGate>
-          <PermissionGate slug="Admin Delete Subscription Discounts">
+          <PermissionGate slug={ADMIN_PERMISSIONS.subscriptionDiscounts.delete}>
             <button
               aria-label="حذف"
               onClick={onDelete}
@@ -621,7 +682,7 @@ function DiscountRow({
             </button>
           </PermissionGate>
         </div>
-      </td>
+      </td> : null}
     </tr>
   );
 }
@@ -687,15 +748,15 @@ function DiscountDetails({
           />
           <Detail
             label="تاريخ الإنشاء"
-            value={formatDate(discount.created_at) || "—"}
+            value={formatSubscriptionDiscountDate(discount.created_at) || "—"}
           />
           <Detail
             label="تاريخ البدء"
-            value={formatDate(discount.start_date) || "فوراً"}
+            value={formatSubscriptionDiscountDate(discount.start_date) || "فوراً"}
           />
           <Detail
             label="تاريخ الانتهاء"
-            value={formatDate(discount.end_date) || "دون انتهاء"}
+            value={formatSubscriptionDiscountDate(discount.end_date) || "دون انتهاء"}
           />
           <Detail label="الاسم بالعربية" value={discount.name_ar || "—"} />
           <Detail label="الاسم بالإنجليزية" value={discount.name_en || "—"} />
@@ -815,8 +876,8 @@ function DiscountForm({
       type: discount?.type ?? "percentage",
       value: discount?.value,
       is_active: discount?.is_active ?? false,
-      start_date: toInputDate(discount?.start_date),
-      end_date: toInputDate(discount?.end_date),
+      start_date: toSubscriptionDiscountInputDate(discount?.start_date),
+      end_date: toSubscriptionDiscountInputDate(discount?.end_date),
       name_ar: discount?.name_ar ?? "",
       name_en: discount?.name_en ?? "",
     },
@@ -832,18 +893,34 @@ function DiscountForm({
       )
     )
       return;
-    const payload = {
-      ...values,
-      start_date: values.start_date || null,
-      end_date: values.end_date || null,
-      name_ar: values.name_ar || null,
-      name_en: values.name_en || null,
-    };
+    const payload = toSubscriptionDiscountPayload(values);
     const result = discount
       ? await editSubscriptionDiscount(discount.id, payload)
       : await addSubscriptionDiscount(payload);
-    if (!result.ok) return toast.error(result.message || "تعذر حفظ الخصم");
+    if (!result.ok) {
+      if (result.status === 403) {
+        onClose();
+        notifyForbidden(result.error);
+        return;
+      }
+      const fieldErrors = getSubscriptionDiscountFieldErrors(result.error);
+      const entries = Object.entries(fieldErrors) as Array<
+        [keyof SubscriptionDiscountFormValues, string]
+      >;
+      for (const [field, message] of entries) {
+        form.setError(field, { type: "server", message });
+      }
+      if (!entries.length) {
+        form.setError("root", {
+          type: "server",
+          message: result.message || "تعذر حفظ الخصم",
+        });
+        toast.error(result.message || "تعذر حفظ الخصم");
+      }
+      return;
+    }
     showSuccessModal(result.message || "تم حفظ الخصم بنجاح");
+    onClose();
     await onSaved();
   }
   return (
@@ -859,23 +936,31 @@ function DiscountForm({
         className="grid gap-x-5 gap-y-5 p-1 text-right sm:grid-cols-2 md:p-4"
       >
         <Field
+          htmlFor="subscription-discount-name-ar"
           label="الاسم بالعربية"
           error={form.formState.errors.name_ar?.message}
         >
           <input
+            id="subscription-discount-name-ar"
             placeholder="عرض الاشتراك السنوي"
             className={inputClass}
+            aria-invalid={Boolean(form.formState.errors.name_ar)}
+            aria-describedby={form.formState.errors.name_ar ? "subscription-discount-name-ar-error" : undefined}
             {...form.register("name_ar")}
           />
         </Field>
         <Field
+          htmlFor="subscription-discount-name-en"
           label="الاسم بالإنجليزية"
           error={form.formState.errors.name_en?.message}
         >
           <input
+            id="subscription-discount-name-en"
             dir="ltr"
             placeholder="Annual subscription offer"
             className={inputClass}
+            aria-invalid={Boolean(form.formState.errors.name_en)}
+            aria-describedby={form.formState.errors.name_en ? "subscription-discount-name-en-error" : undefined}
             {...form.register("name_en")}
           />
         </Field>
@@ -891,12 +976,15 @@ function DiscountForm({
           />
         </Field>
         <Field
+          htmlFor="subscription-discount-value"
           label={type === "percentage" ? "القيمة (%)" : "القيمة"}
           error={form.formState.errors.value?.message}
         >
           <div className="relative">
             <input
+              id="subscription-discount-value"
               type="number"
+              inputMode="decimal"
               min="0"
               max={type === "percentage" ? 100 : undefined}
               step="0.01"
@@ -912,10 +1000,9 @@ function DiscountForm({
               onKeyDown={(event) =>
                 preventNegativeNumberInput(event, { allowDecimal: true })
               }
-              onPaste={(event) =>
-                preventNegativeNumberPaste(event, { allowDecimal: true })
-              }
               className={`${inputClass} [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none ${type === "percentage" ? "pr-10" : ""}`}
+              aria-invalid={Boolean(form.formState.errors.value)}
+              aria-describedby={form.formState.errors.value ? "subscription-discount-value-error" : undefined}
               {...form.register("value", { valueAsNumber: true })}
             />
             {type === "percentage" ? (
@@ -930,6 +1017,7 @@ function DiscountForm({
           error={form.formState.errors.start_date?.message}
         >
           <DatePicker
+            ariaLabel="تاريخ بدء الخصم"
             placement="top"
             value={startDate}
             maxDate={endDate}
@@ -947,6 +1035,7 @@ function DiscountForm({
           error={form.formState.errors.end_date?.message}
         >
           <DatePicker
+            ariaLabel="تاريخ انتهاء الخصم"
             placement="top"
             value={endDate}
             minDate={startDate}
@@ -969,6 +1058,14 @@ function DiscountForm({
             تفعيل الخصم
           </span>
         </label>
+        {form.formState.errors.root?.message ? (
+          <p
+            role="alert"
+            className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700 sm:col-span-2"
+          >
+            {form.formState.errors.root.message}
+          </p>
+        ) : null}
         <div className="grid gap-4 sm:col-span-2 sm:grid-cols-2">
           <Button
             type="submit"
@@ -1002,24 +1099,30 @@ function DiscountForm({
 }
 
 function Field({
+  htmlFor,
   label,
   error,
   children,
 }: {
+  htmlFor?: string;
   label: string;
   error?: string;
   children: React.ReactNode;
 }) {
   return (
-    <label className="block">
-      <span className="mb-2 block text-right text-sm font-medium text-dark-gray">
-        {label}
-      </span>
+    <div className="block">
+      {htmlFor ? (
+        <label htmlFor={htmlFor} className="mb-2 block text-right text-sm font-medium text-dark-gray">
+          {label}
+        </label>
+      ) : (
+        <p className="mb-2 text-right text-sm font-medium text-dark-gray">{label}</p>
+      )}
       {children}
       {error ? (
-        <span className="mt-1 block text-xs text-red-600">{error}</span>
+        <span id={htmlFor ? `${htmlFor}-error` : undefined} className="mt-1 block text-xs text-red-600">{error}</span>
       ) : null}
-    </label>
+    </div>
   );
 }
 
@@ -1051,7 +1154,20 @@ function DiscountTypeDropdown({
     <div ref={containerRef} className="relative h-14 w-full">
       <button
         type="button"
+        aria-label="نوع الخصم"
+        aria-haspopup="listbox"
+        aria-controls="subscription-discount-type-options"
         aria-expanded={isOpen}
+        onKeyDown={(event) => {
+          if (event.key === "Escape") {
+            setIsOpen(false);
+            return;
+          }
+          if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+          event.preventDefault();
+          onChange(value === "percentage" ? "fixed" : "percentage");
+          setIsOpen(true);
+        }}
         onClick={() => setIsOpen((current) => !current)}
         className={cn(
           "flex h-full w-full items-center justify-between rounded-[14px] border border-primary bg-primary/4 px-4 text-sm font-medium text-dark-gray transition hover:bg-primary/10",
@@ -1067,11 +1183,13 @@ function DiscountTypeDropdown({
         />
       </button>
       {isOpen ? (
-        <div className="absolute right-0 top-[calc(100%+4px)] z-30 w-full overflow-hidden rounded-[14px] border border-primary bg-bg-warm-ivory shadow-[0_10px_24px_rgba(16,24,40,0.12)]">
+        <div id="subscription-discount-type-options" role="listbox" aria-label="خيارات نوع الخصم" className="absolute right-0 top-[calc(100%+4px)] z-30 w-full overflow-hidden rounded-[14px] border border-primary bg-bg-warm-ivory shadow-[0_10px_24px_rgba(16,24,40,0.12)]">
           {options.map((option) => (
             <button
               key={option.value}
               type="button"
+              role="option"
+              aria-selected={value === option.value}
               onClick={() => {
                 onChange(option.value);
                 setIsOpen(false);
@@ -1088,14 +1206,4 @@ function DiscountTypeDropdown({
       ) : null}
     </div>
   );
-}
-function formatDate(value: string | null) {
-  if (!value) return "";
-  const date = new Date(value);
-  return Number.isNaN(date.getTime())
-    ? value
-    : new Intl.DateTimeFormat("ar-EG", { dateStyle: "medium" }).format(date);
-}
-function toInputDate(value?: string | null) {
-  return value?.slice(0, 10) ?? "";
 }

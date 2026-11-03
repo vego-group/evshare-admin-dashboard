@@ -82,11 +82,11 @@ function buildFullPayload(
     name_ar: values.name_ar.trim(),
     name_en: values.name_en.trim(),
     code: values.code.trim(),
-    shipping_id: values.shipping_id || null,
+    shipping_id: values.shipping_id?.trim() || null,
     service_type: values.service_type ?? null,
     delivery_type: values.delivery_type ?? null,
-    logo_url: values.logo_url || null,
-    avg_delivery_time: values.avg_delivery_time || null,
+    logo_url: values.logo_url?.trim() || null,
+    avg_delivery_time: values.avg_delivery_time?.trim() || null,
     base_price: toNumber(values.base_price),
     cod_charge: toNumber(values.cod_charge),
     return_fee: toNumber(values.return_fee),
@@ -103,7 +103,17 @@ function buildFullPayload(
 export function buildAddShippingCompanyPayload(
   values: ShippingCompanyFormValues,
 ): ShippingCompanyPayload {
-  return buildFullPayload(values);
+  const payload = buildFullPayload(values);
+
+  // These three fees default to zero in the API contract. Sending null can
+  // bypass the backend defaults (or fail numeric validation), so make the
+  // documented defaults explicit for new service levels.
+  return {
+    ...payload,
+    base_price: payload.base_price ?? 0,
+    cod_charge: payload.cod_charge ?? 0,
+    return_fee: payload.return_fee ?? 0,
+  };
 }
 
 export function buildChangedShippingCompanyPayload(

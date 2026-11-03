@@ -8,8 +8,11 @@ import {
 } from "@/schemas/shipments";
 import { normalizeTenantPhone, PHONE_VALIDATION_MESSAGE } from "@/lib/utils/tenant-phone";
 
-export const getShipmentDefaultValues = (currency = ""): ShipmentFormValues => ({
-  order_uuid: "",
+export const getShipmentDefaultValues = (
+  currency = "",
+  orderUuid = "",
+): ShipmentFormValues => ({
+  order_uuid: orderUuid,
   shipping_company_uuid: "",
   delivery_option_id: "",
   tracking_id: "",

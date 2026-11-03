@@ -4,6 +4,7 @@ import { Eye } from "lucide-react";
 import type { TripListItem } from "@/types";
 import MoneyValue from "../money-value";
 import { formatDate, tripDriverName, tripVehicleTitle } from "../utils";
+import TripEndSourceBadge from "../trip-end-source-badge";
 import TripStatusBadge from "./trip-status-badge";
 
 type Props = {
@@ -11,13 +12,13 @@ type Props = {
   onView: (trip: TripListItem) => void;
 };
 
-const headers = ["رقم الرحلة", "الحالة", "السائق", "المركبة", "السعر", "وقت البدء", "وقت الانتهاء", "الإجراءات"];
+const headers = ["رقم الرحلة", "الحالة", "مصدر الإنهاء", "السائق", "المركبة", "السعر", "وقت البدء", "وقت الانتهاء", "الإجراءات"];
 
 function TripsTable({ trips, onView }: Props) {
   return (
     <section className="overflow-hidden rounded-lg bg-white">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[1000px] border-separate border-spacing-0 text-right">
+        <table className="w-full min-w-[1180px] border-separate border-spacing-0 text-right">
           <thead>
             <tr className="bg-primary/8 text-base font-semibold text-dark-gray">
               {headers.map((h) => <HeaderCell key={h}>{h}</HeaderCell>)}
@@ -28,6 +29,7 @@ function TripsTable({ trips, onView }: Props) {
               <tr key={trip.id} className="text-dark-gray">
                 <TableCell dir="ltr">{trip.id.slice(0, 8)}</TableCell>
                 <TableCell truncate={false}><TripStatusBadge status={trip.status} /></TableCell>
+                <TableCell truncate={false}><TripEndSourceBadge source={trip.end_source} /></TableCell>
                 <TableCell>{tripDriverName(trip.driver)}</TableCell>
                 <TableCell>{tripVehicleTitle(trip.vehicle)}</TableCell>
                 <TableCell truncate={false}><MoneyValue value={trip.price} currency={trip.currency} truncate /></TableCell>

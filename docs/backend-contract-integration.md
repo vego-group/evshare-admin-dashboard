@@ -22,7 +22,8 @@ healthy.
   failed, and reconciliation states are not presented as completion.
 - Active-trip lists and active trip details poll so lock-close completion is reflected without
   an operator refresh. If a trip completes while an End/Cancel confirmation is open, the stale
-  action is dismissed. Trip details render `end_source` and `lock_closed_at` when supplied.
+  action is dismissed. The Trips table renders `end_source` as completion provenance, while
+  trip details render both `end_source` and `lock_closed_at` when supplied.
 - Refund, pricing configuration, content publication, and feature-flag version/rollback
   endpoints have typed query and mutation boundaries. Existing receipt-refund compatibility
   calls remain in place until that backend surface is retired.

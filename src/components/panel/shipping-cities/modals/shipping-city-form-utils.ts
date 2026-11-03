@@ -61,7 +61,7 @@ function buildFullPayload(
     // The API falls back to `name_en` when `oto_name` is omitted, which is right
     // most of the time — only send it when the operator typed a different spelling.
     oto_name: values.oto_name?.trim() || null,
-    country_code: values.country_code || "SA",
+    country_code: values.country_code.trim().toUpperCase() || "SA",
     city_uuid: values.city_uuid || null,
     courier_delivery: values.courier_delivery,
     bullet_delivery: values.bullet_delivery,

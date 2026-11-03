@@ -72,6 +72,13 @@ export const ADMIN_PERMISSIONS = {
     send: "Admin Send Communications",
     indexRecipients: "Admin Index Communication Recipients",
   },
+  subscriptionDiscounts: {
+    index: "Admin Index Subscription Discounts",
+    view: "Admin View Subscription Discounts",
+    add: "Admin Add Subscription Discounts",
+    edit: "Admin Edit Subscription Discounts",
+    delete: "Admin Delete Subscription Discounts",
+  },
   consultations: {
     export: "Admin Export Consultations",
   },

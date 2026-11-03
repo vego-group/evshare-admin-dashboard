@@ -6,12 +6,12 @@ import {
   formatDate,
   formatTripDistance,
   tripDriverName,
-  tripEndSourceLabel,
   tripVehicleTitle,
 } from "../utils";
 import DetailRow from "./detail-row";
 import { vehicleTypeLabel } from "@/lib/utils/vehicle-type";
 import TripZoneStatus from "../trip-zone-status";
+import TripEndSourceBadge from "../trip-end-source-badge";
 
 function TripBasicInfo({ trip }: { trip: TripListItem }) {
   const isActiveTrip = trip.status === "started" || trip.status === "in_progress";
@@ -31,7 +31,7 @@ function TripBasicInfo({ trip }: { trip: TripListItem }) {
       {(wasCompletedByLock || trip.auto_stopped_at || hasAutoStopError || isNegativeBikeBalance) && (
         <section className="space-y-2" aria-label="تنبيهات تشغيل الرحلة">
           {wasCompletedByLock && (
-            <p className="rounded-xl bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
+            <p className="rounded-xl bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700" role="status">
               اكتملت الرحلة تلقائياً بعد تأكيد إغلاق قفل المركبة، وتوقفت الفوترة عند وقت الإغلاق.
             </p>
           )}
@@ -65,7 +65,7 @@ function TripBasicInfo({ trip }: { trip: TripListItem }) {
         <DetailRow label="رقم الرحلة" value={<span dir="ltr">{trip.id}</span>} />
         <DetailRow label="الحالة" value={<TripStatusBadge status={trip.status} />} />
         {(trip.status === "completed" || trip.status === "cancelled") && trip.end_source && (
-          <DetailRow label="مصدر إنهاء الرحلة" value={tripEndSourceLabel(trip.end_source)} />
+          <DetailRow label="مصدر إنهاء الرحلة" value={<TripEndSourceBadge source={trip.end_source} />} />
         )}
         {trip.status === "completed" && trip.lock_closed_at && (
           <DetailRow

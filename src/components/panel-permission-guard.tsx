@@ -4,6 +4,7 @@ import { ShieldX } from "lucide-react";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
+import { ADMIN_PERMISSIONS } from "@/constants/permissions";
 import { useUserPermissions } from "@/hooks";
 
 type RouteRule = {
@@ -58,7 +59,7 @@ const routeRules: RouteRule[] = [
   { pattern: /^\/promos\/[^/]+$/, permission: "Admin View Promos" },
   { pattern: /^\/promos$/, permission: "Admin Index Promos" },
   { pattern: /^\/communications$/, permission: "Admin Index Communications" },
-  { pattern: /^\/subscription-discounts$/, permission: "Admin Index Subscription Discounts" },
+  { pattern: /^\/subscription-discounts$/, permission: ADMIN_PERMISSIONS.subscriptionDiscounts.index },
   { pattern: /^\/test-accounts$/, permission: "Admin Index Test Accounts" },
   { pattern: /^\/(?:settings|contact-us|driver-pricing-settings)$/, permission: "Admin Index Settings" },
   { pattern: /^\/pages\/[^/]+\/edit$/, permission: "Admin Edit Pages" },

@@ -68,6 +68,7 @@ function ShippingCompaniesTable({
                 </TableCell>
                 <TableCell truncate={false}>
                   <CompanyActions
+                    company={company}
                     onEdit={() => onEditShippingCompany(company)}
                     onDelete={() => onDeleteShippingCompany(company)}
                   />

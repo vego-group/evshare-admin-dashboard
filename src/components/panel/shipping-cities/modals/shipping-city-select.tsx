@@ -13,7 +13,7 @@ type ShippingCitySelectProps = {
 
 /** Picks which of our own cities this shipping city maps to; empty means unmapped. */
 function ShippingCitySelect({ value, onChange }: ShippingCitySelectProps) {
-  const { data } = useCities({ page: 1, limit: 100 });
+  const { data } = useCities({ page: 1, limit: 200 });
 
   const options = [
     { label: "بدون ربط", value: UNMAPPED_VALUE },

@@ -18,7 +18,7 @@ export const subscriptionDiscountSchema = z
   })
   .refine((data) => !data.start_date || !data.end_date || data.end_date >= data.start_date, {
     path: ["end_date"],
-    message: "تاريخ الانتهاء يجب أن يكون بعد تاريخ البدء",
+    message: "تاريخ الانتهاء يجب أن يساوي تاريخ البدء أو يأتي بعده",
   });
 
 export type SubscriptionDiscountFormValues = z.infer<typeof subscriptionDiscountSchema>;

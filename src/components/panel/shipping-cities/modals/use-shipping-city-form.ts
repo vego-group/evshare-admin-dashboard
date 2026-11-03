@@ -92,6 +92,7 @@ export function useShippingCityForm({
     showSuccessModal(result.message || "تم حفظ مدينة الشحن بنجاح");
     form.reset(shippingCityDefaultValues);
     await onSaved();
+    onClose();
   };
 
   return {

@@ -23,7 +23,7 @@ export default function ShipmentPartiesFields({
   recipientCity,
   onCityChange,
 }: Props) {
-  const { data } = useCities({ page: 1, limit: 100 });
+  const { data } = useCities({ page: 1, limit: 200 });
   const cities = (data?.data ?? []).map((city) => ({ label: city.name, value: city.id }));
 
   return (

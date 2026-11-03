@@ -7,6 +7,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 import { PAGE_SIZE } from "@/constants";
+import QueryErrorState from "@/components/ui/query-error-state";
 import { useShippingCompanies } from "@/hooks/api";
 import { deleteShippingCompany } from "@/services/mutations";
 import type {
@@ -35,7 +36,8 @@ function ShippingCompanies() {
     useState<ShippingCompanyListItem | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const { data, isLoading } = useShippingCompanies(params);
+  const { data, isLoading, isError, isFetching, refetch } =
+    useShippingCompanies(params);
 
   const updateParams = (nextParams: Partial<ShippingCompaniesQueryParams>) =>
     setParams((current) => ({ ...current, ...nextParams }));
@@ -51,6 +53,7 @@ function ShippingCompanies() {
     setIsDeleting(false);
 
     if (result?.ok) {
+      setCompanyPendingDelete(null);
       showSuccessModal(result.message || "تم حذف شركة الشحن بنجاح");
       await refreshShippingCompanyQueries();
       return;
@@ -71,16 +74,24 @@ function ShippingCompanies() {
               setIsFormOpen(true);
             }}
           />
-          <ShippingCompaniesMainContent
-            data={data}
-            params={params}
-            onParamsChange={updateParams}
-            onEditShippingCompany={(company) => {
-              setCompanyPendingEdit(company);
-              setIsFormOpen(true);
-            }}
-            onDeleteShippingCompany={setCompanyPendingDelete}
-          />
+          {isError ? (
+            <QueryErrorState
+              title="تعذر تحميل شركات الشحن"
+              isRetrying={isFetching}
+              onRetry={() => void refetch()}
+            />
+          ) : (
+            <ShippingCompaniesMainContent
+              data={data}
+              params={params}
+              onParamsChange={updateParams}
+              onEditShippingCompany={(company) => {
+                setCompanyPendingEdit(company);
+                setIsFormOpen(true);
+              }}
+              onDeleteShippingCompany={setCompanyPendingDelete}
+            />
+          )}
         </>
       )}
 

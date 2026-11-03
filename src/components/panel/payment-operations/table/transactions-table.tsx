@@ -5,6 +5,7 @@ import { formatUserMobile } from "@/lib/utils/format-phone";
 import type { PaymentTransaction } from "@/types";
 
 import {
+  formatDate,
   formatGateway,
   formatPaymentMethod,
   MoneyValue,
@@ -42,6 +43,7 @@ function PaymentTransactionsTable({
               <TableHead className="w-40">طريقة الدفع</TableHead>
               <TableHead className="w-37.5">المبلغ</TableHead>
               <TableHead className="w-37.5">الحالة</TableHead>
+              <TableHead className="w-48">تاريخ الدفع</TableHead>
               <TableHead className="w-40">الاسترداد</TableHead>
               {onRefund ? <TableHead className="w-28">الإجراء</TableHead> : null}
             </tr>
@@ -106,6 +108,9 @@ function TransactionTableRow({
       </TableCell>
       <TableCell className="max-w-none overflow-visible whitespace-normal">
         <TransactionStatusBadge status={transaction.status} />
+      </TableCell>
+      <TableCell dir="ltr">
+        {transaction.paid_at ? formatDate(transaction.paid_at) : <span className="text-gray">—</span>}
       </TableCell>
       <TableCell>
         {transaction.refund_in_progress ? <span className="text-sm text-orange-500">قيد المعالجة</span>

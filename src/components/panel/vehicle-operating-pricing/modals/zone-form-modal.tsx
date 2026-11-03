@@ -2,6 +2,7 @@
 
 import { showSuccessModal } from "@/components/ui/success-modal";
 
+import { AlertTriangle, Info } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { Controller, useForm, type FieldErrors } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -108,6 +109,7 @@ function ZoneFormModal({ vehicle, zone, isSaving, open, onClose, onSaved, setIsS
   const type = watch("type");
   const speedLimitField = register("speed_limit");
   const coordinates = watch("coordinates");
+  const isActive = watch("is_active");
   const typeHelp = type === "slow"
     ? "يظهر للسائق تنبيه برتقالي مستمر بحد السرعة المحدد."
     : type === "restricted"
@@ -165,6 +167,20 @@ function ZoneFormModal({ vehicle, zone, isSaving, open, onClose, onSaved, setIsS
           <input type="checkbox" className="size-4 accent-primary" {...register("is_active")} />
           منطقة نشطة
         </label>
+
+        {!isActive ? (
+          <div className="flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5 text-xs leading-5 text-amber-900" role="status">
+            <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+            <p>
+              المنطقة غير النشطة لا تطبق على الرحلات. إذا كان السائق داخلها الآن، ينتهي التحذير عند وصول نقطة GPS دقيقة تالية.
+            </p>
+          </div>
+        ) : (
+          <div className="flex items-start gap-2 text-xs leading-5 text-gray">
+            <Info className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" />
+            <p>تطبق هذه المنطقة على هذه المركبة وحدها، ويعاد تقييمها من كل موقع GPS دقيق أثناء الرحلة.</p>
+          </div>
+        )}
 
         <div
           ref={mapSectionRef}

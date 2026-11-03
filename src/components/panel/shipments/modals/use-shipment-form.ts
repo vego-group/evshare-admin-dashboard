@@ -23,14 +23,24 @@ import {
 type Options = {
   open: boolean;
   shipment?: ShipmentListItem | null;
+  initialOrderId?: string;
   onClose: () => void;
   onSaved: () => Promise<void> | void;
 };
 
-export function useShipmentForm({ open, shipment, onClose, onSaved }: Options) {
+export function useShipmentForm({
+  open,
+  shipment,
+  initialOrderId,
+  onClose,
+  onSaved,
+}: Options) {
   const { countryCode, currencyCode } = useCurrency();
   const isEdit = Boolean(shipment);
-  const defaultValues = useMemo(() => getShipmentDefaultValues(currencyCode), [currencyCode]);
+  const defaultValues = useMemo(
+    () => getShipmentDefaultValues(currencyCode, initialOrderId),
+    [currencyCode, initialOrderId],
+  );
 
   const form = useForm<ShipmentFormValues>({
     resolver: isEdit ? shipmentEditResolver(countryCode, shipment?.driver?.phone) : shipmentAddResolver(countryCode),
@@ -100,6 +110,7 @@ export function useShipmentForm({ open, shipment, onClose, onSaved }: Options) {
     showSuccessModal(result.message || "تم حفظ الشحنة بنجاح");
     form.reset(defaultValues);
     await onSaved();
+    onClose();
   };
 
   return {

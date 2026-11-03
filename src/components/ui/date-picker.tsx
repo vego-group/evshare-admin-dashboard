@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 const WEEKDAY_LABELS = ["ح", "ن", "ث", "ر", "خ", "ج", "س"];
 
 type DatePickerProps = {
+  ariaLabel?: string;
   value?: string | null;
   onChange: (value: string | undefined) => void;
   placeholder?: string;
@@ -20,6 +21,7 @@ type DatePickerProps = {
 };
 
 function DatePicker({
+  ariaLabel,
   value,
   onChange,
   placeholder = "اختر التاريخ",
@@ -113,6 +115,7 @@ function DatePicker({
     <div ref={containerRef} className={cn("relative h-14 w-full", className)}>
       <button
         type="button"
+        aria-label={ariaLabel}
         disabled={disabled}
         aria-expanded={isOpen}
         onClick={() => (isOpen ? setIsOpen(false) : openPicker())}

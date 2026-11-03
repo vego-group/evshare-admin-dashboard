@@ -1,3 +1,5 @@
+import { AlertTriangle, Clock3, ShieldCheck } from "lucide-react";
+
 import type { TripListItem } from "@/types";
 
 import MoneyValue from "../money-value";
@@ -7,18 +9,71 @@ import DetailRow from "./detail-row";
 function TripBillingDetails({ trip }: { trip: TripListItem }) {
   const pricing = tripPricing(trip);
   const breakdown = trip.cost_breakdown;
+  const isActiveTrip = trip.status === "started" || trip.status === "in_progress";
   const price = Number(trip.price);
   const commission = Number(trip.commission);
   const ownerEarning = trip.price != null && trip.commission != null && Number.isFinite(price) && Number.isFinite(commission)
     ? price - commission
     : null;
   return (
-    <section className="space-y-3">
-      <h3 className="font-semibold text-secondary">التسعير والتسوية</h3>
+    <section className="space-y-4" aria-labelledby="trip-billing-title">
+      <div>
+        <h3 id="trip-billing-title" className="font-semibold text-secondary">التسعير والتسوية</h3>
+        <p className="mt-1 text-sm leading-6 text-gray">
+          السعر يحدده الخادم من رسوم الفتح ووحدات الوقت التي بدأت. المسافة لا تدخل في فوترة الرحلة.
+        </p>
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-3">
+        <BillingStat
+          icon={<Clock3 className="size-4" aria-hidden="true" />}
+          label={isActiveTrip ? "السعر حتى آخر تحديث موقع" : "السعر النهائي"}
+          value={<MoneyValue value={trip.price} currency={pricing.currency} />}
+          emphasis
+        />
+        <BillingStat
+          label="رسوم الفتح"
+          value={<MoneyValue value={pricing.unlock_fee} currency={pricing.currency} />}
+        />
+        <BillingStat
+          label={breakdown ? "تكلفة الوقت" : "سعر الدقيقة المثبت"}
+          value={
+            <MoneyValue
+              value={breakdown?.time_cost ?? pricing.price_per_minute}
+              currency={pricing.currency}
+            />
+          }
+        />
+      </div>
+
+      {isActiveTrip ? (
+        <div role="status" className="flex items-start gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm leading-6 text-blue-800">
+          <Clock3 className="mt-1 size-4 shrink-0" aria-hidden="true" />
+          <p>
+            هذه قيمة مباشرة حتى آخر نبضة موقع استلمها الخادم، وليست عداداً محلياً. سيعيد الخادم حساب القيمة النهائية لحظة إنهاء الرحلة.
+          </p>
+        </div>
+      ) : trip.status === "completed" ? (
+        <div role="status" className="flex items-start gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm leading-6 text-emerald-800">
+          <ShieldCheck className="mt-1 size-4 shrink-0" aria-hidden="true" />
+          <p>
+            سُجلت رسوم الفتح عند البدء وتكلفة الوقت عند الانتهاء. تسوية الخادم محمية من التكرار، لذلك لا يؤدي تكرار طلب الإنهاء إلى خصم جديد.
+          </p>
+        </div>
+      ) : null}
+
+      {pricing.price_per_minute == null ? (
+        <div role="alert" className="flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-900">
+          <AlertTriangle className="mt-1 size-4 shrink-0" aria-hidden="true" />
+          <p>
+            لا تعرض الاستجابة سعر الدقيقة المثبت. تحقق من تسعير المركبة أو المنتج؛ قد يستخدم الخادم السعر الاحتياطي 2.50 ر.س/دقيقة عند غياب الإعدادين.
+          </p>
+        </div>
+      ) : null}
+
       <div className="grid gap-2 sm:grid-cols-2">
-        <DetailRow label="رسوم فتح الرحلة" value={<MoneyValue value={pricing.unlock_fee} currency={pricing.currency} />} />
         <DetailRow label="سعر الدقيقة" value={<MoneyValue value={pricing.price_per_minute ?? trip.vehicle.price_per_minute} currency={pricing.currency} />} />
-        <DetailRow label="سعر الكيلومتر" value={<MoneyValue value={trip.vehicle.price_per_km} currency={pricing.currency} />} />
+        <DetailRow label="احتساب المسافة" value="غير محتسبة في سعر الرحلة" />
         <DetailRow label="العمولة" value={<MoneyValue value={trip.commission} currency={pricing.currency} />} />
         {trip.status === "completed" && ownerEarning !== null && (
           <DetailRow label="أرباح مالك المركبة" value={<MoneyValue value={ownerEarning} currency={pricing.currency} />} />
@@ -34,7 +89,6 @@ function TripBillingDetails({ trip }: { trip: TripListItem }) {
       </div>
       {breakdown && (
         <div className="grid gap-2 sm:grid-cols-2">
-          <DetailRow label="تكلفة الوقت" value={<MoneyValue value={breakdown.time_cost} currency={pricing.currency} />} />
           <DetailRow label="رسوم أخرى" value={<MoneyValue value={breakdown.other_charges} currency={pricing.currency} />} />
           <DetailRow label="الضريبة (ضمن الإجمالي)" value={<MoneyValue value={breakdown.vat_amount} currency={pricing.currency} />} />
           <DetailRow label="الإجمالي" value={<MoneyValue value={breakdown.total ?? trip.price} currency={pricing.currency} />} />
@@ -52,6 +106,28 @@ function TripBillingDetails({ trip }: { trip: TripListItem }) {
         </div>
       )}
     </section>
+  );
+}
+
+function BillingStat({
+  icon,
+  label,
+  value,
+  emphasis = false,
+}: {
+  icon?: React.ReactNode;
+  label: string;
+  value: React.ReactNode;
+  emphasis?: boolean;
+}) {
+  return (
+    <div className={emphasis ? "rounded-xl border border-primary/25 bg-primary/8 p-4" : "rounded-xl border border-neutral-100 bg-white p-4 shadow-sm"}>
+      <p className="flex items-center gap-2 text-xs text-gray">
+        {icon}
+        {label}
+      </p>
+      <div className="mt-2 text-lg font-semibold text-secondary">{value}</div>
+    </div>
   );
 }
 

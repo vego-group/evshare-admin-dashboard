@@ -110,3 +110,65 @@ export function formatTransactionStatus(value: string) {
 
   return labels[value] ?? value;
 }
+
+export type MerchantAnalyticsReconciliation = {
+  state: "candidate" | "excluded" | "unknown";
+  label: string;
+  description: string;
+};
+
+/**
+ * Explains what the admin can safely infer from the payment transaction payload.
+ * Final merchant eligibility is still decided by the backend because the admin
+ * resource does not currently expose the order's draft/cancelled state.
+ */
+export function merchantAnalyticsReconciliation(
+  transaction: PaymentTransaction,
+): MerchantAnalyticsReconciliation {
+  const status = transaction.status.toLowerCase();
+
+  if (status === "refunded") {
+    return {
+      state: "excluded",
+      label: "مستبعد من إيراد التاجر",
+      description: "المعاملة المستردة تُزال من إيراد تاريخ الدفع الأصلي.",
+    };
+  }
+
+  if (status !== "paid" && status !== "captured") {
+    return {
+      state: "excluded",
+      label: "مستبعد من إيراد التاجر",
+      description: "تحتسب التحليلات معاملات paid وcaptured المسوّاة فقط.",
+    };
+  }
+
+  const payableType = transaction.checkout?.payable?.type
+    ?.replaceAll("\\", "/")
+    .split("/")
+    .at(-1)
+    ?.toLowerCase();
+
+  if (!payableType) {
+    return {
+      state: "unknown",
+      label: "يلزم التحقق من مرجع الطلب",
+      description: "المعاملة مسوّاة، لكن مرجع الدفع غير متاح في استجابة الإدارة.",
+    };
+  }
+
+  if (payableType !== "order") {
+    return {
+      state: "excluded",
+      label: "مستبعد من إيراد التاجر",
+      description: "تحليلات التاجر تحتسب معاملات الطلبات فقط.",
+    };
+  }
+
+  return {
+    state: "candidate",
+    label: "مرشح للاحتساب",
+    description:
+      "يُحتسب نهائيًا إذا كان الطلب غير مسودة وغير ملغي. حالة الطلب غير معروضة في مورد المعاملة الإداري.",
+  };
+}

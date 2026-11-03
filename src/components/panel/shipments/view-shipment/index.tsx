@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 
 import Header from "@/components/ui/header";
+import QueryErrorState from "@/components/ui/query-error-state";
 import { useShipment } from "@/hooks/api";
 
 import { ShipmentDetailsContent } from "./shipment-details-content";
@@ -11,7 +12,8 @@ import { ShipmentDetailsContent } from "./shipment-details-content";
 function ViewShipment() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
-  const { data, isLoading } = useShipment(id ?? null);
+  const { data, isLoading, isError, isFetching, refetch } =
+    useShipment(id ?? null);
 
   return (
     <div className="flex w-full flex-col gap-6">
@@ -30,9 +32,17 @@ function ViewShipment() {
         />
       </div>
 
-      <div className="rounded-2xl border border-neutral-100 bg-white p-4 shadow-sm md:p-6">
-        <ShipmentDetailsContent shipment={data?.data} isLoading={isLoading} />
-      </div>
+      {isError ? (
+        <QueryErrorState
+          title="تعذر تحميل تفاصيل الشحنة"
+          isRetrying={isFetching}
+          onRetry={() => void refetch()}
+        />
+      ) : (
+        <div className="rounded-2xl border border-neutral-100 bg-white p-4 shadow-sm md:p-6">
+          <ShipmentDetailsContent shipment={data?.data} isLoading={isLoading} />
+        </div>
+      )}
     </div>
   );
 }

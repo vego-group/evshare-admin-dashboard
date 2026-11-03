@@ -24,11 +24,17 @@ import PermissionGate from "@/components/permission-gate";
 import { PAGE_SIZE } from "@/constants";
 import useDebouncedChange from "@/hooks/use-debounced-change";
 
-type Props = { role: Role | null; onClose: () => void; onSaved: () => void };
+type Props = {
+  role: Role | null;
+  creationSourceName?: string | null;
+  onClose: () => void;
+  onSaved: () => void;
+};
 const categoriesParams = { page: 1, limit: 200 };
 
 export default function RolePermissionsModal({
   role,
+  creationSourceName,
   onClose,
   onSaved,
 }: Props) {
@@ -119,6 +125,16 @@ export default function RolePermissionsModal({
           <EntityError error={roleError ?? permissionsError ?? categoriesError} />
         ) : (
           <>
+            {creationSourceName !== null && creationSourceName !== undefined && (
+              <div
+                role="status"
+                className="rounded-[14px] border border-primary/35 bg-primary/10 px-4 py-3 text-sm leading-6 text-secondary"
+              >
+                {creationSourceName
+                  ? `تم إنشاء الدور ونسخ صلاحيات ${creationSourceName}. راجع الصلاحيات أدناه؛ أي تعديل هنا لن يؤثر على الدور المصدر.`
+                  : "تم إنشاء الدور بدون صلاحيات. حدّد الصلاحيات المناسبة ثم احفظ التغييرات."}
+              </div>
+            )}
             <PermissionGate slug="Admin Assign Roles Permissions By Category">
               <div className="flex flex-col gap-3 rounded-[14px] bg-background p-3 sm:flex-row">
                 <Dropdown

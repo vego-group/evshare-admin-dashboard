@@ -64,12 +64,19 @@ export function MoneyValue({ value }: { value: number | string | null }) {
 }
 
 export function CompanyActions({
+  company,
   onEdit,
   onDelete,
 }: {
+  company: ShippingCompanyListItem;
   onEdit: () => void;
   onDelete: () => void;
 }) {
+  const isDeleteBlocked = company.shipments_count > 0;
+  const deleteLabel = isDeleteBlocked
+    ? "لا يمكن حذف شركة مرتبطة بشحنات؛ عطّلها من التعديل بدلاً من ذلك"
+    : "حذف شركة الشحن";
+
   return (
     <div className="flex items-center gap-2">
       <PermissionGate slug="Admin Edit Shipping Companies"><ActionButton
@@ -81,7 +88,8 @@ export function CompanyActions({
       <PermissionGate slug="Admin Delete Shipping Companies"><ActionButton
         icon={Trash2}
         onClick={onDelete}
-        label="حذف شركة الشحن"
+        label={deleteLabel}
+        disabled={isDeleteBlocked}
         className="bg-red-50 text-red-500"
       /></PermissionGate>
     </div>
@@ -92,20 +100,24 @@ function ActionButton({
   icon: Icon,
   className,
   label,
+  disabled = false,
   onClick,
 }: {
   icon: LucideIcon;
   className: string;
   label: string;
+  disabled?: boolean;
   onClick: () => void;
 }) {
   return (
     <button
       type="button"
       aria-label={label}
+      title={label}
+      disabled={disabled}
       onClick={onClick}
       className={cn(
-        "grid size-8 place-items-center rounded-lg transition hover:brightness-95",
+        "grid size-8 place-items-center rounded-lg transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:brightness-100",
         className,
       )}
     >

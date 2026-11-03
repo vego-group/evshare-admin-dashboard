@@ -42,6 +42,10 @@ function TripInfoContent({
       : null;
   const distance = distanceKm != null ? formatDistanceParts(distanceKm) : null;
   const pricing = tripPricing(trip);
+  const remainingBalance = Number(trip.remaining_balance);
+  const hasRemainingBalance =
+    trip.remaining_balance != null && Number.isFinite(remainingBalance);
+  const isDepleted = hasRemainingBalance && remainingBalance <= 0;
 
   return (
     <div dir="rtl" className="w-64 overflow-hidden text-right">
@@ -105,8 +109,32 @@ function TripInfoContent({
       </div>
       <div className="grid grid-cols-2 gap-2 bg-primary/4 px-3 pb-2.5 pt-2">
         <PriceStat label="رسوم فتح الرحلة" value={pricing.unlock_fee} currency={pricing.currency} />
-        <PriceStat label="سعر الدقيقة المثبت" value={pricing.price_per_minute} currency={pricing.currency} />
+        {hasRemainingBalance ? (
+          <PriceStat label="الرصيد القابل للاستخدام" value={trip.remaining_balance} currency={pricing.currency} />
+        ) : (
+          <PriceStat label="سعر الدقيقة المثبت" value={pricing.price_per_minute} currency={pricing.currency} />
+        )}
       </div>
+
+      {isDepleted ? (
+        <div
+          role={trip.auto_stop_last_error ? "alert" : "status"}
+          className={cn(
+            "mx-3 mb-2.5 rounded-[10px] border px-3 py-2 text-xs leading-5",
+            trip.auto_stop_last_error
+              ? "border-red-200 bg-red-50 text-red-700"
+              : trip.vehicle_type === "scooter"
+                ? "border-amber-200 bg-amber-50 text-amber-900"
+                : "border-blue-200 bg-blue-50 text-blue-800",
+          )}
+        >
+          {trip.auto_stop_last_error
+            ? `فشل الإيقاف التلقائي: ${trip.auto_stop_last_error}`
+            : trip.vehicle_type === "scooter"
+              ? "نفد الرصيد؛ أصبحت الرحلة مؤهلة للإيقاف التلقائي في دورة المجدول التالية."
+              : "الرصيد سالب، لكن رحلات الدراجة لا تتوقف تلقائياً."}
+        </div>
+      ) : null}
 
       <div className="grid grid-cols-2 gap-2 px-3 pb-3 pt-1">
         <PermissionGate slug={ADMIN_PERMISSIONS.trips.end}>

@@ -84,6 +84,39 @@ test("vehicle commands accept their exact permission or the broad command permis
   assert.equal(ADMIN_PERMISSIONS.locks.lock, "Admin Lock Vehicles");
 });
 
+test("subscription discounts use independent endpoint permissions", () => {
+  const { ADMIN_PERMISSIONS } = load("src/constants/permissions.ts");
+  const permissions = ADMIN_PERMISSIONS.subscriptionDiscounts;
+  const component = fs.readFileSync(
+    path.join(testDirectory, "..", "src/components/panel/subscription-discounts/index.tsx"),
+    "utf8",
+  );
+  const sidebar = fs.readFileSync(
+    path.join(testDirectory, "..", "src/data/sidebar.ts"),
+    "utf8",
+  );
+  const guard = fs.readFileSync(
+    path.join(testDirectory, "..", "src/components/panel-permission-guard.tsx"),
+    "utf8",
+  );
+
+  assert.deepEqual(permissions, {
+    index: "Admin Index Subscription Discounts",
+    view: "Admin View Subscription Discounts",
+    add: "Admin Add Subscription Discounts",
+    edit: "Admin Edit Subscription Discounts",
+    delete: "Admin Delete Subscription Discounts",
+  });
+  assert.match(sidebar, /ADMIN_PERMISSIONS\.subscriptionDiscounts\.index/);
+  assert.match(guard, /ADMIN_PERMISSIONS\.subscriptionDiscounts\.index/);
+  assert.match(component, /ADMIN_PERMISSIONS\.subscriptionDiscounts\.view/);
+  assert.match(component, /ADMIN_PERMISSIONS\.subscriptionDiscounts\.add/);
+  assert.match(component, /ADMIN_PERMISSIONS\.subscriptionDiscounts\.edit/);
+  assert.match(component, /ADMIN_PERMISSIONS\.subscriptionDiscounts\.delete/);
+  assert.match(component, /result\.status === 403/);
+  assert.match(component, /notifyForbidden\(result\.error\)/);
+});
+
 test("vehicle type source is modeled and inferred vehicles are surfaced", () => {
   const types = fs.readFileSync(path.join(testDirectory, "..", "src/types/vehicle-operating-pricing.ts"), "utf8");
   const details = fs.readFileSync(path.join(testDirectory, "..", "src/components/panel/vehicle-operating-pricing/view-vehicle/vehicle-details-content.tsx"), "utf8");

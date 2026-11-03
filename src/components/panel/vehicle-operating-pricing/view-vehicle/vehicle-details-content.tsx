@@ -18,8 +18,8 @@ import {
   formatMoney,
   formatPercentage,
   pricingFields,
-  zoneTypeLabel,
 } from "../utils";
+import ZoneTypeBadge from "../zone-type-badge";
 
 type Props = {
   vehicle?: VehicleListItem;
@@ -194,14 +194,22 @@ export function VehicleDetailsContent({ vehicle, isLoading }: Props) {
       </section>
 
       <section className="space-y-3 rounded-[14px] bg-background p-4">
-        <h4 className="text-sm font-semibold text-secondary">مناطق التشغيل</h4>
+        <div className="flex flex-wrap items-start justify-between gap-2">
+          <div>
+            <h4 className="text-sm font-semibold text-secondary">مناطق التشغيل</h4>
+            <p className="mt-1 text-xs leading-5 text-gray">هذه المناطق تخص هذه المركبة وحدها وتظهر لسائقها أثناء الرحلة.</p>
+          </div>
+          <span className="rounded-full bg-white px-2.5 py-1 text-xs font-medium text-dark-gray">
+            {vehicle.zones.filter((zone) => zone.is_active).length} نشطة من {vehicle.zones.length}
+          </span>
+        </div>
         {vehicle.zones.length ? (
           <div className="space-y-3">
             {vehicle.zones.map((zone) => (
               <div key={zone.id} className="grid gap-2 rounded-[10px] bg-white p-3 sm:grid-cols-2">
                 <DetailRow label="اسم المنطقة" value={zone.name_ar} />
-                <DetailRow label="النوع" value={zoneTypeLabel(zone.type)} />
-                <DetailRow label="حد السرعة" value={zone.speed_limit} />
+                <DetailRow label="النوع" value={<ZoneTypeBadge type={zone.type} speedLimit={zone.speed_limit} />} />
+                <DetailRow label="حد السرعة" value={zone.type === "slow" && zone.speed_limit != null ? <span dir="ltr">{zone.speed_limit} km/h</span> : "لا ينطبق"} />
                 <DetailRow label="الحالة" value={<StatusBadge status={zone.is_active ? "active" : "disabled"} />} />
               </div>
             ))}

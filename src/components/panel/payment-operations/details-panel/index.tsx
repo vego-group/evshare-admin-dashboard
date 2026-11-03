@@ -8,7 +8,7 @@ import { usePaymentCheckout, usePaymentTransaction } from "@/hooks/api";
 import { formatUserMobile } from "@/lib/utils/format-phone";
 import type { PaymentCheckout, PaymentOperationTab, PaymentTransaction } from "@/types";
 
-import { describePayable, formatDate, formatGateway, formatPaymentMethod, MoneyValue } from "../utils";
+import { describePayable, formatDate, formatGateway, formatPaymentMethod, merchantAnalyticsReconciliation, MoneyValue } from "../utils";
 import { ProcessedBadge, TransactionStatusBadge } from "../table/status-badges";
 
 type Props = { activeTab: PaymentOperationTab; checkoutId: string | null; transactionId: string | null; open: boolean; onClose: () => void };
@@ -64,6 +64,7 @@ function TransactionDetails({ transaction }: { transaction: PaymentTransaction }
   const checkout = transaction.checkout;
   const user = transaction.user ?? checkout?.user;
   const payable = describePayable(checkout?.payable);
+  const analytics = merchantAnalyticsReconciliation(transaction);
 
   return <div className="space-y-6">
     <Section title="بيانات الدفع">
@@ -75,6 +76,19 @@ function TransactionDetails({ transaction }: { transaction: PaymentTransaction }
       <Row label="طريقة الدفع" value={formatPaymentMethod(transaction)} />
       <Row label="الحالة" value={<TransactionStatusBadge status={transaction.status} />} />
       <Row label="تاريخ الدفع" value={transaction.paid_at ? formatDate(transaction.paid_at) : "-"} ltr />
+      <Row
+        label="تحليلات التاجر"
+        value={
+          <span>
+            <span className={analytics.state === "candidate" ? "text-emerald-700" : analytics.state === "excluded" ? "text-red-700" : "text-amber-700"}>
+              {analytics.label}
+            </span>
+            <span className="mt-1 block max-w-80 text-xs font-normal leading-5 text-gray">
+              {analytics.description}
+            </span>
+          </span>
+        }
+      />
     </Section>
     <Section title="المستخدم">
       <Row label="الاسم" value={user?.name ?? "-"} />

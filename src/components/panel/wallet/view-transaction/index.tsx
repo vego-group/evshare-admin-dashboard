@@ -13,6 +13,7 @@ import { formatUserMobile } from "@/lib/utils/format-phone";
 import type { WalletTransactionDetails } from "@/types";
 
 import { WalletStatusBadge } from "../table/wallet-status-badge";
+import { isTripWalletReference } from "../utils";
 
 function ViewWalletTransaction() {
   const { id } = useParams<{ id: string }>();
@@ -55,6 +56,12 @@ function TransactionDetails({
 }: {
   transaction: WalletTransactionDetails;
 }) {
+  const tripReference =
+    isTripWalletReference(transaction.reference?.type) &&
+    transaction.reference?.id
+      ? transaction.reference.id
+      : null;
+
   return (
     <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(340px,0.65fr)]">
       <section className="space-y-3 rounded-[14px] bg-white p-5">
@@ -117,8 +124,8 @@ function TransactionDetails({
             value={transaction.reference?.id ?? "-"}
             valueDir="ltr"
           />
-          {transaction.reference?.type?.toLowerCase() === "trip" && transaction.reference.id && (
-            <Link href={`/trips/${encodeURIComponent(transaction.reference.id)}`} className="inline-flex rounded-lg bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 hover:bg-blue-100">
+          {tripReference && (
+            <Link href={`/trips/${encodeURIComponent(tripReference)}`} className="inline-flex rounded-lg bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 transition-colors hover:bg-blue-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
               عرض الرحلة المرتبطة
             </Link>
           )}

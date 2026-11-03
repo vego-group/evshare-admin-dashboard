@@ -37,6 +37,8 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import { ADMIN_PERMISSIONS } from "@/constants/permissions";
+
 export type SidebarNavItem = {
   href: string;
   label: string;
@@ -379,7 +381,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
     label: "خصومات الاشتراك",
     ariaLabel: "خصومات الاشتراك التلقائية",
     icon: Percent,
-    permission: "Admin Index Subscription Discounts",
+    permission: ADMIN_PERMISSIONS.subscriptionDiscounts.index,
   },
   {
     href: "/test-accounts",

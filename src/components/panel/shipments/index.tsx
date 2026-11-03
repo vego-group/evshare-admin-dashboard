@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import QueryErrorState from "@/components/ui/query-error-state";
 
 import ShipmentsContentShimmer from "./content-shimmer";
 import ShipmentsHeader from "./header";
@@ -18,6 +19,9 @@ function Shipments() {
   const {
     data,
     isLoading,
+    isError,
+    isFetching,
+    refetch,
     params,
     updateParams,
     isFormOpen,
@@ -43,18 +47,26 @@ function Shipments() {
       ) : (
         <>
           <ShipmentsHeader onAddShipment={openAddForm} />
-          <ShipmentsMainContent
-            data={data}
-            params={params}
-            onParamsChange={updateParams}
-            onViewShipment={(shipment) =>
-              router.push(`/shipments/${shipment.id}`)
-            }
-            onEditShipment={openEditForm}
-            onUpdateShipmentStatus={setShipmentPendingStatus}
-            onCancelShipment={setShipmentPendingCancel}
-            onDeleteShipment={setShipmentPendingDelete}
-          />
+          {isError ? (
+            <QueryErrorState
+              title="تعذر تحميل الشحنات"
+              isRetrying={isFetching}
+              onRetry={() => void refetch()}
+            />
+          ) : (
+            <ShipmentsMainContent
+              data={data}
+              params={params}
+              onParamsChange={updateParams}
+              onViewShipment={(shipment) =>
+                router.push(`/shipments/${shipment.id}`)
+              }
+              onEditShipment={openEditForm}
+              onUpdateShipmentStatus={setShipmentPendingStatus}
+              onCancelShipment={setShipmentPendingCancel}
+              onDeleteShipment={setShipmentPendingDelete}
+            />
+          )}
         </>
       )}
 

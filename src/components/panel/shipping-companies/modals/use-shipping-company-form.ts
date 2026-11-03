@@ -85,6 +85,7 @@ export function useShippingCompanyForm({
     showSuccessModal(result.message || "تم حفظ شركة الشحن بنجاح");
     form.reset(shippingCompanyDefaultValues);
     await onSaved();
+    onClose();
   };
 
   return { form, serviceType, deliveryType, supportsCod, active, close, onSubmit };

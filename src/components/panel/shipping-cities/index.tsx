@@ -7,6 +7,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 import { PAGE_SIZE } from "@/constants";
+import QueryErrorState from "@/components/ui/query-error-state";
 import { useShippingCities } from "@/hooks/api";
 import { deleteShippingCity } from "@/services/mutations";
 import type { ShippingCitiesQueryParams, ShippingCityListItem } from "@/types";
@@ -29,7 +30,8 @@ function ShippingCities() {
     useState<ShippingCityListItem | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const { data, isLoading } = useShippingCities(params);
+  const { data, isLoading, isError, isFetching, refetch } =
+    useShippingCities(params);
 
   const updateParams = (nextParams: Partial<ShippingCitiesQueryParams>) =>
     setParams((current) => ({ ...current, ...nextParams }));
@@ -45,6 +47,7 @@ function ShippingCities() {
     setIsDeleting(false);
 
     if (result?.ok) {
+      setCityPendingDelete(null);
       showSuccessModal(result.message || "تم حذف مدينة الشحن بنجاح");
       await refreshShippingCityQueries();
       return;
@@ -65,16 +68,24 @@ function ShippingCities() {
               setIsFormOpen(true);
             }}
           />
-          <ShippingCitiesMainContent
-            data={data}
-            params={params}
-            onParamsChange={updateParams}
-            onEditShippingCity={(city) => {
-              setCityPendingEdit(city);
-              setIsFormOpen(true);
-            }}
-            onDeleteShippingCity={setCityPendingDelete}
-          />
+          {isError ? (
+            <QueryErrorState
+              title="تعذر تحميل مدن الشحن"
+              isRetrying={isFetching}
+              onRetry={() => void refetch()}
+            />
+          ) : (
+            <ShippingCitiesMainContent
+              data={data}
+              params={params}
+              onParamsChange={updateParams}
+              onEditShippingCity={(city) => {
+                setCityPendingEdit(city);
+                setIsFormOpen(true);
+              }}
+              onDeleteShippingCity={setCityPendingDelete}
+            />
+          )}
         </>
       )}
 

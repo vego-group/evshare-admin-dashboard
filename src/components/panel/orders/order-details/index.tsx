@@ -19,6 +19,7 @@ import OrderInfoSection from "./order-info-section";
 import OrderItemsSection from "./order-items-section";
 import OrderReceiptSection from "./receipt-section";
 import OperatingContractSection from "./operating-contract-section";
+import OrderShipmentsSection from "./order-shipments-section";
 import { OrderDeleteConfirmModal } from "../modals";
 
 const RECEIPT_STATUSES = ["delivered", "completed"];
@@ -107,6 +108,9 @@ function OrderDetails() {
         <>
           <OrderInfoSection order={order} />
           <OrderItemsSection items={order.items} currency={order.currency} />
+          <PermissionGate slug="Admin Index Shipments">
+            <OrderShipmentsSection order={order} />
+          </PermissionGate>
           {order.operating_type === "operation_company" && RECEIPT_STATUSES.includes(order.status) ? (
             <OperatingContractSection key={order.id} orderId={order.id} />
           ) : order.operating_type !== "operation_company" && receipt ? (

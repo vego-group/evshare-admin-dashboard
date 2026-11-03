@@ -14,6 +14,7 @@ import ShipmentTrackingFields from "./shipment-tracking-fields";
 
 type ShipmentFormFieldsProps = {
   isEdit: boolean;
+  lockedOrderCode?: string;
   orderUuid?: string;
   companyUuid?: string;
   pickingType: ShipmentPickingType;
@@ -28,6 +29,7 @@ type ShipmentFormFieldsProps = {
 
 function ShipmentFormFields({
   isEdit,
+  lockedOrderCode,
   orderUuid,
   companyUuid,
   pickingType,
@@ -51,10 +53,19 @@ function ShipmentFormFields({
           error={errors.order_uuid?.message}
           className="sm:col-span-2"
         >
-          <ShipmentOrderSelect
-            value={orderUuid}
-            onChange={(orderId) => setField("order_uuid", orderId)}
-          />
+          {lockedOrderCode ? (
+            <div
+              dir="ltr"
+              className="flex h-14 items-center rounded-[14px] border border-primary/40 bg-primary/4 px-4 text-left text-sm font-semibold text-secondary"
+            >
+              {lockedOrderCode}
+            </div>
+          ) : (
+            <ShipmentOrderSelect
+              value={orderUuid}
+              onChange={(orderId) => setField("order_uuid", orderId)}
+            />
+          )}
         </Field>
       ) : null}
 

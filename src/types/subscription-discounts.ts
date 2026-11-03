@@ -35,6 +35,13 @@ export type SubscriptionDiscountPayload = {
   name_en?: string | null;
 };
 
+export type SubscriptionDiscountValidationError = {
+  message?: string;
+  errors?: Partial<
+    Record<keyof SubscriptionDiscountPayload, string[]>
+  >;
+};
+
 export type SubscriptionDiscountListResponse = {
   error: boolean;
   message: string;

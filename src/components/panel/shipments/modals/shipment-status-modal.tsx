@@ -59,6 +59,7 @@ function ShipmentStatusModal({
 
     showSuccessModal(result.message || "تم تحديث حالة الشحنة بنجاح");
     await onSaved();
+    onClose();
   };
 
   return (
