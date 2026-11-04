@@ -28,7 +28,7 @@ describe("payment operations API contract", () => {
 
     expect(serviceMocks.baseAPI).toHaveBeenCalledWith(
       "GET",
-      "/payment/checkouts?page=2&per_page=25&gateway=moyasar&payment_method=mada&status=unprocessed&payable_type=order&search=Khaled&sort_by=created_at&sort_order=asc",
+      "/payment/checkouts?page=2&limit=25&gateway=moyasar&payment_method=mada&payable_type=order&is_processed=0&search=Khaled&sort_by=created_at&sort_order=asc",
     );
   });
 
@@ -42,7 +42,7 @@ describe("payment operations API contract", () => {
 
     expect(serviceMocks.baseAPI).toHaveBeenCalledWith(
       "GET",
-      "/payment/transactions?page=1&per_page=10&payment_method=apple_pay&status=refunded&search=1779167b&sort_by=created_at&sort_order=desc",
+      "/payment/transactions?page=1&limit=10&payment_method=apple_pay&status=refunded&search=1779167b&sort_by=created_at&sort_order=desc",
     );
   });
 
@@ -50,13 +50,13 @@ describe("payment operations API contract", () => {
     await paymentCheckoutsAPI({ page: 1, status: "all", search: "   " });
     expect(serviceMocks.baseAPI).toHaveBeenLastCalledWith(
       "GET",
-      "/payment/checkouts?page=1&per_page=10&sort_by=created_at&sort_order=desc",
+      "/payment/checkouts?page=1&limit=10&sort_by=created_at&sort_order=desc",
     );
 
     await paymentTransactionsAPI({ page: 1, status: "all", search: "   " });
     expect(serviceMocks.baseAPI).toHaveBeenLastCalledWith(
       "GET",
-      "/payment/transactions?page=1&per_page=10&sort_by=created_at&sort_order=desc",
+      "/payment/transactions?page=1&limit=10&sort_by=created_at&sort_order=desc",
     );
   });
 
@@ -64,13 +64,39 @@ describe("payment operations API contract", () => {
     await paymentCheckoutsAPI({ page: 1, limit: 20, gateway: "moyasar", is_processed: false });
     expect(serviceMocks.baseAPI).toHaveBeenLastCalledWith(
       "GET",
-      "/payment/checkouts?page=1&per_page=20&gateway=moyasar&is_processed=0&sort_by=created_at&sort_order=desc",
+      "/payment/checkouts?page=1&limit=20&gateway=moyasar&is_processed=0&sort_by=created_at&sort_order=desc",
     );
 
     await paymentTransactionsAPI({ page: 1, limit: 20, transaction_id: "provider-payment-id" });
     expect(serviceMocks.baseAPI).toHaveBeenLastCalledWith(
       "GET",
-      "/payment/transactions?page=1&per_page=20&transaction_id=provider-payment-id&sort_by=created_at&sort_order=desc",
+      "/payment/transactions?page=1&limit=20&transaction_id=provider-payment-id&sort_by=created_at&sort_order=desc",
+    );
+  });
+
+  it("supports every filter in the attached checkout and transaction contract", async () => {
+    await paymentCheckoutsAPI({
+      page: 3,
+      limit: 20,
+      gateway: "tamara",
+      payable_type: "App\\Models\\Order",
+      is_processed: true,
+    });
+    expect(serviceMocks.baseAPI).toHaveBeenLastCalledWith(
+      "GET",
+      "/payment/checkouts?page=3&limit=20&gateway=tamara&payable_type=App%5CModels%5COrder&is_processed=1&sort_by=created_at&sort_order=desc",
+    );
+
+    await paymentTransactionsAPI({
+      page: 2,
+      limit: 20,
+      gateway: "myfatoorah",
+      status: "paid",
+      transaction_id: "gateway-transaction-id",
+    });
+    expect(serviceMocks.baseAPI).toHaveBeenLastCalledWith(
+      "GET",
+      "/payment/transactions?page=2&limit=20&gateway=myfatoorah&status=paid&transaction_id=gateway-transaction-id&sort_by=created_at&sort_order=desc",
     );
   });
 

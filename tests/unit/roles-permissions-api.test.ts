@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { roleEditSchema, roleSchema } from "@/schemas/roles-permissions";
 import {
   permissionCategoriesAPI,
+  permissionCategoryDetailsAPI,
   permissionsAPI,
 } from "@/services/queries/roles-permissions";
 
@@ -161,6 +162,56 @@ describe("roles and permissions API contracts", () => {
       lastPage: 3,
       perPage: 10,
       total: 27,
+    });
+  });
+
+  it("loads a permission category with its nested permissions", async () => {
+    const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      jsonResponse({
+        error: false,
+        message: "Data fetched successfully.",
+        data: {
+          id: "category-1",
+          name: "orders",
+          name_ar: "الطلبات",
+          name_en: "Orders",
+          slug: "orders",
+          permissions: [
+            {
+              id: "permission-1",
+              name: "Admin Index Orders",
+              slug: "Admin Index Orders",
+              name_ar: "عرض الطلبات",
+              name_en: "Index Orders",
+              permission_category_id: "category-1",
+              permission_category: {
+                id: "category-1",
+                name: "orders",
+                name_ar: "الطلبات",
+                name_en: "Orders",
+              },
+              dashboard_permissions: true,
+              created_at: "2026-07-15",
+              updated_at: "2026-07-15",
+            },
+          ],
+          created_at: "2026-07-15",
+          updated_at: "2026-07-15",
+        },
+      }),
+    );
+
+    const result = await permissionCategoryDetailsAPI("category-1");
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/admin/permission-categories/category-1",
+      expect.objectContaining({ method: "GET" }),
+    );
+    expect(result.data.permissions).toHaveLength(1);
+    expect(result.data.permissions?.[0]).toMatchObject({
+      slug: "Admin Index Orders",
+      permission_category_id: "category-1",
+      dashboard_permissions: true,
     });
   });
 });

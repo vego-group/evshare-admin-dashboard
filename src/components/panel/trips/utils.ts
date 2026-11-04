@@ -1,4 +1,4 @@
-import type { Coordinate, TripEndSource, TripListItem, TripPricingSnapshot } from "@/types";
+import type { Coordinate, RoutePoint, TripEndSource, TripListItem, TripPricingSnapshot } from "@/types";
 
 export function formatDate(value?: string | null) {
   if (!value) return "-";
@@ -17,6 +17,29 @@ export function formatTripDistance(value?: number | string | null) {
   if (!Number.isFinite(distanceKm)) return String(value);
   if (distanceKm < 0.01) return `${Math.round(distanceKm * 1000)} متر`;
   return `${new Intl.NumberFormat("ar-EG", { maximumFractionDigits: 2 }).format(distanceKm)} كم`;
+}
+
+export function tripRouteStats(route: RoutePoint[]) {
+  const discarded = route.reduce(
+    (count, point) => count + (point.discarded ? 1 : 0),
+    0,
+  );
+
+  return {
+    total: route.length,
+    accepted: route.length - discarded,
+    discarded,
+  };
+}
+
+export function acceptedTripRoutePath(route: RoutePoint[]) {
+  return route
+    .filter((point) => !point.discarded)
+    .map((point) => ({
+      lat: Number(point.latitude),
+      lng: Number(point.longitude),
+    }))
+    .filter((point) => Number.isFinite(point.lat) && Number.isFinite(point.lng));
 }
 
 export function tripVehicleTitle(vehicle: TripListItem["vehicle"]) {

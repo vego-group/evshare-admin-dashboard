@@ -6,8 +6,27 @@ import type {
   PaymentTransaction,
 } from "@/types";
 
-export function MoneyValue({ amount, currency }: { amount: number; currency?: string }) {
+export function MoneyValue({ amount, currency }: { amount: number; currency?: string | null }) {
   return <CurrencyMoneyValue value={amount} currency={currency} />;
+}
+
+export function getTransactionCurrency(transaction: PaymentTransaction) {
+  return transaction.currency ?? transaction.checkout?.currency;
+}
+
+export function getTransactionEventDate(transaction: PaymentTransaction) {
+  return transaction.paid_at ?? transaction.created_at;
+}
+
+export function hasRefundData(transaction: PaymentTransaction) {
+  return Boolean(
+    transaction.refund
+      || transaction.refund_in_progress
+      || transaction.refund_status
+      || transaction.refundable
+      || transaction.refunded_amount !== undefined
+      || transaction.remaining_refundable_amount !== undefined,
+  );
 }
 
 export function formatDate(value: string) {

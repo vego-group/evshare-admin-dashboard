@@ -8,6 +8,8 @@ import {
   formatDate,
   formatGateway,
   formatPaymentMethod,
+  getTransactionCurrency,
+  getTransactionEventDate,
   MoneyValue,
 } from "../utils";
 import { TransactionStatusBadge } from "./status-badges";
@@ -43,7 +45,7 @@ function PaymentTransactionsTable({
               <TableHead className="w-40">طريقة الدفع</TableHead>
               <TableHead className="w-37.5">المبلغ</TableHead>
               <TableHead className="w-37.5">الحالة</TableHead>
-              <TableHead className="w-48">تاريخ الدفع</TableHead>
+              <TableHead className="w-48">تاريخ العملية</TableHead>
               <TableHead className="w-40">الاسترداد</TableHead>
               {onRefund ? <TableHead className="w-28">الإجراء</TableHead> : null}
             </tr>
@@ -81,36 +83,42 @@ function TransactionTableRow({
 
   return (
     <tr
-      tabIndex={onSelect ? 0 : undefined}
-      role={onSelect ? "button" : undefined}
       onClick={() => onSelect?.(transaction.id)}
-      onKeyDown={(event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          onSelect?.(transaction.id);
-        }
-      }}
       className={cn(
         "text-base font-medium leading-6 text-dark-gray transition",
         onSelect &&
-          "cursor-pointer hover:bg-primary/5 focus-visible:bg-primary/5 focus-visible:outline-none",
+          "cursor-pointer hover:bg-primary/5 focus-within:bg-primary/5",
       )}
     >
       <TableCell dir="ltr" className="max-w-60">
-        <span className="block truncate">{transaction.reference ?? transaction.transaction_id}</span>
-        {transaction.reference && transaction.reference !== transaction.transaction_id ? <span className="mt-1 block truncate text-xs text-gray">{transaction.transaction_id}</span> : null}
+        {onSelect ? (
+          <button
+            type="button"
+            aria-label={`عرض تفاصيل المعاملة ${transaction.reference ?? transaction.transaction_id}`}
+            onClick={(event) => { event.stopPropagation(); onSelect(transaction.id); }}
+            className="block w-full rounded-md text-left outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+          >
+            <span className="block truncate underline-offset-4 hover:underline">{transaction.reference ?? transaction.transaction_id}</span>
+            {transaction.reference && transaction.reference !== transaction.transaction_id ? <span className="mt-1 block truncate text-xs text-gray">{transaction.transaction_id}</span> : null}
+          </button>
+        ) : (
+          <>
+            <span className="block truncate">{transaction.reference ?? transaction.transaction_id}</span>
+            {transaction.reference && transaction.reference !== transaction.transaction_id ? <span className="mt-1 block truncate text-xs text-gray">{transaction.transaction_id}</span> : null}
+          </>
+        )}
       </TableCell>
       <TableCell><span className="block truncate">{user?.name ?? "-"}</span><span dir="ltr" className="mt-1 block text-xs text-gray">{formatUserMobile(user?.mobile)}</span></TableCell>
       <TableCell>{formatGateway(transaction.payment_gateway, transaction.payment_gateway_name)}</TableCell>
       <TableCell>{formatPaymentMethod(transaction)}</TableCell>
       <TableCell dir="ltr">
-        <MoneyValue amount={transaction.amount} currency={transaction.currency} />
+        <MoneyValue amount={transaction.amount} currency={getTransactionCurrency(transaction)} />
       </TableCell>
       <TableCell className="max-w-none overflow-visible whitespace-normal">
         <TransactionStatusBadge status={transaction.status} />
       </TableCell>
       <TableCell dir="ltr">
-        {transaction.paid_at ? formatDate(transaction.paid_at) : <span className="text-gray">—</span>}
+        {formatDate(getTransactionEventDate(transaction))}
       </TableCell>
       <TableCell>
         {transaction.refund_in_progress ? <span className="text-sm text-orange-500">قيد المعالجة</span>

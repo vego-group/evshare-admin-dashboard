@@ -27,4 +27,18 @@ describe("rider notifications admin contract", () => {
       "There is currently no admin endpoint",
     );
   });
+
+  it("keeps automatic events separate from manual marketing communications", () => {
+    const communications = read("src/components/panel/communications/index.tsx");
+
+    expect(communications).toContain("هذه الصفحة للرسائل التسويقية التي يرسلها المشرف فقط");
+    expect(communications).toContain("ينشئها الخادم تلقائياً");
+    expect(communications).toContain("لا تظهر في هذا السجل");
+  });
+
+  it("warns that removing a rider also removes registered devices", () => {
+    expect(
+      read("src/components/panel/users/modals/user-delete-confirm-modal.tsx"),
+    ).toContain("وحذف أجهزته المسجلة");
+  });
 });

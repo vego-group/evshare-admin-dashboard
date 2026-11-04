@@ -1,4 +1,5 @@
 import Modal from "@/components/ui/modal";
+import QueryErrorState from "@/components/ui/query-error-state";
 import type { PaymentMethod } from "@/types";
 
 import PaymentMethodActions from "./actions";
@@ -10,12 +11,15 @@ type Props = {
   open: boolean;
   paymentMethod?: PaymentMethod;
   isLoading?: boolean;
+  isError?: boolean;
+  isRetrying?: boolean;
+  onRetry?: () => void;
   onClose: () => void;
   onSaved: (id: string) => Promise<void> | void;
 };
 
 function PaymentMethodFormModal(props: Props) {
-  const { open, paymentMethod, isLoading = false, onClose, onSaved } = props;
+  const { open, paymentMethod, isLoading = false, isError = false, isRetrying = false, onRetry, onClose, onSaved } = props;
   const { form, isActive, availableFor, close, onSubmit } =
     usePaymentMethodForm({
       open,
@@ -36,7 +40,13 @@ function PaymentMethodFormModal(props: Props) {
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-6 p-1 text-right md:p-4"
       >
-        {isLoading || !paymentMethod ? (
+        {isError ? (
+          <QueryErrorState
+            title="تعذر تحميل تفاصيل طريقة الدفع"
+            isRetrying={isRetrying}
+            onRetry={onRetry ?? (() => undefined)}
+          />
+        ) : isLoading || !paymentMethod ? (
           <PaymentMethodFormShimmer />
         ) : (
           <>

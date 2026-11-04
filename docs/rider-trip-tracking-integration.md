@@ -31,8 +31,16 @@ validation remain backend/operations responsibilities.
 | Admin trip queries | `src/services/queries/trips.ts` |
 | Query hooks and active-trip refresh | `src/hooks/api/trips.ts` |
 | Authoritative distance display | `src/components/panel/trips/view-trip/trip-basic-info.tsx` |
+| Trip-history distance display | `src/components/panel/trips/results/trips-table.tsx` |
+| Live-trip distance labels | `src/components/panel/trips/active-trips/trip-info-content.tsx` |
+| Accepted route rendering and point diagnostics | `src/components/panel/trips/active-trips/trip-route-polyline.tsx`, `src/components/panel/trips/view-trip/trip-locations.tsx` |
 | Distance formatting | `src/components/panel/trips/utils.ts` |
 | Contract coverage | `tests/unit/trip-distance.test.ts` |
+
+The active-trip popover deliberately distinguishes the backend-authoritative travelled
+distance from the admin operator's straight-line distance to the vehicle. Discarded GPS
+points remain visible as a diagnostic count, but are excluded from the route polyline so a
+rejected jump is not presented as travelled movement.
 
 ## Backend acceptance checks
 

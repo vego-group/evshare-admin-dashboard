@@ -73,8 +73,9 @@ export function usePaymentMethodForm(options: Options) {
     }
 
     showSuccessModal(result.message || "تم تعديل طريقة الدفع بنجاح");
-    form.reset(paymentMethodDefaults);
     await onSaved(paymentMethod.id);
+    form.reset(paymentMethodDefaults);
+    onClose();
   };
 
   return { form, isActive, availableFor, close, onSubmit };

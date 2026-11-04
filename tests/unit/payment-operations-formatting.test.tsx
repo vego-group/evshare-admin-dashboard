@@ -3,6 +3,9 @@ import { describe, expect, it } from "vitest";
 import {
   formatGateway,
   formatPaymentMethod,
+  getTransactionCurrency,
+  getTransactionEventDate,
+  hasRefundData,
   merchantAnalyticsReconciliation,
 } from "@/components/panel/payment-operations/utils";
 import type { PaymentTransaction } from "@/types";
@@ -35,6 +38,37 @@ describe("payment operation display values", () => {
   it("humanizes newly introduced keys when a display name is absent", () => {
     expect(formatGateway("future_gateway")).toBe("Future Gateway");
     expect(formatPaymentMethod({ ...transaction, payment_method_name: null })).toBe("Future Card");
+  });
+
+  it("falls back to the documented checkout currency and creation timestamp", () => {
+    const baseContractTransaction: PaymentTransaction = {
+      ...transaction,
+      currency: undefined,
+      paid_at: undefined,
+      checkout: {
+        id: "checkout-1",
+        amount: 50,
+        currency: "SAR",
+        payment_gateway: "future_gateway",
+        is_processed: true,
+        payable: null,
+        user: null,
+        transactions: [],
+        created_at: "2026-10-21T00:00:00Z",
+      },
+    };
+
+    expect(getTransactionCurrency(baseContractTransaction)).toBe("SAR");
+    expect(getTransactionEventDate(baseContractTransaction)).toBe(transaction.created_at);
+    expect(hasRefundData({
+      ...baseContractTransaction,
+      refundable: undefined,
+      refund_status: undefined,
+      refund_in_progress: undefined,
+      refunded_amount: undefined,
+      remaining_refundable_amount: undefined,
+      refund: undefined,
+    })).toBe(false);
   });
 
   it("marks a settled order transaction as a reconciliation candidate", () => {

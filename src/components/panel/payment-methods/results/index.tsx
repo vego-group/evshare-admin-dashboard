@@ -5,16 +5,21 @@ import { Button } from "@/components/ui/button";
 import EmptyState from "@/components/ui/empty-state";
 import type { PaymentMethod, PaymentMethodAvailability } from "@/types";
 
-type Props = { paymentMethods: PaymentMethod[]; onEdit: (method: PaymentMethod) => void };
+type Props = {
+  paymentMethods: PaymentMethod[];
+  onEdit: (method: PaymentMethod) => void;
+  isFiltered?: boolean;
+};
 
-export default function PaymentMethodsResults({ paymentMethods, onEdit }: Props) {
-  if (!paymentMethods.length) return <EmptyState title="لا توجد طرق دفع" description="لم يتم العثور على طرق دفع مطابقة." className="min-h-90 rounded-2xl bg-white" />;
+export default function PaymentMethodsResults({ paymentMethods, onEdit, isFiltered = false }: Props) {
+  if (!paymentMethods.length) return <EmptyState title={isFiltered ? "لا توجد نتائج مطابقة" : "لا توجد طرق دفع"} description={isFiltered ? "جرّب تعديل البحث أو مسح الفلاتر لعرض طرق دفع أخرى." : "لم تتم إضافة طرق دفع لهذا البلد بعد."} className="min-h-90 rounded-2xl bg-white" />;
 
   return (
     <div className="overflow-x-auto rounded-2xl bg-white">
       <table className="w-full min-w-250 text-right">
+        <caption className="sr-only">قائمة طرق الدفع وإعدادات إتاحتها</caption>
         <thead className="bg-primary/8 text-dark-gray"><tr>
-          <th className="px-5 py-4">طريقة الدفع</th><th className="px-5 py-4">المفتاح</th><th className="px-5 py-4">الاستخدامات</th><th className="px-5 py-4">بوابة الدفع</th><th className="px-5 py-4">الحالة</th><th className="px-5 py-4">الإجراءات</th>
+          <th scope="col" className="px-5 py-4">طريقة الدفع</th><th scope="col" className="px-5 py-4">المفتاح</th><th scope="col" className="px-5 py-4">الاستخدامات</th><th scope="col" className="px-5 py-4">بوابة الدفع</th><th scope="col" className="px-5 py-4">الحالة</th><th scope="col" className="px-5 py-4">الإجراءات</th>
         </tr></thead>
         <tbody>{paymentMethods.map((method) => {
           const gatewayInactive = method.payment_gateway && !method.payment_gateway.is_active;
@@ -34,6 +39,7 @@ export default function PaymentMethodsResults({ paymentMethods, onEdit }: Props)
 
 function AvailabilityBadges({ values }: { values: PaymentMethodAvailability[] }) {
   const labels: Record<PaymentMethodAvailability, string> = { orders: "الطلبات", subscriptions: "الاشتراكات" };
+  if (!values.length) return <span className="text-sm text-gray">غير محدد</span>;
   return <div className="flex flex-wrap gap-2">{values.map((value) => <span key={value} className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-secondary">{labels[value]}</span>)}</div>;
 }
 

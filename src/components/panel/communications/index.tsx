@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, RefreshCw } from "lucide-react";
+import { Info, Plus, RefreshCw } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
@@ -33,12 +33,20 @@ export default function Communications() {
   return (
     <div className="flex w-full flex-col gap-6">
       <section className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-        <Header title="الرسائل التسويقية" subtitle="إرسال الإشعارات والرسائل النصية ومتابعة إحصاءات التسليم للتجار والسائقين" />
+        <Header title="الرسائل التسويقية" subtitle="إنشاء الرسائل اليدوية ومتابعة تسليمها للتجار والسائقين" />
         <div className="flex shrink-0 gap-2">
           <Button type="button" variant="outline" size="icon-lg" aria-label="تحديث السجل" title="تحديث السجل" onClick={() => void refresh()} disabled={query.isFetching}><RefreshCw className={query.isFetching ? "animate-spin" : ""} /></Button>
           <PermissionGate slug="Admin Send Communications"><Button type="button" onClick={() => setSendOpen(true)} className="h-10 rounded-xl px-5"><Plus />رسالة جديدة</Button></PermissionGate>
         </div>
       </section>
+
+      <aside className="flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm leading-6 text-blue-950">
+        <Info className="mt-0.5 size-5 shrink-0" aria-hidden="true" />
+        <p>
+          هذه الصفحة للرسائل التسويقية التي يرسلها المشرف فقط. إشعارات الرحلات
+          والمحفظة والمناطق والحساب ينشئها الخادم تلقائياً، ولا تظهر في هذا السجل.
+        </p>
+      </aside>
 
       <CommunicationsToolbar search={params.search} status={params.status} channel={params.channel} targetApp={params.target_app} sortOrder={params.sort_order} onChange={updateParams} />
 

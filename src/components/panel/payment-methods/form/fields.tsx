@@ -29,18 +29,18 @@ export default function PaymentMethodFields({ isActive, availableFor, errors, re
   return (
     <div className="grid gap-5 sm:grid-cols-2">
       <label className="text-sm font-medium text-dark-gray">الاسم بالعربية
-        <input className={`${inputClass} mt-2`} {...register("name_ar")} />
-        <InputErrorMessage msg={errors.name_ar?.message} />
+        <input aria-invalid={Boolean(errors.name_ar)} aria-describedby={errors.name_ar ? "payment-method-name-ar-error" : undefined} className={`${inputClass} mt-2`} {...register("name_ar")} />
+        <InputErrorMessage id="payment-method-name-ar-error" msg={errors.name_ar?.message} />
       </label>
       <label className="text-sm font-medium text-dark-gray">الاسم بالإنجليزية
-        <input dir="ltr" className={`${inputClass} mt-2 text-left`} {...register("name_en")} />
-        <InputErrorMessage msg={errors.name_en?.message} />
+        <input dir="ltr" spellCheck={false} aria-invalid={Boolean(errors.name_en)} aria-describedby={errors.name_en ? "payment-method-name-en-error" : undefined} className={`${inputClass} mt-2 text-left`} {...register("name_en")} />
+        <InputErrorMessage id="payment-method-name-en-error" msg={errors.name_en?.message} />
       </label>
       <label className="flex items-center justify-between rounded-xl border border-primary/15 p-4 sm:col-span-2">
         <span><span className="block text-sm font-medium">الحالة</span><span className="text-xs text-gray">إظهار طريقة الدفع في الاستخدامات المحددة أدناه</span></span>
         <input type="checkbox" checked={isActive} onChange={(event) => setValue("is_active", event.target.checked, { shouldDirty: true, shouldValidate: true })} className="size-5 accent-primary" />
       </label>
-      <fieldset className="rounded-xl border border-primary/15 p-4 sm:col-span-2">
+      <fieldset aria-describedby={errors.available_for ? "payment-method-availability-error" : undefined} className="rounded-xl border border-primary/15 p-4 sm:col-span-2">
         <legend className="px-1 text-sm font-medium text-dark-gray">متاحة للاستخدام في</legend>
         <p className="mt-1 text-xs text-gray">يمنع الخادم استخدام الطريقة خارج السياقات المحددة.</p>
         <div className="mt-4 flex flex-wrap gap-3">
@@ -51,7 +51,7 @@ export default function PaymentMethodFields({ isActive, availableFor, errors, re
             </label>
           ))}
         </div>
-        <InputErrorMessage msg={errors.available_for?.message} />
+        <InputErrorMessage id="payment-method-availability-error" msg={errors.available_for?.message} />
       </fieldset>
     </div>
   );

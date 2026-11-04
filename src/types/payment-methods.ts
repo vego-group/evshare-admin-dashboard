@@ -50,6 +50,22 @@ export type PaymentMethodsStatistics = {
   available_for_subscriptions: number;
 };
 
+/**
+ * Read-only compatibility shape from the superseded gateway-assignment contract.
+ * These values must never be used to build payment-method mutation payloads.
+ */
+export type LegacyPaymentMethodsAnalysis = {
+  total: number;
+  active: number;
+  inactive: number;
+  merchant: number;
+  driver: number;
+};
+
+export type PaymentMethodsAnalysis =
+  | PaymentMethodsStatistics
+  | LegacyPaymentMethodsAnalysis;
+
 export type PaymentMethodsListResponse = {
   error: boolean;
   message: string;
@@ -57,7 +73,7 @@ export type PaymentMethodsListResponse = {
   meta?: PaymentMethodsPaginationMeta;
   statistics?: PaymentMethodsStatistics;
   /** Temporary backend alias retained for compatibility during rollout. */
-  analysis?: PaymentMethodsStatistics;
+  analysis?: PaymentMethodsAnalysis;
 };
 
 export type PaymentMethodDetailsResponse = {

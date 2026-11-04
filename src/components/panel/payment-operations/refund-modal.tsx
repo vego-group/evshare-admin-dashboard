@@ -14,6 +14,8 @@ import MoneyValue from "@/components/ui/money-value";
 import { refundPaymentTransactionAPI } from "@/services/mutations";
 import type { PaymentTransaction } from "@/types";
 
+import { getTransactionCurrency } from "./utils";
+
 type Props = {
   transaction: PaymentTransaction;
   open: boolean;
@@ -37,9 +39,11 @@ export default function PaymentRefundModal({ transaction, open, onClose, onRefun
   const [submitting, setSubmitting] = useState(false);
   const [outcomeUnknown, setOutcomeUnknown] = useState(false);
   const [idempotencyKey, setIdempotencyKey] = useState(() => makeIdempotencyKey(transaction.id));
+  const remainingRefundableAmount = transaction.remaining_refundable_amount ?? transaction.amount;
+  const currency = getTransactionCurrency(transaction);
   const numericAmount = amount === "" ? undefined : Number(amount);
   const invalidAmount = numericAmount !== undefined &&
-    (!Number.isFinite(numericAmount) || numericAmount <= 0 || numericAmount > transaction.remaining_refundable_amount);
+    (!Number.isFinite(numericAmount) || numericAmount <= 0 || numericAmount > remainingRefundableAmount);
 
   async function submit(event: FormEvent) {
     event.preventDefault();
@@ -74,21 +78,22 @@ export default function PaymentRefundModal({ transaction, open, onClose, onRefun
       description="يمكنك ترك المبلغ فارغاً لاسترداد كامل المبلغ المتبقي." contentClassName="max-w-lg">
       <form onSubmit={submit} className="space-y-4 p-1">
         <div className="grid grid-cols-2 gap-3 rounded-[12px] bg-neutral-50 p-3">
-          <div><p className="text-xs text-gray">المبلغ الأصلي</p><MoneyValue value={transaction.amount} currency={transaction.currency} className="mt-1 font-semibold" /></div>
-          <div><p className="text-xs text-gray">المتاح للاسترداد</p><MoneyValue value={transaction.remaining_refundable_amount} currency={transaction.currency} className="mt-1 font-semibold" /></div>
+          <div><p className="text-xs text-gray">المبلغ الأصلي</p><MoneyValue value={transaction.amount} currency={currency} className="mt-1 font-semibold" /></div>
+          <div><p className="text-xs text-gray">المتاح للاسترداد</p><MoneyValue value={remainingRefundableAmount} currency={currency} className="mt-1 font-semibold" /></div>
         </div>
-        {outcomeUnknown ? <div className="flex gap-2 rounded-[12px] border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800"><AlertTriangle className="mt-0.5 size-4 shrink-0" /><p>نتيجة الطلب غير معروفة. أغلق النافذة وحدّث القائمة للتحقق من الحالة.</p></div> : null}
+        {outcomeUnknown ? <div role="status" aria-live="polite" className="flex gap-2 rounded-[12px] border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800"><AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden="true" /><p>نتيجة الطلب غير معروفة. أغلق النافذة وحدّث القائمة للتحقق من الحالة.</p></div> : null}
         <label className="block text-sm text-dark-gray">
           <span className="mb-2 block">المبلغ (اختياري)</span>
-          <input type="number" min="0.01" step="0.01" max={transaction.remaining_refundable_amount} value={amount}
+          <input type="number" min="0.01" step="0.01" max={remainingRefundableAmount} value={amount}
+            inputMode="decimal" autoComplete="off" aria-invalid={invalidAmount} aria-describedby={invalidAmount ? "refund-amount-error" : undefined}
             disabled={submitting || outcomeUnknown} onChange={(event) => setAmount(event.target.value)}
-            className="h-12 w-full rounded-[14px] border border-primary bg-primary/4 px-3 text-left outline-none" dir="ltr" />
-          <InputErrorMessage msg={invalidAmount ? "أدخل مبلغاً أكبر من صفر ولا يتجاوز المبلغ المتاح." : undefined} />
+            className="h-12 w-full rounded-[14px] border border-primary bg-primary/4 px-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-primary/30 aria-invalid:border-red-600 aria-invalid:ring-red-200" dir="ltr" />
+          <InputErrorMessage id="refund-amount-error" msg={invalidAmount ? "أدخل مبلغاً أكبر من صفر ولا يتجاوز المبلغ المتاح." : undefined} />
         </label>
         <label className="block text-sm text-dark-gray">
           <span className="mb-2 block">سبب الاسترداد (اختياري)</span>
           <textarea maxLength={1000} value={reason} disabled={submitting || outcomeUnknown} onChange={(event) => setReason(event.target.value)}
-            className="h-24 w-full resize-none rounded-[14px] border border-primary bg-primary/4 p-3 outline-none" placeholder="مثال: طلب العميل" />
+            className="h-24 w-full resize-none rounded-[14px] border border-primary bg-primary/4 p-3 outline-none focus-visible:ring-2 focus-visible:ring-primary/30" placeholder="مثال: طلب العميل" />
           <span className="mt-1 block text-left text-xs text-gray">{reason.length}/1000</span>
         </label>
         <label className="flex items-start gap-2 rounded-[12px] bg-neutral-50 p-3 text-sm text-dark-gray">

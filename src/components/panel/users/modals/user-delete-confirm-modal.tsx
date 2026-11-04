@@ -51,7 +51,8 @@ export default function UserDeleteConfirmModal({
       <form className="space-y-5 p-2 text-right" onSubmit={confirm} noValidate>
         <p className="text-sm text-dark-gray">
           هل تريد إزالة حساب {userName ?? "هذا المستخدم"}؟ سيتم إخفاء بياناته
-          الشخصية وتعطيل الحساب مع الاحتفاظ بالسجل المرتبط به.
+          الشخصية وتعطيل الحساب وحذف أجهزته المسجلة، مع الاحتفاظ بالسجل المرتبط
+          به.
         </p>
 
         <div>

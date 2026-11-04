@@ -33,8 +33,9 @@ export type PaymentOperationsFilters = {
 
 type SharedPaymentQueryParams = {
   page: number;
+  /** Compatibility alias used by older dashboard callers. Serialized as limit. */
   per_page?: number;
-  /** Legacy alias accepted by the API. Prefer per_page in new callers. */
+  /** Items per page accepted by the checkout and transaction endpoints. */
   limit?: number;
   gateway?: string;
   payment_method?: string;
@@ -46,7 +47,7 @@ type SharedPaymentQueryParams = {
 
 export type PaymentCheckoutQueryParams = SharedPaymentQueryParams & {
   payable_type?: string;
-  /** UI-friendly alias mapped to the API's is_processed query parameter. */
+  /** UI-friendly value serialized as the API's is_processed=1|0 filter. */
   status?: PaymentCheckoutStatus;
   /** Wire-level checkout processing filter. */
   is_processed?: boolean;
@@ -89,18 +90,20 @@ export type PaymentTransaction = {
   reference?: string | null;
   status: PaymentTransactionStatus;
   amount: number;
-  currency: string;
+  /** Some list payloads expose currency only on the parent checkout. */
+  currency?: string | null;
   payment_gateway: string;
   payment_gateway_name?: string | null;
   payment_method?: string | null;
   payment_method_name?: string | null;
   user?: PaymentGatewayUser | null;
-  refundable: boolean;
-  refund_status: PaymentRefundStatus;
-  refund_in_progress: boolean;
-  refunded_amount: number;
-  remaining_refundable_amount: number;
-  refund: PaymentTransactionRefund | null;
+  /** Refund fields are supplied by the extended payment-operations contract. */
+  refundable?: boolean;
+  refund_status?: PaymentRefundStatus;
+  refund_in_progress?: boolean;
+  refunded_amount?: number;
+  remaining_refundable_amount?: number;
+  refund?: PaymentTransactionRefund | null;
   paid_at?: string | null;
   transaction_response?: Record<string, unknown> | null;
   checkout?: PaymentCheckout | null;
@@ -132,14 +135,14 @@ export type PaymentTransactionsAnalytics = {
   paid: number;
   failed: number;
   initiated: number;
-  refunded: number;
+  refunded?: number;
 };
 
 export type PaymentCheckoutsListResponse = {
   error?: boolean;
   message?: string;
   data: PaymentCheckout[];
-  filters: PaymentOperationsFilters;
+  filters?: PaymentOperationsFilters;
   meta: PaymentOperationsPaginationMeta;
 };
 
@@ -153,8 +156,8 @@ export type PaymentTransactionsListResponse = {
   error?: boolean;
   message?: string;
   data: PaymentTransaction[];
-  filters: PaymentOperationsFilters;
-  analytics: PaymentTransactionsAnalytics;
+  filters?: PaymentOperationsFilters;
+  analytics?: PaymentTransactionsAnalytics;
   meta: PaymentOperationsPaginationMeta;
 };
 

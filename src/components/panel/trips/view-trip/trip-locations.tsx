@@ -1,4 +1,5 @@
 import type { TripListItem } from "@/types";
+import { tripRouteStats } from "../utils";
 import DetailRow from "./detail-row";
 
 function formatCoordinate(coordinate: { latitude: number | string; longitude: number | string } | null) {
@@ -7,6 +8,8 @@ function formatCoordinate(coordinate: { latitude: number | string; longitude: nu
 }
 
 function TripLocations({ trip }: { trip: TripListItem }) {
+  const routeStats = tripRouteStats(trip.route);
+
   return (
     <section>
       <h3 className="mb-3 font-semibold text-secondary">المواقع</h3>
@@ -16,7 +19,13 @@ function TripLocations({ trip }: { trip: TripListItem }) {
         <DetailRow label="نقطة الوصول" value={<span dir="ltr">{formatCoordinate(trip.drop_off_location)}</span>} />
         <DetailRow label="عنوان نقطة الوصول" value={trip.drop_off_location?.address ?? "-"} />
         <DetailRow label="الموقع الحالي" value={<span dir="ltr">{formatCoordinate(trip.live_location)}</span>} />
-        <DetailRow label="عدد نقاط المسار" value={trip.route.length} />
+        <DetailRow label="نقاط المسار المقبولة" value={routeStats.accepted} />
+        {routeStats.discarded > 0 ? (
+          <DetailRow
+            label="نقاط GPS المستبعدة"
+            value={`${routeStats.discarded} من ${routeStats.total}`}
+          />
+        ) : null}
       </div>
     </section>
   );

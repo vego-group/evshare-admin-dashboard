@@ -80,7 +80,7 @@ function TripBasicInfo({ trip }: { trip: TripListItem }) {
           </>
         )}
         <DetailRow label="نوع المركبة" value={vehicleTypeLabel(trip.vehicle_type)} />
-        <DetailRow label="المسافة" value={formatTripDistance(trip.distance)} />
+        <DetailRow label="المسافة المقطوعة" value={formatTripDistance(trip.distance)} />
         <DetailRow label="تاريخ إنشاء الرحلة" value={<span dir="ltr">{formatDate(trip.created_at)}</span>} />
         {trip.remaining_balance != null && (
           <DetailRow

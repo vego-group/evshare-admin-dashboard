@@ -3,11 +3,10 @@
 import { Polyline } from "@vis.gl/react-google-maps";
 
 import type { RoutePoint } from "@/types";
+import { acceptedTripRoutePath } from "../utils";
 
 function TripRoutePolyline({ route }: { route: RoutePoint[] }) {
-  const path = route
-    .map((point) => ({ lat: Number(point.latitude), lng: Number(point.longitude) }))
-    .filter((point) => Number.isFinite(point.lat) && Number.isFinite(point.lng));
+  const path = acceptedTripRoutePath(route);
 
   if (!path.length) return null;
 

@@ -43,18 +43,13 @@ export default function PermissionCategoryFormModal({
   onClose,
   onSaved,
 }: Props) {
-  const defaultValues: PermissionCategoryFormInput = category ? {
-    name: category.name,
-    name_ar: category.name_ar ?? "",
-    name_en: category.name_en ?? "",
-    slug: category.slug,
-  } : empty;
   const [submitError, setSubmitError] = useState<unknown>(null);
-  const { isLoading: detailLoading, error: detailError } =
+  const { data: detail, isLoading: detailLoading, error: detailError } =
     usePermissionCategory(category?.id ?? null);
+  const source = detail?.data ?? category;
   const { register, handleSubmit, reset, formState: { errors, isSubmitting, isDirty } } = useForm<PermissionCategoryFormInput>({
     resolver: categoryFormResolver,
-    defaultValues,
+    defaultValues: empty,
     mode: "onChange",
   });
 
@@ -63,9 +58,13 @@ export default function PermissionCategoryFormModal({
   // reset every time it opens (and clear stale values when it closes).
   useEffect(() => {
     if (!open) { reset(empty); return; }
-    reset(defaultValues);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, category, reset]);
+    reset(source ? {
+      name: source.name,
+      name_ar: source.name_ar ?? "",
+      name_en: source.name_en ?? "",
+      slug: source.slug,
+    } : empty);
+  }, [open, reset, source]);
 
   async function submit(values: PermissionCategoryFormInput) {
     if (!isDirty) return;

@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { formatTripDistance } from "@/components/panel/trips/utils";
+import {
+  acceptedTripRoutePath,
+  formatTripDistance,
+  tripRouteStats,
+} from "@/components/panel/trips/utils";
 import type { RoutePoint, TripListItem } from "@/types";
 
 describe("server-authoritative trip distance", () => {
@@ -27,5 +31,24 @@ describe("server-authoritative trip distance", () => {
 
     expect(trip.distance).toBe(0);
     expect(trip.route[0].discarded).toBe(true);
+  });
+
+  it("separates accepted and discarded route points for admin diagnostics", () => {
+    const route: RoutePoint[] = [
+      { latitude: 30.0444, longitude: 31.2357 },
+      { latitude: 30.0445, longitude: 31.2358, discarded: false },
+      { latitude: 31, longitude: 32, discarded: true },
+    ];
+
+    expect(tripRouteStats(route)).toEqual({
+      total: 3,
+      accepted: 2,
+      discarded: 1,
+    });
+
+    expect(acceptedTripRoutePath(route)).toEqual([
+      { lat: 30.0444, lng: 31.2357 },
+      { lat: 30.0445, lng: 31.2358 },
+    ]);
   });
 });

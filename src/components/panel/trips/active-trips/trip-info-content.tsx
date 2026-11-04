@@ -17,6 +17,7 @@ import TripStatusBadge from "../results/trip-status-badge";
 import TripZoneStatus from "../trip-zone-status";
 import {
   formatDate,
+  formatTripDistance,
   tripDriverName,
   tripMapLatLng,
   tripPricing,
@@ -74,7 +75,7 @@ function TripInfoContent({
         </p>
         <p className="flex items-center gap-1.5 text-gray">
           <Navigation className="size-3.5 shrink-0 text-primary" />
-          المسافة:{" "}
+          بُعد المركبة عنك:{" "}
           {distance ? (
             <span className="font-medium text-secondary">
               <span dir="ltr">{distance.value}</span> {distance.unit}
@@ -82,6 +83,13 @@ function TripInfoContent({
           ) : (
             <span className="font-medium text-secondary">غير متاح</span>
           )}
+        </p>
+        <p className="flex items-center gap-1.5 text-gray">
+          <Navigation className="size-3.5 shrink-0 text-primary" />
+          المسافة المقطوعة:{" "}
+          <span className="font-medium text-secondary">
+            {formatTripDistance(trip.distance)}
+          </span>
         </p>
         {battery != null && (
           <div className="flex items-center gap-1.5">

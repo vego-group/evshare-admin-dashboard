@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronDown, ListFilter, Search } from "lucide-react";
 
 import useDebounce from "@/hooks/use-debounce";
-import { cn } from "@/lib/utils";
 import type {
   PaymentCheckoutStatus,
   PaymentFilterOption,
@@ -75,8 +74,9 @@ function PaymentOperationsToolbar({ tab, search, gateway, paymentMethod, status,
       <div className="relative flex min-h-12 min-w-56 flex-1 items-center rounded-[14px] px-3 pr-11 sm:min-h-14 sm:pr-14">
         <Search className="pointer-events-none absolute right-3 top-1/2 size-5 -translate-y-1/2 text-gray sm:right-5" />
         <input type="search" aria-label="البحث في عمليات الدفع" placeholder={searchPlaceholder} value={searchValue}
+          autoComplete="off" spellCheck={false}
           onChange={(event) => setSearchValue(event.target.value)}
-          className="h-full w-full bg-transparent text-right text-sm text-secondary outline-none placeholder:text-[#99a1af] sm:text-base" />
+          className="h-full w-full rounded-xl bg-transparent px-1 text-right text-sm text-secondary outline-none placeholder:text-[#99a1af] focus-visible:ring-2 focus-visible:ring-primary/30 sm:text-base" />
       </div>
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
         <FilterSelect label="بوابة الدفع" value={gateway ?? "all"} options={[
@@ -100,21 +100,22 @@ function PaymentOperationsToolbar({ tab, search, gateway, paymentMethod, status,
 function FilterSelect({ label, options, value, onChange }: {
   label: string; options: { label: string; value: string }[]; value: string; onChange: (value: string) => void;
 }) {
-  const [open, setOpen] = useState(false);
-  const selected = options.find((option) => option.value === value)?.label ?? value;
   return (
-    <div className="relative h-10 w-full text-sm sm:w-44">
-      <button type="button" aria-label={label} aria-expanded={open} onClick={() => setOpen((value) => !value)}
-        className="flex h-full w-full items-center justify-between rounded-[14px] border border-primary bg-primary/4 px-3 text-dark-gray transition hover:bg-primary/10">
-        <span className="flex min-w-0 items-center gap-1"><span className="truncate">{selected}</span><ListFilter className="size-3.5 shrink-0 text-primary" /></span>
-        <ChevronDown className={cn("size-4 shrink-0 text-primary transition", open && "rotate-180")} />
-      </button>
-      {open ? <div className="fixed inset-0 z-20" onClick={() => setOpen(false)} /> : null}
-      {open ? <div className="dashboard-dropdown-scroll absolute right-0 top-[calc(100%+2px)] z-30 max-h-64 w-full overflow-auto rounded-[14px] border border-primary bg-bg-warm-ivory shadow-lg">
-        {options.map((option) => <button key={option.value} type="button" onClick={() => { onChange(option.value); setOpen(false); }}
-          className={cn("flex min-h-10 w-full items-center px-3 text-right hover:bg-primary/10", value === option.value && "bg-primary/15 text-secondary")}>{option.label}</button>)}
-      </div> : null}
-    </div>
+    <label className="relative block h-10 w-full text-sm sm:w-44">
+      <span className="sr-only">{label}</span>
+      <ListFilter className="pointer-events-none absolute right-3 top-1/2 z-10 size-3.5 -translate-y-1/2 text-primary" aria-hidden="true" />
+      <select
+        aria-label={label}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="h-full w-full appearance-none rounded-[14px] border border-primary bg-primary/4 px-8 text-right text-dark-gray outline-none transition-colors hover:bg-primary/10 focus-visible:ring-2 focus-visible:ring-primary/30"
+      >
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>{option.label}</option>
+        ))}
+      </select>
+      <ChevronDown className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-primary" aria-hidden="true" />
+    </label>
   );
 }
 
